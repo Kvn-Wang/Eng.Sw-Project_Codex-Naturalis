@@ -1,2 +1,3 @@
 RMI
-\ndefinire piattaforme differenti
+
+definire piattaforme differenti
