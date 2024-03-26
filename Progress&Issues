@@ -1,5 +1,11 @@
 Model:
-    asd
+    Card
+        issue, modifica nomi var
+    resource
+        issue, modifica nomi var
+    onjective
+        issue, aggiunta campi e modifica nome
+    starter
 
 Network:
 

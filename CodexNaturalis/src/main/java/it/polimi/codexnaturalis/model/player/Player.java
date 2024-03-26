@@ -11,4 +11,22 @@ public class Player {
     private Mission personalMission2;
     private Mission selectedPersonalMission;
     private Player playerView;
+
+    public Mission getPersonalMission(int numMission){
+        if(numMission == 1)
+            return personalMission1;
+        else if (numMission == 2) {
+            return personalMission2;
+        }
+        else
+            return null;
+    }
+
+    public void setSelectedPersonalMission(Mission selectedPersonalMission) {
+        this.selectedPersonalMission = selectedPersonalMission;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
 }
