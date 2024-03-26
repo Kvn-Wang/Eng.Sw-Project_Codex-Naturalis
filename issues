@@ -1,0 +1,6 @@
+GameInterface:  type in che tipo deve essere? perché string sembra uno spreco
+GameInterface:  che tipo devono essere sender e reciver?
+GameInterface:  dove c'é "nickname" non converrebbe utilizzare il riferimento a player
+Objective:      preferirei chiamare "conditionResources" al singolare "conditionResource", tanto quando faremo riferimento all'array sarà per riferici alla singola risorsa
+
+mancano ancora delle classi come chat e scorecard e hand (non so altre)

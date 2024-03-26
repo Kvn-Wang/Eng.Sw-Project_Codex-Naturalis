@@ -1,4 +1,6 @@
-package it.polimi.codexnaturalis;
+package it.polimi.codexnaturalis.model.player;
+
+import it.polimi.codexnaturalis.model.shop.card.Card;
 
 public interface PlayerInterface {
     int executePersonalMission(Card[][] mapArray);

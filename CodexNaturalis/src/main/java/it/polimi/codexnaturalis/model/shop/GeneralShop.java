@@ -1,6 +1,8 @@
-package it.polimi.codexnaturalis;
+package it.polimi.codexnaturalis.model.shop;
 
-public class GeneralShop extends Shop{
+import it.polimi.codexnaturalis.model.shop.card.Card;
+
+public class GeneralShop extends Shop {
     public Card visibleCard1;
     public Card visibleCard2;
     public Card drawFromShopPlayer(){

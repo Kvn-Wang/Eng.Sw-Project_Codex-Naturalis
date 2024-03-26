@@ -1,4 +1,4 @@
-package it.polimi.codexnaturalis;
+package it.polimi.codexnaturalis.model.mission;
 
 public class Mission {
     private String png;

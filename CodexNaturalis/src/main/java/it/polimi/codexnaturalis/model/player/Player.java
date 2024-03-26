@@ -1,4 +1,6 @@
-package it.polimi.codexnaturalis;
+package it.polimi.codexnaturalis.model.player;
+
+import it.polimi.codexnaturalis.model.mission.Mission;
 
 public class Player {
     private String nickname;

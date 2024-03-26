@@ -1,4 +1,7 @@
-package it.polimi.codexnaturalis;
+package it.polimi.codexnaturalis.model.shop;
+
+import it.polimi.codexnaturalis.model.shop.card.Card;
+import it.polimi.codexnaturalis.model.enumeration.ShopType;
 
 public class Shop {
     public ShopType shopType;

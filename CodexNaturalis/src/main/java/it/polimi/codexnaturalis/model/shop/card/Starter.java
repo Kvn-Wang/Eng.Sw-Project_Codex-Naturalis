@@ -1,4 +1,6 @@
-package it.polimi.codexnaturalis;
+package it.polimi.codexnaturalis.model.shop.card;
+
+import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 
 public class Starter {
     private ResourceType backCentralResource;
