@@ -5,7 +5,7 @@ import it.polimi.codexnaturalis.model.enumeration.ShopType;
 
 public class Shop {
     public ShopType shopType;
-    public Card topDeckCard;
+    private Card topDeckCard;
     private String originalCardsFile;
     private String cardsFile;
 
@@ -13,8 +13,7 @@ public class Shop {
         System.out.printf("shuffled");
     }
     public Card drawFromDeck(){
-        Card drawnCard = null;
-        System.out.printf("card drew from deck");
-        return drawnCard;
+        System.out.printf("from deck");
+        return topDeckCard;
     }
 }
