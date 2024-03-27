@@ -8,8 +8,8 @@ public interface GameInterface {
     void reconnectPlayer(String nickname);
     void playerDraw(String nickname, int Numcard, String type);// vedi issues
     void playerPersonalMissionSelect(String nickname, int numMission);
-    void playerPlayCard(String nickname, int numCard);
-    void typeMessage(Player reciver, Player sender, String msg);// vedi issues
+    void playerPlayCard(String nickname, int x, int y, int numCard);
+    void typeMessage(String reciver, String sender, String msg);// vedi issues
     void switchPlayer(String nickname);
     void endGame();
 }

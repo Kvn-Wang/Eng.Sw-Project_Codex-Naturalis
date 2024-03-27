@@ -1,0 +1,4 @@
+in realtà gli array con nome plurale vanno bene ops
+card1, card2, card3 di hand é comodo sostituirle con un array
+cambio gestione pescata (come abbiamo discusso già io e kevin)
+Player cambiato a String in GameInterface
