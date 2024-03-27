@@ -13,7 +13,8 @@ public class Card {
 
     protected boolean usedForCheckRule;
 
-    public boolean isBack() {
+    public boolean getIsBack() {
+        System.out.printf("isBack");
         return isBack;
     }
 
@@ -22,6 +23,7 @@ public class Card {
     }
 
     public ResourceType getFrontNorthResource() {
+        System.out.printf("frontNorthResource");
         return frontNorthResource;
     }
 
@@ -30,6 +32,7 @@ public class Card {
     }
 
     public ResourceType getFrontSouthResource() {
+        System.out.printf("frontSouthResource");
         return frontSouthResource;
     }
 
@@ -38,6 +41,7 @@ public class Card {
     }
 
     public ResourceType getFrontEastResource() {
+        System.out.printf("frontEastResource");
         return frontEastResource;
     }
 
@@ -46,6 +50,7 @@ public class Card {
     }
 
     public ResourceType getFrontWestResource() {
+        System.out.printf("frontWestResource");
         return frontWestResource;
     }
 
@@ -54,6 +59,7 @@ public class Card {
     }
 
     public String getPng() {
+        System.out.printf("Png");
         return png;
     }
 
@@ -61,7 +67,8 @@ public class Card {
         this.png = png;
     }
 
-    public boolean isUsedForCheckRule() {
+    public boolean getIsUsedForCheckRule() {
+        System.out.printf("isUsedForCheckRule");
         return usedForCheckRule;
     }
 
@@ -74,6 +81,7 @@ public class Card {
         protected int frontCardPoint;
 
         public ResourceType getBackCentralResource() {
+            System.out.printf("backCentralResource");
             return backCentralResource;
         }
 
@@ -82,6 +90,7 @@ public class Card {
         }
 
         public int getFrontCardPoint() {
+            System.out.printf("frontCardPoint");
             return frontCardPoint;
         }
 
@@ -97,6 +106,7 @@ public class Card {
         protected ResourceType[] conditionResource;
 
         public ResourceType[] getConditionResource() {
+            System.out.printf("conditionResource");
             return conditionResource;
         }
 
@@ -105,6 +115,7 @@ public class Card {
         }
 
         public ResourceType getBackCentralResource() {
+            System.out.printf("backCentralResource");
             return backCentralResource;
         }
 
@@ -113,6 +124,7 @@ public class Card {
         }
 
         public ConditionResourceType getPointPerConditionResource() {
+            System.out.printf("pointPerConditionResource");
             return pointPerConditionResource;
         }
 
@@ -121,6 +133,7 @@ public class Card {
         }
 
         public int getPointPerCondition() {
+            System.out.printf("pointPerCondition");
             return pointPerCondition;
         }
 
@@ -136,6 +149,7 @@ public class Card {
         protected ResourceType backWestResource;
 
         public ResourceType[] getBackCentralResource() {
+            System.out.printf("backCentralResource");
             return backCentralResource;
         }
 
@@ -144,6 +158,7 @@ public class Card {
         }
 
         public ResourceType getBackNorthResource() {
+            System.out.printf("backNorthResource");
             return backNorthResource;
         }
 
@@ -152,6 +167,7 @@ public class Card {
         }
 
         public ResourceType getBackSouthResource() {
+            System.out.printf("backSouthResource");
             return backSouthResource;
         }
 
@@ -160,6 +176,7 @@ public class Card {
         }
 
         public ResourceType getBackEastResource() {
+            System.out.printf("backEastResource");
             return backEastResource;
         }
 
@@ -168,6 +185,7 @@ public class Card {
         }
 
         public ResourceType getBackWestResource() {
+            System.out.printf("backWestResource");
             return backWestResource;
         }
 
