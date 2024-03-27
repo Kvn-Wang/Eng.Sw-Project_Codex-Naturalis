@@ -13,7 +13,7 @@ public class Shop {
         System.out.printf("shuffled");
     }
     public Card drawFromDeck(){
-        Card drawnCard;
+        Card drawnCard = null;
         System.out.printf("card drew from deck");
         return drawnCard;
     }
