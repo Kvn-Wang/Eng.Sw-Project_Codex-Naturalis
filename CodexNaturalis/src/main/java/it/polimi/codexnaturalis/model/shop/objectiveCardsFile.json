@@ -1,0 +1,14 @@
+[
+  {
+    "png" : "41",
+    "frontNorthResource" :null,
+    "frontSouthResource" :"QUILL",
+    "frontEastResource" : "NONE",
+    "frontWestResource" : "NONE",
+    "isBack": false,
+    "backCentralResource" : "FUNGI",
+    "pointPerConditionResource":"QUILL",
+    "pointPerCondition" : 1,
+    "conditionResource" : "FUNGI,FUNGI,ANIMAL"
+  }
+]

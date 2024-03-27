@@ -5,9 +5,10 @@ import it.polimi.codexnaturalis.model.enumeration.ShopType;
 
 public class Shop {
     public ShopType shopType;
-    private Card topDeckCard;
-    private String originalCardsFile;
-    private String cardsFile;
+    protected Card topDeckCard;
+    protected String starterCardsFile;
+    protected String ResorceCardsFile;
+    protected String objectiveCardsFile;
 
     private void shuffle(){
         System.out.printf("shuffled");
