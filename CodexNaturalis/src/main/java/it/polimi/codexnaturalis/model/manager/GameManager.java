@@ -113,38 +113,7 @@ public class GameManager implements GameInterface {
     }
     @Override
     public void endGame() {
-        int max = 0;
-        Player wp;
-        List<Player> winningPlayers = new ArrayList<Player>();
-        for(Player p: players){
-            if(p.getPersonalScore()>max){
-                max=p.getPersonalScore();
-            }
-        }
-        for(Player p: players){
-            if(p.getPersonalScore()==max){
-                winningPlayers.add(p);
-            }
-        }
-        max=0;
-        if(winningPlayers.size()==1)
-            setWinner(winningPlayers.getFirst());
-        else{
-            for(Player p: winningPlayers){
-                if(p.getPersonalMissionTotalScore()>max){
-                    max=p.getPersonalMissionTotalScore();
-                }
-            }
-            for(Player p: winningPlayers) {
-                if (p.getPersonalMissionTotalScore() < max) {
-                    winningPlayers.remove(p);
-                }
-            }
-            if(winningPlayers.size()==1)
-                setWinner(winningPlayers.getFirst());
-            else
-                setWinner(winningPlayers.getLast());
-        }
+
     }
 
     private int executeSharedMission(Card[][] mapArray){
@@ -165,7 +134,45 @@ public class GameManager implements GameInterface {
             }
         }
     }
-    private void setWinner(Player winningPlayer){
-        winner = winningPlayer;
+    private void setWinner(){
+        int max = 0;
+        Player wp;
+        List<Player> winningPlayers = new ArrayList<Player>();
+        for(Player p: players){
+            if(p.getPersonalScore()>max){
+                max=p.getPersonalScore();
+            }
+        }
+        for(Player p: players){
+            if(p.getPersonalScore()==max){
+                winningPlayers.add(p);
+            }
+        }
+        max=0;
+        if(winningPlayers.size()==1)
+            winner = winningPlayers.getFirst();
+        else{
+            for(Player p: winningPlayers){
+                if(p.getPersonalMissionTotalScore()>max){
+                    max=p.getPersonalMissionTotalScore();
+                }
+            }
+            for(Player p: winningPlayers) {
+                if (p.getPersonalMissionTotalScore() < max) {
+                    winningPlayers.remove(p);
+                }
+            }
+            if(winningPlayers.size()==1)
+                winner = winningPlayers.getFirst();
+            else
+                tieHandler(winningPlayers);
+        }
+    }
+
+    private void tieHandler(List<Player> winningPlayers){
+        System.out.printf("__Winners__%n%n");
+        for(Player p: winningPlayers){
+            System.out.printf("-%s%n", p.getNickname());
+        }
     }
 }
