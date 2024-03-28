@@ -1,7 +1,5 @@
 package it.polimi.codexnaturalis.model;
 
-import it.polimi.codexnaturalis.model.player.Player;
-
 public interface GameInterface {
     void initializeGame();
     void disconnectPlayer(String nickname);//vedi issues
@@ -9,7 +7,7 @@ public interface GameInterface {
     void playerDraw(String nickname, int Numcard, String type);// vedi issues
     void playerPersonalMissionSelect(String nickname, int numMission);
     void playerPlayCard(String nickname, int x, int y, int numCard);
-    void typeMessage(String reciver, String sender, String msg);// vedi issues
+    void typeMessage(String receiver, String sender, String msg);// vedi issues
     void switchPlayer(String nickname);
     void endGame();
 }

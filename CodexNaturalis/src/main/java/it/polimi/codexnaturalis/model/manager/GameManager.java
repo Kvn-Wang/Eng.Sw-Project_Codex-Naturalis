@@ -11,13 +11,15 @@ import it.polimi.codexnaturalis.model.shop.card.Card;
 import java.util.ArrayList;
 import java.util.List;
 
+import static it.polimi.codexnaturalis.model.enumeration.ShopType.*;
+
 public class GameManager implements GameInterface {
     public Mission sharedMission1;
     public Mission sharedMission2;
     private GeneralShop resourceShop;
     private GeneralShop objectiveShop;
     private String pathToFile;
-    private Player[] players;
+    private List<Player> players;
     private Player playerTurn;
     private ChatManager chatManager;
     private boolean isFinalTurn;
@@ -26,7 +28,16 @@ public class GameManager implements GameInterface {
 
     @Override
     public void initializeGame() {
-
+        initializeScoreboard();
+        initializeShop(Resource, "it/polimi/codexnaturalis/model/shop/resourceCardsFile.json");
+        initializeShop(Objective,"it/polimi/codexnaturalis/model/shop/objectiveCardsFile.json");
+        initializeShop(Starter,"it/polimi/codexnaturalis/model/shop/starterCardsFile.json");
+        initializePlayer();
+        initializePlayerColor();
+        initializePlayerHand();
+        initializeStarterCard();
+        initializeMission();
+        initializeStartingPlayer();
     }
 
     private void initializeScoreboard(){
@@ -77,8 +88,10 @@ public class GameManager implements GameInterface {
         switch (type) {
             case "resourceShop":
                 p.drawCard(resourceShop.drawFromShopPlayer(numShopCard));
+                break;
             case "objectiveShop":
                 p.drawCard(objectiveShop.drawFromShopPlayer(numShopCard));
+                break;
         }
     }
 
@@ -125,12 +138,12 @@ public class GameManager implements GameInterface {
     }
 
     private void nextTurn(){
-        for(int i=0; i<players.length; i++){
-            if (playerTurn.equals(players[i])) {
-                if (i != players.length-1)
-                    playerTurn = players[i + 1];
+        for(int i=0; i<players.size(); i++){
+            if (playerTurn.equals(players.get(i))) {
+                if (i != players.size()-1)
+                    playerTurn = players.get(i+1);
                 else
-                    playerTurn = players[0];
+                    playerTurn = players.getFirst();
             }
         }
     }
