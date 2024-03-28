@@ -6,6 +6,7 @@ import it.polimi.codexnaturalis.model.shop.card.Card;
 public class Player implements PlayerInterface {
     private String nickname;
     private int personalScore;
+    private int personalMissionTotalScore;
     private String pawnColor;
     private boolean alive;
     private Mission personalMission1;
@@ -65,4 +66,13 @@ public class Player implements PlayerInterface {
 
     }
 
+    @Override
+    public int getPersonalMissionTotalScore() {
+        return personalMissionTotalScore;
+    }
+
+    @Override
+    public int getPersonalScore() {
+        return personalScore;
+    }
 }

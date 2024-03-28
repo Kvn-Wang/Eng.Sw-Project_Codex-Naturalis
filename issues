@@ -1,6 +1,11 @@
-GameInterface:  type in che tipo deve essere? perché string sembra uno spreco
-GameInterface:  che tipo devono essere sender e reciver?
-GameInterface:  dove c'é "nickname" non converrebbe utilizzare il riferimento a player
-Objective:      preferirei chiamare "conditionResources" al singolare "conditionResource", tanto quando faremo riferimento all'array sarà per riferici alla singola risorsa
+GameInterface:      type in che tipo deve essere? perché string sembra uno spreco
+GameInterface:      che tipo devono essere sender e reciver?
+GameInterface:      dove c'é "nickname" non converrebbe utilizzare il riferimento a player
+Objective:          preferirei chiamare "conditionResources" al singolare "conditionResource", tanto quando faremo riferimento all'array sarà per riferici alla singola risorsa
+PlayerInterface:    aggiunto getPersonalScore per decidere un vincitore in setWinner
+Player:             vedi sopra
+Player:             aggiunto PersonalMissionTotalScore, in quanto serve conoscere il punteggio totale delle mission in caso di parità a fine partita
+GameManager:        come gestiamo i pareggi?
 
 mancano ancora delle classi come chat e scorecard e hand (non so altre) -> aggiunte classe vuoti momentanee
+resourceCardsFile: gg wp, solo non so se serva specificare isBack o meno, perché sarà un info che verrà modificata al momento e suppongo aggiornerà il png. non é un info statica della carta

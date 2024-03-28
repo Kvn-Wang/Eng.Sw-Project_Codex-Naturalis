@@ -8,13 +8,16 @@ import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.shop.GeneralShop;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameManager implements GameInterface {
     public Mission sharedMission1;
     public Mission sharedMission2;
     private GeneralShop resourceShop;
     private GeneralShop objectiveShop;
     private String pathToFile;
-    private Player[] player;
+    private Player[] players;
     private Player playerTurn;
     private ChatManager chatManager;
     private boolean isFinalTurn;
@@ -52,7 +55,7 @@ public class GameManager implements GameInterface {
     }
 
     private Player nickToPlayer(String nickname){//throw da aggiungere
-        for(Player p: player)
+        for(Player p: players)
             if(p.getNickname().equals(nickname))
                 return p;
         return null;//caso player non trovato
@@ -92,8 +95,8 @@ public class GameManager implements GameInterface {
     }
 
     @Override
-    public void typeMessage(String reciver, String sender, String msg) {
-        Player rec = nickToPlayer(reciver);
+    public void typeMessage(String receiver, String sender, String msg) {
+        Player rec = nickToPlayer(receiver);
         Player send = nickToPlayer(sender);
         chatManager.writeComment(rec, send, msg);
     }
@@ -110,7 +113,38 @@ public class GameManager implements GameInterface {
     }
     @Override
     public void endGame() {
-
+        int max = 0;
+        Player wp;
+        List<Player> winningPlayers = new ArrayList<Player>();
+        for(Player p: players){
+            if(p.getPersonalScore()>max){
+                max=p.getPersonalScore();
+            }
+        }
+        for(Player p: players){
+            if(p.getPersonalScore()==max){
+                winningPlayers.add(p);
+            }
+        }
+        max=0;
+        if(winningPlayers.size()==1)
+            setWinner(winningPlayers.getFirst());
+        else{
+            for(Player p: winningPlayers){
+                if(p.getPersonalMissionTotalScore()>max){
+                    max=p.getPersonalMissionTotalScore();
+                }
+            }
+            for(Player p: winningPlayers) {
+                if (p.getPersonalMissionTotalScore() < max) {
+                    winningPlayers.remove(p);
+                }
+            }
+            if(winningPlayers.size()==1)
+                setWinner(winningPlayers.getFirst());
+            else
+                setWinner(winningPlayers.getLast());
+        }
     }
 
     private int executeSharedMission(Card[][] mapArray){
@@ -121,10 +155,17 @@ public class GameManager implements GameInterface {
 
     }
 
-    private void nextTurn(String nickname, int value){
-
+    private void nextTurn(){
+        for(int i=0; i<players.length; i++){
+            if (playerTurn.equals(players[i])) {
+                if (i != players.length-1)
+                    playerTurn = players[i + 1];
+                else
+                    playerTurn = players[0];
+            }
+        }
     }
-    private void setWinner(String nickname){
-
+    private void setWinner(Player winningPlayer){
+        winner = winningPlayer;
     }
 }

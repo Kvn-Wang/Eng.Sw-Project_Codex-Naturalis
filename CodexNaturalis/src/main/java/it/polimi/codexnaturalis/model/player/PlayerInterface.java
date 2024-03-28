@@ -12,4 +12,6 @@ public interface PlayerInterface {
     void setPersonalMissionChoice(Mission selectedPersonalMission);
     void setPersonalMissionFinal();
     void switchPlayerView();
+    int getPersonalScore();
+    int getPersonalMissionTotalScore();
 }
