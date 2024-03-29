@@ -29,9 +29,9 @@ public class GameManager implements GameInterface {
     @Override
     public void initializeGame() {
         initializeScoreboard();
-        initializeShop(Resource, "it/polimi/codexnaturalis/model/shop/resourceCardsFile.json");
-        initializeShop(Objective,"it/polimi/codexnaturalis/model/shop/objectiveCardsFile.json");
-        initializeShop(Starter,"it/polimi/codexnaturalis/model/shop/starterCardsFile.json");
+        initializeShop(Resource, "it/polimi/codexnaturalis/matchCardFileInfo/resourceCardsFile.json");
+        initializeShop(Objective, "it/polimi/codexnaturalis/matchCardFileInfo/objectiveCardsFile.json");
+        initializeShop(Starter, "it/polimi/codexnaturalis/matchCardFileInfo/starterCardsFile.json");
         initializePlayer();
         initializePlayerColor();
         initializePlayerHand();
