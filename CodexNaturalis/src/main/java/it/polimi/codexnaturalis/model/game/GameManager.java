@@ -166,7 +166,7 @@ public class GameManager implements GameInterface {
         }
         max=0;
         if(winningPlayers.size()==1)
-            winner = winningPlayers.getFirst();
+            winner = winningPlayers.get(0);
         else{
             for(Player p: winningPlayers){
                 if(p.getPersonalMissionTotalScore()>max){
@@ -179,7 +179,7 @@ public class GameManager implements GameInterface {
                 }
             }
             if(winningPlayers.size()==1)
-                winner = winningPlayers.getFirst();
+                winner = winningPlayers.get(0);
             else
                 tieHandler(winningPlayers);
         }
