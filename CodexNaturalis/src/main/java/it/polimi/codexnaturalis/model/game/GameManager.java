@@ -1,6 +1,5 @@
-package it.polimi.codexnaturalis.model.manager;
+package it.polimi.codexnaturalis.model.game;
 
-import it.polimi.codexnaturalis.model.GameInterface;
 import it.polimi.codexnaturalis.model.chat.ChatManager;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
