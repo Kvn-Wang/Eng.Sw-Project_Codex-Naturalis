@@ -1,8 +1,8 @@
 package java.it.polimi.codexnaturalis.game;
 
 import it.polimi.codexnaturalis.model.player.Player;
-import it.polimi.codexnaturalis.model.scoreCard.Pawn;
-import it.polimi.codexnaturalis.model.scoreCard.ScoreCard;
+import it.polimi.codexnaturalis.model.scoreboard.Pawn;
+import it.polimi.codexnaturalis.model.scoreboard.ScoreBoard;
 
 import java.util.Scanner;
 
@@ -21,7 +21,7 @@ public class TestScoreCard {
             newp.setPawnColor(inputString);
             players[i] = newp;
         }
-        ScoreCard board = new ScoreCard(players);
+        ScoreBoard board = new ScoreBoard(players);
         for(Pawn p: board.getpawns()) {
             System.out.printf("%n%s", p.getPlayer().getNickname());
             System.out.printf("%n%s", p.getImageFile());

@@ -1,18 +1,18 @@
-package it.polimi.codexnaturalis.model.scoreCard;
+package it.polimi.codexnaturalis.model.scoreboard;
 
 import it.polimi.codexnaturalis.model.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScoreCard {
+public class ScoreBoard {
     private final String scoreCardImg;
     private List<Pawn> pawns;
     public boolean checkEnd20(Player player){
         return player.getPersonalScore() >= 20;
     }
 
-    public ScoreCard(Player[] players){
+    public ScoreBoard(Player[] players){
         pawns = new ArrayList<Pawn>();
         for(Player p: players){
             switch (p.getPawnColor()) {

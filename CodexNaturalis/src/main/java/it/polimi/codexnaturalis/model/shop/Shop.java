@@ -4,11 +4,9 @@ import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 
 public class Shop {
-    public ShopType shopType;
+    public final ShopType shopType;
+    protected final String cardsFile;
     protected Card topDeckCard;
-    protected String starterCardsFile;
-    protected String ResorceCardsFile;
-    protected String objectiveCardsFile;
 
     private void shuffle(){
         System.out.printf("shuffled");
@@ -16,5 +14,9 @@ public class Shop {
     public Card drawFromDeck(){
         System.out.printf("from deck");
         return topDeckCard;
+    }
+    public Shop(ShopType type, String path){
+        shopType = type;
+        cardsFile = path;
     }
 }

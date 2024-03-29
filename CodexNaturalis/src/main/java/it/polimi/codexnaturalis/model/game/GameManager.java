@@ -4,17 +4,20 @@ import it.polimi.codexnaturalis.model.chat.ChatManager;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Player;
+import it.polimi.codexnaturalis.model.scoreboard.ScoreBoard;
 import it.polimi.codexnaturalis.model.shop.GeneralShop;
+import it.polimi.codexnaturalis.model.shop.Shop;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static it.polimi.codexnaturalis.model.enumeration.ShopType.*;
+
 
 public class GameManager implements GameInterface {
     public Mission sharedMission1;
     public Mission sharedMission2;
+    private ScoreBoard scoreBoard;
     private GeneralShop resourceShop;
     private GeneralShop objectiveShop;
     private String pathToFile;
@@ -28,9 +31,8 @@ public class GameManager implements GameInterface {
     @Override
     public void initializeGame() {
         initializeScoreboard();
-        initializeShop(Resource, "it/polimi/codexnaturalis/matchCardFileInfo/resourceCardsFile.json");
-        initializeShop(Objective, "it/polimi/codexnaturalis/matchCardFileInfo/objectiveCardsFile.json");
-        initializeShop(Starter, "it/polimi/codexnaturalis/matchCardFileInfo/starterCardsFile.json");
+        resourceShop = initializeShop(ShopType.Resource, "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/resourceCardsFile.json");
+        objectiveShop = initializeShop(ShopType.Objective, "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/objectiveCardsFile.json");
         initializePlayer();
         initializePlayerColor();
         initializePlayerHand();
@@ -40,11 +42,12 @@ public class GameManager implements GameInterface {
     }
 
     private void initializeScoreboard(){
-
+        scoreBoard = new ScoreBoard(players);
     }
-    private void initializeShop(ShopType typeOfShop, String pathToFile){
-
+    private GeneralShop initializeShop(ShopType typeOfShop, String pathToFile){
+        return new GeneralShop(typeOfShop, pathToFile);
     }
+
     private void initializePlayer(){
 
     }
@@ -52,7 +55,7 @@ public class GameManager implements GameInterface {
 
     }
     private void initializeStarterCard(){
-
+        Shop starterShop = new Shop(ShopType.Starter, "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/starterCardsFile.json");
     }
     private void initializePlayerHand(){
 
@@ -120,8 +123,9 @@ public class GameManager implements GameInterface {
     private boolean endGameCheckFinishedShop(){
         return false;
     }
-    private boolean endGameCheckScoreCard(){
-        return false;
+    private boolean endGameCheckScoreBoard(){
+            return scoreBoard.checkEnd20(playerTurn);
+
     }
     @Override
     public void endGame() {

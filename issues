@@ -7,7 +7,10 @@ Player:             aggiunto PersonalMissionTotalScore, in quanto serve conoscer
 GameManager:        player non é più un array ma é una lista, potrebbero esserci meno di 4 giocatori. (o anche più espadibilità futura *wink* *wink*)
 GameManager:        come gestiamo i pareggi?
 GameManager:        come posizioniamo la carta starter senza la mano inizializzata, la inizializiamo prima e la mettiamo in mano o facciamo un funzione a parte, però questo richiederebbe un nuovo input da gameinterface
+GameManager:        gestione isFinalTurn, a che servono le funzioni check con return boolean se posso semplicemente settare isfinalturn al loro interno?
 setWinner:          potendoci essere più winner, winner deve diventare winners e sarà un arraylist, alla quale si potranno aggingere dianamicamente il numero di giocatori
 resourceCardsFile: gg wp, solo non so se serva specificare isBack o meno, perché sarà un info che verrà modificata al momento e suppongo aggiornerà il png. non é un info statica della carta
+ScoreBoard:         cambiata classe e cartella da scorecard a scoreboard (da cambiare in giro, esempio: funzione di GameManager endGameCheckScoreBoard)
+
 
 mancano ancora delle classi come chat e scorecard e hand (non so altre) -> aggiunte classe vuoti momentanee

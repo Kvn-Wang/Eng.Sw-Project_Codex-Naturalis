@@ -1,4 +1,4 @@
-package it.polimi.codexnaturalis.model.scoreCard;
+package it.polimi.codexnaturalis.model.scoreboard;
 
 import it.polimi.codexnaturalis.model.player.Player;
 
