@@ -75,4 +75,19 @@ public class Player implements PlayerInterface {
     public int getPersonalScore() {
         return personalScore;
     }
+
+    @Override
+    public String getPawnColor() {
+        return pawnColor;
+    }
+
+    @Override
+    public void setPawnColor(String pawnColor) {
+        this.pawnColor = pawnColor;
+    }
+
+    @Override
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

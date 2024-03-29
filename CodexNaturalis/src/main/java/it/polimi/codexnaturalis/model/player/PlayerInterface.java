@@ -14,4 +14,7 @@ public interface PlayerInterface {
     void switchPlayerView();
     int getPersonalScore();
     int getPersonalMissionTotalScore();
+    String getPawnColor();
+    void setNickname(String nickname);
+    void setPawnColor(String pawnColor);
 }

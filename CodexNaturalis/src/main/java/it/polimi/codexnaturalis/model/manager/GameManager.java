@@ -19,7 +19,7 @@ public class GameManager implements GameInterface {
     private GeneralShop resourceShop;
     private GeneralShop objectiveShop;
     private String pathToFile;
-    private List<Player> players;
+    private Player[] players;
     private Player playerTurn;
     private ChatManager chatManager;
     private boolean isFinalTurn;
@@ -138,12 +138,12 @@ public class GameManager implements GameInterface {
     }
 
     private void nextTurn(){
-        for(int i=0; i<players.size(); i++){
-            if (playerTurn.equals(players.get(i))) {
-                if (i != players.size()-1)
-                    playerTurn = players.get(i+1);
+        for(int i=0; i<players.length; i++){
+            if (playerTurn.equals(players[i])) {
+                if (i != players.length-1)
+                    playerTurn = players[i+1];
                 else
-                    playerTurn = players.getFirst();
+                    playerTurn = players[0];
             }
         }
     }

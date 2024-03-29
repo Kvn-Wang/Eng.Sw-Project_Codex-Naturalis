@@ -14,4 +14,8 @@ public class Pawn {
     public Player getPlayer() {
         return player;
     }
+
+    public String getImageFile() {
+        return imageFile;
+    }
 }

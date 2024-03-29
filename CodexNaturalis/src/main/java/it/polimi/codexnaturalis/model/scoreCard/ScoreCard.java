@@ -2,6 +2,7 @@ package it.polimi.codexnaturalis.model.scoreCard;
 
 import it.polimi.codexnaturalis.model.player.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ScoreCard {
@@ -11,13 +12,14 @@ public class ScoreCard {
         return player.getPersonalScore() >= 20;
     }
 
-    public ScoreCard(List<Player> players, String color){
+    public ScoreCard(Player[] players){
+        pawns = new ArrayList<Pawn>();
         for(Player p: players){
-            switch (color) {
+            switch (p.getPawnColor()) {
                 case "red":
                     pawns.add(new Pawn(p, "path red"));
                     break;
-                case "Yellow":
+                case "yellow":
                     pawns.add(new Pawn(p, "path yellow"));
                     break;
                 case "green":
@@ -28,6 +30,10 @@ public class ScoreCard {
                     break;
             }
         }
-        scoreCardImg = "path to file";
+        scoreCardImg = "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/graphics/PLATEAU-SCORE-IMP/Scoreboard.png";
+    }
+
+    public List<Pawn> getpawns(){
+        return pawns;
     }
 }
