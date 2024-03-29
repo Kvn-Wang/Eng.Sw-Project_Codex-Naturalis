@@ -1,4 +1,4 @@
-package it.polimi.codexnaturalis.model;
+package it.polimi.codexnaturalis.model.game;
 
 public interface GameInterface {
     void initializeGame();
