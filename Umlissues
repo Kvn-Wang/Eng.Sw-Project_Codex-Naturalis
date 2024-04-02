@@ -2,3 +2,9 @@ in realtà gli array con nome plurale vanno bene ops
 card1, card2, card3 di hand é comodo sostituirle con un array
 cambio gestione pescata (come abbiamo discusso già io e kevin)
 Player cambiato a String in GameInterface
+
+Il giocatore con più punti è dichiarato vincitore. In caso di parità, il
+giocatore che ha realizzato più carte Obiettivo è il vincitore. (manca la logica) Se la
+parità persiste, i giocatori condividono la vittoria. (più vincitori possibili -> winner è un array)
+
+il colore lo sceglie il player -> manca la logica
