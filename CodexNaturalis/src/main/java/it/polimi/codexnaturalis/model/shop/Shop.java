@@ -13,6 +13,8 @@ public class Shop {
     }
     public Card drawFromDeck(){
         System.out.printf("from deck");
+        topDeckCard = new Card();
+
         return topDeckCard;
     }
     public Shop(ShopType type, String path){
