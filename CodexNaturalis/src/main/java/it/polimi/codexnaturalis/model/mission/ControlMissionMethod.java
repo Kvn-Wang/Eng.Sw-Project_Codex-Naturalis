@@ -1,9 +1,7 @@
 package it.polimi.codexnaturalis.model.mission;
 
-import it.polimi.codexnaturalis.model.player.PlayerScore;
-import it.polimi.codexnaturalis.model.shop.card.Card;
+import it.polimi.codexnaturalis.model.player.Player;
 
 public interface ControlMissionMethod {
-    int ruleAlgorithmCheck(Card [][] mapArray);
-    int ruleAlgorithmCheck(PlayerScore playerScore);
+    int ruleAlgorithmCheck(Player player);
 }

@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.model.player;
 
+import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 public class GamePlayerMap {
@@ -8,7 +9,7 @@ public class GamePlayerMap {
 
     public GamePlayerMap(PlayerScore playerScore) {
         this.playerscore = playerScore;
-        this.Card = new Card[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
+        this.mapArray = new Card[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
     }
 
     public int placeCard(int x, int y, Card card) { return 0; }
