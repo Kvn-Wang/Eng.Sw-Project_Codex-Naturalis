@@ -3,7 +3,7 @@ package it.polimi.codexnaturalis.model.shop.card;
 import it.polimi.codexnaturalis.model.enumeration.ConditionResourceType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 
-public class Card {
+public abstract class Card {
     protected String png;
     protected ResourceType frontNorthResource;
     protected ResourceType frontSouthResource;
@@ -99,7 +99,7 @@ public class Card {
         }
     }
 
-    class objectiveCard extends Card{
+    class objectiveCard extends Card {
         protected ResourceType backCentralResource;
         protected ConditionResourceType pointPerConditionResource;
         protected int pointPerCondition;

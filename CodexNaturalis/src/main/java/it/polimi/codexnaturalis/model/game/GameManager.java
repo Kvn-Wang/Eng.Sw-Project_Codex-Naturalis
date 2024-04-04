@@ -25,7 +25,7 @@ public class GameManager implements GameInterface {
     private Player playerTurn;
     private ChatManager chatManager;
     private boolean isFinalTurn;
-    private Player winner;
+    private List <Player> winners;
     private Player startingPlayer;
 
     @Override
@@ -34,7 +34,9 @@ public class GameManager implements GameInterface {
         resourceShop = initializeShop(ShopType.Resource, "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/resourceCardsFile.json");
         objectiveShop = initializeShop(ShopType.Objective, "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/objectiveCardsFile.json");
         initializePlayer();
-        initializePlayerColor();
+        //TODO, dovrei notificare i player di scegliere il colore (forse listener), attendere che chiamino setPlayerColor
+        // verificare che tutti abbiano scelto e poi continuare con le inizializzazioni
+        //initializePlayerColor();
         initializePlayerHand();
         initializeStarterCard();
         initializeMission();
@@ -51,8 +53,8 @@ public class GameManager implements GameInterface {
     private void initializePlayer(){
 
     }
-    private void initializePlayerColor(){
-
+    public boolean setPlayerColor(String nickname, String color) {
+        return false;
     }
     private void initializeStarterCard(){
         Shop starterShop = new Shop(ShopType.Starter, "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/starterCardsFile.json");
@@ -136,7 +138,7 @@ public class GameManager implements GameInterface {
         return 0;
     }
 
-    private void finalUpdatePlayerScore(String nickname, int value){
+    private void executePlayerMission(){
 
     }
 
@@ -152,8 +154,6 @@ public class GameManager implements GameInterface {
     }
     private void setWinner(){
         int max = 0;
-        Player wp;
-        List<Player> winningPlayers = new ArrayList<Player>();
         for(Player p: players){
             if(p.getPersonalScore()>max){
                 max=p.getPersonalScore();
@@ -161,30 +161,27 @@ public class GameManager implements GameInterface {
         }
         for(Player p: players){
             if(p.getPersonalScore()==max){
-                winningPlayers.add(p);
+                winners.add(p);
             }
         }
         max=0;
-        if(winningPlayers.size()==1)
-            winner = winningPlayers.get(0);
+        if(winners.size()==1) {}
         else{
-            for(Player p: winningPlayers){
+            for(Player p: winners){
                 if(p.getPersonalMissionTotalScore()>max){
                     max=p.getPersonalMissionTotalScore();
                 }
             }
-            for(Player p: winningPlayers) {
+            for(Player p: winners) {
                 if (p.getPersonalMissionTotalScore() < max) {
-                    winningPlayers.remove(p);
+                    winners.remove(p);
                 }
             }
-            if(winningPlayers.size()==1)
-                winner = winningPlayers.get(0);
+            if(winners.size()==1) {}
             else
-                tieHandler(winningPlayers);
+                tieHandler(winners);
         }
     }
-
     private void tieHandler(List<Player> winningPlayers){
         System.out.printf("__Winners__%n%n");
         for(Player p: winningPlayers){

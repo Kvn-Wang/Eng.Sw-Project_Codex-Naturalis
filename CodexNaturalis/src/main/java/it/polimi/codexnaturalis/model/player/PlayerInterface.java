@@ -7,7 +7,7 @@ public interface PlayerInterface {
     int executePersonalMission(Card[][] mapArray);
     void drawCard(Card drawnCard);
     void placeCard(int x, int y, int numCard);
-    void addScore(int Value);
+    void addMissionScore(int Value);
     boolean isPlayerAlive();
     void setPersonalMissionChoice(Mission selectedPersonalMission);
     void setPersonalMissionFinal();
