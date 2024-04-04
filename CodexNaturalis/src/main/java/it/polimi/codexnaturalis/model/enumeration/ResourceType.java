@@ -8,5 +8,5 @@ public enum ResourceType {
     INSECT,
     QUILL,
     INKWELL,
-    MANUSCRIPT;
+    MANUSCRIPT
 }

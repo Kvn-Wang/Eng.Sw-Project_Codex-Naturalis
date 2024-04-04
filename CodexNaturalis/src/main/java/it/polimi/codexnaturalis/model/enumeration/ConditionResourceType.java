@@ -5,5 +5,5 @@ public enum ConditionResourceType {
     INKWELL,
     MANUSCRIPT,
     QUILL,
-    OCCUPIEDSPACE;
+    OCCUPIEDSPACE
 }

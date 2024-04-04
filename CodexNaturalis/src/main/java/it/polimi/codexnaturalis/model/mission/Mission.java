@@ -1,6 +1,6 @@
 package it.polimi.codexnaturalis.model.mission;
 
-public class Mission {
+public abstract class Mission {
     protected String png;
     protected int pointPerCondition;
 }

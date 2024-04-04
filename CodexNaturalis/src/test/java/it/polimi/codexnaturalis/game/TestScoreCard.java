@@ -1,4 +1,4 @@
-package java.it.polimi.codexnaturalis.game;
+package it.polimi.codexnaturalis.game;
 
 import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.scoreboard.Pawn;
