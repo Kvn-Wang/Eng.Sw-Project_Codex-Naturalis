@@ -17,24 +17,31 @@ public class DiagonalMission extends Mission implements ControlMissionMethod  {
     @Override
     public int ruleAlgorithmCheck(Card[][] mapArray) {
         int match = 0;
-        for(int i = 0; i < (mapArray.length - 2); i++){
-            for(int j = 0; j < (mapArray.length - 2); j++){
-                if(mapArray[i][j]!=null){
-                    if(mapArray[i][j]./*getResource*/==typeOfResource && !mapArray[i][j].getIsUsedForCheckRule()){
-                        if(isLeftToRight){
-                            if (mapArray[i][j + 1]./*getResource*/ == typeOfResource && mapArray[i][j + 2]./*getResource*/ == typeOfResource) {
-                                match++;
-                                mapArray[i][j].setUsedForCheckRule(true);
-                                mapArray[i][j + 1].setUsedForCheckRule(true);
-                                mapArray[i][j + 2].setUsedForCheckRule(true);
-                            }
-                        }
-                        else{
-                            if (mapArray[i + 1][j]./*getResource*/ == typeOfResource /*&& !mapArray[i+1][j].getIsUsedForCheckRule()*/ && mapArray[i + 2][j]./*getResource*/ == typeOfResource /*&& !mapArray[i+2][j].getIsUsedForCheckRule()*/) {
+        if(isLeftToRight){
+            for(int i = 0; i < (mapArray.length - 2); i++) {
+                for (int j = 0; j < (mapArray[0].length); j++) {
+                    if (mapArray[i][j] != null) {
+                        if (mapArray[i][j].getColor() == typeOfResource && !mapArray[i][j].getIsUsedForCheckRule()) {
+                            if (mapArray[i + 1][j].getColor() == typeOfResource && mapArray[i + 2][j].getColor() == typeOfResource) {
                                 match++;
                                 mapArray[i][j].setUsedForCheckRule(true);
                                 mapArray[i + 1][j].setUsedForCheckRule(true);
                                 mapArray[i + 2][j].setUsedForCheckRule(true);
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            for(int i = 0; i < (mapArray.length); i++) {
+                for (int j = 2; j < (mapArray[0].length); j++) {
+                    if (mapArray[i][j] != null) {
+                        if (mapArray[i][j].getColor() == typeOfResource && !mapArray[i][j].getIsUsedForCheckRule()) {
+                            if (mapArray[i][j - 1].getColor() == typeOfResource && mapArray[i][j - 2].getColor() == typeOfResource) {
+                                match++;
+                                mapArray[i][j].setUsedForCheckRule(true);
+                                mapArray[i][j - 1].setUsedForCheckRule(true);
+                                mapArray[i][j - 2].setUsedForCheckRule(true);
                             }
                         }
                     }

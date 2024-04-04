@@ -17,8 +17,75 @@ public class BendMission extends Mission implements ControlMissionMethod  {
     }
 
     @Override
-    public int ruleAlgorithmCheck(Card[][] mapArray) {
-        return 0;
+    public int ruleAlgorithmCheck(Card[][] mapArray) {//TODO: setcheck delle carte del pillar e verso di ricerca
+        int match = 0;
+        switch (decorationPosition) {
+            case "EST":
+                for (int i = 0; i < (mapArray.length - 1); i++) {
+                    for (int j = 2; j < (mapArray[0].length); j++) {
+                        if (mapArray[i][j] != null) {
+                            if (mapArray[i][j].getColor() == decorationResource && !mapArray[i][j].getIsUsedForCheckRule()) {
+                                if (mapArray[i][j - 1].getColor() == pillarResource && mapArray[i + 1][j - 2].getColor() == pillarResource) {
+                                    match++;
+                                    mapArray[i][j].setUsedForCheckRule(true);
+                                    mapArray[i][j - 1].setUsedForCheckRule(true);
+                                    mapArray[i + 1][j - 2].setUsedForCheckRule(true);
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            case "NORTH":
+                for (int i = 0; i < (mapArray.length - 2); i++) {
+                    for (int j = 1; j < (mapArray[0].length); j++) {
+                        if (mapArray[i][j] != null) {
+                            if (mapArray[i][j].getColor() == decorationResource && !mapArray[i][j].getIsUsedForCheckRule()) {
+                                if (mapArray[i + 1][j].getColor() == pillarResource && mapArray[i + 2][j - 1].getColor() == pillarResource) {
+                                    match++;
+                                    mapArray[i][j].setUsedForCheckRule(true);
+                                    mapArray[i + 1][j].setUsedForCheckRule(true);
+                                    mapArray[i + 2][j - 1].setUsedForCheckRule(true);
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            case "WEST":
+                for (int i = 1; i < (mapArray.length); i++) {
+                    for (int j = 0; j < (mapArray[0].length - 2); j++) {
+                        if (mapArray[i][j] != null) {
+                            if (mapArray[i][j].getColor() == decorationResource && !mapArray[i][j].getIsUsedForCheckRule()) {
+                                if (mapArray[i][j + 1].getColor() == pillarResource && mapArray[i - 1][j + 2].getColor() == pillarResource) {
+                                    match++;
+                                    mapArray[i][j].setUsedForCheckRule(true);
+                                    mapArray[i][j + 1].setUsedForCheckRule(true);
+                                    mapArray[i - 1][j + 2].setUsedForCheckRule(true);
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            case "SOUTH":
+                for (int i = 0; i < (mapArray.length); i++) {
+                    for (int j = 0; j < (mapArray[0].length); j++) {
+                        if (mapArray[i][j] != null) {
+                            if (mapArray[i][j].getColor() == decorationResource && !mapArray[i][j].getIsUsedForCheckRule()) {
+                                if (mapArray[i - 1][j].getColor() == pillarResource && mapArray[i - 2][j + 1].getColor() == pillarResource) {
+                                    match++;
+                                    mapArray[i][j].setUsedForCheckRule(true);
+                                    mapArray[i - 1][j].setUsedForCheckRule(true);
+                                    mapArray[i - 2][j + 1].setUsedForCheckRule(true);
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+        }
+        return match*pointPerCondition;
     }
 
     @Override
