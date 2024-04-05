@@ -1,10 +1,12 @@
 package it.polimi.codexnaturalis.model.mission;
 
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
-import it.polimi.codexnaturalis.model.player.PlayerScore;
+import it.polimi.codexnaturalis.model.player.Player;
+import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 
 public class ResourceMission extends Mission implements ControlMissionMethod {
+    private PlayerScoreResource playerScoreResource;
     private final int numberOfSymbols;
     private final ResourceType[] typeOfResource;
 
@@ -15,19 +17,16 @@ public class ResourceMission extends Mission implements ControlMissionMethod {
     }
 
     @Override
-    public int ruleAlgorithmCheck(Card[][] mapArray) {
-        return 0;
-    }
+    public int ruleAlgorithmCheck(Player player) {
+        playerScoreResource = player.getScoreResource();
 
-    @Override
-    public int ruleAlgorithmCheck(PlayerScore playerScore) {
         if(typeOfResource.length!=1){
-            return (playerScore.getScore(typeOfResource[0])/numberOfSymbols)*pointPerCondition;
+            return (playerScoreResource.getScore(typeOfResource[0])/numberOfSymbols)*pointPerCondition;
         }
         else if(typeOfResource.length==3){
-            int score1 = playerScore.getScore(typeOfResource[0])/numberOfSymbols;
-            int score2 = playerScore.getScore(typeOfResource[1])/numberOfSymbols;
-            int score3 = playerScore.getScore(typeOfResource[2])/numberOfSymbols;
+            int score1 = playerScoreResource.getScore(typeOfResource[0])/numberOfSymbols;
+            int score2 = playerScoreResource.getScore(typeOfResource[1])/numberOfSymbols;
+            int score3 = playerScoreResource.getScore(typeOfResource[2])/numberOfSymbols;
             if (score1 <= score2 && score1 <= score3) {
                 return score1*pointPerCondition;
             } else if (score2 <= score3 && score2 <= score1) {

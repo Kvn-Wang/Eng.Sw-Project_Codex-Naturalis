@@ -13,6 +13,13 @@ public class Player implements PlayerInterface {
     private Mission personalMission2;
     private Mission selectedPersonalMission;
     private Player playerView;
+    private PlayerScoreResource scoreResource;
+    private GamePlayerMap gameMap;
+
+    public Player() {
+        scoreResource = new PlayerScoreResource();
+        gameMap = new GamePlayerMap(scoreResource);
+    }
 
     public Mission getPersonalMission(int numMission){
         if(numMission == 1)
@@ -89,5 +96,21 @@ public class Player implements PlayerInterface {
     @Override
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public PlayerScoreResource getScoreResource() {
+        return scoreResource;
+    }
+
+    public void setScoreResource(PlayerScoreResource scoreResource) {
+        this.scoreResource = scoreResource;
+    }
+
+    public GamePlayerMap getGameMap() {
+        return gameMap;
+    }
+
+    public void setGameMap(GamePlayerMap gameMap) {
+        this.gameMap = gameMap;
     }
 }

@@ -11,8 +11,6 @@ public abstract class Card {
     protected ResourceType frontWestResource;
     protected boolean isBack;
 
-    protected boolean usedForCheckRule;
-
     public boolean getIsBack() {
         System.out.printf("isBack");
         return isBack;
@@ -65,14 +63,6 @@ public abstract class Card {
 
     public void setPng(String png) {
         this.png = png;
-    }
-
-    public boolean getIsUsedForCheckRule() {
-        System.out.printf("isUsedForCheckRule");
-        return usedForCheckRule;
-    }
-    public void setUsedForCheckRule(boolean usedForCheckRule) {
-        this.usedForCheckRule = usedForCheckRule;
     }
 
     public abstract ResourceType getColor();

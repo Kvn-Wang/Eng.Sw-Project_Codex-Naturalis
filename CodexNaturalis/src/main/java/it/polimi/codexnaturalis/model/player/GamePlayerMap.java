@@ -5,10 +5,10 @@ import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 public class GamePlayerMap {
     private Card[][] mapArray;
-    private PlayerScore playerscore;
+    private PlayerScoreResource playerscore;
 
-    public GamePlayerMap(PlayerScore playerScore) {
-        this.playerscore = playerScore;
+    public GamePlayerMap(PlayerScoreResource playerScoreResource) {
+        this.playerscore = playerScoreResource;
         this.mapArray = new Card[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
     }
 
@@ -17,4 +17,20 @@ public class GamePlayerMap {
     private boolean isCardObjective(Card card) { return false; }
     private int checkAddPointCard(Card card) { return 0; }
     public Card getCard(int x, int y) { return null; }
+
+    public Card[][] getMapArray() {
+        return mapArray;
+    }
+
+    public void setMapArray(Card[][] mapArray) {
+        this.mapArray = mapArray;
+    }
+
+    public PlayerScoreResource getPlayerscore() {
+        return playerscore;
+    }
+
+    public void setPlayerscore(PlayerScoreResource playerscore) {
+        this.playerscore = playerscore;
+    }
 }

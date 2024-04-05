@@ -2,9 +2,7 @@ package it.polimi.codexnaturalis.model.player;
 
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 
-import java.util.spi.ResourceBundleControlProvider;
-
-public class PlayerScore {
+public class PlayerScoreResource {
     private int scoreAnimal;
     private int scoreFungi;
     private int scorePlant;
