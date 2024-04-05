@@ -9,6 +9,7 @@ public interface PlayerInterface {
     void placeCard(int x, int y, int numCard);
     void addMissionScore(int Value);
     boolean isPlayerAlive();
+    void setPersonalMissions(Mission mission1,Mission mission2);
     void setPersonalMissionChoice(Mission selectedPersonalMission);
     void setPersonalMissionFinal();
     void switchPlayerView();

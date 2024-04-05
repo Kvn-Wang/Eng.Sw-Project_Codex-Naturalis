@@ -54,8 +54,9 @@ public class Player implements PlayerInterface {
     }
 
     @Override
-    public void addMissionScore(int Value) {
-
+    public void addMissionScore(int value) {
+        personalMissionTotalScore = personalMissionTotalScore + value;
+        personalScoreBoardScore = personalScoreBoardScore + value;
     }
 
     @Override

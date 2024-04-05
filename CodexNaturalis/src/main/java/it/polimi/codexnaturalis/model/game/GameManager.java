@@ -3,6 +3,7 @@ package it.polimi.codexnaturalis.model.game;
 import it.polimi.codexnaturalis.model.chat.ChatManager;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
+import it.polimi.codexnaturalis.model.mission.MissionSelector;
 import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.scoreboard.ScoreBoard;
 import it.polimi.codexnaturalis.model.shop.GeneralShop;
@@ -20,6 +21,7 @@ public class GameManager implements GameInterface {
     private ScoreBoard scoreBoard;
     private GeneralShop resourceShop;
     private GeneralShop objectiveShop;
+    private MissionSelector missionSelector;
     private String pathToFile;
     private Player[] players;
     private Player playerTurn;
@@ -53,8 +55,9 @@ public class GameManager implements GameInterface {
     private void initializePlayer(){
 
     }
+    @Override
     public boolean setPlayerColor(String nickname, String color) {
-        return false;
+        nickToPlayer(nickname).setPawnColor(color);
     }
     private void initializeStarterCard(){
         Shop starterShop = new Shop(ShopType.Starter, "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/starterCardsFile.json");
@@ -63,7 +66,12 @@ public class GameManager implements GameInterface {
 
     }
     private void initializeMission(){
-
+        missionSelector.shuffle();
+        sharedMission1 = missionSelector.drawFromFile();
+        sharedMission2 = missionSelector.drawFromFile();
+        for(Player p: players){
+            p.setPersonalMissions(missionSelector.drawFromFile(), missionSelector.drawFromFile());
+        }
     }
     private void initializeStartingPlayer(){
 
@@ -127,7 +135,6 @@ public class GameManager implements GameInterface {
     }
     private boolean endGameCheckScoreBoard(){
             return scoreBoard.checkEnd20(playerTurn);
-
     }
     @Override
     public void endGame() {
@@ -135,11 +142,18 @@ public class GameManager implements GameInterface {
     }
 
     private int executeSharedMission(Card[][] mapArray){
-        return 0;
+        int points=0;
+        for(Player p: players){
+            points=0;
+            points = sharedMission1.ruleAlgorithmCheck(p) + sharedMission2.ruleAlgorithmCheck(p);
+            p.addMissionScore(points);
+        }
     }
 
     private void executePlayerMission(){
-
+        for(Player p: players){
+            p.executePersonalMission();
+        }
     }
 
     private void nextTurn(){
