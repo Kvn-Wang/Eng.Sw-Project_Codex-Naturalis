@@ -5,7 +5,7 @@ import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 
-public class DiagonalMission extends Mission implements ControlMissionMethod  {
+public class DiagonalMission extends Mission  {
     private Card[][] mapArray;
     private final boolean isLeftToRight;
     private final ResourceType typeOfResource;

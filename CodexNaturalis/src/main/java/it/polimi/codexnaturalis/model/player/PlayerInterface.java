@@ -4,7 +4,7 @@ import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 
 public interface PlayerInterface {
-    int executePersonalMission(Card[][] mapArray);
+    int executePersonalMission();
     void drawCard(Card drawnCard);
     void placeCard(int x, int y, int numCard);
     void addMissionScore(int Value);

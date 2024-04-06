@@ -5,7 +5,7 @@ import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 
-public class ResourceMission extends Mission implements ControlMissionMethod {
+public class ResourceMission extends Mission {
     private PlayerScoreResource playerScoreResource;
     private final int numberOfSymbols;
     private final ResourceType[] typeOfResource;

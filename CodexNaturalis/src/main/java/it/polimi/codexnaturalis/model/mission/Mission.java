@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.model.mission;
 
+import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 public abstract class Mission {
@@ -17,4 +18,6 @@ public abstract class Mission {
             }
         }
     }
+
+    public abstract int ruleAlgorithmCheck(Player player);
 }

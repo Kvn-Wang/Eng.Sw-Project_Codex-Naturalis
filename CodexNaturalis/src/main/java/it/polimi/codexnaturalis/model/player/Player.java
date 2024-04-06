@@ -44,7 +44,7 @@ public class Player implements PlayerInterface {
     }
 
     @Override
-    public int executePersonalMission(Card[][] mapArray) {
+    public int executePersonalMission() {
         return 0;
     }
 
@@ -62,6 +62,11 @@ public class Player implements PlayerInterface {
     @Override
     public boolean isPlayerAlive() {
         return false;
+    }
+
+    @Override
+    public void setPersonalMissions(Mission mission1, Mission mission2) {
+
     }
 
     @Override

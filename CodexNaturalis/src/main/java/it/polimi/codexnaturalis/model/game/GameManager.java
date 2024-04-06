@@ -57,7 +57,10 @@ public class GameManager implements GameInterface {
     }
     @Override
     public boolean setPlayerColor(String nickname, String color) {
+        //TODO: questa funzione dovrebbe controllare che altri player non abbiano selezionato
+        //il colore prima di assegnarlo
         nickToPlayer(nickname).setPawnColor(color);
+        return false;
     }
     private void initializeStarterCard(){
         Shop starterShop = new Shop(ShopType.Starter, "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/starterCardsFile.json");
@@ -141,7 +144,7 @@ public class GameManager implements GameInterface {
 
     }
 
-    private int executeSharedMission(Card[][] mapArray){
+    private void executeSharedMission(){
         int points=0;
         for(Player p: players){
             points=0;
