@@ -13,7 +13,7 @@ import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Scanner;
 
 
 public class GameManager implements GameInterface {
@@ -58,16 +58,27 @@ public class GameManager implements GameInterface {
     }
     @Override
     public boolean setPlayerColor(String nickname, String color) {
-        //TODO: questa funzione dovrebbe controllare che altri player non abbiano selezionato
-        //il colore prima di assegnarlo
-        nickToPlayer(nickname).setPawnColor(color);
-        return false;
+        boolean colorAlreadyChosen=false;
+        for(Player p: players){
+            if(p.getPawnColor().equals(color))
+                colorAlreadyChosen=true;
+        }
+        if(colorAlreadyChosen)
+            return false;
+        else{
+            nickToPlayer(nickname).setPawnColor(color);
+            return true;
+        }
     }
     private void initializeStarterCard(){
         Shop starterShop = new Shop(ShopType.STARTER, "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/starterCardsFile.json");
     }
     private void initializePlayerHand(){
-
+        for(Player p: players){
+            p.addHandCard(resourceShop.drawFromDeck());
+            p.addHandCard(resourceShop.drawFromDeck());
+            p.addHandCard(objectiveShop.drawFromDeck());
+        }
     }
     private void initializeMission(){
         missionSelector.shuffle();
@@ -81,7 +92,7 @@ public class GameManager implements GameInterface {
 
     }
 
-    private Player nickToPlayer(String nickname){//throw da aggiungere
+    private Player nickToPlayer(String nickname){//TODO:throw exception da aggiungere
         for(Player p: players)
             if(p.getNickname().equals(nickname))
                 return p;
@@ -90,12 +101,12 @@ public class GameManager implements GameInterface {
 
     @Override
     public void disconnectPlayer(String nickname) {
-
+        nickToPlayer(nickname).setStatus(true);
     }
 
     @Override
     public void reconnectPlayer(String nickname) {
-
+        nickToPlayer(nickname).setStatus(false);
     }
 
     @Override
@@ -158,12 +169,14 @@ public class GameManager implements GameInterface {
     }
 
     private void nextTurn(){
-        for(int i=0; i<players.length; i++){
-            if (playerTurn.equals(players[i])) {
-                if (i != players.length-1)
-                    playerTurn = players[i+1];
-                else
-                    playerTurn = players[0];
+        while() {
+            for (int i = 0; i < players.length; i++) {
+                if (playerTurn.equals(players[i])) {
+                    if (i != players.length - 1)
+                        playerTurn = players[i + 1];
+                    else
+                        playerTurn = players[0];
+                }//todo:da finire
             }
         }
     }

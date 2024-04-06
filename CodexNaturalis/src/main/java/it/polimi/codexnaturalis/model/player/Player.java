@@ -125,6 +125,10 @@ public class Player implements PlayerInterface {
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
+    @Override
+    public void setStatus(boolean status){
+        alive = status;
+    }
 
     public PlayerScoreResource getScoreResource() {
         return scoreResource;

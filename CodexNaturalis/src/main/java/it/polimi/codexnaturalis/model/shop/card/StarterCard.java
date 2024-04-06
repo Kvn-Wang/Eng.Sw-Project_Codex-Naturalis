@@ -2,7 +2,7 @@ package it.polimi.codexnaturalis.model.shop.card;
 
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 
-class starterCard extends Card{
+class StarterCard extends Card{
     ResourceType[] backCentralResource;
     protected ResourceType backNorthResource;
     protected ResourceType backSouthResource;

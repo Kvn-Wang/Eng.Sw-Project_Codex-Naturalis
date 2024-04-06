@@ -2,6 +2,7 @@ GameInterface:      type in che tipo deve essere? perché string sembra uno spre
 GameInterface:      che tipo devono essere sender e reciver?
 GameInterface:      dove c'é "nickname" non converrebbe utilizzare il riferimento a player
 PlayerInterface:    aggiunto getPersonalScore per decidere un vincitore in setWinner
+PlayerInterface:    aggiunto setStatus() per settare il player alive o meno
 Player:             vedi sopra
 Player:             aggiunto PersonalMissionTotalScore, in quanto serve conoscere il punteggio totale delle mission in caso di parità a fine partita
 GameManager:        player non é più un array ma é una lista, potrebbero esserci meno di 4 giocatori. (o anche più espadibilità futura *wink* *wink*)

@@ -13,7 +13,7 @@ public class Shop {
     }
     public Card drawFromDeck(){
         System.out.printf("from deck");
-        topDeckCard = new Card();
+        topDeckCard = new resourceCard()
 
         return topDeckCard;
     }
