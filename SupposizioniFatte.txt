@@ -1,3 +1,7 @@
 (leggendo anche il file slack)
 
 per "In caso di parità, il giocatore che ha realizzato più carte Obiettivo è il vincitore." si intende più punti fatti con le carte obbiettivo
+
+è lecito assumere che la FA resilienza alle disconnessioni sia valida solo se non ci si trova nella fase preparatoria, ma nella fase di partita vera e propria.
+
+se un giocatore si disconnette, e quando finisce la partita è lui stesso che ha più punti tra tutti (e tecnicamente è lui il vincitore) non lo si conta (è come se non giocasse più)

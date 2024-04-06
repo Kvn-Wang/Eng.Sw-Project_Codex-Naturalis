@@ -1,0 +1,9 @@
+[
+  {
+    "png" : "87",
+    "typeOfMission" : "DIAGONAL",
+    "pointPerCondition" : 2,
+    "isLeftToRight": false,
+    "resourceType": "FUNGI"
+  }
+]

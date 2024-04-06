@@ -84,9 +84,16 @@ public class Player implements PlayerInterface {
         personalMission2 = mission2;
     }
 
+    //selection = 1 -> mission1, selection = 2 -> mission2
     @Override
-    public void setPersonalMissionFinal() {
-
+    public void setPersonalMissionFinal(int selection) {
+        if(selection == 1) {
+            selectedPersonalMission = personalMission1;
+        } else if(selection == 2) {
+            selectedPersonalMission = personalMission2;
+        } else {
+            System.err.println("Errore Selezione Missione Player");
+        }
     }
 
     @Override

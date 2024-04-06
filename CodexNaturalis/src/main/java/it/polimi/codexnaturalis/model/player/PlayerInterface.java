@@ -11,7 +11,7 @@ public interface PlayerInterface {
     boolean isPlayerAlive();
     void setPersonalMissions(Mission mission1,Mission mission2);
     void setPersonalMissionChoice(Mission selectedPersonalMission);
-    void setPersonalMissionFinal();
+    void setPersonalMissionFinal(int selection);
     void switchPlayerView();
     int getPersonalScore();
     int getPersonalMissionTotalScore();
