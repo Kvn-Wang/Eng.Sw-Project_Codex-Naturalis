@@ -1,0 +1,11 @@
+[
+  {
+    "png" : "1",
+    "frontNorthResource": "NONE",
+    "frontSouthResource": "NONE",
+    "frontEastResource" :  "NONE",
+    "frontWestResource" :  "NONE",
+    "backCentralResource" : "NONE",
+    "frontCardPoint" : 0
+  }
+]

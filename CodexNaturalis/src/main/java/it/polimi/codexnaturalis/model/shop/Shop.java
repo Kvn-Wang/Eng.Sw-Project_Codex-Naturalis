@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.model.shop;
 
+import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 
@@ -13,8 +14,7 @@ public class Shop {
     }
     public Card drawFromDeck(){
         System.out.printf("from deck");
-        topDeckCard = new Card();
-
+        topDeckCard = topDeckCard.createResourceCard();
         return topDeckCard;
     }
     public Shop(ShopType type, String path){

@@ -1,6 +1,5 @@
 package it.polimi.codexnaturalis.model.shop.card;
 
-import it.polimi.codexnaturalis.model.enumeration.ConditionResourceType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 
 public abstract class Card {
@@ -63,6 +62,10 @@ public abstract class Card {
 
     public void setPng(String png) {
         this.png = png;
+    }
+
+    public ResourceCard createResourceCard(){
+        return new ResourceCard();
     }
 
     public abstract ResourceType getColor();
