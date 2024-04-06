@@ -12,6 +12,10 @@ public class GamePlayerMap {
         this.mapArray = new Card[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
     }
 
+    //la chiamata a placeCard ritornerà
+    //-1 come valore speciale per dire che non vale piazzare la carta,
+    // = 0 come valore per indicare che la carta è stata aggiunta senza aggiunta eventuali di punti (carte obbiettivo o carte risorsa front),
+    // oppure > 0 per indicare che la carta piazzata deve aggiungere punti equivalente al valore di ritorno al punteggio del player
     public int placeCard(int x, int y, Card card) { return 0; }
     private boolean checkValidPosition(int x, int y) { return false; }
     private boolean isCardObjective(Card card) { return false; }

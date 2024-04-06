@@ -15,10 +15,13 @@ public class Player implements PlayerInterface {
     private Player playerView;
     private PlayerScoreResource scoreResource;
     private GamePlayerMap gameMap;
+    private Hand hand;
 
     public Player() {
         scoreResource = new PlayerScoreResource();
         gameMap = new GamePlayerMap(scoreResource);
+        hand = new Hand();
+        boolean alive = true;
     }
 
     public Mission getPersonalMission(int numMission){
@@ -31,8 +34,8 @@ public class Player implements PlayerInterface {
             return null;
     }
 
-    public void drawCard(Card drawnCard){
-
+    public void addHandCard(Card drawnCard) {
+        hand.addCard(drawnCard);
     }
     @Override
     public void setPersonalMissionChoice(Mission selectedPersonalMission) {
@@ -45,12 +48,23 @@ public class Player implements PlayerInterface {
 
     @Override
     public int executePersonalMission() {
-        return 0;
+        return selectedPersonalMission.ruleAlgorithmCheck(this);
     }
 
     @Override
     public void placeCard(int x, int y, int numCard) {
+        Card playedCard;
+        int esitoGiocata;
 
+        playedCard = hand.popCard(numCard);
+        esitoGiocata = gameMap.placeCard(x, y, playedCard);
+
+        if(esitoGiocata == -1) {
+            hand.addCard(playedCard);
+            System.err.println("Giocata non Valida");
+        } else if(esitoGiocata > 0) {
+            personalScoreBoardScore+=esitoGiocata;
+        }
     }
 
     @Override
@@ -61,12 +75,13 @@ public class Player implements PlayerInterface {
 
     @Override
     public boolean isPlayerAlive() {
-        return false;
+        return alive;
     }
 
     @Override
     public void setPersonalMissions(Mission mission1, Mission mission2) {
-
+        personalMission1 = mission1;
+        personalMission2 = mission2;
     }
 
     @Override

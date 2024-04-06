@@ -11,4 +11,12 @@ public class Hand {
                 c = drawnCard;
     }
 
+    public Card popCard(int numCard) {
+        Card suppCard;
+
+        suppCard = cards[numCard];
+        cards[numCard] = null;
+
+        return suppCard;
+    }
 }

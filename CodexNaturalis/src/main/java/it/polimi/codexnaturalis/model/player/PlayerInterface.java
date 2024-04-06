@@ -5,7 +5,7 @@ import it.polimi.codexnaturalis.model.shop.card.Card;
 
 public interface PlayerInterface {
     int executePersonalMission();
-    void drawCard(Card drawnCard);
+    void addHandCard(Card drawnCard);
     void placeCard(int x, int y, int numCard);
     void addMissionScore(int Value);
     boolean isPlayerAlive();

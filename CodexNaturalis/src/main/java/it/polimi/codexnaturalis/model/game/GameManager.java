@@ -9,6 +9,7 @@ import it.polimi.codexnaturalis.model.scoreboard.ScoreBoard;
 import it.polimi.codexnaturalis.model.shop.GeneralShop;
 import it.polimi.codexnaturalis.model.shop.Shop;
 import it.polimi.codexnaturalis.model.shop.card.Card;
+import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +34,8 @@ public class GameManager implements GameInterface {
     @Override
     public void initializeGame() {
         initializeScoreboard();
-        resourceShop = initializeShop(ShopType.Resource, "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/resourceCardsFile.json");
-        objectiveShop = initializeShop(ShopType.Objective, "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/objectiveCardsFile.json");
+        resourceShop = initializeShop(ShopType.RESOURCE, UtilCostantValue.pathToResourceJson);
+        objectiveShop = initializeShop(ShopType.OBJECTIVE, UtilCostantValue.pathToObjectiveJson);
         initializePlayer();
         //TODO, dovrei notificare i player di scegliere il colore (forse listener), attendere che chiamino setPlayerColor
         // verificare che tutti abbiano scelto e poi continuare con le inizializzazioni
@@ -63,7 +64,7 @@ public class GameManager implements GameInterface {
         return false;
     }
     private void initializeStarterCard(){
-        Shop starterShop = new Shop(ShopType.Starter, "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/starterCardsFile.json");
+        Shop starterShop = new Shop(ShopType.STARTER, "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/starterCardsFile.json");
     }
     private void initializePlayerHand(){
 
@@ -100,13 +101,10 @@ public class GameManager implements GameInterface {
     @Override
     public void playerDraw(String nickname, int numShopCard, String type) {
         Player p = nickToPlayer(nickname);
-        switch (type) {
-            case "resourceShop":
-                p.drawCard(resourceShop.drawFromShopPlayer(numShopCard));
-                break;
-            case "objectiveShop":
-                p.drawCard(objectiveShop.drawFromShopPlayer(numShopCard));
-                break;
+        if(type.equals(ShopType.RESOURCE)) {
+            p.addHandCard(resourceShop.drawFromShopPlayer(numShopCard));
+        } else if(type.equals(ShopType.OBJECTIVE)) {
+            p.addHandCard(objectiveShop.drawFromShopPlayer(numShopCard));
         }
     }
 

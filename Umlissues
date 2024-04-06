@@ -1,0 +1,5 @@
+Resilienza alle disconnessioni: I giocatori disconnessi a seguito della caduta della rete o del crash
+del client, possono ricollegarsi e continuare la partita. Mentre un giocatore non è collegato, il gioco
+continua saltando i turni di quel giocatore. Se rimane attivo un solo giocatore, il gioco viene sospeso
+no a che non si ricollega almeno un altro giocatore oppure scade un timeout che decreta la vittoria
+dell'unico giocatore rimasto connesso.
