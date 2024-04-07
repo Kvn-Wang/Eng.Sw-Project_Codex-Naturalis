@@ -3,3 +3,5 @@ del client, possono ricollegarsi e continuare la partita. Mentre un giocatore no
 continua saltando i turni di quel giocatore. Se rimane attivo un solo giocatore, il gioco viene sospeso
 no a che non si ricollega almeno un altro giocatore oppure scade un timeout che decreta la vittoria
 dell'unico giocatore rimasto connesso.
+
+come faccio a mandare i msg da server a client? vale sempre la logica dei listener?

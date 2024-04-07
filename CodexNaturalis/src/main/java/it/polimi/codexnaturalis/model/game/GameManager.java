@@ -1,6 +1,7 @@
 package it.polimi.codexnaturalis.model.game;
 
 import it.polimi.codexnaturalis.model.chat.ChatManager;
+import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.mission.MissionSelector;
@@ -62,12 +63,16 @@ public class GameManager implements GameInterface {
     }
 
     public void initializePlayerColor() {
-        //TODO, come implemento la logica di scelta del colore?
+        //TODO, come implemento la logica di scelta del colore? idea: con questa funzione
+        // mando ai player la domanda di inserire un colore, la lobby man mano che riceve le
+        // rispose chiama setPlayerColor, e appena arriva a count 4 risposte positive (max)
+        // chiama la prossima inizialize -> problema: esponiamo un inizialize all'esterno
     }
 
     @Override
     public boolean setPlayerColor(String nickname, String color) {
         boolean colorAlreadyChosen=false;
+
         for(Player p: players){
             if(p.getPawnColor().equals(color))
                 colorAlreadyChosen=true;
@@ -75,7 +80,22 @@ public class GameManager implements GameInterface {
         if(colorAlreadyChosen)
             return false;
         else{
-            nickToPlayer(nickname).setPawnColor(color);
+            if(color.equals(ColorType.RED)) {
+                nickToPlayer(nickname).setPawnImg(UtilCostantValue.pathToRedPawnImg);
+                nickToPlayer(nickname).setPawnColor(color);
+            } else if(color.equals(ColorType.YELLOW)) {
+                nickToPlayer(nickname).setPawnImg(UtilCostantValue.pathToYellowPawnImg);
+                nickToPlayer(nickname).setPawnColor(color);
+            } else if(color.equals(ColorType.GREEN)) {
+                nickToPlayer(nickname).setPawnImg(UtilCostantValue.pathToGreenPawnImg);
+                nickToPlayer(nickname).setPawnColor(color);
+            } else if(color.equals(ColorType.BLUE)) {
+                nickToPlayer(nickname).setPawnImg(UtilCostantValue.pathToBluePawnImg);
+                nickToPlayer(nickname).setPawnColor(color);
+            } else {
+                System.err.println("Errore: colore richiesto inesistente!");
+            }
+
             return true;
         }
     }
@@ -162,7 +182,7 @@ public class GameManager implements GameInterface {
     private boolean endGameCheckFinishedShop(){
         return false;
     }
-    
+
     private boolean endGameCheckScoreBoard(){
         return playerTurn.getPersonalScore() >= 20;
     }
