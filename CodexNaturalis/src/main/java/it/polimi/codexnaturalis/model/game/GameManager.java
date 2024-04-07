@@ -5,7 +5,6 @@ import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.mission.MissionSelector;
 import it.polimi.codexnaturalis.model.player.Player;
-import it.polimi.codexnaturalis.model.scoreboard.ScoreBoard;
 import it.polimi.codexnaturalis.model.shop.GeneralShop;
 import it.polimi.codexnaturalis.model.shop.Shop;
 import it.polimi.codexnaturalis.model.shop.card.Card;
@@ -17,9 +16,8 @@ import java.util.Scanner;
 
 
 public class GameManager implements GameInterface {
-    public Mission sharedMission1;
-    public Mission sharedMission2;
-    private ScoreBoard scoreBoard;
+    private Mission sharedMission1;
+    private Mission sharedMission2;
     private GeneralShop resourceShop;
     private GeneralShop objectiveShop;
     private MissionSelector missionSelector;
@@ -32,10 +30,10 @@ public class GameManager implements GameInterface {
     private boolean isFinalTurn;
     private List <Player> winners;
     private Player startingPlayer;
+    private String scoreCardImg;
 
     @Override
     public void initializeGame() {
-        //TODO: prima si inizializza scoreboard, e poi i pawn
         initializeScoreboard();
         resourceShop = initializeShop(ShopType.RESOURCE, UtilCostantValue.pathToResourceJson);
         objectiveShop = initializeShop(ShopType.OBJECTIVE, UtilCostantValue.pathToObjectiveJson);
@@ -43,14 +41,14 @@ public class GameManager implements GameInterface {
         initializeStarterCard();
         //TODO, dovrei notificare i player di scegliere il colore (forse listener), attendere che chiamino setPlayerColor
         // verificare che tutti abbiano scelto e poi continuare con le inizializzazioni
-        //initializePlayerColor();
+        initializePlayerColor();
         initializePlayerHand();
         initializeMission();
         initializeStartingPlayer();
     }
 
     private void initializeScoreboard(){
-        scoreBoard = new ScoreBoard(players);
+        scoreCardImg = UtilCostantValue.pathToScoreCardImg;
     }
 
     private GeneralShop initializeShop(ShopType typeOfShop, String pathToFile){
@@ -61,6 +59,10 @@ public class GameManager implements GameInterface {
         for(int i=0; i<playerNumber; i++){
             players[i]=new Player(playerList[i]);
         }
+    }
+
+    public void initializePlayerColor() {
+        //TODO, come implemento la logica di scelta del colore?
     }
 
     @Override
@@ -153,14 +155,16 @@ public class GameManager implements GameInterface {
     }
 
     @Override
-    public void switchPlayer(String nickname) {//TODO: da modificare
+    public void switchPlayer(String reqPlayer, String target) {//TODO: da modificare
         nickToPlayer(/*playerrichiedente*/).switchPlayerView(nickname);
     }
+
     private boolean endGameCheckFinishedShop(){
         return false;
     }
+    
     private boolean endGameCheckScoreBoard(){
-        return scoreBoard.checkEnd20(playerTurn);
+        return playerTurn.getPersonalScore() >= 20;
     }
     @Override
     public void endGame() {

@@ -16,6 +16,7 @@ public class Player implements PlayerInterface {
     private PlayerScoreResource scoreResource;
     private GamePlayerMap gameMap;
     private Hand hand;
+    private String pawnImg;
 
     public Player() {
         scoreResource = new PlayerScoreResource();
@@ -156,5 +157,13 @@ public class Player implements PlayerInterface {
         personalMission2=null;
         selectedPersonalMission=null;
         playerView=this;
+    }
+
+    public String getPawnImg() {
+        return pawnImg;
+    }
+
+    public void setPawnImg(String pawnImg) {
+        this.pawnImg = pawnImg;
     }
 }

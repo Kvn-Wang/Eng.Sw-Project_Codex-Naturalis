@@ -5,3 +5,5 @@ per "In caso di parità, il giocatore che ha realizzato più carte Obiettivo è 
 è lecito assumere che la FA resilienza alle disconnessioni sia valida solo se non ci si trova nella fase preparatoria, ma nella fase di partita vera e propria.
 
 se un giocatore si disconnette, e quando finisce la partita è lui stesso che ha più punti tra tutti (e tecnicamente è lui il vincitore) non lo si conta (è come se non giocasse più)
+
+avevo in mente di pescare random una carta a caso e poi se continua ad essere disconnesso il player, i turni successivi quando deve giocare una carta, di skippare il turno)
