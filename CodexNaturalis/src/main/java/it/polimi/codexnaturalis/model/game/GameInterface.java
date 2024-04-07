@@ -9,6 +9,6 @@ public interface GameInterface {
     void playerPersonalMissionSelect(String nickname, int numMission);
     void playerPlayCard(String nickname, int x, int y, int numCard);
     void typeMessage(String receiver, String sender, String msg);// vedi issues
-    void switchPlayer(String nickname);
+    void switchPlayer(String reqPlayer, String target);
     void endGame();
 }

@@ -1,11 +1,11 @@
 package it.polimi.codexnaturalis.model.game;
 
 import it.polimi.codexnaturalis.model.chat.ChatManager;
+import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.mission.MissionSelector;
 import it.polimi.codexnaturalis.model.player.Player;
-import it.polimi.codexnaturalis.model.scoreboard.ScoreBoard;
 import it.polimi.codexnaturalis.model.shop.GeneralShop;
 import it.polimi.codexnaturalis.model.shop.Shop;
 import it.polimi.codexnaturalis.model.shop.card.Card;
@@ -17,51 +17,62 @@ import java.util.Scanner;
 
 
 public class GameManager implements GameInterface {
-    public Mission sharedMission1;
-    public Mission sharedMission2;
-    private ScoreBoard scoreBoard;
+    private Mission sharedMission1;
+    private Mission sharedMission2;
     private GeneralShop resourceShop;
     private GeneralShop objectiveShop;
     private MissionSelector missionSelector;
     private String pathToFile;
+    private String[] nicknamelist;//TODO: pensare a come fare per eliminare nicknameList e nicknameNumber per ridondaza con players
+    private int nicknameNumber;
     private Player[] players;
     private Player playerTurn;
     private ChatManager chatManager;
     private boolean isFinalTurn;
     private List <Player> winners;
     private Player startingPlayer;
+    private String scoreCardImg;
 
     @Override
     public void initializeGame() {
-        //TODO: prima si inizializza scoreboard, e poi i pawn
         initializeScoreboard();
         resourceShop = initializeShop(ShopType.RESOURCE, UtilCostantValue.pathToResourceJson);
         objectiveShop = initializeShop(ShopType.OBJECTIVE, UtilCostantValue.pathToObjectiveJson);
-        initializePlayer();
+        initializePlayer(nicknamelist, nicknameNumber);
         initializeStarterCard();
         //TODO, dovrei notificare i player di scegliere il colore (forse listener), attendere che chiamino setPlayerColor
         // verificare che tutti abbiano scelto e poi continuare con le inizializzazioni
-        //initializePlayerColor();
+        initializePlayerColor();
         initializePlayerHand();
         initializeMission();
         initializeStartingPlayer();
     }
 
     private void initializeScoreboard(){
-        scoreBoard = new ScoreBoard(players);
+        scoreCardImg = UtilCostantValue.pathToScoreCardImg;
     }
 
     private GeneralShop initializeShop(ShopType typeOfShop, String pathToFile){
         return new GeneralShop(typeOfShop, pathToFile);
     }
 
-    private void initializePlayer(){
+    private void initializePlayer(String[] playerList, int playerNumber){
+        for(int i=0; i<playerNumber; i++){
+            players[i]=new Player(playerList[i]);
+        }
+    }
 
+    public void initializePlayerColor() {
+        //TODO, come implemento la logica di scelta del colore? idea: con questa funzione
+        // mando ai player la domanda di inserire un colore, la lobby man mano che riceve le
+        // rispose chiama setPlayerColor, e appena arriva a count 4 risposte positive (max)
+        // chiama la prossima inizialize -> problema: esponiamo un inizialize all'esterno
     }
 
     @Override
     public boolean setPlayerColor(String nickname, String color) {
         boolean colorAlreadyChosen=false;
+
         for(Player p: players){
             if(p.getPawnColor().equals(color))
                 colorAlreadyChosen=true;
@@ -69,13 +80,31 @@ public class GameManager implements GameInterface {
         if(colorAlreadyChosen)
             return false;
         else{
-            nickToPlayer(nickname).setPawnColor(color);
+            if(color.equals(ColorType.RED)) {
+                nickToPlayer(nickname).setPawnImg(UtilCostantValue.pathToRedPawnImg);
+                nickToPlayer(nickname).setPawnColor(color);
+            } else if(color.equals(ColorType.YELLOW)) {
+                nickToPlayer(nickname).setPawnImg(UtilCostantValue.pathToYellowPawnImg);
+                nickToPlayer(nickname).setPawnColor(color);
+            } else if(color.equals(ColorType.GREEN)) {
+                nickToPlayer(nickname).setPawnImg(UtilCostantValue.pathToGreenPawnImg);
+                nickToPlayer(nickname).setPawnColor(color);
+            } else if(color.equals(ColorType.BLUE)) {
+                nickToPlayer(nickname).setPawnImg(UtilCostantValue.pathToBluePawnImg);
+                nickToPlayer(nickname).setPawnColor(color);
+            } else {
+                System.err.println("Errore: colore richiesto inesistente!");
+            }
+
             return true;
         }
     }
 
     private void initializeStarterCard(){
         Shop starterShop = new Shop(ShopType.STARTER, UtilCostantValue.pathToStarterJson);
+        for(Player p: players){
+
+        }
     }
 
     private void initializePlayerHand(){
@@ -96,7 +125,7 @@ public class GameManager implements GameInterface {
     }
 
     private void initializeStartingPlayer(){
-
+        //TODO: shuffle di players e poi assegno uno a playerturn
     }
 
     private Player nickToPlayer(String nickname){//TODO:throw exception da aggiungere
@@ -146,14 +175,16 @@ public class GameManager implements GameInterface {
     }
 
     @Override
-    public void switchPlayer(String nickname) {
-
+    public void switchPlayer(String reqPlayer, String target) {//TODO: da modificare
+        nickToPlayer(/*playerrichiedente*/).switchPlayerView(nickname);
     }
+
     private boolean endGameCheckFinishedShop(){
         return false;
     }
+
     private boolean endGameCheckScoreBoard(){
-        return scoreBoard.checkEnd20(playerTurn);
+        return playerTurn.getPersonalScore() >= 20;
     }
     @Override
     public void endGame() {
@@ -176,16 +207,16 @@ public class GameManager implements GameInterface {
     }
 
     private void nextTurn(){
-        while() {
+        do{
             for(int i = 0; i < players.length; i++) {
                 if (playerTurn.equals(players[i])) {
                     if (i != players.length - 1)
                         playerTurn = players[i + 1];
                     else
                         playerTurn = players[0];
-                }//todo:da finire
+                }
             }
-        }
+        }while(!playerTurn.isPlayerAlive());
     }
     private void setWinner(){
         int max = 0;
