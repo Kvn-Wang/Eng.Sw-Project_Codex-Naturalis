@@ -24,6 +24,8 @@ public class GameManager implements GameInterface {
     private GeneralShop objectiveShop;
     private MissionSelector missionSelector;
     private String pathToFile;
+    private String[] nicknamelist;//TODO: pensare a come fare per eliminare nicknameList e nicknameNumber per ridondaza con players
+    private int nicknameNumber;
     private Player[] players;
     private Player playerTurn;
     private ChatManager chatManager;
@@ -37,7 +39,7 @@ public class GameManager implements GameInterface {
         initializeScoreboard();
         resourceShop = initializeShop(ShopType.RESOURCE, UtilCostantValue.pathToResourceJson);
         objectiveShop = initializeShop(ShopType.OBJECTIVE, UtilCostantValue.pathToObjectiveJson);
-        initializePlayer();
+        initializePlayer(nicknamelist, nicknameNumber);
         initializeStarterCard();
         //TODO, dovrei notificare i player di scegliere il colore (forse listener), attendere che chiamino setPlayerColor
         // verificare che tutti abbiano scelto e poi continuare con le inizializzazioni
@@ -55,8 +57,10 @@ public class GameManager implements GameInterface {
         return new GeneralShop(typeOfShop, pathToFile);
     }
 
-    private void initializePlayer(){
-
+    private void initializePlayer(String[] playerList, int playerNumber){
+        for(int i=0; i<playerNumber; i++){
+            players[i]=new Player(playerList[i]);
+        }
     }
 
     @Override
@@ -76,6 +80,9 @@ public class GameManager implements GameInterface {
 
     private void initializeStarterCard(){
         Shop starterShop = new Shop(ShopType.STARTER, UtilCostantValue.pathToStarterJson);
+        for(Player p: players){
+
+        }
     }
 
     private void initializePlayerHand(){
@@ -96,7 +103,7 @@ public class GameManager implements GameInterface {
     }
 
     private void initializeStartingPlayer(){
-
+        //TODO: shuffle di players e poi assegno uno a playerturn
     }
 
     private Player nickToPlayer(String nickname){//TODO:throw exception da aggiungere
@@ -146,8 +153,8 @@ public class GameManager implements GameInterface {
     }
 
     @Override
-    public void switchPlayer(String nickname) {
-
+    public void switchPlayer(String nickname) {//TODO: da modificare
+        nickToPlayer(/*playerrichiedente*/).switchPlayerView(nickname);
     }
     private boolean endGameCheckFinishedShop(){
         return false;
@@ -176,16 +183,16 @@ public class GameManager implements GameInterface {
     }
 
     private void nextTurn(){
-        while() {
+        do{
             for(int i = 0; i < players.length; i++) {
                 if (playerTurn.equals(players[i])) {
                     if (i != players.length - 1)
                         playerTurn = players[i + 1];
                     else
                         playerTurn = players[0];
-                }//todo:da finire
+                }
             }
-        }
+        }while(!playerTurn.isPlayerAlive());
     }
     private void setWinner(){
         int max = 0;
