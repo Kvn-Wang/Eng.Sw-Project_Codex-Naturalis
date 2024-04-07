@@ -9,4 +9,9 @@ public final class UtilCostantValue {
     public static String pathToObjectiveJson = "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/objectiveCardsFile.json";
     public static String pathToStarterJson = "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/starterCardsFile.json";
     public static String pathToMissionJson = "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/missionFile.json";
+    public static String pathToScoreCardImg = "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/graphics/PLATEAU-SCORE-IMP/Scoreboard.png";
+    public static String pathToRedPawnImg = "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/graphics/Pawn_Red.png";
+    public static String pathToYellowPawnImg = "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/graphics/Pawn_Yellow.png";
+    public static String pathToBluePawnImg = "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/graphics/Pawn_Blue.png";
+    public static String pathToGreenPawnImg = "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/graphics/Pawn_Green.png";
 }

@@ -33,15 +33,16 @@ public class GameManager implements GameInterface {
 
     @Override
     public void initializeGame() {
+        //TODO: prima si inizializza scoreboard, e poi i pawn
         initializeScoreboard();
         resourceShop = initializeShop(ShopType.RESOURCE, UtilCostantValue.pathToResourceJson);
         objectiveShop = initializeShop(ShopType.OBJECTIVE, UtilCostantValue.pathToObjectiveJson);
         initializePlayer();
+        initializeStarterCard();
         //TODO, dovrei notificare i player di scegliere il colore (forse listener), attendere che chiamino setPlayerColor
         // verificare che tutti abbiano scelto e poi continuare con le inizializzazioni
         //initializePlayerColor();
         initializePlayerHand();
-        initializeStarterCard();
         initializeMission();
         initializeStartingPlayer();
     }
@@ -49,6 +50,7 @@ public class GameManager implements GameInterface {
     private void initializeScoreboard(){
         scoreBoard = new ScoreBoard(players);
     }
+
     private GeneralShop initializeShop(ShopType typeOfShop, String pathToFile){
         return new GeneralShop(typeOfShop, pathToFile);
     }
@@ -56,6 +58,7 @@ public class GameManager implements GameInterface {
     private void initializePlayer(){
 
     }
+
     @Override
     public boolean setPlayerColor(String nickname, String color) {
         boolean colorAlreadyChosen=false;
@@ -70,9 +73,11 @@ public class GameManager implements GameInterface {
             return true;
         }
     }
+
     private void initializeStarterCard(){
-        Shop starterShop = new Shop(ShopType.STARTER, "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/starterCardsFile.json");
+        Shop starterShop = new Shop(ShopType.STARTER, UtilCostantValue.pathToStarterJson);
     }
+
     private void initializePlayerHand(){
         for(Player p: players){
             p.addHandCard(resourceShop.drawFromDeck());
@@ -80,6 +85,7 @@ public class GameManager implements GameInterface {
             p.addHandCard(objectiveShop.drawFromDeck());
         }
     }
+
     private void initializeMission(){
         missionSelector.shuffle();
         sharedMission1 = missionSelector.drawFromFile();
@@ -88,6 +94,7 @@ public class GameManager implements GameInterface {
             p.setPersonalMissions(missionSelector.drawFromFile(), missionSelector.drawFromFile());
         }
     }
+
     private void initializeStartingPlayer(){
 
     }
@@ -146,7 +153,7 @@ public class GameManager implements GameInterface {
         return false;
     }
     private boolean endGameCheckScoreBoard(){
-            return scoreBoard.checkEnd20(playerTurn);
+        return scoreBoard.checkEnd20(playerTurn);
     }
     @Override
     public void endGame() {
@@ -170,7 +177,7 @@ public class GameManager implements GameInterface {
 
     private void nextTurn(){
         while() {
-            for (int i = 0; i < players.length; i++) {
+            for(int i = 0; i < players.length; i++) {
                 if (playerTurn.equals(players[i])) {
                     if (i != players.length - 1)
                         playerTurn = players[i + 1];
