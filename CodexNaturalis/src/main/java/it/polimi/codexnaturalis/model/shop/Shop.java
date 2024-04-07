@@ -14,8 +14,38 @@ public class Shop {
     }
     public Card drawFromDeck(){
         System.out.printf("from deck");
-        topDeckCard = topDeckCard.createResourceCard();
-        return topDeckCard;
+        Card travelingCard=null;
+        if (topDeckCard == null) {
+            switch (shopType){
+                case RESOURCE:
+                    travelingCard.createResourceCard();
+                case OBJECTIVE:
+                    travelingCard.createObjectiveCard();
+                case STARTER:
+                    travelingCard.createStarterCard();
+            }
+            switch (shopType){
+                case RESOURCE:
+                    topDeckCard.createResourceCard();
+                case OBJECTIVE:
+                    topDeckCard.createObjectiveCard();
+                case STARTER:
+                    topDeckCard.createStarterCard();
+            }
+        } else {
+            travelingCard =topDeckCard;
+            switch (shopType){
+                case RESOURCE:
+                    topDeckCard.createResourceCard();
+                case OBJECTIVE:
+                    topDeckCard.createObjectiveCard();
+                case STARTER:
+                    topDeckCard.createStarterCard();
+            }
+
+        }
+
+        return travelingCard;
     }
     public Shop(ShopType type, String path){
         shopType = type;

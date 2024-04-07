@@ -68,5 +68,13 @@ public abstract class Card {
         return new ResourceCard();
     }
 
+    public ObjectiveCard createObjectiveCard(){
+        return new ObjectiveCard();
+    }
+
+    public StarterCard createStarterCard(){
+        return new StarterCard();
+    }
+
     public abstract ResourceType getColor();
 }
