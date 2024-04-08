@@ -176,7 +176,7 @@ public class GameManager implements GameInterface {
 
     @Override
     public void switchPlayer(String reqPlayer, String target) {//TODO: da modificare
-        nickToPlayer(/*playerrichiedente*/).switchPlayerView(nickname);
+        nickToPlayer(reqPlayer).switchPlayerView(nickToPlayer(target));
     }
 
     private boolean endGameCheckFinishedShop(){

@@ -13,7 +13,7 @@ public interface PlayerInterface {
     void setPersonalMissions(Mission mission1,Mission mission2);
     void setPersonalMissionChoice(Mission selectedPersonalMission);
     void setPersonalMissionFinal(int selection);
-    void switchPlayerView();
+    void switchPlayerView(Player target);
     int getPersonalScore();
     int getPersonalMissionTotalScore();
     String getPawnColor();

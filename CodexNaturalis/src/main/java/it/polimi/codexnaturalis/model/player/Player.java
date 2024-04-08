@@ -98,8 +98,8 @@ public class Player implements PlayerInterface {
     }
 
     @Override
-    public void switchPlayerView() {
-
+    public void switchPlayerView(Player target) {
+        playerView=target;
     }
 
     @Override
