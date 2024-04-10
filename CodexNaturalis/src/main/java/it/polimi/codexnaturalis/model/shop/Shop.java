@@ -8,33 +8,33 @@ public class Shop {
     public final ShopType shopType;
     protected final String cardsFile;
     protected Card topDeckCard;
+    protected Card travelingCard;
 
     private void shuffle(){
         System.out.printf("shuffled");
     }
     public Card drawFromDeck(){
         System.out.printf("from deck");
-        Card travelingCard=null;
         if (topDeckCard == null) {
-            switch (shopType){
+            switch (this.shopType){
                 case RESOURCE:
-                    travelingCard.createResourceCard();
+                    initiateResourceCard(travelingCard);
                 case OBJECTIVE:
-                    travelingCard.createObjectiveCard();
+                    initiateObjectiveCard(travelingCard);
                 case STARTER:
-                    travelingCard.createStarterCard();
+                    initiateStarterCard(travelingCard);
             }
-            switch (shopType){
+            switch (this.shopType){
                 case RESOURCE:
-                    topDeckCard.createResourceCard();
+                    initiateResourceCard(topDeckCard);
                 case OBJECTIVE:
-                    topDeckCard.createObjectiveCard();
+                    initiateObjectiveCard(topDeckCard);
                 case STARTER:
-                    topDeckCard.createStarterCard();
+                    initiateStarterCard(topDeckCard);
             }
         } else {
             travelingCard =topDeckCard;
-            switch (shopType){
+            switch (this.shopType){
                 case RESOURCE:
                     topDeckCard.createResourceCard();
                 case OBJECTIVE:
@@ -46,6 +46,22 @@ public class Shop {
         }
 
         return travelingCard;
+    }
+
+    protected Card initiateResourceCard(Card DeckCard) {
+        DeckCard.createResourceCard();
+
+        return DeckCard;
+    }
+    protected Card initiateObjectiveCard(Card DeckCard) {
+        DeckCard.createObjectiveCard();
+
+        return DeckCard;
+    }
+    protected Card initiateStarterCard(Card DeckCard) {
+        DeckCard.createStarterCard();
+
+        return DeckCard;
     }
     public Shop(ShopType type, String path){
         shopType = type;
