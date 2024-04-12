@@ -38,21 +38,18 @@ public class PlayerScoreResource {
             case QUILL:
                 return scoreQuill;
             default:
-                System.err.println("Errore richiesta tipo di risorsa");
-                return -1;
+                throw new IllegalArgumentException("Errore richiesta tipo di risorsa");
         }
     }
 
     // rimozione di risorsa una per volta, ritorna falso in caso la risorsa sia già = 0 e non si possa fare -1;
     public boolean substractScore(ResourceType type) {
-        boolean operazioneValida = true;
-
         switch(type){
             case ANIMAL:
                 if(scoreAnimal > 0) {
                     scoreAnimal-=1;
                 } else {
-                    operazioneValida = false;
+                    return false;
                 }
                 break;
 
@@ -60,7 +57,7 @@ public class PlayerScoreResource {
                 if(scoreFungi > 0) {
                     scoreFungi-=1;
                 } else {
-                    operazioneValida = false;
+                    return false;
                 }
                 break;
 
@@ -68,7 +65,7 @@ public class PlayerScoreResource {
                 if(scorePlant > 0) {
                     scorePlant-=1;
                 } else {
-                    operazioneValida = false;
+                    return false;
                 }
                 break;
 
@@ -76,7 +73,7 @@ public class PlayerScoreResource {
                 if(scoreInsect > 0) {
                     scoreInsect-=1;
                 } else {
-                    operazioneValida = false;
+                    return false;
                 }
                 break;
 
@@ -84,7 +81,7 @@ public class PlayerScoreResource {
                 if(scoreInkwell > 0) {
                     scoreInkwell-=1;
                 } else {
-                    operazioneValida = false;
+                    return false;
                 }
                 break;
 
@@ -92,7 +89,7 @@ public class PlayerScoreResource {
                 if(scoreManuscript > 0) {
                     scoreManuscript-=1;
                 } else {
-                    operazioneValida = false;
+                    return false;
                 }
                 break;
 
@@ -100,21 +97,15 @@ public class PlayerScoreResource {
                 if(scoreQuill > 0) {
                     scoreQuill-=1;
                 } else {
-                    operazioneValida = false;
+                    return false;
                 }
                 break;
 
             default:
-                System.err.println("Errore niente addizione risorsa, errore richiesta tipo di risorsa");
-                break;
+                throw new IllegalArgumentException("Errore richiesta tipo di risorsa");
         }
 
-        if(operazioneValida) {
-            return true;
-        } else {
-            System.err.println("Errore: richiesto risorsa con valore già = 0");
-            return false;
-        }
+        return true;
     }
 
     // aggiunta di risorsa una per volta
@@ -142,8 +133,7 @@ public class PlayerScoreResource {
                 scoreQuill+=1;
                 break;
             default:
-                System.err.println("Errore niente sottrazzione risorsa, errore richiesta tipo di risorsa");
-                break;
+                throw new IllegalArgumentException("Errore richiesta tipo di risorsa");
         }
     }
 }
