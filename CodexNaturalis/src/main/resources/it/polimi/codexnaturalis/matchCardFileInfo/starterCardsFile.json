@@ -1,10 +1,14 @@
 [
   {
-    "png" : "cso",
+    "png" : ,
     "frontNorthResource" :,
     "frontSouthResource" :,
     "frontEastResource" : ,
     "frontWestResource" : ,
-    "isBack": false
+    "backCentralResource" :,
+    "backNorthResource" :,
+    "backSouthResource" : ,
+    "backEastResource" : ,
+    "backWestResource" :
   }
 ]

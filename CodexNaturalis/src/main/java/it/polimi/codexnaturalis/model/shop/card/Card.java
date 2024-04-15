@@ -3,12 +3,21 @@ package it.polimi.codexnaturalis.model.shop.card;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 
 public abstract class Card {
-    protected String png;
+    protected int png;
     protected ResourceType frontNorthResource;
     protected ResourceType frontSouthResource;
     protected ResourceType frontEastResource;
     protected ResourceType frontWestResource;
     protected boolean isBack;
+
+    public Card(int png, ResourceType frontNorthResource, ResourceType frontSouthResource, ResourceType frontEastResource, ResourceType frontWestResource) {
+        this.png = png;
+        this.frontNorthResource = frontNorthResource;
+        this.frontSouthResource = frontSouthResource;
+        this.frontEastResource = frontEastResource;
+        this.frontWestResource = frontWestResource;
+        this.isBack = false;
+    }
 
     public boolean getIsBack() {
         System.out.printf("isBack");
@@ -55,25 +64,9 @@ public abstract class Card {
         this.frontWestResource = frontWestResource;
     }
 
-    public String getPng() {
+    public int getPng() {
         System.out.printf("Png");
         return png;
-    }
-
-    public void setPng(String png) {
-        this.png = png;
-    }
-
-    public ResourceCard createResourceCard(){
-        return new ResourceCard();
-    }
-
-    public ObjectiveCard createObjectiveCard(){
-        return new ObjectiveCard();
-    }
-
-    public StarterCard createStarterCard(){
-        return new StarterCard();
     }
 
     public abstract ResourceType getColor();

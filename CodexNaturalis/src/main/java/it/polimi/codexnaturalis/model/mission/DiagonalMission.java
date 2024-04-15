@@ -10,7 +10,7 @@ public class DiagonalMission extends Mission  {
     private final boolean isLeftToRight;
     private final ResourceType resourceType;
 
-    public DiagonalMission(String pngNumber, int pointPerCondition, boolean isLeftToRight, ResourceType typeOfResource) {
+    public DiagonalMission(int pngNumber, int pointPerCondition, boolean isLeftToRight, ResourceType typeOfResource) {
         super(pngNumber, pointPerCondition);
         this.isLeftToRight = isLeftToRight;
         this.resourceType = typeOfResource;

@@ -3,11 +3,20 @@ package it.polimi.codexnaturalis.model.shop.card;
 import it.polimi.codexnaturalis.model.enumeration.ConditionResourceType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 
-class ObjectiveCard extends Card {
+public class ObjectiveCard extends Card {
     protected ResourceType backCentralResource;
     protected ConditionResourceType pointPerConditionResource;
     protected int pointPerCondition;
     protected ResourceType[] conditionResource;
+
+    public ObjectiveCard(int png, ResourceType frontNorthResource, ResourceType frontSouthResource, ResourceType frontEastResource, ResourceType frontWestResource,
+                         ResourceType backCentralResource, ConditionResourceType pointPerConditionResource, int pointPerCondition, ResourceType [] conditionResource) {
+        super(png, frontNorthResource, frontSouthResource, frontEastResource, frontWestResource);
+        this.backCentralResource = backCentralResource;
+        this.pointPerConditionResource = pointPerConditionResource;
+        this.pointPerCondition = pointPerCondition;
+        this.conditionResource = conditionResource;
+    }
 
     public ResourceType[] getConditionResource() {
         System.out.printf("conditionResource");

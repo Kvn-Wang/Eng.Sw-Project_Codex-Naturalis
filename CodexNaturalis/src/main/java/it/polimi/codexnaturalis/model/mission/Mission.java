@@ -5,11 +5,11 @@ import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 public abstract class Mission {
-    protected String pngNumber;
+    protected int pngNumber;
     protected int pointPerCondition;
     protected boolean usedCardArray[][];
 
-    public Mission(String pngNumber, int pointPerCondition) {
+    public Mission(int pngNumber, int pointPerCondition) {
         this.pngNumber = pngNumber;
         this.pointPerCondition = pointPerCondition;
         usedCardArray = new boolean[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];

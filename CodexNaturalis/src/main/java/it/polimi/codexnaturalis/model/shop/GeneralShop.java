@@ -7,20 +7,27 @@ public class GeneralShop extends Shop {
     private Card visibleCard1;
     private Card visibleCard2;
 
-    public GeneralShop(ShopType type, String path) {
-        super(type, path);
+    public GeneralShop(ShopType type) {
+        super(type);
+        visibleCard1 = drawTopDeckCard();
+        visibleCard2 = drawTopDeckCard();
     }
 
     public Card drawFromShopPlayer(int numCard){
         System.out.printf("drawing card");
+        Card supp;
+
         switch(numCard) {
-            case 0:
-                return super.drawFromDeck();
             case 1:
-                return visibleCard1;
+                supp = visibleCard1;
+                visibleCard1 = drawTopDeckCard();
+                return supp;
             case 2:
-                return visibleCard2;
+                supp = visibleCard2;
+                visibleCard2 = drawTopDeckCard();
+                return supp;
+            default:
+                throw new RuntimeException("è stata richiesta un numero di carta non valido: "+numCard);
         }
-        return null;
     }
 }

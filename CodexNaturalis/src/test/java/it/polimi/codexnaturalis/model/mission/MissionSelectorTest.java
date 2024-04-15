@@ -16,7 +16,6 @@ class MissionSelectorTest {
 
     @Test
     void shuffle() {
-        missionSelector.shuffle();
         for(Mission missionElement : missionSelector.getMissions()) {
             System.out.println(missionElement);
             System.out.println(missionElement.pngNumber);

@@ -11,7 +11,7 @@ public class ResourceMission extends Mission {
     private final int numberOfSymbols;
     private final ResourceType[] typeOfResource;
 
-    public ResourceMission(String pngNumber, int pointPerCondition, int numberOfSymbols, ResourceType[] typeOfResource) {
+    public ResourceMission(int pngNumber, int pointPerCondition, int numberOfSymbols, ResourceType[] typeOfResource) {
         super(pngNumber, pointPerCondition);
         this.numberOfSymbols = numberOfSymbols;
         this.typeOfResource = typeOfResource;

@@ -36,8 +36,8 @@ public class GameManager implements GameInterface {
     @Override
     public void initializeGame() {
         initializeScoreboard();
-        resourceShop = initializeShop(ShopType.RESOURCE, UtilCostantValue.pathToResourceJson);
-        objectiveShop = initializeShop(ShopType.OBJECTIVE, UtilCostantValue.pathToObjectiveJson);
+        resourceShop = initializeShop(ShopType.RESOURCE);
+        objectiveShop = initializeShop(ShopType.OBJECTIVE);
         initializePlayer(nicknamelist, nicknameNumber);
         initializeStarterCard();
         //TODO, dovrei notificare i player di scegliere il colore (forse listener), attendere che chiamino setPlayerColor
@@ -52,8 +52,8 @@ public class GameManager implements GameInterface {
         scoreCardImg = UtilCostantValue.pathToScoreCardImg;
     }
 
-    private GeneralShop initializeShop(ShopType typeOfShop, String pathToFile){
-        return new GeneralShop(typeOfShop, pathToFile);
+    private GeneralShop initializeShop(ShopType typeOfShop){
+        return new GeneralShop(typeOfShop);
     }
 
     private void initializePlayer(String[] playerList, int playerNumber){
@@ -101,7 +101,7 @@ public class GameManager implements GameInterface {
     }
 
     private void initializeStarterCard(){
-        Shop starterShop = new Shop(ShopType.STARTER, UtilCostantValue.pathToStarterJson);
+        Shop starterShop = new Shop(ShopType.STARTER);
         for(Player p: players){
 
         }
@@ -109,14 +109,14 @@ public class GameManager implements GameInterface {
 
     private void initializePlayerHand(){
         for(Player p: players){
-            p.addHandCard(resourceShop.drawFromDeck());
-            p.addHandCard(resourceShop.drawFromDeck());
-            p.addHandCard(objectiveShop.drawFromDeck());
+            p.addHandCard(resourceShop.drawTopDeckCard());
+            p.addHandCard(resourceShop.drawTopDeckCard());
+            p.addHandCard(objectiveShop.drawTopDeckCard());
         }
     }
 
     private void initializeMission(){
-        missionSelector.shuffle();
+        missionSelector = new MissionSelector();
         sharedMission1 = missionSelector.drawFromFile();
         sharedMission2 = missionSelector.drawFromFile();
         for(Player p: players){

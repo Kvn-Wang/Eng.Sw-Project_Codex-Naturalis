@@ -1,12 +1,9 @@
 package it.polimi.codexnaturalis.model.mission;
 
 import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
 import it.polimi.codexnaturalis.model.enumeration.MissionType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
-
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,12 +31,12 @@ public class MissionSelector {
 
     public MissionSelector() {
         missionFile = UtilCostantValue.pathToMissionJson;
+        initializeArrayMissions();
     }
 
-    public void shuffle() {
+    private void initializeArrayMissions() {
         missions = new ArrayList<>();
         Mission mission;
-        Gson gson = new Gson();
 
         try {
             FileReader reader = new FileReader(missionFile);
@@ -52,7 +49,7 @@ public class MissionSelector {
 
                 String typeOfMission = jsonObject.get("typeOfMission").getAsString();
                 if(typeOfMission.equals(MissionType.DIAGONAL.name())) {
-                    String pngNumber = jsonObject.get("png").getAsString();
+                    int pngNumber = jsonObject.get("png").getAsInt();
                     int pointPerCondition = jsonObject.get("pointPerCondition").getAsInt();
                     boolean isLeftToRight = jsonObject.get("isLeftToRight").getAsBoolean();
                     ResourceType typeOfResource = ResourceType.valueOf(jsonObject.get("resourceType").getAsString());
@@ -60,7 +57,7 @@ public class MissionSelector {
                     mission = new DiagonalMission(pngNumber, pointPerCondition, isLeftToRight, typeOfResource);
                     missions.add(mission);
                 } else if(typeOfMission.equals(MissionType.BEND.name())) {
-                    String pngNumber = jsonObject.get("png").getAsString();
+                    int pngNumber = jsonObject.get("png").getAsInt();
                     int pointPerCondition = jsonObject.get("pointPerCondition").getAsInt();
                     ResourceType pillarResource = ResourceType.valueOf(jsonObject.get("pillarResource").getAsString());
                     ResourceType decorationResource = ResourceType.valueOf(jsonObject.get("decorationResource").getAsString());
@@ -69,7 +66,7 @@ public class MissionSelector {
                     mission = new BendMission(pngNumber, pointPerCondition, pillarResource, decorationResource, decorationPosition);
                     missions.add(mission);
                 } else if(typeOfMission.equals(MissionType.RESOURCE.name())) {
-                    String pngNumber = jsonObject.get("png").getAsString();
+                    int pngNumber = jsonObject.get("png").getAsInt();
                     int pointPerCondition = jsonObject.get("pointPerCondition").getAsInt();
                     int numberOfSymbols = jsonObject.get("numberOfSymbols").getAsInt();
 
@@ -86,17 +83,18 @@ public class MissionSelector {
                 }
             }
 
-            Collections.shuffle(missions);
-
         } catch (IOException e) {
-            System.err.println("File JSON Mission non trovato");
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            throw new RuntimeException("File JSON Mission non trovato");
         }
+
+        shuffleMissions();
+    }
+
+    private void shuffleMissions() {
+        Collections.shuffle(missions);
     }
 
     public Mission drawFromFile() {
-        Mission drawnMission = null;
-        return drawnMission;
+        return missions.remove(0);
     }
 }

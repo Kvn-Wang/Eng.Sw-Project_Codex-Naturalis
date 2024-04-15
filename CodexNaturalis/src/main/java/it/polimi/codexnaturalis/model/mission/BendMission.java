@@ -13,7 +13,7 @@ public class BendMission extends Mission  {
     private ResourceType decorationResource;
 
 
-    public BendMission(String pngNumber, int pointPerCondition, ResourceType pillarResource, ResourceType decorationResource, String decorationPosition) {
+    public BendMission(int pngNumber, int pointPerCondition, ResourceType pillarResource, ResourceType decorationResource, String decorationPosition) {
         super(pngNumber, pointPerCondition);
         this.decorationPosition = decorationPosition;
         this.pillarResource = pillarResource;

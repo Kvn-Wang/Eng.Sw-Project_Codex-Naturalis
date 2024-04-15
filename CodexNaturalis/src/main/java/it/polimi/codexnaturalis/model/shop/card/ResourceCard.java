@@ -2,9 +2,16 @@ package it.polimi.codexnaturalis.model.shop.card;
 
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 
-class ResourceCard extends Card{
+public class ResourceCard extends Card{
     protected ResourceType backCentralResource;
     protected int frontCardPoint;
+
+    public ResourceCard(int png, ResourceType frontNorthResource, ResourceType frontSouthResource, ResourceType frontEastResource, ResourceType frontWestResource,
+                        ResourceType backCentralResource, int frontCardPoint) {
+        super(png, frontNorthResource, frontSouthResource, frontEastResource, frontWestResource);
+        this.backCentralResource = backCentralResource;
+        this.frontCardPoint = frontCardPoint;
+    }
 
     public ResourceType getBackCentralResource() {
         System.out.printf("backCentralResource");
