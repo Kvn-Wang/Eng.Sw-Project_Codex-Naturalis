@@ -1,14 +1,74 @@
 [
   {
-    "png" : ,
-    "frontNorthResource" :,
-    "frontSouthResource" :,
-    "frontEastResource" : ,
-    "frontWestResource" : ,
-    "backCentralResource" :,
-    "backNorthResource" :,
-    "backSouthResource" : ,
-    "backEastResource" : ,
-    "backWestResource" :
+    "png" : 81,
+    "frontNorthResource" : "NONE",
+    "frontSouthResource" :"NONE",
+    "frontEastResource" : "PLANT",
+    "frontWestResource" : "INSECT",
+    "backCentralResource" :"INSECT",
+    "backNorthResource" :"FUNGI",
+    "backSouthResource" : "ANIMAL",
+    "backEastResource" : "PLANT",
+    "backWestResource" :"INSECT"
+  },
+  {
+    "png" : 82,
+    "frontNorthResource" :"ANIMAL",
+    "frontSouthResource" :"FUNGI",
+    "frontEastResource" : "NONE",
+    "frontWestResource" : "NONE",
+    "backCentralResource" :"FUNGI",
+    "backNorthResource" :"PLANT",
+    "backSouthResource" : "INSECT",
+    "backEastResource" : "ANIMAL",
+    "backWestResource" :"FUNGI"
+  },
+  {
+    "png" : 83,
+    "frontNorthResource" :"NONE",
+    "frontSouthResource" :"NONE",
+    "frontEastResource" : "NONE",
+    "frontWestResource" : "NONE",
+    "backCentralResource" :"PLANT,FUNGI",
+    "backNorthResource" :"INSECT",
+    "backSouthResource" : "PLANT",
+    "backEastResource" : "ANIMAL",
+    "backWestResource" :"FUNGI"
+  },
+  {
+    "png" : 84,
+    "frontNorthResource" :"NONE",
+    "frontSouthResource" :"NONE",
+    "frontEastResource" : "NONE",
+    "frontWestResource" : "NONE",
+    "backCentralResource" :"ANIMAL,INSECT",
+    "backNorthResource" :"PLANT",
+    "backSouthResource" : "FUNGI",
+    "backEastResource" : "INSECT",
+    "backWestResource" :"ANIMAL"
+  },
+  {
+    "png" : 85,
+    "frontNorthResource" :"NONE",
+    "frontSouthResource" :"NONE",
+    "frontEastResource" : null,
+    "frontWestResource" : null,
+    "backCentralResource" :"ANIMAL,INSECT,PLANT",
+    "backNorthResource" :"INSECT",
+    "backSouthResource" : "ANIMAL",
+    "backEastResource" : "FUNGI",
+    "backWestResource" :"PLANT"
+  },
+  {
+    "png" : 86,
+    "frontNorthResource" :"NONE",
+    "frontSouthResource" :"NONE",
+    "frontEastResource" : null,
+    "frontWestResource" : null,
+    "backCentralResource" :"PLANT,ANIMAL,INSECT",
+    "backNorthResource" :"FUNGI",
+    "backSouthResource" : "INSECT",
+    "backEastResource" : "ANIMAL",
+    "backWestResource" :"PLANT"
   }
 ]
