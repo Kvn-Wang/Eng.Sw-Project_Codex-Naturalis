@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.model.mission;
 
+import com.google.gson.annotations.SerializedName;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
@@ -12,9 +13,8 @@ public class BendMission extends Mission  {
     private ResourceType decorationResource;
 
 
-    public BendMission(int rewardPoint, ResourceType pillarResource, ResourceType decorationResource, String decorationPosition) {
-        super();
-        pointPerCondition = rewardPoint;
+    public BendMission(String pngNumber, int pointPerCondition, ResourceType pillarResource, ResourceType decorationResource, String decorationPosition) {
+        super(pngNumber, pointPerCondition);
         this.decorationPosition = decorationPosition;
         this.pillarResource = pillarResource;
         this.decorationResource = decorationResource;
@@ -26,7 +26,7 @@ public class BendMission extends Mission  {
         int match = 0;
 
         switch (decorationPosition) {
-            case "EST":
+            case "EAST":
                 for (int i = 0; i < (mapArray.length - 1); i++) {
                     for (int j = 2; j < (mapArray[0].length); j++) {
                         if (mapArray[i][j] != null) {
@@ -90,6 +90,8 @@ public class BendMission extends Mission  {
                     }
                 }
                 break;
+            default:
+                throw new RuntimeException("Posizione carta decoration non valida: "+decorationPosition);
         }
         return match*pointPerCondition;
     }

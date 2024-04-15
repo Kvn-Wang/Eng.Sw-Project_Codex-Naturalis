@@ -7,3 +7,5 @@ per "In caso di parità, il giocatore che ha realizzato più carte Obiettivo è 
 se un giocatore si disconnette, e quando finisce la partita è lui stesso che ha più punti tra tutti (e tecnicamente è lui il vincitore) non lo si conta (è come se non giocasse più)
 
 avevo in mente di pescare random una carta a caso e poi se continua ad essere disconnesso il player, i turni successivi quando deve giocare una carta, di skippare il turno)
+
+Convenzione: si gira le carte di 45 gradi in senso orario
