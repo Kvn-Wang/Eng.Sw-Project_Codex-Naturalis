@@ -20,7 +20,7 @@ public class ResourceMission extends Mission {
     public int ruleAlgorithmCheck(Player player) {
         playerScoreResource = player.getScoreResource();
 
-        if(typeOfResource.length!=1){
+        if(typeOfResource.length == 1){
             return (playerScoreResource.getScore(typeOfResource[0])/numberOfSymbols)*pointPerCondition;
         }
         else if(typeOfResource.length==3){

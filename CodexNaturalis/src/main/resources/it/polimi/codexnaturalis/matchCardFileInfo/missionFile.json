@@ -5,5 +5,114 @@
     "pointPerCondition" : 2,
     "isLeftToRight": false,
     "resourceType": "FUNGI"
+  },
+  {
+    "png" : "88",
+    "typeOfMission" : "DIAGONAL",
+    "pointPerCondition" : 2,
+    "isLeftToRight": true,
+    "resourceType": "PLANT"
+  },
+  {
+    "png" : "89",
+    "typeOfMission" : "DIAGONAL",
+    "pointPerCondition" : 2,
+    "isLeftToRight": false,
+    "resourceType": "ANIMAL"
+  },
+  {
+    "png" : "90",
+    "typeOfMission" : "DIAGONAL",
+    "pointPerCondition" : 2,
+    "isLeftToRight": true,
+    "resourceType": "INSECT"
+  },
+  {
+    "png" : "91",
+    "typeOfMission" : "BEND",
+    "pointPerCondition" : 3,
+    "pillarResource": "FUNGI",
+    "decorationPosition": "SE",
+    "decorationResource": "PLANT"
+  },
+  {
+    "png" : "92",
+    "typeOfMission" : "BEND",
+    "pointPerCondition" : 3,
+    "pillarResource": "PLANT",
+    "decorationPosition": "SW",
+    "decorationResource": "INSECT"
+  },
+  {
+    "png" : "93",
+    "typeOfMission" : "BEND",
+    "pointPerCondition" : 3,
+    "pillarResource": "ANIMAL",
+    "decorationPosition": "NE",
+    "decorationResource": "FUNGI"
+  },
+  {
+    "png" : "94",
+    "typeOfMission" : "BEND",
+    "pointPerCondition" : 3,
+    "pillarResource": "INSECT",
+    "decorationPosition": "NW",
+    "decorationResource": "ANIMAL"
+  },
+  {
+    "png" : "95",
+    "typeOfMission" : "RESOURCE",
+    "pointPerCondition" : 2,
+    "numberOfSymbols": 3,
+    "typeOfResource": ["FUNGI"]
+  },
+  {
+    "png" : "96",
+    "typeOfMission" : "RESOURCE",
+    "pointPerCondition" : 2,
+    "numberOfSymbols": 3,
+    "typeOfResource": ["PLANT"]
+  },
+  {
+    "png" : "97",
+    "typeOfMission" : "RESOURCE",
+    "pointPerCondition" : 2,
+    "numberOfSymbols": 3,
+    "typeOfResource": ["ANIMAL"]
+  },
+  {
+    "png" : "98",
+    "typeOfMission" : "RESOURCE",
+    "pointPerCondition" : 2,
+    "numberOfSymbols": 3,
+    "typeOfResource": ["INSECT"]
+  },
+  {
+    "png" : "99",
+    "typeOfMission" : "RESOURCE",
+    "pointPerCondition" : 3,
+    "numberOfSymbols": 3,
+    "typeOfResource": ["QUILL", "INKWELL", "MANUSCRIPT"]
+  },
+  {
+    "png" : "100",
+    "typeOfMission" : "RESOURCE",
+    "pointPerCondition" : 2,
+    "numberOfSymbols": 2,
+    "typeOfResource": ["MANUSCRIPT"]
+  },
+  {
+    "png" : "101",
+    "typeOfMission" : "RESOURCE",
+    "pointPerCondition" : 2,
+    "numberOfSymbols": 2,
+    "typeOfResource": ["INKWELL"]
+  },
+  {
+    "png" : "102",
+    "typeOfMission" : "RESOURCE",
+    "pointPerCondition" : 2,
+    "numberOfSymbols": 2,
+    "typeOfResource": ["QUILL"]
   }
 ]
