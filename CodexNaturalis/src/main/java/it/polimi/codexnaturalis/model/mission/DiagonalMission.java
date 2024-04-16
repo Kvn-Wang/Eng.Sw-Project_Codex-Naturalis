@@ -54,4 +54,16 @@ public class DiagonalMission extends Mission  {
         }
         return match*pointPerCondition;
     }
+
+    public Card[][] getMapArray() {
+        return mapArray;
+    }
+
+    public boolean getIsLeftToRight() {
+        return isLeftToRight;
+    }
+
+    public ResourceType getResourceType() {
+        return resourceType;
+    }
 }
