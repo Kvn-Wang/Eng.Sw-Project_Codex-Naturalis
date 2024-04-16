@@ -2,12 +2,16 @@ package it.polimi.codexnaturalis.model.shop.card;
 
 import it.polimi.codexnaturalis.model.enumeration.ConditionResourceType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
+import it.polimi.codexnaturalis.model.player.GamePlayerMap;
+import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
+
+import java.util.ArrayList;
 
 public class ObjectiveCard extends Card {
     protected ResourceType backCentralResource;
     protected ConditionResourceType pointPerConditionResource;
     protected int pointPerCondition;
-    protected ResourceType[] conditionResource;
+    protected ResourceType[] conditionResources;
 
     public ObjectiveCard(int png, ResourceType frontNorthResource, ResourceType frontSouthResource, ResourceType frontEastResource, ResourceType frontWestResource,
                          ResourceType backCentralResource, ConditionResourceType pointPerConditionResource, int pointPerCondition, ResourceType [] conditionResource) {
@@ -15,16 +19,16 @@ public class ObjectiveCard extends Card {
         this.backCentralResource = backCentralResource;
         this.pointPerConditionResource = pointPerConditionResource;
         this.pointPerCondition = pointPerCondition;
-        this.conditionResource = conditionResource;
+        this.conditionResources = conditionResource;
     }
 
-    public ResourceType[] getConditionResource() {
+    public ResourceType[] getConditionResources() {
         System.out.printf("conditionResource");
-        return conditionResource;
+        return conditionResources;
     }
 
-    public void setConditionResource(ResourceType[] conditionResource) {
-        this.conditionResource = conditionResource;
+    public void setConditionResources(ResourceType[] conditionResources) {
+        this.conditionResources = conditionResources;
     }
 
     public ResourceType getBackCentralResource() {
@@ -55,5 +59,30 @@ public class ObjectiveCard extends Card {
     }
     public ResourceType getColor() {
         return backCentralResource;
+    }
+
+    @Override
+    public boolean checkPlaceableCardCondition(PlayerScoreResource scoreCard) {
+        PlayerScoreResource copy = new PlayerScoreResource(scoreCard);
+
+        for(ResourceType element : conditionResources) {
+            if(!copy.substractScore(element)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public ArrayList<ResourceType> getBackResources() {
+        ArrayList<ResourceType> temp = new ArrayList<>();
+        temp.add(backCentralResource);
+        return temp;
+    }
+
+    @Override
+    public int getFrontCardPointCondition(PlayerScoreResource scoreCard, GamePlayerMap playerMap) {
+        //TODO
+        return null;
     }
 }

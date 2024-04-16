@@ -1,6 +1,10 @@
 package it.polimi.codexnaturalis.model.shop.card;
 
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
+import it.polimi.codexnaturalis.model.player.GamePlayerMap;
+import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
+
+import java.util.ArrayList;
 
 public class StarterCard extends Card{
     ResourceType[] backCentralResource;
@@ -66,5 +70,25 @@ public class StarterCard extends Card{
 
     public ResourceType getColor() {
         return ResourceType.NONE;
+    }
+
+    @Override
+    public boolean checkPlaceableCardCondition(PlayerScoreResource scoreCard) {
+        return true;
+    }
+
+    @Override
+    public ArrayList<ResourceType> getBackResources() {
+        ArrayList<ResourceType> temp = new ArrayList<>();
+        temp.add(backNorthResource);
+        temp.add(backSouthResource);
+        temp.add(backWestResource);
+        temp.add(backEastResource);
+        return temp;
+    }
+
+    @Override
+    public int getFrontCardPointCondition(PlayerScoreResource scoreCard, GamePlayerMap playerMap) {
+        return 0;
     }
 }

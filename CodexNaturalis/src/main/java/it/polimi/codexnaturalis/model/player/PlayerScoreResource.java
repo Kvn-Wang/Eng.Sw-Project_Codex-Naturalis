@@ -20,6 +20,16 @@ public class PlayerScoreResource {
         scoreManuscript = 0;
         scoreQuill = 0;
     }
+    //constructor used to make a copy of the same obj
+    public PlayerScoreResource(PlayerScoreResource original) {
+        this.scoreAnimal = original.getScoreAnimal();
+        this.scoreFungi = original.getScoreFungi();
+        this.scorePlant = original.getScorePlant();
+        this.scoreInsect = original.getScoreInsect();
+        this.scoreInkwell = original.getScoreInkwell();
+        this.scoreManuscript = original.getScoreManuscript();
+        this.scoreQuill = original.getScoreQuill();
+    }
 
     public int getScore(ResourceType type) {
         switch(type){
@@ -135,5 +145,33 @@ public class PlayerScoreResource {
             default:
                 throw new IllegalArgumentException("Errore richiesta tipo di risorsa");
         }
+    }
+
+    public int getScoreAnimal() {
+        return scoreAnimal;
+    }
+
+    public int getScoreFungi() {
+        return scoreFungi;
+    }
+
+    public int getScorePlant() {
+        return scorePlant;
+    }
+
+    public int getScoreInsect() {
+        return scoreInsect;
+    }
+
+    public int getScoreInkwell() {
+        return scoreInkwell;
+    }
+
+    public int getScoreManuscript() {
+        return scoreManuscript;
+    }
+
+    public int getScoreQuill() {
+        return scoreQuill;
     }
 }

@@ -1,6 +1,10 @@
 package it.polimi.codexnaturalis.model.shop.card;
 
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
+import it.polimi.codexnaturalis.model.player.GamePlayerMap;
+import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
+
+import java.util.ArrayList;
 
 public abstract class Card {
     protected int png;
@@ -18,56 +22,29 @@ public abstract class Card {
         this.frontWestResource = frontWestResource;
         this.isBack = false;
     }
+    public abstract ResourceType getColor();
+    public abstract boolean checkPlaceableCardCondition(PlayerScoreResource scoreCard);
+    public abstract ArrayList<ResourceType> getBackResources();
+    public abstract int getFrontCardPointCondition(PlayerScoreResource scoreCard, GamePlayerMap playerMap);
 
     public boolean getIsBack() {
-        System.out.printf("isBack");
         return isBack;
     }
 
-    public void setBack(boolean back) {
-        isBack = back;
-    }
-
     public ResourceType getFrontNorthResource() {
-        System.out.printf("frontNorthResource");
         return frontNorthResource;
     }
 
-    public void setFrontNorthResource(ResourceType frontNorthResource) {
-        this.frontNorthResource = frontNorthResource;
-    }
-
     public ResourceType getFrontSouthResource() {
-        System.out.printf("frontSouthResource");
         return frontSouthResource;
     }
-
-    public void setFrontSouthResource(ResourceType frontSouthResource) {
-        this.frontSouthResource = frontSouthResource;
-    }
-
     public ResourceType getFrontEastResource() {
-        System.out.printf("frontEastResource");
         return frontEastResource;
     }
-
-    public void setFrontEastResource(ResourceType frontEastResource) {
-        this.frontEastResource = frontEastResource;
-    }
-
     public ResourceType getFrontWestResource() {
-        System.out.printf("frontWestResource");
         return frontWestResource;
     }
-
-    public void setFrontWestResource(ResourceType frontWestResource) {
-        this.frontWestResource = frontWestResource;
-    }
-
     public int getPng() {
-        System.out.printf("Png");
         return png;
     }
-
-    public abstract ResourceType getColor();
 }
