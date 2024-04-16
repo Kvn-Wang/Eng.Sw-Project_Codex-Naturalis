@@ -1,7 +1,11 @@
 package it.polimi.codexnaturalis.model.player;
 
+import it.polimi.codexnaturalis.model.enumeration.CardCorner;
+import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.shop.card.Card;
+import it.polimi.codexnaturalis.model.shop.card.ResourceCard;
+import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 
 public class Player implements PlayerInterface {
     private String nickname;
@@ -55,16 +59,16 @@ public class Player implements PlayerInterface {
     @Override
     public void placeCard(int x, int y, int numCard) {
         Card playedCard;
-        int esitoGiocata;
+        int PlaceResult;
 
         playedCard = hand.popCard(numCard);
-        esitoGiocata = gameMap.placeCard(x, y, playedCard);
+        PlaceResult = gameMap.placeCard(x, y, playedCard);
 
-        if(esitoGiocata == -1) {
+        if(PlaceResult == -1) {
             hand.addCard(playedCard);
             System.err.println("Giocata non Valida");
-        } else if(esitoGiocata > 0) {
-            personalScoreBoardScore+=esitoGiocata;
+        } else if(PlaceResult > 0) {
+            personalScoreBoardScore+=PlaceResult;
         }
     }
 
@@ -166,4 +170,54 @@ public class Player implements PlayerInterface {
     public void setPawnImg(String pawnImg) {
         this.pawnImg = pawnImg;
     }
+
+    protected ResourceType checkCornerCardCorner(Card card, CardCorner corner){
+        switch(corner){
+            case NORTH:
+                if(!card.getIsBack()) {
+                    return card.getFrontNorthResource();
+                } else if(card.getClass() == StarterCard.class){
+                    return ((StarterCard) card).getBackNorthResource();
+                }else{
+                    return ResourceType.NONE;
+                }
+            case SOUTH:
+                if(!card.getIsBack()) {
+                    return card.getFrontSouthResource();
+                } else if(card.getClass() == StarterCard.class){
+                    return ((StarterCard) card).getBackSouthResource();
+                }else{
+                    return ResourceType.NONE;
+                }
+            case EAST:
+                if(!card.getIsBack()) {
+                    return card.getFrontEastResource();
+                } else if(card.getClass() == StarterCard.class){
+                    return ((StarterCard) card).getBackEastResource();
+                }else{
+                    return ResourceType.NONE;
+                }
+            case WEST:
+                if(!card.getIsBack()) {
+                    return card.getFrontWestResource();
+                } else if(card.getClass() == StarterCard.class){
+                    return ((StarterCard) card).getBackWestResource();
+                }else{
+                    return ResourceType.NONE;
+                }
+        }
+        return null;
+    }
+    protected void updateReducedPlayerScore(ResourceType type){
+        scoreResource.substractScore(type);
+    }
+
+    protected void updateAddPlayerScore(ResourceType type){
+        scoreResource.addScore(type);
+    }
+
+    public void addScore(int value){
+        personalScoreBoardScore = personalScoreBoardScore+value;
+    }
+
 }
