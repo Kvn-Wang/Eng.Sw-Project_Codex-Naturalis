@@ -1,6 +1,5 @@
 package it.polimi.codexnaturalis.model.mission;
 
-import com.google.gson.annotations.SerializedName;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
@@ -94,5 +93,17 @@ public class BendMission extends Mission  {
                 throw new RuntimeException("Posizione carta decoration non valida: "+decorationPosition);
         }
         return match*pointPerCondition;
+    }
+
+    public String getDecorationPosition() {
+        return decorationPosition;
+    }
+
+    public ResourceType getPillarResource() {
+        return pillarResource;
+    }
+
+    public ResourceType getDecorationResource() {
+        return decorationResource;
     }
 }

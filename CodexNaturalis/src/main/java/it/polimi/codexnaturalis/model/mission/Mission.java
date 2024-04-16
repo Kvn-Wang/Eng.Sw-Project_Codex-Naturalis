@@ -1,6 +1,5 @@
 package it.polimi.codexnaturalis.model.mission;
 
-import com.google.gson.annotations.SerializedName;
 import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
@@ -23,4 +22,12 @@ public abstract class Mission {
     }
 
     public abstract int ruleAlgorithmCheck(Player player);
+
+    public int getPngNumber() {
+        return pngNumber;
+    }
+
+    public int getPointPerCondition() {
+        return pointPerCondition;
+    }
 }

@@ -3,7 +3,6 @@ module it.polimi.codexnaturalis {
     requires javafx.fxml;
     requires com.google.gson;
 
-
     opens it.polimi.codexnaturalis to javafx.fxml;
     exports it.polimi.codexnaturalis;
     exports it.polimi.codexnaturalis.model.shop;
