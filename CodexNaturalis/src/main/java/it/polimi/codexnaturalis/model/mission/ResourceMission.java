@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.model.mission;
 
+import com.google.gson.annotations.SerializedName;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
@@ -10,8 +11,8 @@ public class ResourceMission extends Mission {
     private final int numberOfSymbols;
     private final ResourceType[] typeOfResource;
 
-    public ResourceMission(int rewardPoint, int numberOfSymbols, ResourceType[] typeOfResource) {
-        pointPerCondition = rewardPoint;
+    public ResourceMission(int pngNumber, int pointPerCondition, int numberOfSymbols, ResourceType[] typeOfResource) {
+        super(pngNumber, pointPerCondition);
         this.numberOfSymbols = numberOfSymbols;
         this.typeOfResource = typeOfResource;
     }
@@ -20,7 +21,7 @@ public class ResourceMission extends Mission {
     public int ruleAlgorithmCheck(Player player) {
         playerScoreResource = player.getScoreResource();
 
-        if(typeOfResource.length!=1){
+        if(typeOfResource.length == 1){
             return (playerScoreResource.getScore(typeOfResource[0])/numberOfSymbols)*pointPerCondition;
         }
         else if(typeOfResource.length==3){

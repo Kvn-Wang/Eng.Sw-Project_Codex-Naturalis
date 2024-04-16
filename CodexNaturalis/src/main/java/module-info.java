@@ -1,6 +1,7 @@
 module it.polimi.codexnaturalis {
     requires javafx.controls;
     requires javafx.fxml;
+    requires com.google.gson;
 
 
     opens it.polimi.codexnaturalis to javafx.fxml;

@@ -1,14 +1,17 @@
 package it.polimi.codexnaturalis.model.mission;
 
+import com.google.gson.annotations.SerializedName;
 import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 public abstract class Mission {
-    protected String png;
+    protected int pngNumber;
     protected int pointPerCondition;
     protected boolean usedCardArray[][];
 
-    public Mission() {
+    public Mission(int pngNumber, int pointPerCondition) {
+        this.pngNumber = pngNumber;
+        this.pointPerCondition = pointPerCondition;
         usedCardArray = new boolean[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
 
         //inizializzazione usedArray

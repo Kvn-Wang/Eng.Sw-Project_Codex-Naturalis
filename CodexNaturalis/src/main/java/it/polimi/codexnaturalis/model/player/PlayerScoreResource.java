@@ -38,47 +38,102 @@ public class PlayerScoreResource {
             case QUILL:
                 return scoreQuill;
             default:
-                System.err.println("Errore richiesta tipo di risorsa");
-                return -1;
+                throw new IllegalArgumentException("Errore richiesta tipo di risorsa");
         }
     }
+
+    // rimozione di risorsa una per volta, ritorna falso in caso la risorsa sia già = 0 e non si possa fare -1;
+    public boolean substractScore(ResourceType type) {
+        switch(type){
+            case ANIMAL:
+                if(scoreAnimal > 0) {
+                    scoreAnimal-=1;
+                } else {
+                    return false;
+                }
+                break;
+
+            case FUNGI:
+                if(scoreFungi > 0) {
+                    scoreFungi-=1;
+                } else {
+                    return false;
+                }
+                break;
+
+            case PLANT:
+                if(scorePlant > 0) {
+                    scorePlant-=1;
+                } else {
+                    return false;
+                }
+                break;
+
+            case INSECT:
+                if(scoreInsect > 0) {
+                    scoreInsect-=1;
+                } else {
+                    return false;
+                }
+                break;
+
+            case INKWELL:
+                if(scoreInkwell > 0) {
+                    scoreInkwell-=1;
+                } else {
+                    return false;
+                }
+                break;
+
+            case MANUSCRIPT:
+                if(scoreManuscript > 0) {
+                    scoreManuscript-=1;
+                } else {
+                    return false;
+                }
+                break;
+
+            case QUILL:
+                if(scoreQuill > 0) {
+                    scoreQuill-=1;
+                } else {
+                    return false;
+                }
+                break;
+
+            default:
+                throw new IllegalArgumentException("Errore richiesta tipo di risorsa");
+        }
+
+        return true;
+    }
+
     // aggiunta di risorsa una per volta
     public void addScore(ResourceType type) {
         switch(type){
             case ANIMAL:
-                scoreAnimal-=1;
-            case FUNGI:
-                scoreFungi-=1;
-            case PLANT:
-                scorePlant-=1;
-            case INSECT:
-                scoreInsect-=1;
-            case INKWELL:
-                scoreInkwell-=1;
-            case MANUSCRIPT:
-                scoreManuscript-=1;
-            case QUILL:
-                scoreQuill-=1;
-        }
-    }
-
-    // rimozione di risorsa una per volta
-    public void substract(ResourceType type) {
-        switch(type){
-            case ANIMAL:
                 scoreAnimal+=1;
+                break;
             case FUNGI:
                 scoreFungi+=1;
+                break;
             case PLANT:
                 scorePlant+=1;
+                break;
             case INSECT:
                 scoreInsect+=1;
+                break;
             case INKWELL:
                 scoreInkwell+=1;
+                break;
             case MANUSCRIPT:
                 scoreManuscript+=1;
+                break;
             case QUILL:
                 scoreQuill+=1;
+                break;
+            default:
+                throw new IllegalArgumentException("Errore richiesta tipo di risorsa");
         }
     }
 }

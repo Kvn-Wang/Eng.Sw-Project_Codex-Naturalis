@@ -1,8 +1,8 @@
 package it.polimi.codexnaturalis.main;
 
 import it.polimi.codexnaturalis.model.player.Player;
-import it.polimi.codexnaturalis.model.scoreboard.Pawn;
-import it.polimi.codexnaturalis.model.scoreboard.ScoreBoard;
+//import it.polimi.codexnaturalis.model.scoreboard.Pawn;
+//import it.polimi.codexnaturalis.model.scoreboard.ScoreBoard;
 
 import java.util.Scanner;
 
@@ -21,10 +21,10 @@ public class ClientMain {
             newp.setPawnColor(inputString);
             players[i] = newp;
         }
-        ScoreBoard board = new ScoreBoard(players);
-        for(Pawn p: board.getpawns()) {
-            System.out.printf("%n%s", p.getPlayer().getNickname());
-            System.out.printf("%n%s", p.getImageFile());
-        }
+//        ScoreBoard board = new ScoreBoard(players);
+//        for(Pawn p: board.getpawns()) {
+//            System.out.printf("%n%s", p.getPlayer().getNickname());
+//            System.out.printf("%n%s", p.getImageFile());
+//        }
     }
 }

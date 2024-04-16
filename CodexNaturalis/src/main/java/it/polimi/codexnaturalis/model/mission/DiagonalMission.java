@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.model.mission;
 
+import com.google.gson.annotations.SerializedName;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.shop.card.Card;
@@ -9,9 +10,8 @@ public class DiagonalMission extends Mission  {
     private final boolean isLeftToRight;
     private final ResourceType resourceType;
 
-    public DiagonalMission(int rewardPoint, boolean isLeftToRight, ResourceType typeOfResource) {
-        super();
-        pointPerCondition = rewardPoint;
+    public DiagonalMission(int pngNumber, int pointPerCondition, boolean isLeftToRight, ResourceType typeOfResource) {
+        super(pngNumber, pointPerCondition);
         this.isLeftToRight = isLeftToRight;
         this.resourceType = typeOfResource;
     }
