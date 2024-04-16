@@ -1,8 +1,9 @@
 package it.polimi.codexnaturalis.game;
 
-import it.polimi.codexnaturalis.model.player.Player;
+
 //import it.polimi.codexnaturalis.model.scoreboard.Pawn;
 //import it.polimi.codexnaturalis.model.scoreboard.ScoreBoard;
+import it.polimi.codexnaturalis.model.player.Player;
 
 import java.util.Scanner;
 
