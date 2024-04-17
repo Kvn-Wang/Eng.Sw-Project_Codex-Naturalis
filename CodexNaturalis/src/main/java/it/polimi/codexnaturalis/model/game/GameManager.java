@@ -9,6 +9,7 @@ import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.shop.GeneralShop;
 import it.polimi.codexnaturalis.model.shop.Shop;
 import it.polimi.codexnaturalis.model.shop.card.Card;
+import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 import java.util.ArrayList;
@@ -164,9 +165,13 @@ public class GameManager implements GameInterface {
     }
 
     @Override
-    public void playerPlayCard(String nickname, int x, int y, int numCard) {
+    public void playerPlayCard(String nickname, int x, int y, int numCard) throws PersonalizedException.InvalidPlacementException {
         Player p = nickToPlayer(nickname);
-        p.placeCard(x, y, numCard);
+        try {
+            p.placeCard(x, y, numCard);
+        } catch (PersonalizedException.InvalidPlacementException e) {
+            throw e; // Propagate the caught exception directly
+        }
     }
 
     @Override

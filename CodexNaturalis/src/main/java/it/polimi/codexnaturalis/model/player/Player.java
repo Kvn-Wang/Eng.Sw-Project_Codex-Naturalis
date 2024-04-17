@@ -6,6 +6,7 @@ import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.ResourceCard;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
+import it.polimi.codexnaturalis.utils.PersonalizedException;
 
 public class Player implements PlayerInterface {
     private String nickname;
@@ -66,18 +67,18 @@ public class Player implements PlayerInterface {
     }
 
     @Override
-    public void placeCard(int x, int y, int numCard) {
+    public void placeCard(int x, int y, int numCard) throws PersonalizedException.InvalidPlacementException {
         Card playedCard;
-        int PlaceResult;
+        int placeResult;
 
         playedCard = hand.popCard(numCard);
-        PlaceResult = gameMap.placeCard(x, y, playedCard);
-
-        if(PlaceResult == -1) {
+        try {
+            placeResult = gameMap.placeCard(x, y, playedCard);
+            personalScoreBoardScore+=placeResult;
+        } catch (PersonalizedException.InvalidPlacementException e) {
+            //ripiazza la carta nella mano
             hand.addCard(playedCard);
-            System.err.println("Giocata non Valida");
-        } else if(PlaceResult > 0) {
-            personalScoreBoardScore+=PlaceResult;
+            throw e; // Propagate the caught exception directly
         }
     }
 

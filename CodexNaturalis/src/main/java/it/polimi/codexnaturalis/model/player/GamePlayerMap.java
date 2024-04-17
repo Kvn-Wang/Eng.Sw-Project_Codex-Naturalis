@@ -32,7 +32,10 @@ public class GamePlayerMap {
     // oppure > 0 per indicare che la carta piazzata deve aggiungere punti equivalente al valore di ritorno al punteggio del player
     // la carta è piazzabile se c'è una carta valida a fianco
     public int placeCard(int x, int y, Card card) throws PersonalizedException.InvalidPlacementException {
-        if(checkValidPosition(x,y) > 0){
+        int neightbouringCard = checkValidPosition(x, y);
+
+        if(neightbouringCard > 0){
+            // TODO: manca logica per definire se la carta è up o down
             //TODO: controllo is placeable (carte obj)
             mapArray[x][y] = card;
 

@@ -51,7 +51,31 @@ public class ResourceCard extends Card{
     }
 
     @Override
-    public int getFrontCardPointCondition(PlayerScoreResource scoreCard, GamePlayerMap playerMap) {
-        return frontCardPoint;
+    public int getFrontCardPointCondition(PlayerScoreResource scoreCard, int neightbouringCard) {
+        if(isBack) {
+            return 0;
+        } else {
+            return frontCardPoint;
+        }
+    }
+
+    @Override
+    protected ResourceType getBackNorthResource() {
+        return ResourceType.NONE;
+    }
+
+    @Override
+    protected ResourceType getBackSouthResource() {
+        return ResourceType.NONE;
+    }
+
+    @Override
+    protected ResourceType getBackEastResource() {
+        return ResourceType.NONE;
+    }
+
+    @Override
+    protected ResourceType getBackWestResource() {
+        return ResourceType.NONE;
     }
 }

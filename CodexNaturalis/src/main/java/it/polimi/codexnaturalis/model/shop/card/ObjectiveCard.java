@@ -81,8 +81,41 @@ public class ObjectiveCard extends Card {
     }
 
     @Override
-    public int getFrontCardPointCondition(PlayerScoreResource scoreCard, GamePlayerMap playerMap) {
-        //TODO
-        return null;
+    public int getFrontCardPointCondition(PlayerScoreResource scoreCard, int neightbouringCard) {
+        if(isBack) {
+            return 0;
+        } else {
+            if(pointPerConditionResource == ConditionResourceType.NONE) {
+                return pointPerCondition;
+            } else if(pointPerConditionResource == ConditionResourceType.OCCUPIEDSPACE) {
+                return neightbouringCard * pointPerCondition;
+            } else if(pointPerConditionResource == ConditionResourceType.INKWELL) {
+                return scoreCard.getScoreInkwell();
+            } else if(pointPerConditionResource == ConditionResourceType.MANUSCRIPT) {
+                return scoreCard.getScoreManuscript();
+            } else //pointPerConditionResource == ConditionResourceType.QUILL
+                return scoreCard.getScoreQuill();
+        }
+    }
+
+
+    @Override
+    protected ResourceType getBackNorthResource() {
+        return ResourceType.NONE;
+    }
+
+    @Override
+    protected ResourceType getBackSouthResource() {
+        return ResourceType.NONE;
+    }
+
+    @Override
+    protected ResourceType getBackEastResource() {
+        return ResourceType.NONE;
+    }
+
+    @Override
+    protected ResourceType getBackWestResource() {
+        return ResourceType.NONE;
     }
 }

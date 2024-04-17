@@ -26,7 +26,7 @@ public abstract class Card {
     public abstract ResourceType getColor();
     public abstract boolean checkPlaceableCardCondition(PlayerScoreResource scoreCard);
     public abstract ArrayList<ResourceType> getBackResources();
-    public abstract int getFrontCardPointCondition(PlayerScoreResource scoreCard, GamePlayerMap playerMap);
+    public abstract int getFrontCardPointCondition(PlayerScoreResource scoreCard, int neightbouringCard);
     protected abstract ResourceType getBackNorthResource();
     protected abstract ResourceType getBackSouthResource();
     protected abstract ResourceType getBackEastResource();
