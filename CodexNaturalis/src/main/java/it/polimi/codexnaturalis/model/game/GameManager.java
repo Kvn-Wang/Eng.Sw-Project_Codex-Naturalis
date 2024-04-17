@@ -46,6 +46,8 @@ public class GameManager implements GameInterface {
         initializePlayerHand();
         initializeMission();
         initializeStartingPlayer();
+
+        //TODO manca logica per selezionare lato starter card
     }
 
     private void initializeScoreboard(){
@@ -103,7 +105,7 @@ public class GameManager implements GameInterface {
     private void initializeStarterCard(){
         Shop starterShop = new Shop(ShopType.STARTER);
         for(Player p: players){
-
+            p.setStarterCard(starterShop.drawTopDeckCard());
         }
     }
 

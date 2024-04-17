@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.model.shop.card;
 
+import it.polimi.codexnaturalis.model.enumeration.CardCorner;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.GamePlayerMap;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
@@ -26,25 +27,51 @@ public abstract class Card {
     public abstract boolean checkPlaceableCardCondition(PlayerScoreResource scoreCard);
     public abstract ArrayList<ResourceType> getBackResources();
     public abstract int getFrontCardPointCondition(PlayerScoreResource scoreCard, GamePlayerMap playerMap);
+    protected abstract ResourceType getBackNorthResource();
+    protected abstract ResourceType getBackSouthResource();
+    protected abstract ResourceType getBackEastResource();
+    protected abstract ResourceType getBackWestResource();
+
+    //NB: ritorna NONE se il corner è utilizzabile per piazzare carte, null altrimenti
+    public ResourceType getCardCorner(CardCorner corner){
+        switch(corner){
+            case NORTH:
+                if(!isBack) {
+                    return frontNorthResource;
+                }else{
+                    return getBackNorthResource();
+                }
+            case SOUTH:
+                if(!isBack) {
+                    return frontSouthResource;
+                } else {
+                    return getBackSouthResource();
+                }
+            case EAST:
+                if(!isBack) {
+                    return frontEastResource;
+                } else {
+                    return getBackEastResource();
+                }
+            case WEST:
+                if(!isBack) {
+                    return frontWestResource;
+                } else {
+                    return getBackWestResource();
+                }
+        }
+        return null;
+    }
+
+    public int getPng() {
+        return png;
+    }
 
     public boolean getIsBack() {
         return isBack;
     }
 
-    public ResourceType getFrontNorthResource() {
-        return frontNorthResource;
-    }
-
-    public ResourceType getFrontSouthResource() {
-        return frontSouthResource;
-    }
-    public ResourceType getFrontEastResource() {
-        return frontEastResource;
-    }
-    public ResourceType getFrontWestResource() {
-        return frontWestResource;
-    }
-    public int getPng() {
-        return png;
+    public void setIsBack(boolean back) {
+        isBack = back;
     }
 }

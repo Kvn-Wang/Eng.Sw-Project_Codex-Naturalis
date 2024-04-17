@@ -5,3 +5,5 @@ continua saltando i turni di quel giocatore. Se rimane attivo un solo giocatore,
 dell'unico giocatore rimasto connesso.
 
 come faccio a mandare i msg da server a client? vale sempre la logica dei listener?
+
+manca logica per selezionare la starter card

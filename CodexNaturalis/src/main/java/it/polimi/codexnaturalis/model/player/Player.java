@@ -16,6 +16,7 @@ public class Player implements PlayerInterface {
     private Mission personalMission1;
     private Mission personalMission2;
     private Mission selectedPersonalMission;
+    private Card starterCard;
     private Player playerView;
     private PlayerScoreResource scoreResource;
     private GamePlayerMap gameMap;
@@ -24,9 +25,17 @@ public class Player implements PlayerInterface {
 
     public Player() {
         scoreResource = new PlayerScoreResource();
-        gameMap = new GamePlayerMap(scoreResource);
         hand = new Hand();
         boolean alive = true;
+    }
+
+    public void setStarterCard(Card starterCard) {
+        this.starterCard = starterCard;
+    }
+
+    public void inizializeGamePlayerMap(boolean isBackStarterCard) {
+        starterCard.setIsBack(isBackStarterCard);
+        gameMap = new GamePlayerMap(scoreResource, starterCard);
     }
 
     public Mission getPersonalMission(int numMission){
@@ -171,43 +180,6 @@ public class Player implements PlayerInterface {
         this.pawnImg = pawnImg;
     }
 
-    protected ResourceType checkCornerCardCorner(Card card, CardCorner corner){
-        switch(corner){
-            case NORTH:
-                if(!card.getIsBack()) {
-                    return card.getFrontNorthResource();
-                } else if(card.getClass() == StarterCard.class){
-                    return ((StarterCard) card).getBackNorthResource();
-                }else{
-                    return ResourceType.NONE;
-                }
-            case SOUTH:
-                if(!card.getIsBack()) {
-                    return card.getFrontSouthResource();
-                } else if(card.getClass() == StarterCard.class){
-                    return ((StarterCard) card).getBackSouthResource();
-                }else{
-                    return ResourceType.NONE;
-                }
-            case EAST:
-                if(!card.getIsBack()) {
-                    return card.getFrontEastResource();
-                } else if(card.getClass() == StarterCard.class){
-                    return ((StarterCard) card).getBackEastResource();
-                }else{
-                    return ResourceType.NONE;
-                }
-            case WEST:
-                if(!card.getIsBack()) {
-                    return card.getFrontWestResource();
-                } else if(card.getClass() == StarterCard.class){
-                    return ((StarterCard) card).getBackWestResource();
-                }else{
-                    return ResourceType.NONE;
-                }
-        }
-        return null;
-    }
     protected void updateReducedPlayerScore(ResourceType type){
         scoreResource.substractScore(type);
     }
