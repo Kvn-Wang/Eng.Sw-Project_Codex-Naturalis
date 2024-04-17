@@ -22,41 +22,6 @@ public class ObjectiveCard extends Card {
         this.conditionResources = conditionResource;
     }
 
-    public ResourceType[] getConditionResources() {
-        System.out.printf("conditionResource");
-        return conditionResources;
-    }
-
-    public void setConditionResources(ResourceType[] conditionResources) {
-        this.conditionResources = conditionResources;
-    }
-
-    public ResourceType getBackCentralResource() {
-        System.out.printf("backCentralResource");
-        return backCentralResource;
-    }
-
-    public void setBackCentralResource(ResourceType backCentralResource) {
-        this.backCentralResource = backCentralResource;
-    }
-
-    public ConditionResourceType getPointPerConditionResource() {
-        System.out.printf("pointPerConditionResource");
-        return pointPerConditionResource;
-    }
-
-    public void setPointPerConditionResource(ConditionResourceType pointPerConditionResource) {
-        this.pointPerConditionResource = pointPerConditionResource;
-    }
-
-    public int getPointPerCondition() {
-        System.out.printf("pointPerCondition");
-        return pointPerCondition;
-    }
-
-    public void setPointPerCondition(int pointPerCondition) {
-        this.pointPerCondition = pointPerCondition;
-    }
     public ResourceType getColor() {
         return backCentralResource;
     }
@@ -74,9 +39,27 @@ public class ObjectiveCard extends Card {
     }
 
     @Override
-    public ArrayList<ResourceType> getBackResources() {
+    public ArrayList<ResourceType> getCardResources() {
         ArrayList<ResourceType> temp = new ArrayList<>();
-        temp.add(backCentralResource);
+
+        if(isBack) {
+            if(checkValidResource(frontNorthResource)) {
+                temp.add(frontNorthResource);
+            }
+            if(checkValidResource(frontSouthResource)) {
+                temp.add(frontSouthResource);
+            }
+            if(checkValidResource(frontEastResource)) {
+                temp.add(frontEastResource);
+            }
+            if(checkValidResource(frontWestResource)) {
+                temp.add(frontWestResource);
+            }
+        } else {
+            if(checkValidResource(backCentralResource)) {
+                temp.add(backCentralResource);
+            }
+        }
         return temp;
     }
 

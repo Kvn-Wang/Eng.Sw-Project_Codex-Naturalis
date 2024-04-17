@@ -67,13 +67,13 @@ public class Player implements PlayerInterface {
     }
 
     @Override
-    public void placeCard(int x, int y, int numCard) throws PersonalizedException.InvalidPlacementException {
+    public void placeCard(int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException {
         Card playedCard;
         int placeResult;
 
         playedCard = hand.popCard(numCard);
         try {
-            placeResult = gameMap.placeCard(x, y, playedCard);
+            placeResult = gameMap.placeCard(x, y, playedCard, isCardBack);
             personalScoreBoardScore+=placeResult;
         } catch (PersonalizedException.InvalidPlacementException e) {
             //ripiazza la carta nella mano

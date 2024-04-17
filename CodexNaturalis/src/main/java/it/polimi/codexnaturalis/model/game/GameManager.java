@@ -165,10 +165,10 @@ public class GameManager implements GameInterface {
     }
 
     @Override
-    public void playerPlayCard(String nickname, int x, int y, int numCard) throws PersonalizedException.InvalidPlacementException {
+    public void playerPlayCard(String nickname, int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException {
         Player p = nickToPlayer(nickname);
         try {
-            p.placeCard(x, y, numCard);
+            p.placeCard(x, y, numCard, isCardBack);
         } catch (PersonalizedException.InvalidPlacementException e) {
             throw e; // Propagate the caught exception directly
         }

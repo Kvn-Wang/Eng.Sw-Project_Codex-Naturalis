@@ -17,21 +17,8 @@ public class ResourceCard extends Card{
         this.frontCardPoint = frontCardPoint;
     }
 
-    public ResourceType getBackCentralResource() {
-        System.out.printf("backCentralResource");
-        return backCentralResource;
-    }
-
-    public void setBackCentralResource(ResourceType backCentralResource) {
-        this.backCentralResource = backCentralResource;
-    }
-
     public int getFrontCardPoint() {
         return frontCardPoint;
-    }
-
-    public void setFrontCardPoint(int frontCardPoint) {
-        this.frontCardPoint = frontCardPoint;
     }
 
     public ResourceType getColor() {
@@ -44,9 +31,27 @@ public class ResourceCard extends Card{
     }
 
     @Override
-    public ArrayList<ResourceType> getBackResources() {
+    public ArrayList<ResourceType> getCardResources() {
         ArrayList<ResourceType> temp = new ArrayList<>();
-        temp.add(backCentralResource);
+
+        if(isBack) {
+            if(checkValidResource(frontNorthResource)) {
+                temp.add(frontNorthResource);
+            }
+            if(checkValidResource(frontSouthResource)) {
+                temp.add(frontSouthResource);
+            }
+            if(checkValidResource(frontEastResource)) {
+                temp.add(frontEastResource);
+            }
+            if(checkValidResource(frontWestResource)) {
+                temp.add(frontWestResource);
+            }
+        } else {
+            if(checkValidResource(backCentralResource)) {
+                temp.add(backCentralResource);
+            }
+        }
         return temp;
     }
 

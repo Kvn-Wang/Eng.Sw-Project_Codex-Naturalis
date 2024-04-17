@@ -7,7 +7,7 @@ import it.polimi.codexnaturalis.utils.PersonalizedException;
 public interface PlayerInterface {
     int executePersonalMission();
     void addHandCard(Card drawnCard);
-    void placeCard(int x, int y, int numCard) throws PersonalizedException.InvalidPlacementException;
+    void placeCard(int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException;
     void addMissionScore(int Value);
     boolean isPlayerAlive();
     void setStatus(boolean status);//setta il player alive o dead

@@ -23,19 +23,6 @@ public class StarterCard extends Card{
         this.backWestResource = backWestResource;
     }
 
-    public ResourceType[] getBackCentralResource() {
-        System.out.printf("backCentralResource");
-        return backCentralResource;
-    }
-
-    public void setBackCentralResource(ResourceType[] backCentralResource) {
-        this.backCentralResource = backCentralResource;
-    }
-
-    public void setBackWestResource(ResourceType backWestResource) {
-        this.backWestResource = backWestResource;
-    }
-
     public ResourceType getColor() {
         return ResourceType.NONE;
     }
@@ -46,12 +33,41 @@ public class StarterCard extends Card{
     }
 
     @Override
-    public ArrayList<ResourceType> getBackResources() {
+    public ArrayList<ResourceType> getCardResources() {
         ArrayList<ResourceType> temp = new ArrayList<>();
-        temp.add(backNorthResource);
-        temp.add(backSouthResource);
-        temp.add(backWestResource);
-        temp.add(backEastResource);
+
+        if(isBack) {
+            if(checkValidResource(frontNorthResource)) {
+                temp.add(frontNorthResource);
+            }
+            if(checkValidResource(frontSouthResource)) {
+                temp.add(frontSouthResource);
+            }
+            if(checkValidResource(frontEastResource)) {
+                temp.add(frontEastResource);
+            }
+            if(checkValidResource(frontWestResource)) {
+                temp.add(frontWestResource);
+            }
+        } else {
+            if(checkValidResource(backNorthResource)) {
+                temp.add(backNorthResource);
+            }
+            if(checkValidResource(backSouthResource)) {
+                temp.add(backSouthResource);
+            }
+            if(checkValidResource(backWestResource)) {
+                temp.add(backWestResource);
+            }
+            if(checkValidResource(backEastResource)) {
+                temp.add(backEastResource);
+            }
+            for(ResourceType element : backCentralResource) {
+                if(checkValidResource(element)) {
+                    temp.add(element);
+                }
+            }
+        }
         return temp;
     }
 

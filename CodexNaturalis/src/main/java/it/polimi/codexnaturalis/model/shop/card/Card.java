@@ -25,7 +25,7 @@ public abstract class Card {
     }
     public abstract ResourceType getColor();
     public abstract boolean checkPlaceableCardCondition(PlayerScoreResource scoreCard);
-    public abstract ArrayList<ResourceType> getBackResources();
+    public abstract ArrayList<ResourceType> getCardResources();
     public abstract int getFrontCardPointCondition(PlayerScoreResource scoreCard, int neightbouringCard);
     protected abstract ResourceType getBackNorthResource();
     protected abstract ResourceType getBackSouthResource();
@@ -73,5 +73,13 @@ public abstract class Card {
 
     public void setIsBack(boolean back) {
         isBack = back;
+    }
+
+    public boolean checkValidResource(ResourceType resourceType) {
+        if(resourceType != ResourceType.NONE && resourceType != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

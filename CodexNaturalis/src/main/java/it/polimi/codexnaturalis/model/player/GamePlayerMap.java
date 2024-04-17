@@ -1,12 +1,15 @@
 package it.polimi.codexnaturalis.model.player;
 
 import it.polimi.codexnaturalis.model.enumeration.CardCorner;
+import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.ObjectiveCard;
 import it.polimi.codexnaturalis.model.shop.card.ResourceCard;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
+
+import java.util.ArrayList;
 
 public class GamePlayerMap {
     private Card[][] mapArray;
@@ -31,15 +34,22 @@ public class GamePlayerMap {
     // = 0 come valore per indicare che la carta è stata aggiunta senza aggiunta eventuali di punti (carte obbiettivo o carte risorsa front),
     // oppure > 0 per indicare che la carta piazzata deve aggiungere punti equivalente al valore di ritorno al punteggio del player
     // la carta è piazzabile se c'è una carta valida a fianco
-    public int placeCard(int x, int y, Card card) throws PersonalizedException.InvalidPlacementException {
-        int neightbouringCard = checkValidPosition(x, y);
+    public int placeCard(int x, int y, Card card, boolean isCardBack) throws PersonalizedException.InvalidPlacementException {
+        int neightbouringCard;
+        ArrayList<ResourceType> tempListOfResources;
 
+        neightbouringCard = checkValidPosition(x, y);
         if(neightbouringCard > 0){
-            // TODO: manca logica per definire se la carta è up o down
-            //TODO: controllo is placeable (carte obj)
-            mapArray[x][y] = card;
+            if(card.checkPlaceableCardCondition(playerScoreCard)) {
+                card.setIsBack(isCardBack);
+                mapArray[x][y] = card;
 
-            //TODO: funzione get resources così le aggiungo tutte in una volta alla scorecard
+                tempListOfResources = card.getCardResources();
+                for(ResourceType element : tempListOfResources) {
+                    playerScoreCard.addScore(element);
+                }
+            }
+            
             //TODO: funzione get point con argomento scoreCard e mappa?
 
             if(card.getClass() == ResourceCard.class){
