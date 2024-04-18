@@ -72,7 +72,7 @@ public class StarterCard extends Card{
     }
 
     @Override
-    public int getFrontCardPointCondition(PlayerScoreResource scoreCard, int neightbouringCard) {
+    public int getCardPoints(PlayerScoreResource scoreCard, int neightbouringCard) {
         return 0;
     }
 

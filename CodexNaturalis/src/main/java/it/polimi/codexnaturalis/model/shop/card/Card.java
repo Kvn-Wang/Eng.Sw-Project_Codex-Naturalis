@@ -2,7 +2,6 @@ package it.polimi.codexnaturalis.model.shop.card;
 
 import it.polimi.codexnaturalis.model.enumeration.CardCorner;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
-import it.polimi.codexnaturalis.model.player.GamePlayerMap;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ public abstract class Card {
     public abstract ResourceType getColor();
     public abstract boolean checkPlaceableCardCondition(PlayerScoreResource scoreCard);
     public abstract ArrayList<ResourceType> getCardResources();
-    public abstract int getFrontCardPointCondition(PlayerScoreResource scoreCard, int neightbouringCard);
+    public abstract int getCardPoints(PlayerScoreResource scoreCard, int neightbouringCard);
     protected abstract ResourceType getBackNorthResource();
     protected abstract ResourceType getBackSouthResource();
     protected abstract ResourceType getBackEastResource();

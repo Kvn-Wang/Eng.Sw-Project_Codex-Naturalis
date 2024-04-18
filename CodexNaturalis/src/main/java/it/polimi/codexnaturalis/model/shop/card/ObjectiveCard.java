@@ -64,7 +64,7 @@ public class ObjectiveCard extends Card {
     }
 
     @Override
-    public int getFrontCardPointCondition(PlayerScoreResource scoreCard, int neightbouringCard) {
+    public int getCardPoints(PlayerScoreResource scoreCard, int neightbouringCard) {
         if(isBack) {
             return 0;
         } else {
@@ -73,11 +73,11 @@ public class ObjectiveCard extends Card {
             } else if(pointPerConditionResource == ConditionResourceType.OCCUPIEDSPACE) {
                 return neightbouringCard * pointPerCondition;
             } else if(pointPerConditionResource == ConditionResourceType.INKWELL) {
-                return scoreCard.getScoreInkwell();
+                return (scoreCard.getScoreInkwell() * pointPerCondition);
             } else if(pointPerConditionResource == ConditionResourceType.MANUSCRIPT) {
-                return scoreCard.getScoreManuscript();
+                return (scoreCard.getScoreManuscript() * pointPerCondition);
             } else //pointPerConditionResource == ConditionResourceType.QUILL
-                return scoreCard.getScoreQuill();
+                return (scoreCard.getScoreQuill() * pointPerCondition);
         }
     }
 

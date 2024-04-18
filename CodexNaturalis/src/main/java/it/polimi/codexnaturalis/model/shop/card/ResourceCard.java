@@ -56,7 +56,7 @@ public class ResourceCard extends Card{
     }
 
     @Override
-    public int getFrontCardPointCondition(PlayerScoreResource scoreCard, int neightbouringCard) {
+    public int getCardPoints(PlayerScoreResource scoreCard, int neightbouringCard) {
         if(isBack) {
             return 0;
         } else {
