@@ -8,6 +8,7 @@ import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import java.util.ArrayList;
 
 public class GamePlayerMap {
+
     private Card[][] mapArray;
     private PlayerScoreResource playerScoreCard;
 
