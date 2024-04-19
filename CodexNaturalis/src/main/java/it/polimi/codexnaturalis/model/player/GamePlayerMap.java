@@ -10,7 +10,13 @@ import java.util.ArrayList;
 public class GamePlayerMap {
 
     private Card[][] mapArray;
+
     private PlayerScoreResource playerScoreCard;
+
+    public PlayerScoreResource getPlayerScoreCard() {
+
+        return playerScoreCard;
+    }
 
     public GamePlayerMap(PlayerScoreResource playerScoreResource, Card starterCard) {
         this.playerScoreCard = playerScoreResource;
