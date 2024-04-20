@@ -183,7 +183,7 @@ public class GamePlayerMap {
         return coveredResource;
     }
 
-    public boolean checkValidityXY(int x, int y) {
+    private boolean checkValidityXY(int x, int y) {
         if(x < 0 || y < 0 || x > UtilCostantValue.lunghezzaMaxMappa || y > UtilCostantValue.lunghezzaMaxMappa) {
             return false;
         } else {

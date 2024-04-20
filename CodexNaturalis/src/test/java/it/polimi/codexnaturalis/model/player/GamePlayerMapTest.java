@@ -71,20 +71,6 @@ class GamePlayerMapTest {
     }
 
     @Test
-    public void testCheckValidityXY() {
-        int inputIntX;
-        int inputIntY;
-        boolean result;
-        Random rand = new Random();
-        inputIntX = rand.nextInt(0, 200);
-        inputIntY = rand.nextInt(0, 200);
-        System.out.println(inputIntX);
-        System.out.println(inputIntY);
-        result = gamePlayerMap.checkValidityXY(inputIntX, inputIntY);
-        System.out.println(result);
-    }
-
-    @Test
     public void testCheckResourceCovered() {
         Card[][] resultArray;
         ArrayList<ResourceType> tempListOfResources;
