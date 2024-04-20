@@ -4,7 +4,7 @@ import it.polimi.codexnaturalis.utils.PersonalizedException;
 
 public interface GameController {
     void initializeGame();
-    boolean setPlayerColor(String nickname, String color);
+    void setPlayerColor(String nickname, String color);
     void disconnectPlayer(String nickname);//vedi issues
     void reconnectPlayer(String nickname);
     void playerDraw(String nickname, int Numcard, String type);// vedi issues

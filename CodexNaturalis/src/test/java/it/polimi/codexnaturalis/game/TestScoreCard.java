@@ -19,7 +19,7 @@ public class TestScoreCard {
             newp.setNickname(inputString);
             System.out.print("Enter color: ");
             inputString = scanner.nextLine();
-            newp.setPawnColor(inputString);
+            //newp.setPawnColor(inputString);
             players[i] = newp;
         }
 //        ScoreBoard board = new ScoreBoard(players);
