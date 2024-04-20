@@ -10,7 +10,13 @@ import java.util.ArrayList;
 public class GamePlayerMap {
 
     private Card[][] mapArray;
+
     private PlayerScoreResource playerScoreCard;
+
+    public PlayerScoreResource getPlayerScoreCard() {
+
+        return playerScoreCard;
+    }
 
     public GamePlayerMap(PlayerScoreResource playerScoreResource, Card starterCard) {
         this.playerScoreCard = playerScoreResource;
@@ -175,7 +181,7 @@ public class GamePlayerMap {
         return coveredResource;
     }
 
-    public boolean checkValidityXY(int x, int y) {
+    private boolean checkValidityXY(int x, int y) {
         if(x < 0 || y < 0 || x > UtilCostantValue.lunghezzaMaxMappa || y > UtilCostantValue.lunghezzaMaxMappa) {
             return false;
         } else {

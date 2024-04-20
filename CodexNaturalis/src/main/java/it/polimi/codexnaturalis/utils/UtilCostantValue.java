@@ -1,5 +1,7 @@
 package it.polimi.codexnaturalis.utils;
 
+import it.polimi.codexnaturalis.model.shop.card.ResourceCard;
+
 public final class UtilCostantValue {
     public static int numeroMaxPlayer = 4;
     private static int numeroMaxCarteRisorsa = 40;
