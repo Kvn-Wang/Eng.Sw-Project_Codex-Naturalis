@@ -1,8 +1,8 @@
-package it.polimi.codexnaturalis.model.game;
+package it.polimi.codexnaturalis.controller;
 
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 
-public interface GameInterface {
+public interface GameController {
     void initializeGame();
     boolean setPlayerColor(String nickname, String color);
     void disconnectPlayer(String nickname);//vedi issues

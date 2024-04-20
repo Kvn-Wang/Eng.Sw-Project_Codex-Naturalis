@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.model.game;
 
+import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.chat.ChatManager;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
@@ -8,16 +9,13 @@ import it.polimi.codexnaturalis.model.mission.MissionSelector;
 import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.shop.GeneralShop;
 import it.polimi.codexnaturalis.model.shop.Shop;
-import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 
-public class GameManager implements GameInterface {
+public class GameManager implements GameController {
     private Mission sharedMission1;
     private Mission sharedMission2;
     private GeneralShop resourceShop;
@@ -65,7 +63,12 @@ public class GameManager implements GameInterface {
         }
     }
 
-    public void initializePlayerColor() {
+    public void initializePlayerColor() throws InterruptedException {
+        //mancano observer/listener
+        for(Player p: players){
+            while(p.getPawnColor()==null){
+            }
+        }
         //TODO, come implemento la logica di scelta del colore? idea: con questa funzione
         // mando ai player la domanda di inserire un colore, la lobby man mano che riceve le
         // rispose chiama setPlayerColor, e appena arriva a count 4 risposte positive (max)
@@ -106,7 +109,8 @@ public class GameManager implements GameInterface {
     private void initializeStarterCard(){
         Shop starterShop = new Shop(ShopType.STARTER);
         for(Player p: players){
-            p.setStarterCard(starterShop.drawTopDeckCard());
+            p.addHandCard(starterShop.drawTopDeckCard());
+            p.setStarterCard();
         }
     }
 
@@ -182,12 +186,12 @@ public class GameManager implements GameInterface {
     }
 
     @Override
-    public void switchPlayer(String reqPlayer, String target) {//TODO: da modificare
-//        nickToPlayer(/*playerrichiedente*/).switchPlayerView(nickname);
+    public void switchPlayer(String reqPlayer, String target) {
+        nickToPlayer(reqPlayer).switchPlayerView(nickToPlayer(target));
     }
 
     private boolean endGameCheckFinishedShop(){
-        return false;
+        return false; //TODO: mancano funzioni per controllare presenza di topdeckcard e le carte nello shop senza pescarle
     }
 
     private boolean endGameCheckScoreBoard(){
