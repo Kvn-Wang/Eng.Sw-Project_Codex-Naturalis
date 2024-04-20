@@ -11,11 +11,12 @@ import it.polimi.codexnaturalis.model.shop.GeneralShop;
 import it.polimi.codexnaturalis.model.shop.Shop;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
+import it.polimi.codexnaturalis.utils.observer.Observable;
 
 import java.util.*;
 
 
-public class GameManager implements GameController {
+public class GameManager extends Observable implements GameController {
     private Mission sharedMission1;
     private Mission sharedMission2;
     private GeneralShop resourceShop;
@@ -31,22 +32,30 @@ public class GameManager implements GameController {
     private List <Player> winners;
     private Player startingPlayer;
     private String scoreCardImg;
+    private int placedCards; //TODO:pensare a migliore implementazione
 
     @Override
     public void initializeGame() {
+        //initializeGame ora é diviso in 4 phases
+        GamePhase1();
+    }
+    private void GamePhase1(){
         initializeScoreboard();
         resourceShop = initializeShop(ShopType.RESOURCE);
         objectiveShop = initializeShop(ShopType.OBJECTIVE);
         initializePlayer(nicknamelist, nicknameNumber);
         initializeStarterCard();
-        //TODO, dovrei notificare i player di scegliere il colore (forse listener), attendere che chiamino setPlayerColor
-        // verificare che tutti abbiano scelto e poi continuare con le inizializzazioni
+    }
+    private void GamePhase2(){
         initializePlayerColor();
+    }
+
+    private void GamePhase3(){
         initializePlayerHand();
         initializeMission();
+    }
+    private void GamePhase4(){
         initializeStartingPlayer();
-
-        //TODO manca logica per selezionare lato starter card
     }
 
     private void initializeScoreboard(){
@@ -63,46 +72,49 @@ public class GameManager implements GameController {
         }
     }
 
-    public void initializePlayerColor() throws InterruptedException {
-        //mancano observer/listener
-        for(Player p: players){
-            while(p.getPawnColor()==null){
-            }
-        }
-        //TODO, come implemento la logica di scelta del colore? idea: con questa funzione
+    public void initializePlayerColor(){
+            //System.out.printf("scegli un colore");
+        // come implemento la logica di scelta del colore? idea: con questa funzione
         // mando ai player la domanda di inserire un colore, la lobby man mano che riceve le
         // rispose chiama setPlayerColor, e appena arriva a count 4 risposte positive (max)
         // chiama la prossima inizialize -> problema: esponiamo un inizialize all'esterno
     }
 
     @Override
-    public boolean setPlayerColor(String nickname, String color) {
+    public void setPlayerColor(String nickname, String color) {
         boolean colorAlreadyChosen=false;
+        int chosenColorNum = 0;
 
         for(Player p: players){
             if(p.getPawnColor().equals(color))
                 colorAlreadyChosen=true;
+            if(p.getPawnColor()!=null)
+                chosenColorNum++;
         }
         if(colorAlreadyChosen)
-            return false;
+            //TODO: specifica observer
+            notifyObserver();
         else{
             if(color.equals(ColorType.RED)) {
                 nickToPlayer(nickname).setPawnImg(UtilCostantValue.pathToRedPawnImg);
-                nickToPlayer(nickname).setPawnColor(color);
+                nickToPlayer(nickname).setPawnColor(ColorType.RED);
             } else if(color.equals(ColorType.YELLOW)) {
                 nickToPlayer(nickname).setPawnImg(UtilCostantValue.pathToYellowPawnImg);
-                nickToPlayer(nickname).setPawnColor(color);
+                nickToPlayer(nickname).setPawnColor(ColorType.YELLOW);
             } else if(color.equals(ColorType.GREEN)) {
                 nickToPlayer(nickname).setPawnImg(UtilCostantValue.pathToGreenPawnImg);
-                nickToPlayer(nickname).setPawnColor(color);
+                nickToPlayer(nickname).setPawnColor(ColorType.GREEN);
             } else if(color.equals(ColorType.BLUE)) {
                 nickToPlayer(nickname).setPawnImg(UtilCostantValue.pathToBluePawnImg);
-                nickToPlayer(nickname).setPawnColor(color);
+                nickToPlayer(nickname).setPawnColor(ColorType.BLUE);
             } else {
                 System.err.println("Errore: colore richiesto inesistente!");
             }
-
-            return true;
+            //TODO: specifica observer
+            notifyObserver();
+            //serve a capire se tutti i player hanno scelto un colore
+            if(chosenColorNum == players.length)
+                GamePhase3();
         }
     }
 
@@ -110,7 +122,6 @@ public class GameManager implements GameController {
         Shop starterShop = new Shop(ShopType.STARTER);
         for(Player p: players){
             p.addHandCard(starterShop.drawTopDeckCard());
-            p.setStarterCard();
         }
     }
 
@@ -132,7 +143,16 @@ public class GameManager implements GameController {
     }
 
     private void initializeStartingPlayer(){
-        //TODO: shuffle di players e poi assegno uno a playerturn
+        //Shuffle di players e poi assegno uno a playerturn
+        //Fisher–Yates shuffle
+        Random rnd = new Random();
+        for (int i = players.length - 1; i > 0; i--) {
+            int j = rnd.nextInt(i + 1);
+            Player a = players[j];
+            players[j] = players[i];
+            players[i] = a;
+        }
+        playerTurn = players[0];
     }
 
     private Player nickToPlayer(String nickname){//TODO:throw exception da aggiungere
@@ -165,7 +185,15 @@ public class GameManager implements GameController {
     @Override
     public void playerPersonalMissionSelect(String nickname, int numMission) {
         Player p = nickToPlayer(nickname);
-        p.setPersonalMissionChoice(p.getPersonalMission(numMission));
+        p.setPersonalMissionFinal(numMission);
+        int numPlayerReady = 0;
+        for(Player player: players){
+            if(player.getPersonalMission() != null)
+                numPlayerReady++;
+        }
+        //controllo se tutti i player hanno selezionato personal mission
+        if(numPlayerReady == players.length)
+            GamePhase4();
     }
 
     @Override
@@ -176,6 +204,10 @@ public class GameManager implements GameController {
         } catch (PersonalizedException.InvalidPlacementException e) {
             throw e; // Propagate the caught exception directly
         }
+        //placedCards serve a capire se sono state piazzate tutte le starter
+        placedCards++;
+        if(placedCards == players.length)
+            GamePhase2();
     }
 
     @Override

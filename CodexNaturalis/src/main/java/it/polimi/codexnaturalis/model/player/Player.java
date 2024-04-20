@@ -1,18 +1,22 @@
 package it.polimi.codexnaturalis.model.player;
 
 import it.polimi.codexnaturalis.model.enumeration.CardCorner;
+import it.polimi.codexnaturalis.model.enumeration.ColorType;
+import it.polimi.codexnaturalis.model.enumeration.MessageType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.ResourceCard;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
+import it.polimi.codexnaturalis.network.NetworkMessage;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
+import it.polimi.codexnaturalis.utils.observer.Observable;
 
 public class Player implements PlayerInterface {
     private String nickname;
     private int personalScoreBoardScore;
     private int personalMissionTotalScore;
-    private String pawnColor;
+    private ColorType pawnColor;
     private boolean alive;
     private Mission personalMission1;
     private Mission personalMission2;
@@ -30,31 +34,17 @@ public class Player implements PlayerInterface {
         boolean alive = true;
     }
 
-    public void setStarterCard(Card starterCard) {
-        this.starterCard = starterCard;
-    }
-
     public void inizializeGamePlayerMap(boolean isBackStarterCard) {
         starterCard.setIsBack(isBackStarterCard);
         gameMap = new GamePlayerMap(scoreResource, starterCard);
     }
 
-    public Mission getPersonalMission(int numMission){
-        if(numMission == 1)
-            return personalMission1;
-        else if (numMission == 2) {
-            return personalMission2;
-        }
-        else
-            return null;
+    public Mission getPersonalMission(){ //ritorna la mission selezionata
+        return selectedPersonalMission;
     }
 
     public void addHandCard(Card drawnCard) {
         hand.addCard(drawnCard);
-    }
-    @Override
-    public void setPersonalMissionChoice(Mission selectedPersonalMission) {
-        this.selectedPersonalMission = selectedPersonalMission;
     }
 
     public String getNickname() {
@@ -127,12 +117,12 @@ public class Player implements PlayerInterface {
     }
 
     @Override
-    public String getPawnColor() {
+    public ColorType getPawnColor() {
         return pawnColor;
     }
 
     @Override
-    public void setPawnColor(String pawnColor) {
+    public void setPawnColor(ColorType pawnColor) {
         this.pawnColor = pawnColor;
     }
 

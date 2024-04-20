@@ -21,9 +21,7 @@ public class GamePlayerMap {
             for(int j = 0; j < UtilCostantValue.lunghezzaMaxMappa; j++) {
                 mapArray[i][j] = null;
             }
-        }
-        //posiziono la starterCard al centro
-        mapArray[UtilCostantValue.lunghezzaMaxMappa/2][UtilCostantValue.lunghezzaMaxMappa/2] = starterCard;
+        }//cancellato il metodo per la starter card
     }
 
     //la chiamata a placeCard ritornerà
