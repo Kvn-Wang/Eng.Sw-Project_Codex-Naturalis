@@ -19,6 +19,7 @@ public class GamePlayerMap {
     }
 
     public GamePlayerMap(PlayerScoreResource playerScoreResource, Card starterCard) {
+        ArrayList<ResourceType> tempListOfResources;
         this.playerScoreCard = playerScoreResource;
         this.mapArray = new Card[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
 
@@ -30,6 +31,10 @@ public class GamePlayerMap {
         }
         //posiziono la starterCard al centro
         mapArray[UtilCostantValue.lunghezzaMaxMappa/2][UtilCostantValue.lunghezzaMaxMappa/2] = starterCard;
+        tempListOfResources = starterCard.getCardResources();
+        for(ResourceType element : tempListOfResources) {
+            playerScoreCard.addScore(element);
+        }
     }
 
     //la chiamata a placeCard ritornerà
