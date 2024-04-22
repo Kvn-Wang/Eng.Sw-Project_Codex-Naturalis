@@ -95,7 +95,8 @@ class GamePlayerMapTest {
         assertThrows(PersonalizedException.InvalidPlacementException.class);
         point = gamePlayerMap.placeCard(1,1, testPlacedCard, true);
         assertThrows(PersonalizedException.InvalidPlacementException.class);
-
+        point = gamePlayerMap.placeCard(middle,middle, testPlacedCard, true);
+        assertThrows(PersonalizedException.InvalidPlacementException.class);
     }
 
     private void assertThrows(Class<PersonalizedException.InvalidPlacementException> invalidPlacementExceptionClass) {
