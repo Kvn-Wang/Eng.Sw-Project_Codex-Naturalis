@@ -39,7 +39,6 @@ public class GamePlayerMap {
         int neightbouringCard;
         ArrayList<ResourceType> tempListOfResources;
         int pointToAdd;
-
         if(checkValidityXY(x, y)) {
             //controlla le carte adiacenti per eventuali impossibilità per piazzare la carta
             neightbouringCard = checkValidPosition(x, y);
@@ -75,6 +74,12 @@ public class GamePlayerMap {
         } else {
             throw new PersonalizedException.InvalidPlacementException();
         }
+    }
+
+    public boolean getValidity(int x, int y){
+        boolean validity;
+        validity = checkValidityXY(x,y);
+        return validity;
     }
 
     // Controlla che le celle attorno almeno una sia "piena" e che l'angolo sia valido per piazzare una carta

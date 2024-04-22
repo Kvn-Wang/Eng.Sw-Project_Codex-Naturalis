@@ -6,6 +6,7 @@ import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.ObjectiveCard;
 import it.polimi.codexnaturalis.model.shop.card.ResourceCard;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
+import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,7 +68,7 @@ class GamePlayerMapTest {
     }
 
     @Test
-    public void testPlaceCard(){
+    public void testPlaceCard() throws PersonalizedException.InvalidPlacementException {
         int middle = UtilCostantValue.lunghezzaMaxMappa / 2;
         ArrayList<ResourceType> tempListOfResources;
         PlayerScoreResource testScoreCard = gamePlayerMap.getPlayerScoreCard();
@@ -86,6 +87,17 @@ class GamePlayerMapTest {
         }
         PlayerScoreResource checkScoreCard = testScoreCard;
         point = gamePlayerMap.placeCard(middle-1,middle, testPlacedCard, false);
-        assertThrows(IllegalArgumentException.class, () ->gamePlayerMap.placeCard(gamePlayerMap.))
+        assertEquals(0, testScoreCard.getScore(ResourceType.ANIMAL));
+        assertEquals(1, point);
+        point = gamePlayerMap.placeCard(middle+1,middle, testPlacedCard, false);
+        assertThrows(PersonalizedException.InvalidPlacementException.class);
+        point = gamePlayerMap.placeCard(middle-2,middle, testPlacedCard, true);
+        assertThrows(PersonalizedException.InvalidPlacementException.class);
+        point = gamePlayerMap.placeCard(1,1, testPlacedCard, true);
+        assertThrows(PersonalizedException.InvalidPlacementException.class);
+
+    }
+
+    private void assertThrows(Class<PersonalizedException.InvalidPlacementException> invalidPlacementExceptionClass) {
     }
 }
