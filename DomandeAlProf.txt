@@ -1,1 +1,7 @@
 Ho aggiunto la dipendenza per parametrizedTest di junit, va bene?
+
+manteniamo solo threadLobby come unico thread o facciamo che questo accetta SOLO le richieste e incarica un altro thread game?
+
+per la disconnessione, un utente si identifica con un username, ma dopo che si disconnette, altri potrebbero "rubargli" il nickname e quindi potenzialmente accedere alla sua partita -> vogliamo che dopo la creazione della partita memorizziamo anche qualcos'altro per identificare univocamente il player? come ad es: indirizzo IP?
+
+risposte differenti su come gestire una disconnessione nel mezzo di un round
