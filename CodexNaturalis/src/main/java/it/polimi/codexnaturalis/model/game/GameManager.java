@@ -3,12 +3,14 @@ package it.polimi.codexnaturalis.model.game;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.chat.ChatManager;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
+import it.polimi.codexnaturalis.model.enumeration.MessageType;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.mission.MissionSelector;
 import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.shop.GeneralShop;
 import it.polimi.codexnaturalis.model.shop.Shop;
+import it.polimi.codexnaturalis.network.NetworkMessage;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.utils.observer.Observable;
@@ -23,7 +25,7 @@ public class GameManager extends Observable implements GameController {
     private GeneralShop objectiveShop;
     private MissionSelector missionSelector;
     private String pathToFile;
-    private String[] nicknamelist;//TODO: pensare a come fare per eliminare nicknameList e nicknameNumber per ridondaza con players
+    private String[] nicknamelist;
     private int nicknameNumber;
     private Player[] players;
     private Player playerTurn;
@@ -32,29 +34,29 @@ public class GameManager extends Observable implements GameController {
     private List <Player> winners;
     private Player startingPlayer;
     private String scoreCardImg;
-    private int placedCards; //TODO:pensare a migliore implementazione
+    private int starterCards;
 
     @Override
     public void initializeGame() {
         //initializeGame ora é diviso in 4 phases
-        GamePhase1();
+        gamePhase1();
     }
-    private void GamePhase1(){
+    private void gamePhase1(){
         initializeScoreboard();
         resourceShop = initializeShop(ShopType.RESOURCE);
         objectiveShop = initializeShop(ShopType.OBJECTIVE);
         initializePlayer(nicknamelist, nicknameNumber);
         initializeStarterCard();
     }
-    private void GamePhase2(){
+    private void gamePhase2(){
         initializePlayerColor();
     }
 
-    private void GamePhase3(){
+    private void gamePhase3(){
         initializePlayerHand();
         initializeMission();
     }
-    private void GamePhase4(){
+    private void gamePhase4(){
         initializeStartingPlayer();
     }
 
@@ -73,7 +75,7 @@ public class GameManager extends Observable implements GameController {
     }
 
     public void initializePlayerColor(){
-            //System.out.printf("scegli un colore");
+        System.out.print("scegli un colore");
         // come implemento la logica di scelta del colore? idea: con questa funzione
         // mando ai player la domanda di inserire un colore, la lobby man mano che riceve le
         // rispose chiama setPlayerColor, e appena arriva a count 4 risposte positive (max)
@@ -93,7 +95,7 @@ public class GameManager extends Observable implements GameController {
         }
         if(colorAlreadyChosen)
             //TODO: specifica observer
-            notifyObserver();
+            notifyObserver(new NetworkMessage(nickname, MessageType.COLOR_ALREADY_CHOSEN));
         else{
             if(color.equals(ColorType.RED)) {
                 nickToPlayer(nickname).setPawnImg(UtilCostantValue.pathToRedPawnImg);
@@ -111,10 +113,10 @@ public class GameManager extends Observable implements GameController {
                 System.err.println("Errore: colore richiesto inesistente!");
             }
             //TODO: specifica observer
-            notifyObserver();
+            notifyObserver(new NetworkMessage(nickname, MessageType.CORRECT_CHOSEN_COLOR));
             //serve a capire se tutti i player hanno scelto un colore
             if(chosenColorNum == players.length)
-                GamePhase3();
+                gamePhase3();
         }
     }
 
@@ -177,8 +179,13 @@ public class GameManager extends Observable implements GameController {
         Player p = nickToPlayer(nickname);
         if(type.equals(ShopType.RESOURCE)) {
             p.addHandCard(resourceShop.drawFromShopPlayer(numShopCard));
+            nextTurn();
         } else if(type.equals(ShopType.OBJECTIVE)) {
             p.addHandCard(objectiveShop.drawFromShopPlayer(numShopCard));
+            nextTurn();
+        }
+        else{
+            notifyObserver(new NetworkMessage(nickname, MessageType.WRONG_TYPE_SHOP));
         }
     }
 
@@ -193,7 +200,7 @@ public class GameManager extends Observable implements GameController {
         }
         //controllo se tutti i player hanno selezionato personal mission
         if(numPlayerReady == players.length)
-            GamePhase4();
+            gamePhase4();
     }
 
     @Override
@@ -204,10 +211,19 @@ public class GameManager extends Observable implements GameController {
         } catch (PersonalizedException.InvalidPlacementException e) {
             throw e; // Propagate the caught exception directly
         }
-        //placedCards serve a capire se sono state piazzate tutte le starter
-        placedCards++;
-        if(placedCards == players.length)
-            GamePhase2();
+    }
+
+    @Override
+    public void playerPlayStarterCard(String nickname, boolean isCardBack) throws PersonalizedException.InvalidPlacementException {
+        Player p = nickToPlayer(nickname);
+        try {
+            p.placeCard(p.getGameMap().getMapArray().length, (p.getGameMap().getMapArray())[0].length, 0, isCardBack);
+        } catch (PersonalizedException.InvalidPlacementException e) {
+            throw e; // Propagate the caught exception directly
+        }
+        starterCards++;
+        if(starterCards==players.length)
+            gamePhase2();
     }
 
     @Override
@@ -222,24 +238,37 @@ public class GameManager extends Observable implements GameController {
         nickToPlayer(reqPlayer).switchPlayerView(nickToPlayer(target));
     }
 
+    private boolean endGameCheck(){
+        if(endGameCheckFinishedShop() || endGameCheckScoreBoard())
+            return true;
+        else
+            return false;
+    }
+
     private boolean endGameCheckFinishedShop(){
-        return false; //TODO: mancano funzioni per controllare presenza di topdeckcard e le carte nello shop senza pescarle
+        if(objectiveShop.checkEmptyShop() && resourceShop.checkEmptyShop()){
+            //TODO: mancano funzioni per controllare presenza di topdeckcard e le carte nello shop senza pescarle
+            return true;
+        }
+        else
+            return false;
     }
 
     private boolean endGameCheckScoreBoard(){
         return playerTurn.getPersonalScore() >= 20;
     }
+
     @Override
     public void endGame() {
 
     }
 
     private void executeSharedMission(){
-        int points=0;
+        int points = 0;
         for(Player p: players){
-            points=0;
             points = sharedMission1.ruleAlgorithmCheck(p) + sharedMission2.ruleAlgorithmCheck(p);
             p.addMissionScore(points);
+            points = 0;
         }
     }
 
@@ -261,6 +290,7 @@ public class GameManager extends Observable implements GameController {
             }
         }while(!playerTurn.isPlayerAlive());
     }
+
     private void setWinner(){
         int max = 0;
         for(Player p: players){

@@ -1,16 +1,10 @@
 package it.polimi.codexnaturalis.model.player;
 
-import it.polimi.codexnaturalis.model.enumeration.CardCorner;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
-import it.polimi.codexnaturalis.model.enumeration.MessageType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.shop.card.Card;
-import it.polimi.codexnaturalis.model.shop.card.ResourceCard;
-import it.polimi.codexnaturalis.model.shop.card.StarterCard;
-import it.polimi.codexnaturalis.network.NetworkMessage;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
-import it.polimi.codexnaturalis.utils.observer.Observable;
 
 public class Player implements PlayerInterface {
     private String nickname;
@@ -21,23 +15,16 @@ public class Player implements PlayerInterface {
     private Mission personalMission1;
     private Mission personalMission2;
     private Mission selectedPersonalMission;
-    private Card starterCard;
     private Player playerView;
     private PlayerScoreResource scoreResource;
     private GamePlayerMap gameMap;
     private Hand hand;
     private String pawnImg;
 
-    public Player() {
-        scoreResource = new PlayerScoreResource();
-        hand = new Hand();
-        boolean alive = true;
-    }
-
-    public void inizializeGamePlayerMap(boolean isBackStarterCard) {
-        starterCard.setIsBack(isBackStarterCard);
-        gameMap = new GamePlayerMap(scoreResource, starterCard);
-    }
+//    public void inizializeGamePlayerMap(boolean isBackStarterCard) {
+//        starterCard.setIsBack(isBackStarterCard);
+//        gameMap = new GamePlayerMap(scoreResource, starterCard);
+//    }
 
     public Mission getPersonalMission(){ //ritorna la mission selezionata
         return selectedPersonalMission;
@@ -152,15 +139,19 @@ public class Player implements PlayerInterface {
     }
 
     public Player(String nick){
-        nickname=nick;
-        personalScoreBoardScore=0;
-        personalMissionTotalScore=0;
-        pawnColor=null;
-        alive=true;
-        personalMission1=null;
-        personalMission2=null;
-        selectedPersonalMission=null;
-        playerView=this;
+        nickname = nick;
+        personalScoreBoardScore = 0;
+        personalMissionTotalScore = 0;
+        personalMission1 = null;
+        personalMission2 = null;
+        selectedPersonalMission = null;
+        playerView = this;
+        scoreResource = new PlayerScoreResource();
+        gameMap = new GamePlayerMap(scoreResource);
+        hand = new Hand();
+        pawnColor = null;
+        pawnImg = null;
+        alive = true;
     }
 
     public String getPawnImg() {

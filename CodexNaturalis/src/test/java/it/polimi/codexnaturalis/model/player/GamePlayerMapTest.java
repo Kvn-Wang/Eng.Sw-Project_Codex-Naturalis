@@ -27,8 +27,7 @@ class GamePlayerMapTest {
     @BeforeEach
     void setUp() {
         PlayerScoreResource playerScoreResource = new PlayerScoreResource();
-        starterCard.setIsBack(true);
-        gamePlayerMap = new GamePlayerMap(playerScoreResource, starterCard);
+        gamePlayerMap = new GamePlayerMap(playerScoreResource);
         ResourceCard northTestCard = new ResourceCard(1, ResourceType.FUNGI, null, ResourceType.NONE, ResourceType.FUNGI, ResourceType.FUNGI, 0);
         ResourceCard southTestCard = new ResourceCard(1, ResourceType.FUNGI, null, ResourceType.NONE, ResourceType.FUNGI, ResourceType.FUNGI, 0);
         ObjectiveCard eastTestCard = new ObjectiveCard(41, null, ResourceType.QUILL, ResourceType.NONE, ResourceType.NONE, ResourceType.FUNGI, ConditionResourceType.QUILL, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
