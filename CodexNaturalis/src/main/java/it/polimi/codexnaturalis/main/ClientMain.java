@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class ClientMain {
     public static void main(String[] args){
-        Scanner scanner = new Scanner(System.in);
+        /* Scanner scanner = new Scanner(System.in);
         String inputString;
         Player[] players = new Player[4];
         for(int i=0; i<4; i++){
@@ -20,7 +20,7 @@ public class ClientMain {
             inputString = scanner.nextLine();
             //newp.setPawnColor(inputString);
             players[i] = newp;
-        }
+        } */
 //        ScoreBoard board = new ScoreBoard(players);
 //        for(Pawn p: board.getpawns()) {
 //            System.out.printf("%n%s", p.getPlayer().getNickname());

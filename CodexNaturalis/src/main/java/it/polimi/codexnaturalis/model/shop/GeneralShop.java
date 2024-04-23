@@ -30,4 +30,11 @@ public class GeneralShop extends Shop {
                 throw new RuntimeException("è stata richiesta un numero di carta non valido: "+numCard);
         }
     }
+    public Boolean checkEmptyShop(){
+        if(visibleCard1==null && visibleCard2==null && topDeckCard==null){
+            return true;
+        }
+        else
+            return false;
+    }
 }

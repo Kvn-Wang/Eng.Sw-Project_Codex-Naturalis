@@ -18,7 +18,7 @@ public class GamePlayerMap {
         return playerScoreCard;
     }
 
-    public GamePlayerMap(PlayerScoreResource playerScoreResource, Card starterCard) {
+    public GamePlayerMap(PlayerScoreResource playerScoreResource) {
         this.playerScoreCard = playerScoreResource;
         this.mapArray = new Card[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
 

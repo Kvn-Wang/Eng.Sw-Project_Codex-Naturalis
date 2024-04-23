@@ -27,8 +27,7 @@ class GamePlayerMapTest {
     @BeforeEach
     void setUp() {
         PlayerScoreResource playerScoreResource = new PlayerScoreResource();
-        starterCard.setIsBack(true);
-        gamePlayerMap = new GamePlayerMap(playerScoreResource, starterCard);
+        gamePlayerMap = new GamePlayerMap(playerScoreResource);
         ResourceCard northTestCard = new ResourceCard(1, ResourceType.FUNGI, null, ResourceType.NONE, ResourceType.FUNGI, ResourceType.FUNGI, 0);
         ResourceCard southTestCard = new ResourceCard(1, ResourceType.FUNGI, null, ResourceType.NONE, ResourceType.FUNGI, ResourceType.FUNGI, 0);
         ObjectiveCard eastTestCard = new ObjectiveCard(41, null, ResourceType.QUILL, ResourceType.NONE, ResourceType.NONE, ResourceType.FUNGI, ConditionResourceType.QUILL, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
@@ -90,7 +89,7 @@ class GamePlayerMapTest {
         assertEquals(0, testScoreCard.getScore(ResourceType.ANIMAL));
         assertEquals(1, point);
         point = gamePlayerMap.placeCard(middle+1,middle, testPlacedCard, false);
-        assertThrows(PersonalizedException.InvalidPlacementException.class);
+        assertThrows(PersonalizedException.InvalidPlacementException.class, () -> {gamePlayerMap.placeCard(middle+1,middle, testPlacedCard, false);});
         point = gamePlayerMap.placeCard(middle-2,middle, testPlacedCard, true);
         assertThrows(PersonalizedException.InvalidPlacementException.class);
         point = gamePlayerMap.placeCard(1,1, testPlacedCard, true);

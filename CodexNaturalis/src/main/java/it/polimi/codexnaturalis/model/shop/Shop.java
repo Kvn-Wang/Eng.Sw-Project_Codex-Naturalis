@@ -22,7 +22,7 @@ public class Shop {
     public final ShopType shopType;
     protected final String cardsFile;
     private ArrayList<Card> cardDeck;
-    private Card topDeckCard;
+    protected Card topDeckCard;
 
     public Shop(ShopType type){
         this.shopType = type;
