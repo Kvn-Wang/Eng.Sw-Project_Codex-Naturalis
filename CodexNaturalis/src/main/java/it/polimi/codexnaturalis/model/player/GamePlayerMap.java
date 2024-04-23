@@ -35,7 +35,7 @@ public class GamePlayerMap {
     // = 0 come valore per indicare che la carta è stata aggiunta senza aggiunta eventuali di punti (carte obbiettivo o carte risorsa front),
     // oppure > 0 per indicare che la carta piazzata deve aggiungere punti equivalente al valore di ritorno al punteggio del player
     // la carta è piazzabile se c'è una carta valida a fianco
-    public int placeCard(int x, int y, Card card, boolean isCardBack) throws PersonalizedException.InvalidPlacementException {
+    public int placeCard(int x, int y, Card card, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
         int neightbouringCard;
         ArrayList<ResourceType> tempListOfResources;
         int pointToAdd;
@@ -66,7 +66,7 @@ public class GamePlayerMap {
 
                     return pointToAdd;
                 } else {
-                    throw new PersonalizedException.InvalidPlacementException();
+                    throw new PersonalizedException.InvalidPlaceCardRequirementException();
                 }
             } else {
                 throw new PersonalizedException.InvalidPlacementException();
