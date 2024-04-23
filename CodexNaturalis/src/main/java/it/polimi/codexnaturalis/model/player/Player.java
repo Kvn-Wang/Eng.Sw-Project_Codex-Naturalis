@@ -44,7 +44,7 @@ public class Player implements PlayerInterface {
     }
 
     @Override
-    public void placeCard(int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException {
+    public void placeCard(int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
         Card playedCard;
         int placeResult;
 
@@ -53,6 +53,10 @@ public class Player implements PlayerInterface {
             placeResult = gameMap.placeCard(x, y, playedCard, isCardBack);
             personalScoreBoardScore+=placeResult;
         } catch (PersonalizedException.InvalidPlacementException e) {
+            //ripiazza la carta nella mano
+            hand.addCard(playedCard);
+            throw e; // Propagate the caught exception directly
+        } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
             //ripiazza la carta nella mano
             hand.addCard(playedCard);
             throw e; // Propagate the caught exception directly
@@ -138,8 +142,9 @@ public class Player implements PlayerInterface {
         this.gameMap = gameMap;
     }
 
-    public Player(String nick){
+    public Player(String nick, ColorType color){
         nickname = nick;
+        this.pawnColor = color;
         personalScoreBoardScore = 0;
         personalMissionTotalScore = 0;
         personalMission1 = null;

@@ -25,7 +25,7 @@ public class GameManager extends Observable implements GameController {
     private GeneralShop objectiveShop;
     private MissionSelector missionSelector;
     private String pathToFile;
-    private String[] nicknamelist;
+    Map<String, ColorType> playerInfo = new HashMap<>();
     private int nicknameNumber;
     private Player[] players;
     private Player playerTurn;
@@ -36,6 +36,11 @@ public class GameManager extends Observable implements GameController {
     private String scoreCardImg;
     private int starterCards;
 
+    public GameManager(Map<String, ColorType> playerInfo) {
+        this.playerInfo = playerInfo;
+        players = new Player[playerInfo.size()];
+    }
+
     @Override
     public void initializeGame() {
         //initializeGame ora é diviso in 4 phases
@@ -45,18 +50,15 @@ public class GameManager extends Observable implements GameController {
         initializeScoreboard();
         resourceShop = initializeShop(ShopType.RESOURCE);
         objectiveShop = initializeShop(ShopType.OBJECTIVE);
-        initializePlayer(nicknamelist, nicknameNumber);
+        initializePlayer();
         initializeStarterCard();
     }
-    private void gamePhase2(){
-        initializePlayerColor();
-    }
 
-    private void gamePhase3(){
+    private void gamePhase2(){
         initializePlayerHand();
         initializeMission();
     }
-    private void gamePhase4(){
+    private void gamePhase3(){
         initializeStartingPlayer();
     }
 
@@ -68,19 +70,22 @@ public class GameManager extends Observable implements GameController {
         return new GeneralShop(typeOfShop);
     }
 
-    private void initializePlayer(String[] playerList, int playerNumber){
-        for(int i=0; i<playerNumber; i++){
-            players[i]=new Player(playerList[i]);
+    //inizialize ninckname and color
+    private void initializePlayer(){
+        int i = 0;
+        for (Map.Entry<String, ColorType> entry : playerInfo.entrySet()) {
+            String nickname = entry.getKey();
+            ColorType colorPlayer = entry.getValue();
+            players[i] = new Player(nickname, colorPlayer);
+            i++;
         }
     }
 
-    public void initializePlayerColor(){
-        System.out.print("scegli un colore");
-        // come implemento la logica di scelta del colore? idea: con questa funzione
-        // mando ai player la domanda di inserire un colore, la lobby man mano che riceve le
-        // rispose chiama setPlayerColor, e appena arriva a count 4 risposte positive (max)
-        // chiama la prossima inizialize -> problema: esponiamo un inizialize all'esterno
-    }
+    /*public void initializePlayerColor(){
+        for(Player elem : players) {
+            elem.setPawnColor();
+        }
+    }*/
 
 /*    @Override
     public void setPlayerColor(String nickname, String color) {
@@ -200,27 +205,31 @@ public class GameManager extends Observable implements GameController {
         }
         //controllo se tutti i player hanno selezionato personal mission
         if(numPlayerReady == players.length)
-            gamePhase4();
+            gamePhase3();
     }
 
     @Override
-    public void playerPlayCard(String nickname, int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException {
+    public void playerPlayCard(String nickname, int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
         Player p = nickToPlayer(nickname);
         try {
             p.placeCard(x, y, numCard, isCardBack);
         } catch (PersonalizedException.InvalidPlacementException e) {
             throw e; // Propagate the caught exception directly
+        } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
+            throw e;
         }
         endGameCheckScoreBoard();
     }
 
     @Override
-    public void playerPlayStarterCard(String nickname, boolean isCardBack) throws PersonalizedException.InvalidPlacementException {
+    public void playerPlayStarterCard(String nickname, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
         Player p = nickToPlayer(nickname);
         try {
             p.placeCard(p.getGameMap().getMapArray().length, (p.getGameMap().getMapArray())[0].length, 0, isCardBack);
         } catch (PersonalizedException.InvalidPlacementException e) {
             throw e; // Propagate the caught exception directly
+        } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
+            throw e;
         }
         starterCards++;
         if(starterCards==players.length)
