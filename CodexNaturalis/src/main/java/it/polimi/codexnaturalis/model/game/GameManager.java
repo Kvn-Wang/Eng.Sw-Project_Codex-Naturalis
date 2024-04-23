@@ -82,7 +82,7 @@ public class GameManager extends Observable implements GameController {
         // chiama la prossima inizialize -> problema: esponiamo un inizialize all'esterno
     }
 
-    @Override
+/*    @Override
     public void setPlayerColor(String nickname, String color) {
         boolean colorAlreadyChosen=false;
         int chosenColorNum = 0;
@@ -119,7 +119,7 @@ public class GameManager extends Observable implements GameController {
                 gamePhase3();
         }
     }
-
+*/
     private void initializeStarterCard(){
         Shop starterShop = new Shop(ShopType.STARTER);
         for(Player p: players){
@@ -211,6 +211,7 @@ public class GameManager extends Observable implements GameController {
         } catch (PersonalizedException.InvalidPlacementException e) {
             throw e; // Propagate the caught exception directly
         }
+        endGameCheckScoreBoard();
     }
 
     @Override
