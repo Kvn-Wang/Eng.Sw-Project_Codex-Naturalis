@@ -12,4 +12,8 @@ public class PersonalizedException {
             super("You do not meet the requirement to place this card");
         }
     }
+
+    public static class InvalidAddCardException extends Exception{
+        public InvalidAddCardException() {super("The hand is Already full");}
+    }
 }
