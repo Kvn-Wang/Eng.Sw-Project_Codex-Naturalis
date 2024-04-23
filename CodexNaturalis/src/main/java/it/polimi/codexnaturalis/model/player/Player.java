@@ -31,7 +31,11 @@ public class Player implements PlayerInterface {
     }
 
     public void addHandCard(Card drawnCard) {
-        hand.addCard(drawnCard);
+        try {
+            hand.addCard(drawnCard);
+        } catch (PersonalizedException.InvalidAddCardException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getNickname() {
@@ -54,7 +58,11 @@ public class Player implements PlayerInterface {
             personalScoreBoardScore+=placeResult;
         } catch (PersonalizedException.InvalidPlacementException e) {
             //ripiazza la carta nella mano
-            hand.addCard(playedCard);
+            try {
+                hand.addCard(playedCard);
+            } catch (PersonalizedException.InvalidAddCardException ex) {
+                throw new RuntimeException(ex);
+            }
             throw e; // Propagate the caught exception directly
         } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
             //ripiazza la carta nella mano
