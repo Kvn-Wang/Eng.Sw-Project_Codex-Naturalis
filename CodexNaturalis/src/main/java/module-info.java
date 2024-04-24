@@ -2,9 +2,8 @@ module it.polimi.codexnaturalis {
     requires javafx.controls;
     requires javafx.fxml;
     requires com.google.gson;
+    requires java.rmi;
 
-    opens it.polimi.codexnaturalis to javafx.fxml;
-    exports it.polimi.codexnaturalis;
     exports it.polimi.codexnaturalis.model.shop;
     opens it.polimi.codexnaturalis.model.shop to javafx.fxml;
     exports it.polimi.codexnaturalis.model.enumeration;
