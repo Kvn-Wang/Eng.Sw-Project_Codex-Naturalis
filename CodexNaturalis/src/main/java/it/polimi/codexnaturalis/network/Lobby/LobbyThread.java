@@ -1,5 +1,6 @@
-package it.polimi.codexnaturalis.network;
+package it.polimi.codexnaturalis.network.Lobby;
 
+import it.polimi.codexnaturalis.network.PlayerInfo;
 import it.polimi.codexnaturalis.network.rmi.VirtualView;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import javafx.scene.paint.Color;
@@ -16,18 +17,21 @@ public class LobbyThread extends Thread {
     final int timoutGameStart;
 
     // TODO: data Race
-    private Map<VirtualView, ValueOfPlayer> listOfPlayers;
+    private ArrayList<PlayerInfo> listOfPlayers;
 
     public LobbyThread(String lobbyName) {
         this.lobbyName = lobbyName;
-        listOfPlayers = new HashMap<>();
         this.isLobbyStarted = false;
         this.maxPlayer = UtilCostantValue.maxPlayerPerLobby;
         this.timoutGameStart = UtilCostantValue.timeoutSecGameStart;
     }
 
-    public void connectPlayer(VirtualView player) {
-        listOfPlayers.put(player, new ValueOfPlayer());
+    public void connectPlayer(PlayerInfo player) {
+        listOfPlayers.add(player);
+    }
+
+    public void disconnectPlayer(PlayerInfo player) {
+        listOfPlayers.remove(player);
     }
 
     public boolean playerChooseColor() {
@@ -48,17 +52,5 @@ public class LobbyThread extends Thread {
     public String getLobbyName() {
         return lobbyName;
     }
-
-    public Collection<ValueOfPlayer> getPlayerInfo() {
-        return listOfPlayers.values();
-    }
 }
 
-class ValueOfPlayer {
-    public Color colorChosen;
-    public boolean isPlayerReady;
-    public ValueOfPlayer() {
-        this.colorChosen = null;
-        this.isPlayerReady = false;
-    }
-}
