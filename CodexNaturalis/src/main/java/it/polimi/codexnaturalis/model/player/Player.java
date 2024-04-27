@@ -66,7 +66,11 @@ public class Player implements PlayerInterface {
             throw e; // Propagate the caught exception directly
         } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
             //ripiazza la carta nella mano
-            hand.addCard(playedCard);
+            try {
+                hand.addCard(playedCard);
+            } catch (PersonalizedException.InvalidAddCardException ex) {
+                throw new RuntimeException(ex);
+            }
             throw e; // Propagate the caught exception directly
         }
     }

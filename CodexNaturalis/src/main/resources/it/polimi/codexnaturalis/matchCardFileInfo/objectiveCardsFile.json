@@ -8,7 +8,7 @@
     "backCentralResource" : "FUNGI",
     "pointPerConditionResource":"QUILL",
     "pointPerCondition" : 1,
-    "conditionResource" : "FUNGI,FUNGI,ANIMAL"
+    "conditionResource" : ["FUNGI","FUNGI","ANIMAL"]
   }
   ,
   {
@@ -20,7 +20,7 @@
     "backCentralResource" : "FUNGI",
     "pointPerConditionResource":"INKWELL",
     "pointPerCondition" : 1,
-    "conditionResource" : "FUNGI,FUNGI,PLANT"
+    "conditionResource" : ["FUNGI","FUNGI","PLANT"]
   },  {
   "png" : 43,
   "frontNorthResource" :"MANUSCRIPT",
@@ -30,7 +30,7 @@
   "backCentralResource" : "FUNGI",
   "pointPerConditionResource":"MANUSCRIPT",
   "pointPerCondition" : 1,
-  "conditionResource" : "FUNGI,FUNGI,INSECT"
+  "conditionResource" : ["FUNGI","FUNGI","INSECT"]
 },  {
   "png" : 44,
   "frontNorthResource" :"NONE",
@@ -40,7 +40,7 @@
   "backCentralResource" : "FUNGI",
   "pointPerConditionResource":"OCCUPIEDSPACE",
   "pointPerCondition" : 2,
-  "conditionResource" : "FUNGI,FUNGI,FUNGI,ANIMAL"
+  "conditionResource" : ["FUNGI","FUNGI","FUNGI","ANIMAL"]
 },  {
   "png" : 45,
   "frontNorthResource" :"NONE",
@@ -50,7 +50,7 @@
   "backCentralResource" : "FUNGI",
   "pointPerConditionResource":"OCCUPIEDSPACE",
   "pointPerCondition" : 2,
-  "conditionResource" : "FUNGI,FUNGI,FUNGI,PLANT"
+  "conditionResource" : ["FUNGI","FUNGI","FUNGI","PLANT"]
 },  {
   "png" : 46,
   "frontNorthResource" :"NONE",
@@ -60,7 +60,7 @@
   "backCentralResource" : "FUNGI",
   "pointPerConditionResource":"OCCUPIEDSPACE",
   "pointPerCondition" : 2,
-  "conditionResource" : "FUNGI,FUNGI,FUNGI,INSECT"
+  "conditionResource" : ["FUNGI","FUNGI","FUNGI","INSECT"]
 },
   {
     "png" : 47,
@@ -71,7 +71,7 @@
     "backCentralResource" : "FUNGI",
     "pointPerConditionResource":"NONE",
     "pointPerCondition" : 3,
-    "conditionResource" : "FUNGI,FUNGI,FUNGI,"
+    "conditionResource" : ["FUNGI","FUNGI","FUNGI"]
   },
   {
   "png" : 48,
@@ -82,7 +82,7 @@
   "backCentralResource" : "FUNGI",
   "pointPerConditionResource":"NONE",
   "pointPerCondition" : 3,
-  "conditionResource" : "FUNGI,FUNGI,FUNGI,"
+  "conditionResource" : ["FUNGI","FUNGI","FUNGI"]
 },
   {
     "png" : 49,
@@ -93,7 +93,7 @@
     "backCentralResource" : "FUNGI",
     "pointPerConditionResource":"NONE",
     "pointPerCondition" : 3,
-    "conditionResource" : "FUNGI,FUNGI,FUNGI,"
+    "conditionResource" : ["FUNGI","FUNGI","FUNGI"]
   },
   {
     "png" : 50,
@@ -104,7 +104,7 @@
     "backCentralResource" : "FUNGI",
     "pointPerConditionResource":"NONE",
     "pointPerCondition" : 5,
-    "conditionResource" : "FUNGI,FUNGI,FUNGI,FUNGI,FUNGI"
+    "conditionResource" : ["FUNGI","FUNGI","FUNGI","FUNGI","FUNGI"]
   },
   {
     "png" : 51,
@@ -115,7 +115,7 @@
     "backCentralResource" : "PLANT",
     "pointPerConditionResource":"QUILL",
     "pointPerCondition" : 1,
-    "conditionResource" : "PLANT,PLANT,INSECT"
+    "conditionResource" : ["PLANT","PLANT","INSECT"]
   },
   {
     "png" : 52,
@@ -126,7 +126,7 @@
     "backCentralResource" : "PLANT",
     "pointPerConditionResource":"MANUSCRIPT",
     "pointPerCondition" : 1,
-    "conditionResource" : "PLANT,PLANT,FUNGI"
+    "conditionResource" : ["PLANT","PLANT","FUNGI"]
   },
   {
     "png" : 53,
@@ -137,7 +137,7 @@
     "backCentralResource" : "PLANT",
     "pointPerConditionResource":"INKWELL",
     "pointPerCondition" : 1,
-    "conditionResource" : "PLANT,PLANT,ANIMAL"
+    "conditionResource" : ["PLANT","PLANT","ANIMAL"]
   },
   {
     "png" : 54,
@@ -148,7 +148,7 @@
     "backCentralResource" : "PLANT",
     "pointPerConditionResource":"OCCUPIEDSPACE",
     "pointPerCondition" : 2,
-    "conditionResource" : "PLANT,PLANT,PLANT,INSECT"
+    "conditionResource" : ["PLANT","PLANT","PLANT","INSECT"]
   },
   {
     "png" : 55,
@@ -159,7 +159,7 @@
     "backCentralResource" : "PLANT",
     "pointPerConditionResource":"OCCUPIEDSPACE",
     "pointPerCondition" : 2,
-    "conditionResource" : "PLANT,PLANT,PLANT,ANIMAL"
+    "conditionResource" : ["PLANT","PLANT","PLANT","ANIMAL"]
   },
   {
     "png" : 56,
@@ -170,7 +170,7 @@
     "backCentralResource" : "PLANT",
     "pointPerConditionResource":"OCCUPIEDSPACE",
     "pointPerCondition" : 2,
-    "conditionResource" : "PLANT,PLANT,PLANT,FUNGI"
+    "conditionResource" : ["PLANT","PLANT","PLANT","FUNGI"]
   },
   {
     "png" : 57,
@@ -181,7 +181,7 @@
     "backCentralResource" : "PLANT",
     "pointPerConditionResource":"NONE",
     "pointPerCondition" : 3,
-    "conditionResource" : "PLANT,PLANT,PLANT"
+    "conditionResource" :   ["PLANT","PLANT","PLANT"]
   },
   {
     "png" : 58,
@@ -192,7 +192,7 @@
     "backCentralResource" : "PLANT",
     "pointPerConditionResource":"NONE",
     "pointPerCondition" : 3,
-    "conditionResource" : "PLANT,PLANT,PLANT"
+    "conditionResource" : ["PLANT","PLANT","PLANT"]
   },
   {
     "png" : 59,
@@ -203,7 +203,7 @@
     "backCentralResource" : "PLANT",
     "pointPerConditionResource":"NONE",
     "pointPerCondition" : 3,
-    "conditionResource" : "PLANT,PLANT,PLANT"
+    "conditionResource" : ["PLANT","PLANT","PLANT"]
   },
   {
     "png" : 60,
@@ -214,7 +214,7 @@
     "backCentralResource" : "PLANT",
     "pointPerConditionResource":"NONE",
     "pointPerCondition" : 5,
-    "conditionResource" : "PLANT,PLANT,PLANT,PLANT,PLANT"
+    "conditionResource" : ["PLANT","PLANT","PLANT","PLANT","PLANT"]
   },
   {
     "png" : 61,
@@ -225,7 +225,7 @@
     "backCentralResource" : "ANIMAL",
     "pointPerConditionResource":"INKWELL",
     "pointPerCondition" : 1,
-    "conditionResource" : "ANIMAL,ANIMAL,INSECT"
+    "conditionResource" : ["ANIMAL","ANIMAL","INSECT"]
   },
   {
     "png" : 62,
@@ -236,7 +236,7 @@
     "backCentralResource" : "ANIMAL",
     "pointPerConditionResource":"MANUSCRIPT",
     "pointPerCondition" : 1,
-    "conditionResource" : "ANIMAL,ANIMAL,PLANT,"
+    "conditionResource" : ["ANIMAL","ANIMAL","PLANT"]
   },
   {
     "png" : 63,
@@ -247,7 +247,7 @@
     "backCentralResource" : "ANIMAL",
     "pointPerConditionResource":"QUILL",
     "pointPerCondition" : 1,
-    "conditionResource" : "ANIMAL,ANIMAL,FUNGI"
+    "conditionResource" : ["ANIMAL","ANIMAL","FUNGI"]
   },
   {
     "png" : 64,
@@ -258,7 +258,7 @@
     "backCentralResource" : "ANIMAL",
     "pointPerConditionResource":"OCCUPIEDSPACE",
     "pointPerCondition" : 2,
-    "conditionResource" : "ANIMAL,ANIMAL,ANIMAL,INSECT"
+    "conditionResource" : ["ANIMAL","ANIMAL","ANIMAL","INSECT"]
   },
   {
     "png" : 65,
@@ -269,7 +269,7 @@
     "backCentralResource" : "ANIMAL",
     "pointPerConditionResource":"OCCUPIEDSPACE",
     "pointPerCondition" : 2,
-    "conditionResource" : "ANIMAL,ANIMAL,ANIMAL,FUNGI"
+    "conditionResource" : ["ANIMAL","ANIMAL","ANIMAL","FUNGI"]
   },
   {
     "png" : 66,
@@ -280,7 +280,7 @@
     "backCentralResource" : "ANIMAL",
     "pointPerConditionResource":"OCCUPIEDSPACE",
     "pointPerCondition" : 2,
-    "conditionResource" : "ANIMAL,ANIMAL,ANIMAL,PLANT"
+    "conditionResource" : ["ANIMAL","ANIMAL","ANIMAL","PLANT"]
   },
   {
     "png" : 67,
@@ -291,7 +291,7 @@
     "backCentralResource" : "ANIMAL",
     "pointPerConditionResource":"NONE",
     "pointPerCondition" : 3,
-    "conditionResource" : "ANIMAL,ANIMAL,ANIMAL"
+    "conditionResource" : ["ANIMAL","ANIMAL","ANIMAL"]
   },
   {
     "png" : 68,
@@ -302,7 +302,7 @@
     "backCentralResource" : "ANIMAL",
     "pointPerConditionResource":"NONE",
     "pointPerCondition" : 3,
-    "conditionResource" : "ANIMAL,ANIMAL,ANIMAL"
+    "conditionResource" : ["ANIMAL","ANIMAL","ANIMAL"]
   },
   {
     "png" : 69,
@@ -313,7 +313,7 @@
     "backCentralResource" : "ANIMAL",
     "pointPerConditionResource":"NONE",
     "pointPerCondition" : 3,
-    "conditionResource" : "ANIMAL,ANIMAL,ANIMAL"
+    "conditionResource" : ["ANIMAL","ANIMAL","ANIMAL"]
   },
   {
     "png" : 70,
@@ -324,7 +324,7 @@
     "backCentralResource" : "ANIMAL",
     "pointPerConditionResource":"NONE",
     "pointPerCondition" : 3,
-    "conditionResource" : "ANIMAL,ANIMAL,ANIMAL,ANIMAL,ANIMAL"
+    "conditionResource" : ["ANIMAL","ANIMAL","ANIMAL","ANIMAL","ANIMAL"]
   },
   {
     "png" : 71,
@@ -335,7 +335,7 @@
     "backCentralResource" : "INSECT",
     "pointPerConditionResource":"QUILL",
     "pointPerCondition" : 1,
-    "conditionResource" : "INSECT,INSECT,PLANT"
+    "conditionResource" : ["INSECT","INSECT","PLANT"]
   },
   {
     "png" : 72,
@@ -346,7 +346,7 @@
     "backCentralResource" : "INSECT",
     "pointPerConditionResource":"MANUSCRIPT",
     "pointPerCondition" : 1,
-    "conditionResource" : "INSECT,INSECT,ANIMAL"
+    "conditionResource" : ["INSECT","INSECT","ANIMAL"]
   },
   {
     "png" : 73,
@@ -357,7 +357,7 @@
     "backCentralResource" : "INSECT",
     "pointPerConditionResource":"INKWELL",
     "pointPerCondition" : 1,
-    "conditionResource" : "INSECT,INSECT,FUNGI"
+    "conditionResource" : ["INSECT","INSECT","FUNGI"]
   },
   {
     "png" : 74,
@@ -368,7 +368,7 @@
     "backCentralResource" : "INSECT",
     "pointPerConditionResource":"OCCUPIEDSPACE",
     "pointPerCondition" : 2,
-    "conditionResource" : "INSECT,INSECT,INSECT,ANIMAL"
+    "conditionResource" : ["INSECT","INSECT","INSECT","ANIMAL"]
   },
   {
     "png" : 75,
@@ -379,7 +379,7 @@
     "backCentralResource" : "INSECT",
     "pointPerConditionResource":"OCCUPIEDSPACE",
     "pointPerCondition" : 2,
-    "conditionResource" : "INSECT,INSECT,INSECT,PLANT"
+    "conditionResource" : ["INSECT","INSECT","INSECT","PLANT"]
   },
   {
     "png" : 76,
@@ -390,7 +390,7 @@
     "backCentralResource" : "INSECT",
     "pointPerConditionResource":"OCCUPIEDSPACE",
     "pointPerCondition" : 2,
-    "conditionResource" : "INSECT,INSECT,INSECT,FUNGI"
+    "conditionResource" : ["INSECT","INSECT","INSECT","FUNGI"]
   },
   {
     "png" : 77,
@@ -401,7 +401,7 @@
     "backCentralResource" : "INSECT",
     "pointPerConditionResource":"NONE",
     "pointPerCondition" : 3,
-    "conditionResource" : "INSECT,INSECT,INSECT"
+    "conditionResource" : ["INSECT","INSECT","INSECT"]
   },
   {
     "png" : 78,
@@ -412,7 +412,7 @@
     "backCentralResource" : "INSECT",
     "pointPerConditionResource":"NONE",
     "pointPerCondition" : 3,
-    "conditionResource" : "INSECT,INSECT,INSECT"
+    "conditionResource" : ["INSECT","INSECT","INSECT"]
   },
   {
   "png" : 79,
@@ -423,7 +423,7 @@
   "backCentralResource" : "INSECT",
   "pointPerConditionResource":"NONE",
   "pointPerCondition" : 3,
-  "conditionResource" : "INSECT,INSECT,INSECT"
+  "conditionResource" : ["INSECT","INSECT","INSECT"]
   },
   {
     "png" : 80,
@@ -434,6 +434,6 @@
     "backCentralResource" : "INSECT",
     "pointPerConditionResource":"NONE",
     "pointPerCondition" : 3,
-    "conditionResource" : "INSECT,INSECT,INSECT,INSECT,INSECT"
+    "conditionResource" : ["INSECT","INSECT","INSECT","INSECT","INSECT"]
   }
 ]

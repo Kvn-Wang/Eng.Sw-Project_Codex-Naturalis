@@ -1,5 +1,5 @@
 package it.polimi.codexnaturalis.model.shop;
-
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -56,10 +56,10 @@ public class Shop {
                     JsonObject jsonObject = element.getAsJsonObject();
 
                     int pngNumber = jsonObject.get("png").getAsInt();
-                    ResourceType frontNorthResource = parseResourceType(jsonObject.get("frontNorthResource").getAsString());
-                    ResourceType frontSouthResource = parseResourceType(jsonObject.get("frontSouthResource").getAsString());
+                    ResourceType frontNorthResource = parseResourceType(jsonObject.get("frontNorthResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontNorthResource").getAsString()) : null;
+                    ResourceType frontSouthResource = parseResourceType(jsonObject.get("frontSouthResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontSouthResource").getAsString()) : null;
                     ResourceType frontEastResource = parseResourceType(jsonObject.get("frontEastResource").getAsString());
-                    ResourceType frontWestResource = parseResourceType(jsonObject.get("frontWestResource").getAsString());
+                    ResourceType frontWestResource = parseResourceType(jsonObject.get("frontWestResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontWestResource").getAsString()) : null;
                     ResourceType backCentralResource = parseResourceType(jsonObject.get("backCentralResource").getAsString());
                     ConditionResourceType pointPerConditionResource = ConditionResourceType.valueOf(jsonObject.get("pointPerConditionResource").getAsString());
                     int pointPerCondition = jsonObject.get("pointPerCondition").getAsInt();
@@ -79,10 +79,10 @@ public class Shop {
                     JsonObject jsonObject = element.getAsJsonObject();
 
                     int pngNumber = jsonObject.get("png").getAsInt();
-                    ResourceType frontNorthResource = parseResourceType(jsonObject.get("frontNorthResource").getAsString());
-                    ResourceType frontSouthResource = parseResourceType(jsonObject.get("frontSouthResource").getAsString());
-                    ResourceType frontEastResource = parseResourceType(jsonObject.get("frontEastResource").getAsString());
-                    ResourceType frontWestResource = parseResourceType(jsonObject.get("frontWestResource").getAsString());
+                    ResourceType frontNorthResource = parseResourceType(jsonObject.get("frontNorthResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontNorthResource").getAsString()) : null;
+                    ResourceType frontSouthResource = parseResourceType(jsonObject.get("frontSouthResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontSouthResource").getAsString()) : null;
+                    ResourceType frontEastResource = parseResourceType(jsonObject.get("frontEastResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontEastResource").getAsString()) : null;
+                    ResourceType frontWestResource = parseResourceType(jsonObject.get("frontWestResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontWestResource").getAsString()) : null;
                     ResourceType backCentralResource = parseResourceType(jsonObject.get("backCentralResource").getAsString());
                     int frontCardPoint = jsonObject.get("frontCardPoint").getAsInt();
 
@@ -94,10 +94,10 @@ public class Shop {
                     JsonObject jsonObject = element.getAsJsonObject();
 
                     int pngNumber = jsonObject.get("png").getAsInt();
-                    ResourceType frontNorthResource = parseResourceType(jsonObject.get("frontNorthResource").getAsString());
-                    ResourceType frontSouthResource = parseResourceType(jsonObject.get("frontSouthResource").getAsString());
-                    ResourceType frontEastResource = parseResourceType(jsonObject.get("frontEastResource").getAsString());
-                    ResourceType frontWestResource = parseResourceType(jsonObject.get("frontWestResource").getAsString());
+                    ResourceType frontNorthResource = parseResourceType(jsonObject.get("frontNorthResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontNorthResource").getAsString()) : null;
+                    ResourceType frontSouthResource = parseResourceType(jsonObject.get("frontSouthResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontSouthResource").getAsString()) : null;
+                    ResourceType frontEastResource = parseResourceType(jsonObject.get("frontEastResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontEastResource").getAsString()) : null;
+                    ResourceType frontWestResource = parseResourceType(jsonObject.get("frontWestResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontWestResource").getAsString()) : null;
 
                     JsonArray supp = jsonObject.getAsJsonArray("backCentralResource");
                     ResourceType[] backCentralResource = new ResourceType[supp.size()];
@@ -105,10 +105,10 @@ public class Shop {
                         backCentralResource[i] = ResourceType.valueOf(supp.get(i).getAsString());
                     }
 
-                    ResourceType backNorthResource = parseResourceType(jsonObject.get("backNorthResource").getAsString());
-                    ResourceType backSouthResource = parseResourceType(jsonObject.get("backSouthResource").getAsString());
-                    ResourceType backEastResource = parseResourceType(jsonObject.get("backEastResource").getAsString());
-                    ResourceType backWestResource = parseResourceType(jsonObject.get("backWestResource").getAsString());
+                    ResourceType backNorthResource = parseResourceType(jsonObject.get("backNorthResource").getAsString()) != null ? parseResourceType(jsonObject.get("backNorthResource").getAsString()) : null;
+                    ResourceType backSouthResource = parseResourceType(jsonObject.get("backSouthResource").getAsString()) != null ? parseResourceType(jsonObject.get("backSouthResource").getAsString()) : null;
+                    ResourceType backEastResource = parseResourceType(jsonObject.get("backEastResource").getAsString()) != null ? parseResourceType(jsonObject.get("backEastResource").getAsString()) : null;
+                    ResourceType backWestResource = parseResourceType(jsonObject.get("backWestResource").getAsString()) != null ? parseResourceType(jsonObject.get("backWestResource").getAsString()) : null;
 
                     suppCard = new StarterCard(pngNumber, frontNorthResource, frontSouthResource, frontEastResource, frontWestResource, backCentralResource,
                             backNorthResource, backSouthResource, backEastResource, backWestResource);
