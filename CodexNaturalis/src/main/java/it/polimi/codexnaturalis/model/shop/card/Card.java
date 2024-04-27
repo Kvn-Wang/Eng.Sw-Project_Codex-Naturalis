@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.model.shop.card;
 
+import com.google.gson.annotations.SerializedName;
 import it.polimi.codexnaturalis.model.enumeration.CardCorner;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
@@ -10,6 +11,7 @@ public abstract class Card {
     protected int png;
     protected ResourceType frontNorthResource;
     protected ResourceType frontSouthResource;
+
     protected ResourceType frontEastResource;
     protected ResourceType frontWestResource;
     protected boolean isBack;

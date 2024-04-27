@@ -14,14 +14,15 @@ public class TestScoreCard {
         String inputString;
         Player[] players = new Player[4];
         for(int i=0; i<4; i++){
-            Player newp = new Player("carlo", ColorType.BLUE);
+            Player newp = new Player("null", ColorType.RED);
             System.out.print("Enter nickname: ");
             inputString = scanner.nextLine();
             newp.setNickname(inputString);
-            System.out.print("Enter color: ");
-            inputString = scanner.nextLine();
             //newp.setPawnColor(inputString);
             players[i] = newp;
+        }
+        for(int i = 0; i<4; i++){
+            System.out.println(players[i].getNickname() + players[i].getPawnColor());
         }
 //        ScoreBoard board = new ScoreBoard(players);
 //        for(Pawn p: board.getpawns()) {
