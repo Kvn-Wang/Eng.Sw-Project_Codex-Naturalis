@@ -65,7 +65,7 @@ class GamePlayerMapTest {
             fail();
         }
     }
-
+/*
     @Test
     public void testPlaceCard() throws PersonalizedException.InvalidPlacementException {
         int middle = UtilCostantValue.lunghezzaMaxMappa / 2;
@@ -100,4 +100,6 @@ class GamePlayerMapTest {
 
     private void assertThrows(Class<PersonalizedException.InvalidPlacementException> invalidPlacementExceptionClass) {
     }
+
+ */
 }

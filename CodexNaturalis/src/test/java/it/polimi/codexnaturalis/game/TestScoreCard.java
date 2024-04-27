@@ -3,6 +3,7 @@ package it.polimi.codexnaturalis.game;
 
 //import it.polimi.codexnaturalis.model.scoreboard.Pawn;
 //import it.polimi.codexnaturalis.model.scoreboard.ScoreBoard;
+import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.player.Player;
 
 import java.util.Scanner;
@@ -13,7 +14,7 @@ public class TestScoreCard {
         String inputString;
         Player[] players = new Player[4];
         for(int i=0; i<4; i++){
-            Player newp = new Player();
+            Player newp = new Player("carlo", ColorType.BLUE);
             System.out.print("Enter nickname: ");
             inputString = scanner.nextLine();
             newp.setNickname(inputString);

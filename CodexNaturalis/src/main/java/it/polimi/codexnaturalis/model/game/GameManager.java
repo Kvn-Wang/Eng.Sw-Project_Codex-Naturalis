@@ -23,18 +23,16 @@ public class GameManager extends Observable implements GameController {
     private Mission sharedMission2;
     private GeneralShop resourceShop;
     private GeneralShop objectiveShop;
-    private MissionSelector missionSelector;
     private String pathToFile;
-    Map<String, ColorType> playerInfo = new HashMap<>();
-    private int nicknameNumber;
+    private Map<String, ColorType> playerInfo = new HashMap<>();
     private Player[] players;
     private Player playerTurn;
     private ChatManager chatManager;
-    private boolean isFinalTurn;
+    private boolean isFinalTurn=false;
     private List <Player> winners;
-    private Player startingPlayer;
     private String scoreCardImg;
     private int starterCards;
+    private int remainingRounds=1;
 
     public GameManager(Map<String, ColorType> playerInfo) {
         this.playerInfo = playerInfo;
@@ -43,7 +41,7 @@ public class GameManager extends Observable implements GameController {
 
     @Override
     public void initializeGame() {
-        //initializeGame ora é diviso in 4 phases
+        //initializeGame ora é diviso in 3 phases
         gamePhase1();
     }
     private void gamePhase1(){
@@ -70,7 +68,7 @@ public class GameManager extends Observable implements GameController {
         return new GeneralShop(typeOfShop);
     }
 
-    //inizialize ninckname and color
+    //inizialize nickname and color
     private void initializePlayer(){
         int i = 0;
         for (Map.Entry<String, ColorType> entry : playerInfo.entrySet()) {
@@ -141,7 +139,7 @@ public class GameManager extends Observable implements GameController {
     }
 
     private void initializeMission(){
-        missionSelector = new MissionSelector();
+        MissionSelector missionSelector = new MissionSelector();
         sharedMission1 = missionSelector.drawFromFile();
         sharedMission2 = missionSelector.drawFromFile();
         for(Player p: players){
@@ -163,20 +161,22 @@ public class GameManager extends Observable implements GameController {
     }
 
     private Player nickToPlayer(String nickname){//TODO:throw exception da aggiungere
-        for(Player p: players)
-            if(p.getNickname().equals(nickname))
+        for(Player p: players) {
+            if (p.getNickname().equals(nickname))
                 return p;
+        }
         return null;//caso player non trovato
     }
 
     @Override
     public void disconnectPlayer(String nickname) {
-        nickToPlayer(nickname).setStatus(true);
+        nickToPlayer(nickname).setStatus(false);
+        nextTurn();
     }
 
     @Override
     public void reconnectPlayer(String nickname) {
-        nickToPlayer(nickname).setStatus(false);
+        nickToPlayer(nickname).setStatus(true);
     }
 
     @Override
@@ -185,9 +185,11 @@ public class GameManager extends Observable implements GameController {
         if(type.equals(ShopType.RESOURCE)) {
             p.addHandCard(resourceShop.drawFromShopPlayer(numShopCard));
             nextTurn();
+            endGameCheckFinishedShop();
         } else if(type.equals(ShopType.OBJECTIVE)) {
             p.addHandCard(objectiveShop.drawFromShopPlayer(numShopCard));
             nextTurn();
+            endGameCheckFinishedShop();
         }
         else{
             notifyObserver(new NetworkMessage(nickname, MessageType.WRONG_TYPE_SHOP));
@@ -248,29 +250,19 @@ public class GameManager extends Observable implements GameController {
         nickToPlayer(reqPlayer).switchPlayerView(nickToPlayer(target));
     }
 
-    private boolean endGameCheck(){
-        if(endGameCheckFinishedShop() || endGameCheckScoreBoard())
-            return true;
-        else
-            return false;
+    private void endGameCheckFinishedShop(){
+        if(objectiveShop.checkEmptyShop() && resourceShop.checkEmptyShop())
+            endGame();
     }
 
-    private boolean endGameCheckFinishedShop(){
-        if(objectiveShop.checkEmptyShop() && resourceShop.checkEmptyShop()){
-            //TODO: mancano funzioni per controllare presenza di topdeckcard e le carte nello shop senza pescarle
-            return true;
-        }
-        else
-            return false;
-    }
-
-    private boolean endGameCheckScoreBoard(){
-        return playerTurn.getPersonalScore() >= 20;
+    private void endGameCheckScoreBoard(){
+        if(playerTurn.getPersonalScore() >= 20)
+            endGame();
     }
 
     @Override
     public void endGame() {
-
+        isFinalTurn=true;
     }
 
     private void executeSharedMission(){
@@ -294,8 +286,15 @@ public class GameManager extends Observable implements GameController {
                 if (playerTurn.equals(players[i])) {
                     if (i != players.length - 1)
                         playerTurn = players[i + 1];
-                    else
+                    else {
                         playerTurn = players[0];
+                        if(isFinalTurn){
+                            if(remainingRounds==0)
+                                setWinner();
+                            else
+                                remainingRounds--;
+                        }
+                    }
                 }
             }
         }while(!playerTurn.isPlayerAlive());
