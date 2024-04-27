@@ -1,4 +1,11 @@
 package it.polimi.codexnaturalis.network.socket;
 
-public class SocketServer {
+import it.polimi.codexnaturalis.network.ServerMain;
+
+public class SocketServer extends Thread {
+    ServerMain serverMain;
+
+    public SocketServer(ServerMain sermarMain) {
+        this.serverMain = serverMain;
+    }
 }

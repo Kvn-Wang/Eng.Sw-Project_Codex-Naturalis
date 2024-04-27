@@ -5,16 +5,18 @@ import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class LobbyThread extends Thread {
-    String lobbyName;
-    Boolean isLobbyStarted;
+    private String lobbyName;
+    private Boolean isLobbyStarted;
     final int maxPlayer;
     final int timoutGameStart;
-    Map<VirtualView, ValueOfPlayer> listOfPlayers;
-    Map<Color, VirtualView> asd;
+
+    // TODO: data Race
+    private Map<VirtualView, ValueOfPlayer> listOfPlayers;
 
     public LobbyThread(String lobbyName) {
         this.lobbyName = lobbyName;
@@ -41,6 +43,14 @@ public class LobbyThread extends Thread {
     @Override
     public void run() {
         super.run();
+    }
+
+    public String getLobbyName() {
+        return lobbyName;
+    }
+
+    public Collection<ValueOfPlayer> getPlayerInfo() {
+        return listOfPlayers.values();
     }
 }
 

@@ -19,4 +19,9 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
     public void reportError(String details) throws RemoteException {
 
     }
+
+    @Override
+    public boolean askNickname() throws RemoteException {
+        return false;
+    }
 }
