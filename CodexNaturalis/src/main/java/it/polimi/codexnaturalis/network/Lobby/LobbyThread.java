@@ -20,6 +20,7 @@ public class LobbyThread extends Thread {
     private ArrayList<PlayerInfo> listOfPlayers;
 
     public LobbyThread(String lobbyName) {
+        this.listOfPlayers = new ArrayList<>();
         this.lobbyName = lobbyName;
         this.isLobbyStarted = false;
         this.maxPlayer = UtilCostantValue.maxPlayerPerLobby;
@@ -51,6 +52,10 @@ public class LobbyThread extends Thread {
 
     public String getLobbyName() {
         return lobbyName;
+    }
+
+    public ArrayList<PlayerInfo> getListOfPlayers() {
+        return listOfPlayers;
     }
 }
 

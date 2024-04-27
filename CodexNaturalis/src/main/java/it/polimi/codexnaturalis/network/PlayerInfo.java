@@ -6,16 +6,43 @@ import javafx.scene.paint.Color;
 import java.rmi.RemoteException;
 
 public class PlayerInfo implements VirtualView {
-    public Color colorChosen;
-    public boolean isPlayerReady;
+    private String nickname;
+    private Color colorChosen;
+    private boolean isPlayerReady;
 
     public PlayerInfo() {
+        this.nickname = null;
         this.colorChosen = null;
         this.isPlayerReady = false;
     }
 
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public Color getColorChosen() {
+        return colorChosen;
+    }
+
+    public void setColorChosen(Color colorChosen) {
+        this.colorChosen = colorChosen;
+    }
+
+    public boolean isPlayerReady() {
+        return isPlayerReady;
+    }
+
+    public void setPlayerReady(boolean playerReady) {
+        isPlayerReady = playerReady;
+    }
+
+    //TODO: cambiare l'argomento in NetworkMessage
     @Override
-    public void showValue(Integer number) throws RemoteException {
+    public void showValue(String message) throws RemoteException {
 
     }
 
@@ -25,7 +52,7 @@ public class PlayerInfo implements VirtualView {
     }
 
     @Override
-    public boolean askNickname() throws RemoteException {
-        return false;
+    public void askNickname() throws RemoteException {
+
     }
 }

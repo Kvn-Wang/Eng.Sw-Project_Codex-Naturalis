@@ -7,11 +7,11 @@ import java.util.ArrayList;
 
 public class ServerContainer {
     private static ServerContainer instance;
-
-    private static ArrayList<PlayerInfo> lobbyLessClients = new ArrayList<>();
+    private static ArrayList<PlayerInfo> lobbyLessClients;
     private static ArrayList<LobbyThread> activeLobby;
 
     private ServerContainer() {
+        lobbyLessClients = new ArrayList<>();
         this.activeLobby = new ArrayList<>();
     }
 
@@ -56,7 +56,22 @@ public class ServerContainer {
         }
     }
 
-    public static boolean checkNickGlobalNicknameValidity() {
-        return false;
+    public static boolean checkNickGlobalNicknameValidity(String checkNickname) {
+        // check each player that has yet to join a lobby
+        for(PlayerInfo elem : lobbyLessClients) {
+            if(elem.getNickname() == checkNickname) {
+                return false;
+            }
+        }
+
+        for(LobbyThread elem : activeLobby) {
+            for(PlayerInfo elem1 : elem.getListOfPlayers()) {
+                if(elem1.getNickname() == checkNickname) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }

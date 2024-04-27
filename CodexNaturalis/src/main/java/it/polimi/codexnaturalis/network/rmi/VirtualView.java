@@ -4,8 +4,9 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface VirtualView extends Remote {
-    public void showValue(Integer number) throws RemoteException;
+    public void showValue(String message) throws RemoteException;
     public void reportError(String details) throws RemoteException;
-    public boolean askNickname() throws RemoteException;
+    public void askNickname() throws RemoteException;
+    public void refreshLobbies() throws RemoteException;
 }
 
