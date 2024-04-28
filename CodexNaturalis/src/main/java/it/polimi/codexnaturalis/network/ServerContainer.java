@@ -1,6 +1,5 @@
 package it.polimi.codexnaturalis.network;
 
-import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.network.Lobby.LobbyThread;
 import it.polimi.codexnaturalis.network.rmi.VirtualView;
 

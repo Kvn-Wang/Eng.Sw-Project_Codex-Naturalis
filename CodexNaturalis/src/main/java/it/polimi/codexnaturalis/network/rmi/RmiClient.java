@@ -19,9 +19,10 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
     private final VirtualServer server;
     private String nickname;
     private String lobby;
+    private Registry registry;
 
     protected RmiClient() throws RemoteException, NotBoundException {
-        Registry registry = LocateRegistry.getRegistry(UtilCostantValue.ipAddress, UtilCostantValue.portNumber);
+        registry = LocateRegistry.getRegistry(UtilCostantValue.ipAddress, UtilCostantValue.portNumber);
         this.server = (VirtualServer) registry.lookup(serverName);
         System.out.println("Connessso al server RMI");
         this.server.connect(this);
@@ -47,19 +48,13 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
 
         json = server.getAvailableLobby(nickname);
         if(!json.equals("[]")) {
-            lobbies = deserializeLobbies(json);
+            lobbies = gson.fromJson(json, new TypeToken<ArrayList<LobbyInfo>>(){}.getType());
         } else {
             System.out.println("Nessuna lobby aperta");
             lobbies = null;
         }
 
         selectionOfLobbies(lobbies);
-    }
-
-    public static ArrayList<LobbyInfo> deserializeLobbies(String json) {
-        Gson gson = new Gson();
-        Type listType = new TypeToken<ArrayList<LobbyInfo>>(){}.getType();
-        return gson.fromJson(json, listType);
     }
 
     private void setNicknameProcedure() throws RemoteException {

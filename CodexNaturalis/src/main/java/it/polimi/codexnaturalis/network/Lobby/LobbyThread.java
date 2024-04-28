@@ -6,7 +6,7 @@ import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import java.util.ArrayList;
 
 public class LobbyThread extends Thread {
-    private LobbyHandler lobbyInfo;
+    private LobbyInfo lobbyInfo;
     final int timoutGameStart;
 
     // TODO: data Race
@@ -14,7 +14,7 @@ public class LobbyThread extends Thread {
 
     public LobbyThread(String lobbyName) {
         this.listOfPlayers = new ArrayList<>();
-        lobbyInfo = new LobbyHandler(lobbyName, false, UtilCostantValue.maxPlayerPerLobby);
+        lobbyInfo = new LobbyInfo(lobbyName, false, UtilCostantValue.maxPlayerPerLobby);
         this.timoutGameStart = UtilCostantValue.timeoutSecGameStart;
     }
 

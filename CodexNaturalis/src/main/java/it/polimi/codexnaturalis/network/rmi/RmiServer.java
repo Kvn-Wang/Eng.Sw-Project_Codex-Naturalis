@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class RmiServer extends Thread implements VirtualServer {
+    private Registry registry;
     private String name = "VirtualServer";
     private Map<String, VirtualView> nicknameLessClients;
     private String clientId;
@@ -98,7 +99,7 @@ public class RmiServer extends Thread implements VirtualServer {
 
         try {
             stub = (VirtualServer) UnicastRemoteObject.exportObject(engine, 0);
-            Registry registry = LocateRegistry.createRegistry(UtilCostantValue.portNumber);
+            registry = LocateRegistry.createRegistry(UtilCostantValue.portNumber);
             registry.rebind(name, stub);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
