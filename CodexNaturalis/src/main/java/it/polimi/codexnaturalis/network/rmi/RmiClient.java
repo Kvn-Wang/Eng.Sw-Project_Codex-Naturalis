@@ -45,7 +45,7 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
         setNicknameProcedure();
 
         json = server.getAvailableLobby(nickname);
-        if(!json.equals("null")) {
+        if(!json.equals("[]")) {
             lobbies = gson.fromJson(json, new TypeToken<ArrayList<LobbyInfo>>(){}.getType());
         } else {
             System.out.println("Nessuna lobby aperta");
@@ -70,22 +70,56 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
         }
     }
 
-    //TODO come implementare refresh?
-    private void selectionOfLobbies(ArrayList<LobbyInfo> lobbies) {
+    //TODO come implementare refresh? ogni volta che dò un input refresho? chiedendo il json; pulire il codice che fa schifo
+    private void selectionOfLobbies(ArrayList<LobbyInfo> lobbies) throws RemoteException {
         Scanner scan = new Scanner(System.in);
+        boolean flag;
 
+        flag = true;
         if(lobbies != null) {
-            while (true) {
-                System.out.println("Inserisci un nome di una lobby per joinare oppure inserisci una nuova per crearla");
+            while (flag) {
+                System.out.println("Inserisci un nome di una lobby per joinare oppure scrivi 'CREA' per creare una nuova lobby");
                 for (LobbyInfo elem : lobbies) {
-                    System.out.println(elem.getLobbyName() + " | Player: " + elem.currentPlayer + "/" + elem.maxPlayer + " | started:" + elem.getLobbyStarted());
+                    System.out.println(elem.getLobbyName() + " | Player: " + elem.getCurrentPlayer() + "/" + elem.getMaxPlayer() + " | started:" + elem.getIsLobbyStarted());
                 }
                 lobby = scan.nextLine();
+
+                switch (lobby) {
+                    case "CREA":
+                        while(true) {
+                            System.out.println("Inserisci un nome di una lobby per crearla");
+                            lobby = scan.nextLine();
+
+                            if(server.createLobby(nickname, lobby)) {
+                                break;
+                            } else {
+                                System.out.println("Nome lobby già preso");
+                            }
+                        }
+                        flag = false;
+                        break;
+                    default:
+                        if(server.joinLobby(nickname, lobby)) {
+                            break;
+                        } else {
+                            System.out.println("Non è stato possibile joinare la partita");
+                        }
+                        break;
+                }
             }
         } else {
-            System.out.println("Inserisci un nome di una lobby per crearla");
-            lobby = scan.nextLine();
+            while(true) {
+                System.out.println("Inserisci un nome di una lobby per crearla");
+                lobby = scan.nextLine();
+
+                if(server.createLobby(nickname, lobby)) {
+                    break;
+                } else {
+                    System.out.println("Nome lobby già preso");
+                }
+            }
         }
+        System.out.println("Hai joinato la lobby: " + lobby);
     }
 
     @Override

@@ -1,15 +1,39 @@
 package it.polimi.codexnaturalis.network.Lobby;
 
-public abstract class LobbyInfo {
-    public String lobbyName;
-    public Boolean isLobbyStarted;
-    public final int maxPlayer;
-    public int currentPlayer;
+import com.google.gson.annotations.Expose;
 
-    public LobbyInfo(String lobbyName, Boolean isLobbyStarted, int maxPlayer) {
+public abstract class LobbyInfo {
+    protected String lobbyName;
+    protected Boolean isLobbyStarted;
+    protected final int maxPlayer;
+    protected int currentPlayer;
+
+    public LobbyInfo(String lobbyName, Boolean isLobbyStarted, int maxPlayer, int currentPlayer) {
         this.lobbyName = lobbyName;
         this.isLobbyStarted = isLobbyStarted;
         this.maxPlayer = maxPlayer;
+        this.currentPlayer = currentPlayer;
+    }
+
+    public boolean addPlayer() {
+        if(currentPlayer++ > maxPlayer) {
+            return false;
+        } else {
+            currentPlayer++;
+            return true;
+        }
+    }
+
+    public void removePlayer() {
+        currentPlayer--;
+    }
+
+    public String getLobbyName() {
+        return lobbyName;
+    }
+
+    public Boolean getIsLobbyStarted() {
+        return isLobbyStarted;
     }
 
     public int getMaxPlayer() {
@@ -18,13 +42,5 @@ public abstract class LobbyInfo {
 
     public int getCurrentPlayer() {
         return currentPlayer;
-    }
-
-    public String getLobbyName() {
-        return lobbyName;
-    }
-
-    public Boolean getLobbyStarted() {
-        return isLobbyStarted;
     }
 }

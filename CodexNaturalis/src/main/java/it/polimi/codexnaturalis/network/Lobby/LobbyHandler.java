@@ -3,7 +3,7 @@ package it.polimi.codexnaturalis.network.Lobby;
 public class LobbyHandler extends LobbyInfo {
 
     public LobbyHandler(String lobbyName, Boolean isLobbyStarted, int maxPlayer) {
-        super(lobbyName, isLobbyStarted, maxPlayer);
+        super(lobbyName, isLobbyStarted, maxPlayer, 0);
     }
 
     public boolean addPlayer() {

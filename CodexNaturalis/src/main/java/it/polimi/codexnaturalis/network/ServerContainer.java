@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.network;
 
+import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.network.Lobby.LobbyThread;
 import it.polimi.codexnaturalis.network.rmi.VirtualView;
 
@@ -23,12 +24,12 @@ public class ServerContainer {
         return instance;
     }
 
-    public static void playerCreation(VirtualView client, String nickname) {
+    public void playerCreation(VirtualView client, String nickname) {
         PlayerInfo playerInfo = new PlayerInfo(client, nickname);
         lobbyLessClients.add(playerInfo);
     }
 
-    public static LobbyThread lobbyCreation(String lobbyname) {
+    public LobbyThread lobbyCreation(String lobbyname) {
         for(LobbyThread elem : activeLobby) {
             if(elem.getLobbyName() == lobbyname) {
                 return null;
@@ -41,27 +42,31 @@ public class ServerContainer {
     }
 
 
-    public static boolean addPlayerToLobby(VirtualView client, String lobbyName) {
-        int supp;
+    public boolean joinPlayerToLobby(String playerNickname, String lobbyName) {
+        PlayerInfo player;
 
-        supp = lobbyLessClients.indexOf(client);
-        // if the player got a nickname
-        if(supp != -1) {
-            for(LobbyThread elem : activeLobby) {
-                if(elem.equals(lobbyName)) {
-                    elem.connectPlayer(lobbyLessClients.get(supp));
+        player = null;
+        for(PlayerInfo elem : lobbyLessClients) {
+            if(elem.getNickname().equals(playerNickname)) {
+                player = elem;
+            }
+        }
+
+        if(player == null) {
+            return false;
+        }
+
+        for(LobbyThread elem : activeLobby) {
+            if (elem.getLobbyName().equals(lobbyName)) {
+                if(elem.connectPlayer(player)) {
                     return true;
                 }
             }
-
-            // in case the lobby doesn't exists
-            return false;
-        } else {
-            return false;
         }
+        return false;
     }
 
-    public static boolean checkNickGlobalNicknameValidity(String checkNickname) {
+    public boolean checkNickGlobalNicknameValidity(String checkNickname) {
         // check each player that has yet to join a lobby
         for(PlayerInfo elem : lobbyLessClients) {
             if(elem.getNickname().equals(checkNickname)) {
@@ -71,16 +76,25 @@ public class ServerContainer {
 
         for(LobbyThread elem : activeLobby) {
             for(PlayerInfo elem1 : elem.getListOfPlayers()) {
-                if(elem1.getNickname() == checkNickname) {
+                if(elem1.getNickname().equals(checkNickname)) {
                     return false;
                 }
             }
         }
-
         return true;
     }
 
-    public static ArrayList<LobbyThread> getActiveLobby() {
+    public boolean checkNickGlobalLobbyNameValidity(String checkLobbyNickname) {
+        for(LobbyThread elem : activeLobby) {
+            if(elem.getLobbyName().equals(checkLobbyNickname)) {
+                return false;
+            }
+
+        }
+        return true;
+    }
+
+    public ArrayList<LobbyThread> getActiveLobby() {
         return activeLobby;
     }
 }
