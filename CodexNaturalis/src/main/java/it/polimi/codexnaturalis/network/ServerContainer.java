@@ -4,6 +4,7 @@ import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.network.Lobby.LobbyThread;
 import it.polimi.codexnaturalis.network.rmi.VirtualView;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class ServerContainer {
@@ -42,9 +43,10 @@ public class ServerContainer {
     }
 
 
-    public boolean joinPlayerToLobby(String playerNickname, String lobbyName) {
+    public boolean joinPlayerToLobby(String playerNickname, String lobbyName) throws RemoteException {
         PlayerInfo player;
 
+        // cerca il playerInfo sapendo il suo nickname
         player = null;
         for(PlayerInfo elem : lobbyLessClients) {
             if(elem.getNickname().equals(playerNickname)) {
@@ -59,11 +61,21 @@ public class ServerContainer {
         for(LobbyThread elem : activeLobby) {
             if (elem.getLobbyName().equals(lobbyName)) {
                 if(elem.connectPlayer(player)) {
+                    // se c'è qualche player nella lobby (controllo utile nel caso di lobby appena creata)
+                    if(elem.getListOfPlayers() != null) {
+                        notifyClient(elem.getListOfPlayers(), playerNickname + " has joined the lobby!");
+                    }
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    private void notifyClient(ArrayList<PlayerInfo> notifiedPlayer, String message) throws RemoteException {
+        for(PlayerInfo elem : notifiedPlayer) {
+            elem.notifyPlayer(message);
+        }
     }
 
     public boolean checkNickGlobalNicknameValidity(String checkNickname) {

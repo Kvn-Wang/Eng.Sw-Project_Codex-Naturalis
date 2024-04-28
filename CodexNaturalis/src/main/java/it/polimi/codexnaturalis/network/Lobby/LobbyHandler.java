@@ -7,7 +7,7 @@ public class LobbyHandler extends LobbyInfo {
     }
 
     public boolean addPlayer() {
-        if(currentPlayer++ > maxPlayer) {
+        if(currentPlayer >= maxPlayer) {
             return false;
         } else {
             currentPlayer++;

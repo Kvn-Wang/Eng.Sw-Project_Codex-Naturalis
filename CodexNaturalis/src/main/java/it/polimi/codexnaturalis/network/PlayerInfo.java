@@ -3,6 +3,8 @@ package it.polimi.codexnaturalis.network;
 import it.polimi.codexnaturalis.network.rmi.VirtualView;
 import javafx.scene.paint.Color;
 
+import java.rmi.RemoteException;
+
 
 public class PlayerInfo  {
     private String nickname;
@@ -39,5 +41,9 @@ public class PlayerInfo  {
 
     public void setPlayerReady(boolean playerReady) {
         isPlayerReady = playerReady;
+    }
+
+    public void notifyPlayer(String message) throws RemoteException {
+        clientHandler.showValue(message);
     }
 }

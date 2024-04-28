@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import it.polimi.codexnaturalis.network.Lobby.LobbyInfo;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
+import java.lang.reflect.Type;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -46,13 +47,19 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
 
         json = server.getAvailableLobby(nickname);
         if(!json.equals("[]")) {
-            lobbies = gson.fromJson(json, new TypeToken<ArrayList<LobbyInfo>>(){}.getType());
+            lobbies = deserializeLobbies(json);
         } else {
             System.out.println("Nessuna lobby aperta");
             lobbies = null;
         }
 
         selectionOfLobbies(lobbies);
+    }
+
+    public static ArrayList<LobbyInfo> deserializeLobbies(String json) {
+        Gson gson = new Gson();
+        Type listType = new TypeToken<ArrayList<LobbyInfo>>(){}.getType();
+        return gson.fromJson(json, listType);
     }
 
     private void setNicknameProcedure() throws RemoteException {
@@ -100,6 +107,7 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
                         break;
                     default:
                         if(server.joinLobby(nickname, lobby)) {
+                            flag = false;
                             break;
                         } else {
                             System.out.println("Non è stato possibile joinare la partita");

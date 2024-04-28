@@ -2,7 +2,7 @@ package it.polimi.codexnaturalis.network.Lobby;
 
 import com.google.gson.annotations.Expose;
 
-public abstract class LobbyInfo {
+public class LobbyInfo {
     protected String lobbyName;
     protected Boolean isLobbyStarted;
     protected final int maxPlayer;

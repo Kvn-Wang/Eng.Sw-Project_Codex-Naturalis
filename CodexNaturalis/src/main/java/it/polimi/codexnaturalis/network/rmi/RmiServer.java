@@ -63,33 +63,12 @@ public class RmiServer extends Thread implements VirtualServer {
         for(LobbyThread elem : serverContainer.getActiveLobby()) {
             lobbies.add(elem.getLobbyInfo());
         }
-        json = serializeLobbies(lobbies);
+        json = gson.toJson(lobbies);
 
-        //json = gson.toJson(lobbies);
-
-        System.out.println("Lobby Json sent: " + json);
+        //System.out.println("Lobby Json sent: " + json);
 
         return json;
     }
-
-    private static String serializeLobbies(ArrayList<LobbyInfo> lobbies) {
-        StringBuilder json = new StringBuilder("[");
-        for (LobbyInfo lobby : lobbies) {
-            json.append("{");
-            json.append("\"lobbyName\": \"" + lobby.getLobbyName() + "\",");
-            json.append("\"isLobbyStarted\": " + lobby.getIsLobbyStarted() + ",");
-            json.append("\"maxPlayer\": " + lobby.getMaxPlayer() + ",");
-            json.append("\"currentPlayer\": " + lobby.getCurrentPlayer());
-            json.append("},");
-        }
-        if (json.charAt(json.length() - 1) == ',') {
-            json.setCharAt(json.length() - 1, ']');
-        } else {
-            json.append("]");
-        }
-        return json.toString();
-    }
-
 
     @Override
     public boolean joinLobby(String playerNickname, String lobbyName) throws RemoteException {
