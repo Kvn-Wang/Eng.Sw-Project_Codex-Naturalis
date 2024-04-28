@@ -52,7 +52,13 @@ public class Player implements PlayerInterface {
         Card playedCard;
         int placeResult;
 
-        playedCard = hand.popCard(numCard);
+        try {
+            playedCard = hand.popCard(numCard);
+        } catch (PersonalizedException.InvalidNumPopCardException e) {
+            throw new RuntimeException(e);
+        } catch (PersonalizedException.InvalidPopCardException e) {
+            throw new RuntimeException(e);
+        }
         try {
             placeResult = gameMap.placeCard(x, y, playedCard, isCardBack);
             personalScoreBoardScore+=placeResult;

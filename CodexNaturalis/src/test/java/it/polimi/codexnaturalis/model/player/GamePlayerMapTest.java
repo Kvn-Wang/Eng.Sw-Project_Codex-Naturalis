@@ -63,8 +63,8 @@ class GamePlayerMapTest {
         }
     }
 
-    /*@Test
-    public void testPlaceCard() throws PersonalizedException.InvalidPlacementException {
+    @Test
+    public void testPlaceCard() throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
         int middle = UtilCostantValue.lunghezzaMaxMappa / 2;
         ArrayList<ResourceType> tempListOfResources;
         PlayerScoreResource testScoreCard = gamePlayerMap.getPlayerScoreCard();
@@ -82,19 +82,7 @@ class GamePlayerMapTest {
             testScoreCard.addScore(element);
         }
         PlayerScoreResource checkScoreCard = testScoreCard;
-        point = gamePlayerMap.placeCard(middle-1,middle, testPlacedCard, false);
-        assertEquals(0, testScoreCard.getScore(ResourceType.ANIMAL));
-        assertEquals(1, point);
-        point = gamePlayerMap.placeCard(middle+1,middle, testPlacedCard, false);
-        assertThrows(PersonalizedException.InvalidPlaceCardRequirementException.class, () -> {gamePlayerMap.placeCard(middle+1,middle, testPlacedCard, false);});
-        point = gamePlayerMap.placeCard(middle-2,middle, testPlacedCard, true);
-        assertThrows(PersonalizedException.InvalidPlacementException.class);
-        point = gamePlayerMap.placeCard(1,1, testPlacedCard, true);
-        assertThrows(PersonalizedException.InvalidPlacementException.class);
-        point = gamePlayerMap.placeCard(middle,middle, testPlacedCard, true);
-        assertThrows(PersonalizedException.InvalidPlacementException.class);
+        gamePlayerMap.placeCard(middle+1,middle,thirdTestCard, false);
+        //assertThrows(PersonalizedException.InvalidPlaceCardRequirementException.class, ()-> gamePlayerMap.placeCard(middle-1,middle,thirdTestCard,false));
     }
-
-    private void assertThrows(Class<PersonalizedException.InvalidPlacementException> invalidPlacementExceptionClass) {
-    }*/
 }
