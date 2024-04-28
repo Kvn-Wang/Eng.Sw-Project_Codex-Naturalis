@@ -23,6 +23,11 @@ public class ServerContainer {
         return instance;
     }
 
+    public static void playerCreation(VirtualView client, String nickname) {
+        PlayerInfo playerInfo = new PlayerInfo(client, nickname);
+        lobbyLessClients.add(playerInfo);
+    }
+
     public static LobbyThread lobbyCreation(String lobbyname) {
         for(LobbyThread elem : activeLobby) {
             if(elem.getLobbyName() == lobbyname) {
@@ -59,7 +64,7 @@ public class ServerContainer {
     public static boolean checkNickGlobalNicknameValidity(String checkNickname) {
         // check each player that has yet to join a lobby
         for(PlayerInfo elem : lobbyLessClients) {
-            if(elem.getNickname() == checkNickname) {
+            if(elem.getNickname().equals(checkNickname)) {
                 return false;
             }
         }
@@ -73,5 +78,9 @@ public class ServerContainer {
         }
 
         return true;
+    }
+
+    public static ArrayList<LobbyThread> getActiveLobby() {
+        return activeLobby;
     }
 }

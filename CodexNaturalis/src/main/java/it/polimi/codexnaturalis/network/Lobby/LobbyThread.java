@@ -1,19 +1,12 @@
 package it.polimi.codexnaturalis.network.Lobby;
 
 import it.polimi.codexnaturalis.network.PlayerInfo;
-import it.polimi.codexnaturalis.network.rmi.VirtualView;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
-import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 public class LobbyThread extends Thread {
-    private String lobbyName;
-    private Boolean isLobbyStarted;
-    final int maxPlayer;
+    private LobbyHandler lobbyInfo;
     final int timoutGameStart;
 
     // TODO: data Race
@@ -21,14 +14,17 @@ public class LobbyThread extends Thread {
 
     public LobbyThread(String lobbyName) {
         this.listOfPlayers = new ArrayList<>();
-        this.lobbyName = lobbyName;
-        this.isLobbyStarted = false;
-        this.maxPlayer = UtilCostantValue.maxPlayerPerLobby;
+        lobbyInfo = new LobbyHandler(lobbyName, false, UtilCostantValue.maxPlayerPerLobby);
         this.timoutGameStart = UtilCostantValue.timeoutSecGameStart;
     }
 
-    public void connectPlayer(PlayerInfo player) {
-        listOfPlayers.add(player);
+    public boolean connectPlayer(PlayerInfo player) {
+        if(lobbyInfo.addPlayer()) {
+            listOfPlayers.add(player);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void disconnectPlayer(PlayerInfo player) {
@@ -51,11 +47,15 @@ public class LobbyThread extends Thread {
     }
 
     public String getLobbyName() {
-        return lobbyName;
+        return lobbyInfo.getLobbyName();
     }
 
     public ArrayList<PlayerInfo> getListOfPlayers() {
         return listOfPlayers;
+    }
+
+    public LobbyInfo getLobbyInfo() {
+        return lobbyInfo;
     }
 }
 

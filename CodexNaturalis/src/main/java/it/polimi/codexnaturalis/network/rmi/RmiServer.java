@@ -1,7 +1,9 @@
 package it.polimi.codexnaturalis.network.rmi;
 
+import com.google.gson.Gson;
+import it.polimi.codexnaturalis.network.Lobby.LobbyThread;
+import it.polimi.codexnaturalis.network.Lobby.LobbyInfo;
 import it.polimi.codexnaturalis.network.ServerContainer;
-import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 import java.rmi.RemoteException;
@@ -9,36 +11,64 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class RmiServer extends Thread implements VirtualServer {
     private String name = "VirtualServer";
-    private ArrayList<VirtualView> nicknameLessClients;
+    private Map<String, VirtualView> nicknameLessClients;
+    private String clientId;
     ServerContainer serverContainer;
 
     public RmiServer() {
         this.serverContainer = ServerContainer.getInstance();
+        nicknameLessClients = new HashMap<>();
     }
 
     @Override
     public void connect(VirtualView client) throws RemoteException {
-        System.out.println("Connected client: "+client);
-        nicknameLessClients.add(client);
-        client.askNickname();
+        this.clientId = UUID.randomUUID().toString(); // Generate unique identifier
+        nicknameLessClients.put(clientId, client); // Store client with its identifier
+
+        System.out.println("Connected client: "+clientId);
+        client.initializeClient();
     }
 
     @Override
-    public boolean setNickname(String nickname) throws RemoteException {
-        return serverContainer.checkNickGlobalNicknameValidity(nickname);
+    public String getPersonalID() throws RemoteException {
+        return clientId;
+    }
+
+    @Override
+    public boolean setNickname(String userID, String nickname) throws RemoteException {
+        if(serverContainer.checkNickGlobalNicknameValidity(nickname)) {
+            System.out.println("Created player nickname: " + nickname);
+            serverContainer.playerCreation(nicknameLessClients.get(userID), nickname);
+            nicknameLessClients.remove(userID);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public String getAvailableLobby(String nickname) throws RemoteException {
-        //TODO
-        return null;
+        Gson gson = new Gson();
+        String json;
+        ArrayList<LobbyInfo> lobbies = null;
+
+        for(LobbyThread elem : serverContainer.getActiveLobby()) {
+            lobbies.add(elem.getLobbyInfo());
+        }
+
+        json = gson.toJson(lobbies);
+        System.out.println("Json sent: "+json);
+
+        return json;
     }
 
     public void run() {
-        nicknameLessClients = new ArrayList<>();
         VirtualServer engine = new RmiServer();
         VirtualServer stub = null;
 
@@ -51,55 +81,5 @@ public class RmiServer extends Thread implements VirtualServer {
         }
 
         System.out.println("RMI server started");
-    }
-
-    @Override
-    public void initializeGame() {
-
-    }
-
-    @Override
-    public void disconnectPlayer(String nickname) {
-
-    }
-
-    @Override
-    public void reconnectPlayer(String nickname) {
-
-    }
-
-    @Override
-    public void playerDraw(String nickname, int Numcard, String type) {
-
-    }
-
-    @Override
-    public void playerPersonalMissionSelect(String nickname, int numMission) {
-
-    }
-
-    @Override
-    public void playerPlayCard(String nickname, int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
-
-    }
-
-    @Override
-    public void playerPlayStarterCard(String nickname, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
-
-    }
-
-    @Override
-    public void typeMessage(String receiver, String sender, String msg) {
-
-    }
-
-    @Override
-    public void switchPlayer(String reqPlayer, String target) {
-
-    }
-
-    @Override
-    public void endGame() {
-
     }
 }

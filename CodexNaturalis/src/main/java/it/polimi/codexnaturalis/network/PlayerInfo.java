@@ -3,15 +3,16 @@ package it.polimi.codexnaturalis.network;
 import it.polimi.codexnaturalis.network.rmi.VirtualView;
 import javafx.scene.paint.Color;
 
-import java.rmi.RemoteException;
 
-public class PlayerInfo implements VirtualView {
+public class PlayerInfo  {
     private String nickname;
     private Color colorChosen;
     private boolean isPlayerReady;
+    private VirtualView clientHandler;
 
-    public PlayerInfo() {
-        this.nickname = null;
+    public PlayerInfo(VirtualView clientHandler, String nickname) {
+        this.clientHandler = clientHandler;
+        this.nickname = nickname;
         this.colorChosen = null;
         this.isPlayerReady = false;
     }
@@ -38,21 +39,5 @@ public class PlayerInfo implements VirtualView {
 
     public void setPlayerReady(boolean playerReady) {
         isPlayerReady = playerReady;
-    }
-
-    //TODO: cambiare l'argomento in NetworkMessage
-    @Override
-    public void showValue(String message) throws RemoteException {
-
-    }
-
-    @Override
-    public void reportError(String details) throws RemoteException {
-
-    }
-
-    @Override
-    public void askNickname() throws RemoteException {
-
     }
 }
