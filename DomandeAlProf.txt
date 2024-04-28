@@ -8,3 +8,5 @@ risposte differenti su come gestire una disconnessione nel mezzo di un round
 
 Come fare meglio poliformismo su playerInfo
 va bene che tx un oggetto via rete? in RMI client
+
+ready bloccante? se no, come si fa?

@@ -27,7 +27,9 @@ public class LobbyThread extends Thread {
         }
     }
 
+    //TODO nel caso current player == 0, rimuovere il thread
     public void disconnectPlayer(PlayerInfo player) {
+        lobbyInfo.removePlayer();
         listOfPlayers.remove(player);
     }
 

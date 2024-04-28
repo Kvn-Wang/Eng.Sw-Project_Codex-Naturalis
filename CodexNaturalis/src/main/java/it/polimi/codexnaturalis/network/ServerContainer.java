@@ -71,6 +71,30 @@ public class ServerContainer {
         return false;
     }
 
+    public void leaveLobby(String playerNickname, String lobbyName) throws RemoteException {
+        PlayerInfo player;
+
+        player = null;
+
+        // cerca il playerInfo sapendo il suo nickname
+        for(PlayerInfo elem : lobbyLessClients) {
+            if(elem.getNickname().equals(playerNickname)) {
+                player = elem;
+            }
+        }
+
+        for(LobbyThread elem : activeLobby) {
+            if (elem.getLobbyName().equals(lobbyName)) {
+                elem.disconnectPlayer(player);
+
+                // se c'è qualche player nella lobby (controllo utile nel caso di lobby appena creata)
+                if(elem.getListOfPlayers() != null) {
+                    notifyClient(elem.getListOfPlayers(), playerNickname + " has left the lobby!");
+                }
+            }
+        }
+    }
+
     private void notifyClient(ArrayList<PlayerInfo> notifiedPlayer, String message) throws RemoteException {
         for(PlayerInfo elem : notifiedPlayer) {
             elem.notifyPlayer(message);

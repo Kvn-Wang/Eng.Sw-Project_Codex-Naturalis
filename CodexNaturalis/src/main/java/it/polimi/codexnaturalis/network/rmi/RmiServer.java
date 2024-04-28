@@ -29,7 +29,7 @@ public class RmiServer extends Thread implements VirtualServer {
 
     // TODO: come contraddistinguere nickname già preso ma offline od online?
     @Override
-    public void connect(VirtualView client) throws RemoteException {
+    public void connect(VirtualView client) throws RemoteException, InterruptedException {
         this.clientId = UUID.randomUUID().toString(); // Generate unique identifier
         nicknameLessClients.put(clientId, client); // Store client with its identifier
 
@@ -80,6 +80,11 @@ public class RmiServer extends Thread implements VirtualServer {
         }
 
         return false;
+    }
+
+    @Override
+    public void leaveLobby(String playerNickname, String lobbyName) throws RemoteException {
+        serverContainer.leaveLobby(playerNickname, lobbyName);
     }
 
     @Override

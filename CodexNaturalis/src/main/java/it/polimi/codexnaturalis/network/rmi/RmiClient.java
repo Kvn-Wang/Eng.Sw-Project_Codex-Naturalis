@@ -20,8 +20,9 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
     private String nickname;
     private String lobby;
     private Registry registry;
+    Scanner scan = new Scanner(System.in);
 
-    protected RmiClient() throws RemoteException, NotBoundException {
+    protected RmiClient() throws RemoteException, NotBoundException, InterruptedException {
         registry = LocateRegistry.getRegistry(UtilCostantValue.ipAddress, UtilCostantValue.portNumber);
         this.server = (VirtualServer) registry.lookup(serverName);
         System.out.println("Connessso al server RMI");
@@ -39,27 +40,34 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
     }
 
     @Override
-    public void initializeClient() throws RemoteException {
+    public void initializeClient() throws RemoteException, InterruptedException {
         String json;
         Gson gson = new Gson();
         ArrayList<LobbyInfo> lobbies;
+        boolean notYetInGame;
 
         setNicknameProcedure();
 
-        json = server.getAvailableLobby(nickname);
-        if(!json.equals("[]")) {
-            lobbies = gson.fromJson(json, new TypeToken<ArrayList<LobbyInfo>>(){}.getType());
-        } else {
-            System.out.println("Nessuna lobby aperta");
-            lobbies = null;
-        }
+        notYetInGame = true;
+        while(notYetInGame) {
+            json = server.getAvailableLobby(nickname);
+            if(!json.equals("[]")) {
+                lobbies = gson.fromJson(json, new TypeToken<ArrayList<LobbyInfo>>(){}.getType());
+            } else {
+                System.out.println("Nessuna lobby aperta");
+                lobbies = null;
+            }
 
-        selectionOfLobbies(lobbies);
+            selectionOfLobbies(lobbies);
+            if(waitingInLobbyResult()) {
+                wait();
+            } else {
+                server.leaveLobby(nickname, lobby);
+            }
+        }
     }
 
     private void setNicknameProcedure() throws RemoteException {
-        Scanner scan = new Scanner(System.in);
-
         System.out.println("Inserisci il tuo nickname:");
         while(true) {
             nickname = scan.nextLine();
@@ -74,7 +82,6 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
 
     //TODO come implementare refresh? ogni volta che dò un input refresho? chiedendo il json; pulire il codice che fa schifo
     private void selectionOfLobbies(ArrayList<LobbyInfo> lobbies) throws RemoteException {
-        Scanner scan = new Scanner(System.in);
         boolean flag;
 
         flag = true;
@@ -125,13 +132,35 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
         System.out.println("Hai joinato la lobby: " + lobby);
     }
 
+    // ritorna true se il player si locka dentro la lobby, false se decide di abbandonare
+    private boolean waitingInLobbyResult() {
+        String command;
+
+        while(true) {
+            System.out.println("Scrivi READY per metterti in stato di ready, LEAVE per abbandonare la lobby");
+            command = scan.nextLine();
+
+            switch(command) {
+                case "READY":
+                    return true;
+                case "LEAVE":
+                    return false;
+                default:
+                    System.out.println("Comando non valido");
+                    break;
+            }
+        }
+    }
+
+
+
     @Override
     public void refreshLobbies() throws RemoteException {
 
     }
 
     //TODO: temporaneo
-    public static void main(String[] args) throws NotBoundException, RemoteException {
+    public static void main(String[] args) throws NotBoundException, RemoteException, InterruptedException {
         new RmiClient();
     }
 }
