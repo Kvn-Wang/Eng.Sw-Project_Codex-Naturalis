@@ -2,7 +2,7 @@
   {
     "png" : 1,
     "frontNorthResource" : "FUNGI",
-    "frontSouthResource" : null,
+    "frontSouthResource" : "UNASSIGNABLE",
     "frontEastResource" : "NONE",
     "frontWestResource" : "FUNGI",
     "backCentralResource": "FUNGI",
@@ -13,7 +13,7 @@
     "frontNorthResource" : "FUNGI",
     "frontSouthResource" : "NONE",
     "frontEastResource" : "FUNGI",
-    "frontWestResource" : null,
+    "frontWestResource" : "UNASSIGNABLE",
     "backCentralResource": "FUNGI",
     "frontCardPoint": 0
   },
@@ -21,14 +21,14 @@
     "png" : 3,
     "frontNorthResource" : "NONE",
     "frontSouthResource" : "FUNGI",
-    "frontEastResource" : null,
+    "frontEastResource" : "UNASSIGNABLE",
     "frontWestResource" : "FUNGI",
     "backCentralResource": "FUNGI",
     "frontCardPoint": 0
   },
   {
     "png" : 4,
-    "frontNorthResource" : null,
+    "frontNorthResource" : "UNASSIGNABLE",
     "frontSouthResource" : "FUNGI",
     "frontEastResource" : "FUNGI",
     "frontWestResource" : "NONE",
@@ -37,7 +37,7 @@
   },
   {
     "png" : 5,
-    "frontNorthResource" : null,
+    "frontNorthResource" : "UNASSIGNABLE",
     "frontSouthResource" : "FUNGI",
     "frontEastResource" : "INKWELL",
     "frontWestResource" : "PLANT",
@@ -49,7 +49,7 @@
     "frontNorthResource" : "INKWELL",
     "frontSouthResource" : "ANIMAL",
     "frontEastResource" : "FUNGI",
-    "frontWestResource" : null,
+    "frontWestResource" : "UNASSIGNABLE",
     "backCentralResource": "FUNGI",
     "frontCardPoint": 0
   },
@@ -65,7 +65,7 @@
   {
     "png" : 8,
     "frontNorthResource" : "NONE",
-    "frontSouthResource" : null,
+    "frontSouthResource" : "UNASSIGNABLE",
     "frontEastResource" : "FUNGI",
     "frontWestResource" : "NONE",
     "backCentralResource": "FUNGI",
@@ -75,24 +75,24 @@
     "png" : 9,
     "frontNorthResource" : "FUNGI",
     "frontSouthResource" : "NONE",
-    "frontEastResource" : null,
+    "frontEastResource" : "UNASSIGNABLE",
     "frontWestResource" : "NONE",
     "backCentralResource": "FUNGI",
     "frontCardPoint": 1
   },
   {
     "png" : 10,
-    "frontNorthResource" : null,
+    "frontNorthResource" : "UNASSIGNABLE",
     "frontSouthResource" : "NONE",
     "frontEastResource" : "NONE",
     "frontWestResource" : "FUNGI",
-    "backCentralResource": "FUNI",
+    "backCentralResource": "FUNGI",
     "frontCardPoint": 1
   },
   {
     "png" : 11,
     "frontNorthResource" : "PLANT",
-    "frontSouthResource" : null,
+    "frontSouthResource" : "UNASSIGNABLE",
     "frontEastResource" : "NONE",
     "frontWestResource" : "PLANT",
     "backCentralResource": "PLANT",
@@ -103,7 +103,7 @@
     "frontNorthResource" : "PLANT",
     "frontSouthResource" : "NONE",
     "frontEastResource" : "PLANT",
-    "frontWestResource" : null,
+    "frontWestResource" : "UNASSIGNABLE",
     "backCentralResource": "PLANT",
     "frontCardPoint": 0
   },
@@ -111,14 +111,14 @@
     "png" : 13,
     "frontNorthResource" : "NONE",
     "frontSouthResource" : "PLANT",
-    "frontEastResource" : null,
+    "frontEastResource" : "UNASSIGNABLE",
     "frontWestResource" : "PLANT",
     "backCentralResource": "PLANT",
     "frontCardPoint": 0
   },
   {
     "png" : 14,
-    "frontNorthResource" : null,
+    "frontNorthResource" : "UNASSIGNABLE",
     "frontSouthResource" : "PLANT",
     "frontEastResource" : "PLANT",
     "frontWestResource" : "NONE",
@@ -127,7 +127,7 @@
   },
   {
     "png" : 15,
-    "frontNorthResource" : null,
+    "frontNorthResource" : "UNASSIGNABLE",
     "frontSouthResource" : "PLANT",
     "frontEastResource" : "INSECT",
     "frontWestResource" : "QUILL",
@@ -139,7 +139,7 @@
     "frontNorthResource" : "FUNGI",
     "frontSouthResource" : "INKWELL",
     "frontEastResource" : "PLANT",
-    "frontWestResource" : null,
+    "frontWestResource" : "UNASSIGNABLE",
     "backCentralResource": "PLANT",
     "frontCardPoint": 0
   },
@@ -147,7 +147,7 @@
     "png" : 17,
     "frontNorthResource" : "MANUSCRIPT",
     "frontSouthResource" : "ANIMAL",
-    "frontEastResource" : null,
+    "frontEastResource" : "UNASSIGNABLE",
     "frontWestResource" : "PLANT",
     "backCentralResource": "PLANT",
     "frontCardPoint": 0
@@ -155,7 +155,7 @@
   {
     "png" : 18,
     "frontNorthResource" : "NONE",
-    "frontSouthResource" : null,
+    "frontSouthResource" : "UNASSIGNABLE",
     "frontEastResource" : "NONE",
     "frontWestResource" : "PLANT",
     "backCentralResource": "PLANT",
@@ -166,13 +166,13 @@
     "frontNorthResource" : "NONE",
     "frontSouthResource" : "PLANT",
     "frontEastResource" : "NONE",
-    "frontWestResource" : null,
+    "frontWestResource" : "UNASSIGNABLE",
     "backCentralResource": "PLANT",
     "frontCardPoint": 1
   },
   {
     "png" : 20,
-    "frontNorthResource" : null,
+    "frontNorthResource" : "UNASSIGNABLE",
     "frontSouthResource" : "NONE",
     "frontEastResource" : "PLANT",
     "frontWestResource" : "NONE",
@@ -182,7 +182,7 @@
   {
     "png" : 21,
     "frontNorthResource" : "ANIMAL",
-    "frontSouthResource" : null,
+    "frontSouthResource" : "UNASSIGNABLE",
     "frontEastResource" : "ANIMAL",
     "frontWestResource" : "NONE",
     "backCentralResource": "ANIMAL",
@@ -190,7 +190,7 @@
   },
   {
     "png" : 22,
-    "frontNorthResource" : null,
+    "frontNorthResource" : "UNASSIGNABLE",
     "frontSouthResource" : "ANIMAL",
     "frontEastResource" : "NONE",
     "frontWestResource" : "ANIMAL",
@@ -201,7 +201,7 @@
     "png" : 23,
     "frontNorthResource" : "ANIMAL",
     "frontSouthResource" : "NONE",
-    "frontEastResource" : null,
+    "frontEastResource" : "UNASSIGNABLE",
     "frontWestResource" : "ANIMAL",
     "backCentralResource": "ANIMAL",
     "frontCardPoint": 0
@@ -211,13 +211,13 @@
     "frontNorthResource" : "NONE",
     "frontSouthResource" : "ANIMAL",
     "frontEastResource" : "ANIMAL",
-    "frontWestResource" : null,
+    "frontWestResource" : "UNASSIGNABLE",
     "backCentralResource": "ANIMAL",
     "frontCardPoint": 0
   },
   {
     "png" : 25,
-    "frontNorthResource" : null,
+    "frontNorthResource" : "UNASSIGNABLE",
     "frontSouthResource" : "ANIMAL",
     "frontEastResource" : "INSECT",
     "frontWestResource" : "INKWELL",
@@ -229,7 +229,7 @@
     "frontNorthResource" : "PLANT",
     "frontSouthResource" : "MANUSCRIPT",
     "frontEastResource" : "ANIMAL",
-    "frontWestResource" : null,
+    "frontWestResource" : "UNASSIGNABLE",
     "backCentralResource": "ANIMAL",
     "frontCardPoint": 0
   },
@@ -237,14 +237,14 @@
     "png" : 27,
     "frontNorthResource" : "QUILL",
     "frontSouthResource" : "FUNGI",
-    "frontEastResource" : null,
+    "frontEastResource" : "UNASSIGNABLE",
     "frontWestResource" : "ANIMAL",
     "backCentralResource": "ANIMAL",
     "frontCardPoint": 0
   },
   {
     "png" : 28,
-    "frontNorthResource" : null,
+    "frontNorthResource" : "UNASSIGNABLE",
     "frontSouthResource" : "NONE",
     "frontEastResource" : "NONE",
     "frontWestResource" : "ANIMAL",
@@ -255,7 +255,7 @@
     "png" : 29,
     "frontNorthResource" : "NONE",
     "frontSouthResource" : "ANIMAL",
-    "frontEastResource" : null,
+    "frontEastResource" : "UNASSIGNABLE",
     "frontWestResource" : "NONE",
     "backCentralResource": "ANIMAL",
     "frontCardPoint": 1
@@ -263,7 +263,7 @@
   {
     "png" : 30,
     "frontNorthResource" : "NONE",
-    "frontSouthResource" : null,
+    "frontSouthResource" : "UNASSIGNABLE",
     "frontEastResource" : "ANIMAL",
     "frontWestResource" : "NONE",
     "backCentralResource": "ANIMAL",
@@ -272,7 +272,7 @@
   {
     "png" : 31,
     "frontNorthResource" : "INSECT",
-    "frontSouthResource" : null,
+    "frontSouthResource" : "UNASSIGNABLE",
     "frontEastResource" : "INSECT",
     "frontWestResource" : "NONE",
     "backCentralResource": "INSECT",
@@ -280,7 +280,7 @@
   },
   {
     "png" : 32,
-    "frontNorthResource" : null,
+    "frontNorthResource" : "UNASSIGNABLE",
     "frontSouthResource" : "INSECT",
     "frontEastResource" : "NONE",
     "frontWestResource" : "INSECT",
@@ -291,7 +291,7 @@
     "png" : 33,
     "frontNorthResource" : "INSECT",
     "frontSouthResource" : "NONE",
-    "frontEastResource" : null,
+    "frontEastResource" : "UNASSIGNABLE",
     "frontWestResource" : "INSECT",
     "backCentralResource": "INSECT",
     "frontCardPoint": 0
@@ -301,13 +301,13 @@
     "frontNorthResource" : "NONE",
     "frontSouthResource" : "INSECT",
     "frontEastResource" : "INSECT",
-    "frontWestResource" : null,
+    "frontWestResource" : "UNASSIGNABLE",
     "backCentralResource": "INSECT",
     "frontCardPoint": 0
   },
   {
       "png" : 35,
-    "frontNorthResource" : null,
+    "frontNorthResource" : "UNASSIGNABLE",
     "frontSouthResource" : "INSECT",
     "frontEastResource" : "QUILL",
     "frontWestResource" : "ANIMAL",
@@ -319,14 +319,14 @@
     "frontNorthResource" : "MANUSCRIPT",
     "frontSouthResource" : "FUNGI",
     "frontEastResource" : "INSECT",
-    "frontWestResource" : null,
+    "frontWestResource" : "UNASSIGNABLE",
     "backCentralResource": "INSECT",
     "frontCardPoint": 0
   },
   {
     "png" : 37,
     "frontNorthResource" : "INSECT",
-    "frontSouthResource" : null,
+    "frontSouthResource" : "UNASSIGNABLE",
     "frontEastResource" : "PLANT",
     "frontWestResource" : "INKWELL",
     "backCentralResource": "INSECT",
@@ -336,7 +336,7 @@
     "png" : 38,
     "frontNorthResource" : "INSECT",
     "frontSouthResource" : "NONE",
-    "frontEastResource" : null,
+    "frontEastResource" : "UNASSIGNABLE",
     "frontWestResource" : "NONE",
     "backCentralResource": "INSECT",
     "frontCardPoint": 1
@@ -346,13 +346,13 @@
     "frontNorthResource" : "NONE",
     "frontSouthResource" : "INSECT",
     "frontEastResource" : "NONE",
-    "frontWestResource" : null,
+    "frontWestResource" : "UNASSIGNABLE",
     "backCentralResource": "INSECT",
     "frontCardPoint": 1
   },
   {
     "png" : 40,
-    "frontNorthResource" : null,
+    "frontNorthResource" : "UNASSIGNABLE",
     "frontSouthResource" : "NONE",
     "frontEastResource" : "INSECT",
     "frontWestResource" : "NONE",

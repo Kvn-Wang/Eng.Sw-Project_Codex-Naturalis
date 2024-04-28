@@ -128,6 +128,7 @@ public class GameManager extends Observable implements GameController {
         for(Player p: players){
             p.addHandCard(starterShop.drawTopDeckCard());
         }
+        System.out.print("\nStarter cards being placed\n");
     }
 
     private void initializePlayerHand(){
@@ -145,6 +146,7 @@ public class GameManager extends Observable implements GameController {
         for(Player p: players){
             p.setPersonalMissions(missionSelector.drawFromFile(), missionSelector.drawFromFile());
         }
+        System.out.print("\nMissions being selected\n");
     }
 
     private void initializeStartingPlayer(){
@@ -186,10 +188,12 @@ public class GameManager extends Observable implements GameController {
             p.addHandCard(resourceShop.drawFromShopPlayer(numShopCard));
             nextTurn();
             endGameCheckFinishedShop();
+            System.out.printf("%s drew from the Resource Shop\n", nickname);
         } else if(type.equals(ShopType.OBJECTIVE)) {
             p.addHandCard(objectiveShop.drawFromShopPlayer(numShopCard));
             nextTurn();
             endGameCheckFinishedShop();
+            System.out.printf("%s drew from the Objective Shop\n", nickname);
         }
         else{
             notifyObserver(new NetworkMessage(nickname, MessageType.WRONG_TYPE_SHOP));
@@ -200,6 +204,7 @@ public class GameManager extends Observable implements GameController {
     public void playerPersonalMissionSelect(String nickname, int numMission) {
         Player p = nickToPlayer(nickname);
         p.setPersonalMissionFinal(numMission);
+        System.out.printf("%s Selected his mission\n", nickname);
         int numPlayerReady = 0;
         for(Player player: players){
             if(player.getPersonalMission() != null)
@@ -227,12 +232,13 @@ public class GameManager extends Observable implements GameController {
     public void playerPlayStarterCard(String nickname, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
         Player p = nickToPlayer(nickname);
         try {
-            p.placeCard(p.getGameMap().getMapArray().length, (p.getGameMap().getMapArray())[0].length, 0, isCardBack);
+            p.placeCard(p.getGameMap().getMapArray()[0].length/2, (p.getGameMap().getMapArray()).length/2, 0, isCardBack);
         } catch (PersonalizedException.InvalidPlacementException e) {
             throw e; // Propagate the caught exception directly
         } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
             throw e;
         }
+        System.out.printf("%s placed his starter card\n", nickname);
         starterCards++;
         if(starterCards==players.length)
             gamePhase2();

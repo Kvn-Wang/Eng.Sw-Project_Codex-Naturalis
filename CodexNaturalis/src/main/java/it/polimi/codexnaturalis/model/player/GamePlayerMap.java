@@ -42,7 +42,7 @@ public class GamePlayerMap {
         if(checkValidityXY(x, y)) {
             //controlla le carte adiacenti per eventuali impossibilità per piazzare la carta
             neightbouringCard = checkValidPosition(x, y);
-            if(neightbouringCard > 0){
+            if(neightbouringCard > 0 || mapArray[UtilCostantValue.lunghezzaMaxMappa/2][UtilCostantValue.lunghezzaMaxMappa/2]==null){
                 //funzione per controllare i requisiti per le carte obbiettivo
                 if(card.checkPlaceableCardCondition(playerScoreCard)) {
                     //piazza la carta
@@ -57,8 +57,10 @@ public class GamePlayerMap {
 
                     //controllo di quali risorse vengono coperte dopo aver piazzato la carta
                     tempListOfResources = checkResourceCovered(x, y);
-                    for(ResourceType element : tempListOfResources) {
-                        playerScoreCard.substractScore(element);
+                    if(tempListOfResources!=null) {
+                        for (ResourceType element : tempListOfResources) {
+                            playerScoreCard.substractScore(element);
+                        }
                     }
 
                     //ritorna i punti da aggiungere a playerScore
@@ -115,9 +117,9 @@ public class GamePlayerMap {
             }
 
             //controllo del corner
-            if(mapArray[x + 1][y].getCardCorner(CardCorner.EAST) == null || mapArray[x + 1][y].getCardCorner(CardCorner.WEST) == null) {
-                throw new PersonalizedException.InvalidPlacementException();
-            }
+//            if(mapArray[x + 1][y].getCardCorner(CardCorner.EAST) == null || mapArray[x + 1][y].getCardCorner(CardCorner.WEST) == null) {
+//                throw new PersonalizedException.InvalidPlacementException();
+//            }
         }
 
         if(y == UtilCostantValue.lunghezzaMaxMappa - 1) {
@@ -147,12 +149,12 @@ public class GamePlayerMap {
             }
 
             //controllo del corner
-            if(mapArray[x][y - 1].getCardCorner(CardCorner.SOUTH) == null || mapArray[x][y + 1].getCardCorner(CardCorner.NORTH) == null) {
-                throw new PersonalizedException.InvalidPlacementException();
-            }
+//            if(mapArray[x][y - 1].getCardCorner(CardCorner.SOUTH) == null || mapArray[x][y + 1].getCardCorner(CardCorner.NORTH) == null) {
+//                throw new PersonalizedException.InvalidPlacementException();
+//            }
         }
 
-        if(adiacentNumCard == 0) {
+        if(adiacentNumCard == 0 && mapArray[UtilCostantValue.lunghezzaMaxMappa/2][UtilCostantValue.lunghezzaMaxMappa/2]!=null) {
             throw new PersonalizedException.InvalidPlacementException();
         }
 
@@ -163,24 +165,32 @@ public class GamePlayerMap {
         ArrayList<ResourceType> coveredResource = null;
         ResourceType temp;
 
-        temp = mapArray[x + 1][y].getCardCorner(CardCorner.WEST);
-        if(temp != null && temp != ResourceType.NONE) {
-            coveredResource.add(temp);
+        if(mapArray[x + 1][y]!=null) {
+            temp = mapArray[x + 1][y].getCardCorner(CardCorner.WEST);
+            if (temp != null && temp != ResourceType.NONE) {
+                coveredResource.add(temp);
+            }
         }
 
-        temp = mapArray[x - 1][y].getCardCorner(CardCorner.EAST);
-        if(temp != null && temp != ResourceType.NONE) {
-            coveredResource.add(temp);
+        if(mapArray[x - 1][y]!=null) {
+            temp = mapArray[x - 1][y].getCardCorner(CardCorner.EAST);
+            if (temp != null && temp != ResourceType.NONE) {
+                coveredResource.add(temp);
+            }
         }
 
-        temp = mapArray[x][y + 1].getCardCorner(CardCorner.NORTH);
-        if(temp != null && temp != ResourceType.NONE) {
-            coveredResource.add(temp);
+        if(mapArray[x][y + 1]!=null) {
+            temp = mapArray[x][y + 1].getCardCorner(CardCorner.NORTH);
+            if (temp != null && temp != ResourceType.NONE) {
+                coveredResource.add(temp);
+            }
         }
 
-        temp = mapArray[x][y - 1].getCardCorner(CardCorner.SOUTH);
-        if(temp != null && temp != ResourceType.NONE) {
-            coveredResource.add(temp);
+        if(mapArray[x][y - 1]!=null) {
+            temp = mapArray[x][y - 1].getCardCorner(CardCorner.SOUTH);
+            if (temp != null && temp != ResourceType.NONE) {
+                coveredResource.add(temp);
+            }
         }
 
         return coveredResource;

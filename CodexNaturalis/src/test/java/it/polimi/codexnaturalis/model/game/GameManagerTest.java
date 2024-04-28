@@ -38,6 +38,9 @@ class GameManagerTest {
                 throw new RuntimeException(e);
             }
         }
+        for(Map.Entry<String, ColorType> entry: playerInfo.entrySet()) {
+                gameManager.playerPersonalMissionSelect(entry.getKey(), 1);
+        }
     }
 
     @Test

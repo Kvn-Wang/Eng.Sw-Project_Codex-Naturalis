@@ -4,14 +4,15 @@ import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 
 public class Hand {
-    private Card[] cards;
+    private Card[] cards = new Card[3];
 
     public void addCard(Card drawnCard) throws PersonalizedException.InvalidAddCardException {
         boolean isFull=true;
-        for(Card c: cards) {
-            if (c.equals(null)) {
-                c = drawnCard;
+        for(int i = 0; i < cards.length; i++) {
+            if (cards[i] == null) {
+                cards[i] = drawnCard;
                 isFull = false;
+                break;
             }
         }
         if(isFull){
