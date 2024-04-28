@@ -29,13 +29,26 @@ class GeneralShopTest {
             for (ShopType testShop : shopList) {
                 testGeneralShop = new GeneralShop(testShop);
                 testCard = testGeneralShop.drawFromShopPlayer(i);
-
+                System.out.println(": " +testCard.getPng());
             }
         }
-        testCard = testGeneralShop.drawFromShopPlayer(4);
         assertThrows(RuntimeException.class, ()-> testGeneralShop.drawFromShopPlayer(4));
-        testCard = testGeneralShop.drawFromShopPlayer(-1);
         assertThrows(RuntimeException.class, ()-> testGeneralShop.drawFromShopPlayer(-1));
 
+    }
+
+    @Test
+    public void testCheckEmptyShop(){
+        for (ShopType testShop : shopList) {
+            testGeneralShop = new GeneralShop(testShop);
+            assertEquals(false , testGeneralShop.checkEmptyShop());
+            Card testCard = testGeneralShop.drawFromShopPlayer(1);
+            while(testCard!=null){
+                testCard = testGeneralShop.drawFromShopPlayer(1);
+                assertEquals(false , testGeneralShop.checkEmptyShop());
+            }
+            testCard = testGeneralShop.drawFromShopPlayer(2);
+            assertEquals(true , testGeneralShop.checkEmptyShop());
+        }
     }
 }

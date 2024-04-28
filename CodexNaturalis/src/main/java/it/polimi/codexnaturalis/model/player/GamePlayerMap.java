@@ -92,66 +92,66 @@ public class GamePlayerMap {
         //controllo di adiacenza della carta facendo attenzione ai valori limite
         if(x == UtilCostantValue.lunghezzaMaxMappa - 1) {
             if(!(mapArray[x - 1][y] == null)) {
+                //controllo corner
+                if(mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == null) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
                 adiacentNumCard++;
-            }
-
-            //controllo del corner
-            if(mapArray[x - 1][y].getCardCorner(CardCorner.EAST) == null) {
-                throw new PersonalizedException.InvalidPlacementException();
             }
         } else if(x == 0) {
             if(!(mapArray[x + 1][y] == null)) {
+                //controllo del corner
+                if(mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == null) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
                 adiacentNumCard++;
-            }
-
-            //controllo del corner
-            if(mapArray[x + 1][y].getCardCorner(CardCorner.WEST) == null) {
-                throw new PersonalizedException.InvalidPlacementException();
             }
         } else {
             if(!(mapArray[x + 1][y] == null)) {
+                if(mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == null) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
                 adiacentNumCard++;
             }
             if(!(mapArray[x - 1][y] == null)) {
+                if(mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == null) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
                 adiacentNumCard++;
             }
-
-            //controllo del corner
-//            if(mapArray[x + 1][y].getCardCorner(CardCorner.EAST) == null || mapArray[x + 1][y].getCardCorner(CardCorner.WEST) == null) {
-//                throw new PersonalizedException.InvalidPlacementException();
-//            }
         }
 
         if(y == UtilCostantValue.lunghezzaMaxMappa - 1) {
             if(!(mapArray[x][y - 1] == null)) {
+                //controllo del corner
+                if(mapArray[x][y - 1].getCardCorner(CardCorner.EAST) == null) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
                 adiacentNumCard++;
-            }
-
-            //controllo del corner
-            if(mapArray[x][y - 1].getCardCorner(CardCorner.SOUTH) == null) {
-                throw new PersonalizedException.InvalidPlacementException();
             }
         } else if(y == 0) {
             if(!(mapArray[x][y + 1] == null)) {
+                //controllo del corner
+                if(mapArray[x][y + 1].getCardCorner(CardCorner.WEST) == null) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
                 adiacentNumCard++;
-            }
-
-            //controllo del corner
-            if(mapArray[x][y + 1].getCardCorner(CardCorner.NORTH) == null) {
-                throw new PersonalizedException.InvalidPlacementException();
             }
         } else {
             if(!(mapArray[x][y + 1] == null)) {
+                //controllo del corner
+                if(mapArray[x][y + 1].getCardCorner(CardCorner.WEST) == null) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
                 adiacentNumCard++;
             }
             if(!(mapArray[x][y - 1] == null)) {
+                //controllo del corner
+                if(mapArray[x][y - 1].getCardCorner(CardCorner.EAST) == null) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
                 adiacentNumCard++;
             }
-
-            //controllo del corner
-//            if(mapArray[x][y - 1].getCardCorner(CardCorner.SOUTH) == null || mapArray[x][y + 1].getCardCorner(CardCorner.NORTH) == null) {
-//                throw new PersonalizedException.InvalidPlacementException();
-//            }
         }
 
         if(adiacentNumCard == 0 && mapArray[UtilCostantValue.lunghezzaMaxMappa/2][UtilCostantValue.lunghezzaMaxMappa/2]!=null) {

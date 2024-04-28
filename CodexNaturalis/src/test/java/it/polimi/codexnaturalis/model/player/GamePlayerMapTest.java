@@ -82,7 +82,6 @@ class GamePlayerMapTest {
             testScoreCard.addScore(element);
         }
         PlayerScoreResource checkScoreCard = testScoreCard;
-        gamePlayerMap.placeCard(middle+1,middle,thirdTestCard, false);
-        //assertThrows(PersonalizedException.InvalidPlaceCardRequirementException.class, ()-> gamePlayerMap.placeCard(middle-1,middle,thirdTestCard,false));
+        assertThrows(PersonalizedException.InvalidPlaceCardRequirementException.class, ()-> gamePlayerMap.placeCard(middle-1,middle,thirdTestCard,false));
     }
 }
