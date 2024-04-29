@@ -41,6 +41,10 @@ public class LobbyThread extends Thread implements Observer {
         }
     }
 
+    public void setPlayerReady(PlayerInfo player) {
+        listOfPlayers.get(listOfPlayers.indexOf(player)).setPlayerReady(true);
+    }
+
     public boolean playerChooseColor() {
         return false;
     }

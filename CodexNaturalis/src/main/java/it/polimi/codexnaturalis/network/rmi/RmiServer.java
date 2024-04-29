@@ -106,6 +106,11 @@ public class RmiServer extends Thread implements VirtualServer {
         }
     }
 
+    @Override
+    public void setPlayerReady(String playerNickname, String lobbyName) throws RemoteException {
+        serverContainer.setPlayerReady(playerNickname, lobbyName);
+    }
+
     public void run() {
         VirtualServer engine = new RmiServer();
         VirtualServer stub = null;

@@ -29,4 +29,15 @@ public class PersonalizedException {
         public InvalidRequestTypeOfNetworkMessage(String networkMessageType) {super("Error: requested an unknown type of message: "
                 + networkMessageType + ", check LobbyThread if it's present in the switch case construct");}
     }
+
+    public static class PlayerNotFoundException extends RuntimeException {
+        public PlayerNotFoundException(String nickname) {
+            super("Error: player requested info with nickname '" + nickname + "' not found");
+        }
+    }
+    public static class LobbyNotFoundException extends RuntimeException {
+        public LobbyNotFoundException(String lobbyName) {
+            super("Error: lobbyName: '" + lobbyName + "' not found");
+        }
+    }
 }

@@ -13,4 +13,5 @@ public interface VirtualServer extends Remote {
     public boolean joinLobby(String playerNickname, String lobbyName) throws RemoteException;
     public void leaveLobby(String playerNickname, String lobbyName) throws RemoteException;
     public boolean createLobby(String playerNickname, String lobbyName) throws RemoteException;
+    public void setPlayerReady(String playerNickname, String lobbyName) throws RemoteException;
 }

@@ -2,6 +2,7 @@ package it.polimi.codexnaturalis.network;
 
 import it.polimi.codexnaturalis.network.Lobby.LobbyThread;
 import it.polimi.codexnaturalis.network.rmi.VirtualView;
+import it.polimi.codexnaturalis.utils.PersonalizedException;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -44,60 +45,49 @@ public class ServerContainer {
 
     public boolean joinPlayerToLobby(String playerNickname, String lobbyName) throws RemoteException {
         PlayerInfo player;
+        LobbyThread lobbyThread;
 
-        // cerca il playerInfo sapendo il suo nickname
-        player = null;
-        for(PlayerInfo elem : lobbyLessClients) {
-            if(elem.getNickname().equals(playerNickname)) {
-                player = elem;
+        player = stringToPlayer(playerNickname);
+        lobbyThread = getLobbyThread(lobbyName);
+
+        if(lobbyThread.connectPlayer(player)) {
+            // se c'è qualche player nella lobby (controllo utile nel caso di lobby appena creata)
+            if(lobbyThread.getListOfPlayers() != null) {
+                notifyClient(lobbyThread.getListOfPlayers(), player.getNickname() + " has joined the lobby!");
             }
-        }
-
-        //il player è stato trovato?
-        if(player == null) {
+            return true;
+        } else {
             return false;
         }
-
-        for(LobbyThread elem : activeLobby) {
-            if (elem.getLobbyName().equals(lobbyName)) {
-                if(elem.connectPlayer(player)) {
-                    // se c'è qualche player nella lobby (controllo utile nel caso di lobby appena creata)
-                    if(elem.getListOfPlayers() != null) {
-                        notifyClient(elem.getListOfPlayers(), playerNickname + " has joined the lobby!");
-                    }
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     public void leaveLobby(String playerNickname, String lobbyName) throws RemoteException {
         PlayerInfo player;
+        LobbyThread lobbyThread;
 
-        player = null;
+        player = stringToPlayer(playerNickname);
+        lobbyThread = getLobbyThread(lobbyName);
 
-        // cerca il playerInfo sapendo il suo nickname
-        for(PlayerInfo elem : lobbyLessClients) {
-            if(elem.getNickname().equals(playerNickname)) {
-                player = elem;
-            }
+        //remove the player, and if currentPlayer == 0, eliminate the thread
+        if(!lobbyThread.disconnectPlayer(player)) {
+            activeLobby.remove(lobbyThread);
         }
 
-        for(LobbyThread elem : activeLobby) {
-            if (elem.getLobbyName().equals(lobbyName)) {
-                //remove the player, and if currentPlayer == 0, eliminate the thread
-                if(!elem.disconnectPlayer(player)) {
-                    activeLobby.remove(elem);
-                    break;
-                }
-
-                // se c'è qualche player nella lobby (controllo utile nel caso di lobby appena creata)
-                if(elem.getListOfPlayers() != null) {
-                    notifyClient(elem.getListOfPlayers(), playerNickname + " has left the lobby!");
-                }
-            }
+        // se c'è qualche player nella lobby (controllo utile nel caso di lobby appena creata)
+        if(lobbyThread.getListOfPlayers() != null) {
+            notifyClient(lobbyThread.getListOfPlayers(), player.getNickname() + " has left the lobby!");
         }
+    }
+
+    public void setPlayerReady(String playerNickname, String lobbyName) throws RemoteException {
+        PlayerInfo player;
+        LobbyThread lobbyThread;
+
+        player = stringToPlayer(playerNickname);
+        lobbyThread = getLobbyThread(lobbyName);
+
+        lobbyThread.setPlayerReady(player);
+        notifyClient(lobbyThread.getListOfPlayers(), player.getNickname() + " is ready!");
     }
 
     private void notifyClient(ArrayList<PlayerInfo> notifiedPlayer, String message) throws RemoteException {
@@ -129,9 +119,35 @@ public class ServerContainer {
             if(elem.getLobbyName().equals(checkLobbyNickname)) {
                 return false;
             }
-
         }
         return true;
+    }
+
+    private PlayerInfo stringToPlayer(String nickname) {
+        PlayerInfo player = null;
+
+        for(PlayerInfo elem : lobbyLessClients) {
+            if(elem.getNickname().equals(nickname)) {
+                player = elem;
+            }
+        }
+
+        if(player == null) {
+            throw new PersonalizedException.PlayerNotFoundException(nickname);
+        } else {
+            return player;
+        }
+    }
+
+    private LobbyThread getLobbyThread(String lobbyName) {
+        for(LobbyThread elem : activeLobby) {
+            if (elem.getLobbyName().equals(lobbyName)) {
+                //remove the player, and if currentPlayer == 0, eliminate the thread
+                return elem;
+            }
+        }
+
+        throw new PersonalizedException.LobbyNotFoundException(lobbyName);
     }
 
     public ArrayList<LobbyThread> getActiveLobby() {
