@@ -15,18 +15,23 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class RmiClient extends UnicastRemoteObject implements VirtualView {
-    private final String serverName = "VirtualServer";
+    private final String serverName = UtilCostantValue.RMIServerName;
     private final VirtualServer server;
+    private String personalID;
     private String nickname;
     private String lobby;
     private Registry registry;
     Scanner scan = new Scanner(System.in);
 
     protected RmiClient() throws RemoteException, NotBoundException, InterruptedException {
-        registry = LocateRegistry.getRegistry(UtilCostantValue.ipAddress, UtilCostantValue.portNumber);
+        registry = LocateRegistry.getRegistry(UtilCostantValue.ipAddressServer, UtilCostantValue.portNumberServer);
         this.server = (VirtualServer) registry.lookup(serverName);
         System.out.println("Connessso al server RMI");
-        this.server.connect(this);
+
+        // scambio dell'oggetto per comunicare col server
+        personalID = server.connect(this);
+
+        initializeClient();
     }
 
     @Override
@@ -39,8 +44,7 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
 
     }
 
-    @Override
-    public void initializeClient() throws RemoteException, InterruptedException {
+    private void initializeClient() throws RemoteException, InterruptedException {
         String json;
         Gson gson = new Gson();
         ArrayList<LobbyInfo> lobbies;
@@ -71,7 +75,7 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
         System.out.println("Inserisci il tuo nickname:");
         while(true) {
             nickname = scan.nextLine();
-            if(!server.setNickname(server.getPersonalID(), nickname)) {
+            if(!server.setNickname(personalID, nickname)) {
                 System.out.println("Nickname già preso, si prega di selezionare un altro: ");
             } else {
                 System.out.println("Benvenuto: "+nickname);

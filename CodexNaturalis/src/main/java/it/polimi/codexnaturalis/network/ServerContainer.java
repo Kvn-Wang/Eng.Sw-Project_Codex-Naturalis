@@ -53,6 +53,7 @@ public class ServerContainer {
             }
         }
 
+        //il player è stato trovato?
         if(player == null) {
             return false;
         }
@@ -85,7 +86,11 @@ public class ServerContainer {
 
         for(LobbyThread elem : activeLobby) {
             if (elem.getLobbyName().equals(lobbyName)) {
-                elem.disconnectPlayer(player);
+                //remove the player, and if currentPlayer == 0, eliminate the thread
+                if(!elem.disconnectPlayer(player)) {
+                    activeLobby.remove(elem);
+                    break;
+                }
 
                 // se c'è qualche player nella lobby (controllo utile nel caso di lobby appena creata)
                 if(elem.getListOfPlayers() != null) {

@@ -8,7 +8,7 @@ public interface GameController {
 //void setPlayerColor(String nickname, String color);
     void disconnectPlayer(String nickname);//vedi issues
     void reconnectPlayer(String nickname);
-    void playerDraw(String nickname, int Numcard, String type);// vedi issues
+    void playerDraw(String nickname, int Numcard, String type) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage;// vedi issues
     void playerPersonalMissionSelect(String nickname, int numMission);
     void playerPlayCard(String nickname, int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException;
     void playerPlayStarterCard(String nickname, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException;

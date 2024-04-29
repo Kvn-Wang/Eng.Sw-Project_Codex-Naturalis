@@ -182,7 +182,7 @@ public class GameManager extends Observable implements GameController {
     }
 
     @Override
-    public void playerDraw(String nickname, int numShopCard, String type) {
+    public void playerDraw(String nickname, int numShopCard, String type) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
         Player p = nickToPlayer(nickname);
         if(type.equals(ShopType.RESOURCE)) {
             p.addHandCard(resourceShop.drawFromShopPlayer(numShopCard));
