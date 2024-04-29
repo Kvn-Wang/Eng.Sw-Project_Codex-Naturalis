@@ -46,4 +46,8 @@ public class PlayerInfo  {
     public void notifyPlayer(String message) throws RemoteException {
         clientHandler.showValue(message);
     }
+
+    public VirtualView getClientHandler() {
+        return clientHandler;
+    }
 }

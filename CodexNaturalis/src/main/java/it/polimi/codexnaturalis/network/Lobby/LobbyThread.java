@@ -1,11 +1,14 @@
 package it.polimi.codexnaturalis.network.Lobby;
 
+import it.polimi.codexnaturalis.network.NetworkMessage;
 import it.polimi.codexnaturalis.network.PlayerInfo;
+import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
+import it.polimi.codexnaturalis.utils.observer.Observer;
 
 import java.util.ArrayList;
 
-public class LobbyThread extends Thread {
+public class LobbyThread extends Thread implements Observer {
     private LobbyInfo lobbyInfo;
     final int timoutGameStart;
 
@@ -27,10 +30,19 @@ public class LobbyThread extends Thread {
         }
     }
 
-    //TODO nel caso current player == 0, rimuovere il thread
-    public void disconnectPlayer(PlayerInfo player) {
-        lobbyInfo.removePlayer();
+    //if after removing a player, currentPlayer == 0, returns False, else True
+    public boolean disconnectPlayer(PlayerInfo player) {
         listOfPlayers.remove(player);
+
+        if(lobbyInfo.removePlayer()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void setPlayerReady(PlayerInfo player) {
+        listOfPlayers.get(listOfPlayers.indexOf(player)).setPlayerReady(true);
     }
 
     public boolean playerChooseColor() {
@@ -39,8 +51,9 @@ public class LobbyThread extends Thread {
 
     private void startGame() {
         if(listOfPlayers.size() >= UtilCostantValue.minPlayerPerLobby) {
-
+            //TODO
         }
+        //TODO manca il metodo per registrare questo observer agli observable
     }
 
     //TODO
@@ -59,6 +72,26 @@ public class LobbyThread extends Thread {
 
     public LobbyInfo getLobbyInfo() {
         return lobbyInfo;
+    }
+
+    //TODO come gestire i messaggi al client
+    @Override
+    public void update(NetworkMessage message) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
+        switch(message.getMessageType().toString()) {
+            case "CORRECT_CHOSEN_COLOR":
+
+                break;
+            case "COLOR_ALREADY_CHOSEN":
+
+                break;
+
+            case "WRONG_TYPE_SHOP":
+
+                break;
+
+            default:
+                throw new PersonalizedException.InvalidRequestTypeOfNetworkMessage(message.getMessageType().toString());
+        }
     }
 }
 

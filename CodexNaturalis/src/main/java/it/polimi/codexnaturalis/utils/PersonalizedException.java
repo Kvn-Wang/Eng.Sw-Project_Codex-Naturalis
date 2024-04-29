@@ -24,4 +24,20 @@ public class PersonalizedException {
     public static class InvalidPopCardException extends Exception{
         public InvalidPopCardException() {super("this position in the hand is empty");}
     }
+
+    public static class InvalidRequestTypeOfNetworkMessage extends Exception{
+        public InvalidRequestTypeOfNetworkMessage(String networkMessageType) {super("Error: requested an unknown type of message: "
+                + networkMessageType + ", check LobbyThread if it's present in the switch case construct");}
+    }
+
+    public static class PlayerNotFoundException extends RuntimeException {
+        public PlayerNotFoundException(String nickname) {
+            super("Error: player requested info with nickname '" + nickname + "' not found");
+        }
+    }
+    public static class LobbyNotFoundException extends RuntimeException {
+        public LobbyNotFoundException(String lobbyName) {
+            super("Error: lobbyName: '" + lobbyName + "' not found");
+        }
+    }
 }

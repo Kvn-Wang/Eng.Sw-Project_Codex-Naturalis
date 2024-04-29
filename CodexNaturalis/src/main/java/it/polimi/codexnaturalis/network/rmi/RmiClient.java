@@ -15,18 +15,23 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class RmiClient extends UnicastRemoteObject implements VirtualView {
-    private final String serverName = "VirtualServer";
+    private final String serverName = UtilCostantValue.RMIServerName;
     private final VirtualServer server;
+    private String personalID;
     private String nickname;
     private String lobby;
     private Registry registry;
     Scanner scan = new Scanner(System.in);
 
     protected RmiClient() throws RemoteException, NotBoundException, InterruptedException {
-        registry = LocateRegistry.getRegistry(UtilCostantValue.ipAddress, UtilCostantValue.portNumber);
+        registry = LocateRegistry.getRegistry(UtilCostantValue.ipAddressServer, UtilCostantValue.portNumberServer);
         this.server = (VirtualServer) registry.lookup(serverName);
         System.out.println("Connessso al server RMI");
-        this.server.connect(this);
+
+        // scambio dell'oggetto per comunicare col server
+        personalID = server.connect(this);
+
+        initializeClient();
     }
 
     @Override
@@ -39,28 +44,19 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
 
     }
 
-    @Override
-    public void initializeClient() throws RemoteException, InterruptedException {
-        String json;
-        Gson gson = new Gson();
-        ArrayList<LobbyInfo> lobbies;
+    private void initializeClient() throws RemoteException, InterruptedException {
         boolean notYetInGame;
 
         setNicknameProcedure();
 
         notYetInGame = true;
         while(notYetInGame) {
-            json = server.getAvailableLobby(nickname);
-            if(!json.equals("[]")) {
-                lobbies = gson.fromJson(json, new TypeToken<ArrayList<LobbyInfo>>(){}.getType());
-            } else {
-                System.out.println("Nessuna lobby aperta");
-                lobbies = null;
-            }
+            //after this function, the player must have joined a lobby
+            selectionOfLobbies();
 
-            selectionOfLobbies(lobbies);
             if(waitingInLobbyResult()) {
-                wait();
+                server.setPlayerReady(nickname, lobby);
+                //wait();
             } else {
                 server.leaveLobby(nickname, lobby);
             }
@@ -71,7 +67,7 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
         System.out.println("Inserisci il tuo nickname:");
         while(true) {
             nickname = scan.nextLine();
-            if(!server.setNickname(server.getPersonalID(), nickname)) {
+            if(!server.setNickname(personalID, nickname)) {
                 System.out.println("Nickname già preso, si prega di selezionare un altro: ");
             } else {
                 System.out.println("Benvenuto: "+nickname);
@@ -80,56 +76,72 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
         }
     }
 
+    private ArrayList<LobbyInfo> getLobbies() throws RemoteException {
+        String json;
+        Gson gson = new Gson();
+        ArrayList<LobbyInfo> lobbies;
+
+        json = server.getAvailableLobby(nickname);
+        if(!json.equals("[]")) {
+            lobbies = gson.fromJson(json, new TypeToken<ArrayList<LobbyInfo>>(){}.getType());
+        } else {
+            lobbies = null;
+        }
+
+        return lobbies;
+    }
+
     //TODO come implementare refresh? ogni volta che dò un input refresho? chiedendo il json; pulire il codice che fa schifo
-    private void selectionOfLobbies(ArrayList<LobbyInfo> lobbies) throws RemoteException {
-        boolean flag;
+    private void selectionOfLobbies() throws RemoteException {
+        boolean isPlayerLobbyLess;
+        ArrayList<LobbyInfo> lobbies;
 
-        flag = true;
-        if(lobbies != null) {
-            while (flag) {
-                System.out.println("Inserisci un nome di una lobby per joinare oppure scrivi 'CREA' per creare una nuova lobby");
+        isPlayerLobbyLess = true;
+        //while the player
+        while(isPlayerLobbyLess) {
+            lobbies = getLobbies();
+            System.out.println("Lobby list:");
+            if(lobbies != null) {
                 for (LobbyInfo elem : lobbies) {
-                    System.out.println(elem.getLobbyName() + " | Player: " + elem.getCurrentPlayer() + "/" + elem.getMaxPlayer() + " | started:" + elem.getIsLobbyStarted());
+                    System.out.println("  - " + elem.getLobbyName() + " | Player: " + elem.getCurrentPlayer() + "/" + elem.getMaxPlayer() + " | started:" + elem.getIsLobbyStarted());
                 }
-                lobby = scan.nextLine();
+                System.out.println("Write the name of an existing lobby to join it or write 'CREATE' to create a new lobby");
+            } else {
+                System.out.println("  - No lobby Available");
+                System.out.println("Write 'CREATE' to create a new lobby");
+            }
 
-                switch (lobby) {
-                    case "CREA":
-                        while(true) {
-                            System.out.println("Inserisci un nome di una lobby per crearla");
-                            lobby = scan.nextLine();
+            //TODO aggiungere refresh?
 
-                            if(server.createLobby(nickname, lobby)) {
-                                break;
-                            } else {
-                                System.out.println("Nome lobby già preso");
-                            }
-                        }
-                        flag = false;
-                        break;
-                    default:
-                        if(server.joinLobby(nickname, lobby)) {
-                            flag = false;
+            lobby = scan.nextLine();
+            switch (lobby) {
+                case "CREATE":
+                    while(true) {
+                        System.out.println("Insert the name of the new lobby, or write 'LEAVE' return back");
+                        lobby = scan.nextLine();
+
+                        if(lobby.equals("LEAVE")) {
+                            break;
+                        } else if(server.createLobby(nickname, lobby)) {
+                            isPlayerLobbyLess = false;
                             break;
                         } else {
-                            System.out.println("Non è stato possibile joinare la partita");
+                            System.out.println("Inserted lobby name already exists");
                         }
-                        break;
-                }
-            }
-        } else {
-            while(true) {
-                System.out.println("Inserisci un nome di una lobby per crearla");
-                lobby = scan.nextLine();
-
-                if(server.createLobby(nickname, lobby)) {
+                    }
                     break;
-                } else {
-                    System.out.println("Nome lobby già preso");
-                }
+                default:
+                    if(server.joinLobby(nickname, lobby)) {
+                        isPlayerLobbyLess = false;
+                        break;
+                    } else {
+                        System.out.println("Failed to join the lobby");
+                    }
+                    break;
             }
         }
-        System.out.println("Hai joinato la lobby: " + lobby);
+
+        System.out.println("You joined a lobby: " + lobby);
     }
 
     // ritorna true se il player si locka dentro la lobby, false se decide di abbandonare
@@ -137,7 +149,7 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
         String command;
 
         while(true) {
-            System.out.println("Scrivi READY per metterti in stato di ready, LEAVE per abbandonare la lobby");
+            System.out.println("Write READY to set your state as ready, LEAVE to leave the lobby");
             command = scan.nextLine();
 
             switch(command) {

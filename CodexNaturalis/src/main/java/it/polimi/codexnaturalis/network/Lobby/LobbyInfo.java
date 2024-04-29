@@ -39,8 +39,14 @@ public class LobbyInfo {
         }
     }
 
-    public void removePlayer() {
+    //if after removing a player, currentPlayer == 0, returns False, else True
+    public boolean removePlayer() {
         currentPlayer--;
+        if(currentPlayer == 0) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public void setLobbyStarted(Boolean lobbyStarted) {

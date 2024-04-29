@@ -3,8 +3,9 @@ package it.polimi.codexnaturalis.utils;
 import it.polimi.codexnaturalis.model.shop.card.ResourceCard;
 
 public final class UtilCostantValue {
-    public static String ipAddress = "127.0.0.1";
-    public static int portNumber = 50000;
+    public static String RMIServerName = "RMIServer_Codex";
+    public static String ipAddressServer = "127.0.0.1";
+    public static int portNumberServer = 50000;
     public static int numeroMaxPlayer = 4;
     private static int numeroMaxCarteRisorsa = 40;
     private static int numeroMaxCarteObbiettivo = 40;
