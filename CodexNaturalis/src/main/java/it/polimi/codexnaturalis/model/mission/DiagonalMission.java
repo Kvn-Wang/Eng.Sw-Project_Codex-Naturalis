@@ -41,7 +41,7 @@ public class DiagonalMission extends Mission  {
                 for (int j = 2; j < (mapArray[0].length); j++) {
                     if (mapArray[i][j] != null) {
                         if (mapArray[i][j].getColor() == resourceType && !usedCardArray[i][j]) {
-                            if (mapArray[i][j - 1].getColor() == resourceType && mapArray[i][j - 2].getColor() == resourceType) {
+                            if (mapArray[i][j-1] != null && mapArray[i][j-2] != null && mapArray[i][j - 1].getColor() == resourceType && mapArray[i][j - 2].getColor() == resourceType) {
                                 match++;
                                 usedCardArray[i][j] = true;
                                 usedCardArray[i - 1][j] = true;
