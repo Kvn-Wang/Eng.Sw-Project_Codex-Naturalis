@@ -42,9 +42,10 @@ public class GamePlayerMap {
         if(checkValidityXY(x, y)) {
             //controlla le carte adiacenti per eventuali impossibilità per piazzare la carta
             neightbouringCard = checkValidPosition(x, y);
+            System.out.println(neightbouringCard);
             if(neightbouringCard > 0 || mapArray[UtilCostantValue.lunghezzaMaxMappa/2][UtilCostantValue.lunghezzaMaxMappa/2]==null){
                 //funzione per controllare i requisiti per le carte obbiettivo
-                if(card.checkPlaceableCardCondition(playerScoreCard)) {
+                if(card.checkPlaceableCardCondition(playerScoreCard) || isCardBack) {
                     //piazza la carta
                     card.setIsBack(isCardBack);
                     mapArray[x][y] = card;

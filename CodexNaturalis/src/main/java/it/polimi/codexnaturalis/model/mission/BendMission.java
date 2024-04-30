@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.model.mission;
 
+import it.polimi.codexnaturalis.model.enumeration.CardCorner;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
@@ -7,12 +8,12 @@ import it.polimi.codexnaturalis.model.shop.card.Card;
 
 public class BendMission extends Mission  {
     private Card[][] mapArray;
-    private String decorationPosition;
+    private CardCorner decorationPosition;
     private ResourceType pillarResource;
     private ResourceType decorationResource;
 
 
-    public BendMission(int pngNumber, int pointPerCondition, ResourceType pillarResource, ResourceType decorationResource, String decorationPosition) {
+    public BendMission(int pngNumber, int pointPerCondition, ResourceType pillarResource, ResourceType decorationResource, CardCorner decorationPosition) {
         super(pngNumber, pointPerCondition);
         this.decorationPosition = decorationPosition;
         this.pillarResource = pillarResource;
@@ -25,7 +26,7 @@ public class BendMission extends Mission  {
         int match = 0;
 
         switch (decorationPosition) {
-            case "EAST":
+            case CardCorner.EAST:
                 for (int i = 0; i < (mapArray.length - 1); i++) {
                     for (int j = 2; j < (mapArray[0].length); j++) {
                         if (mapArray[i][j] != null) {
@@ -41,7 +42,7 @@ public class BendMission extends Mission  {
                     }
                 }
                 break;
-            case "NORTH":
+            case CardCorner.NORTH:
                 for (int i = 0; i < (mapArray.length - 2); i++) {
                     for (int j = 1; j < (mapArray[0].length); j++) {
                         if (mapArray[i][j] != null) {
@@ -57,7 +58,7 @@ public class BendMission extends Mission  {
                     }
                 }
                 break;
-            case "WEST":
+            case CardCorner.WEST:
                 for (int i = 1; i < (mapArray.length); i++) {
                     for (int j = 0; j < (mapArray[0].length - 2); j++) {
                         if (mapArray[i][j] != null) {
@@ -73,7 +74,7 @@ public class BendMission extends Mission  {
                     }
                 }
                 break;
-            case "SOUTH":
+            case CardCorner.SOUTH:
                 for (int i = 0; i < (mapArray.length); i++) {
                     for (int j = 0; j < (mapArray[0].length); j++) {
                         if (mapArray[i][j] != null) {
@@ -95,7 +96,7 @@ public class BendMission extends Mission  {
         return match*pointPerCondition;
     }
 
-    public String getDecorationPosition() {
+    public CardCorner getDecorationPosition() {
         return decorationPosition;
     }
 

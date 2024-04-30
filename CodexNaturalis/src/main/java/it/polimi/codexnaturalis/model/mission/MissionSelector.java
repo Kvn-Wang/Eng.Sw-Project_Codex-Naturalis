@@ -1,6 +1,7 @@
 package it.polimi.codexnaturalis.model.mission;
 
 import com.google.gson.*;
+import it.polimi.codexnaturalis.model.enumeration.CardCorner;
 import it.polimi.codexnaturalis.model.enumeration.MissionType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
@@ -61,7 +62,7 @@ public class MissionSelector {
                     int pointPerCondition = jsonObject.get("pointPerCondition").getAsInt();
                     ResourceType pillarResource = ResourceType.valueOf(jsonObject.get("pillarResource").getAsString());
                     ResourceType decorationResource = ResourceType.valueOf(jsonObject.get("decorationResource").getAsString());
-                    String decorationPosition = jsonObject.get("decorationPosition").getAsString();
+                    CardCorner decorationPosition = CardCorner.valueOf(jsonObject.get("decorationPosition").getAsString());
 
                     mission = new BendMission(pngNumber, pointPerCondition, pillarResource, decorationResource, decorationPosition);
                     missions.add(mission);

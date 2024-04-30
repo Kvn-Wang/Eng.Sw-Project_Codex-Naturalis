@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerInterfaceTest {
     DiagonalMission testDiagonalMission = new DiagonalMission(87, 2 , false, ResourceType.FUNGI);
-    BendMission testBendMission = new BendMission(91,3,ResourceType.FUNGI,ResourceType.PLANT,"SOUTH");
+    BendMission testBendMission = new BendMission(91,3,ResourceType.FUNGI,ResourceType.PLANT,CardCorner.SOUTH);
     ResourceMission testResourceMission = new ResourceMission(95, 2,3,new ResourceType[] {ResourceType.FUNGI});
     Player testPlayer = new Player("nick", ColorType.RED);
     GamePlayerMap testMap = testPlayer.getGameMap();

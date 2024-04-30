@@ -38,16 +38,14 @@ public class DiagonalMission extends Mission  {
             }
         } else {
             for(int i = 0; i < (mapArray.length); i++) {
-                for (int j = 2; j < (mapArray[0].length); j++) {
+                for (int j = mapArray[0].length -  1; j >= 2; j--) {
                     if (mapArray[i][j] != null) {
                         if (mapArray[i][j].getColor() == resourceType && !usedCardArray[i][j]) {
-                            if (mapArray[i][j-1] != null && mapArray[i][j-2] != null && mapArray[i][j - 1].getColor() == resourceType && mapArray[i][j - 2].getColor() == resourceType) {
+                            if (mapArray[i][j - 1] != null && mapArray[i][j - 2] != null && mapArray[i][j - 1].getColor() == resourceType && mapArray[i][j - 2].getColor() == resourceType) {
                                 match++;
-                                System.out.println(usedCardArray[i][j]);
-                                System.out.println(i + j);
                                 usedCardArray[i][j] = true;
-                                usedCardArray[i - 1][j] = true;
-                                usedCardArray[i - 2][j] = true;
+                                usedCardArray[i][j - 1] = true;
+                                usedCardArray[i][j - 2] = true;
                             }
                         }
                     }

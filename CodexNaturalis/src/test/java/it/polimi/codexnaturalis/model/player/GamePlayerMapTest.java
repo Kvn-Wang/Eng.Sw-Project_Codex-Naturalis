@@ -83,5 +83,7 @@ class GamePlayerMapTest {
         }
         PlayerScoreResource checkScoreCard = testScoreCard;
         assertThrows(PersonalizedException.InvalidPlaceCardRequirementException.class, ()-> gamePlayerMap.placeCard(middle-1,middle,thirdTestCard,false));
+        assertThrows(PersonalizedException.InvalidPlacementException.class, ()-> gamePlayerMap.placeCard(1,1,thirdTestCard,true));
+
     }
 }
