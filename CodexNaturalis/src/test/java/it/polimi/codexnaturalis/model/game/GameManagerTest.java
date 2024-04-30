@@ -37,7 +37,7 @@ class GameManagerTest {
         gameManager.initializeGame();
         for(Map.Entry<String, ColorType> entry: playerInfo.entrySet()) {
             try {
-                gameManager.playerPlayStarterCard(entry.getKey(), false);
+                gameManager.playerPlayCard(entry.getKey(), 1, 3, 0, true);
             } catch (PersonalizedException.InvalidPlacementException |
                      PersonalizedException.InvalidPlaceCardRequirementException e) {
                 throw new RuntimeException(e);
@@ -88,7 +88,7 @@ class GameManagerTest {
         for(int i=0; i<8; i++) {
             String playingPlayer = gameManager.getPlayerTurn().getNickname();
             try {
-                gameManager.playerPlayCard(playingPlayer, (UtilCostantValue.lunghezzaMaxMappa / 2) - 1, UtilCostantValue.lunghezzaMaxMappa / 2, 1, false);
+                gameManager.playerPlayCard(playingPlayer, (UtilCostantValue.lunghezzaMaxMappa / 2) - 1-(i/4), UtilCostantValue.lunghezzaMaxMappa / 2, 1, true);
             } catch (PersonalizedException.InvalidPlacementException |
                      PersonalizedException.InvalidPlaceCardRequirementException e) {
                 throw new RuntimeException(e);

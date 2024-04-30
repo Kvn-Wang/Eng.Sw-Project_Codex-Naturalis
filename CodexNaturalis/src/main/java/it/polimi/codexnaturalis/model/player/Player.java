@@ -59,25 +59,29 @@ public class Player implements PlayerInterface {
         } catch (PersonalizedException.InvalidPopCardException e) {
             throw new RuntimeException(e);
         }
-        try {
-            placeResult = gameMap.placeCard(x, y, playedCard, isCardBack);
-            personalScoreBoardScore+=placeResult;
-        } catch (PersonalizedException.InvalidPlacementException e) {
-            //ripiazza la carta nella mano
+        if(playedCard.getColor()==ResourceType.NONE){
+            placeResult = gameMap.placeStarterCard(playedCard, isCardBack);
+        }else{
             try {
-                hand.addCard(playedCard);
-            } catch (PersonalizedException.InvalidAddCardException ex) {
-                throw new RuntimeException(ex);
+                placeResult = gameMap.placeCard(x, y, playedCard, isCardBack);
+                personalScoreBoardScore+=placeResult;
+            } catch (PersonalizedException.InvalidPlacementException e) {
+                //ripiazza la carta nella mano
+                try {
+                    hand.addCard(playedCard);
+                } catch (PersonalizedException.InvalidAddCardException ex) {
+                    throw new RuntimeException(ex);
+                }
+                throw e; // Propagate the caught exception directly
+            } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
+                //ripiazza la carta nella mano
+                try {
+                    hand.addCard(playedCard);
+                } catch (PersonalizedException.InvalidAddCardException ex) {
+                    throw new RuntimeException(ex);
+                }
+                throw e; // Propagate the caught exception directly
             }
-            throw e; // Propagate the caught exception directly
-        } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
-            //ripiazza la carta nella mano
-            try {
-                hand.addCard(playedCard);
-            } catch (PersonalizedException.InvalidAddCardException ex) {
-                throw new RuntimeException(ex);
-            }
-            throw e; // Propagate the caught exception directly
         }
     }
 
@@ -162,7 +166,7 @@ public class Player implements PlayerInterface {
 
     public Player(String nick, ColorType color){
         nickname = nick;
-        this.pawnColor = color;
+        pawnColor = color;
         personalScoreBoardScore = 0;
         personalMissionTotalScore = 0;
         personalMission1 = null;
@@ -172,8 +176,7 @@ public class Player implements PlayerInterface {
         scoreResource = new PlayerScoreResource();
         gameMap = new GamePlayerMap(scoreResource);
         hand = new Hand();
-        pawnColor = null;
-        pawnImg = null;
+        pawnImg = null;//TODO:mettere case con inserimento immagine
         alive = true;
     }
 

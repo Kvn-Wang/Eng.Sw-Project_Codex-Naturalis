@@ -142,8 +142,12 @@ public class PlayerScoreResource {
             case QUILL:
                 scoreQuill+=1;
                 break;
+            case NONE:
+                break;
+            case UNASSIGNABLE:
+                break;
             default:
-                throw new IllegalArgumentException("Errore richiesta tipo di risorsa");
+                throw new IllegalArgumentException("Errore richiesta tipo di risorsa, richiesto: "+ type);
         }
     }
 
