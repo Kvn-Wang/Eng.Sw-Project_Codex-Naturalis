@@ -60,7 +60,7 @@ public class Player implements PlayerInterface {
             throw new RuntimeException(e);
         }
         if(playedCard.getColor()==ResourceType.NONE){
-            placeResult = gameMap.placeStarterCard(playedCard, isCardBack);
+            //placeResult = gameMap.placeStarterCard(playedCard, isCardBack);
         }else{
             try {
                 placeResult = gameMap.placeCard(x, y, playedCard, isCardBack);
