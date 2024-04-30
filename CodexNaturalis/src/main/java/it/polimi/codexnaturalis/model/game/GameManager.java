@@ -192,7 +192,7 @@ public class GameManager extends Observable implements GameController {
             p.addHandCard(resourceShop.drawFromShopPlayer(numShopCard));
             System.out.printf("%s drew from the Resource Shop\n", nickname);
             endGameCheckFinishedShop();
-            nextTurn();;
+            nextTurn();
         } else if(type.equals("OBJECTIVE")) {
             p.addHandCard(objectiveShop.drawFromShopPlayer(numShopCard));
             System.out.printf("%s drew from the Objective Shop\n", nickname);
@@ -223,6 +223,7 @@ public class GameManager extends Observable implements GameController {
     @Override
     public void playerPlayCard(String nickname, int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
         Player p = nickToPlayer(nickname);
+        System.out.printf("%s ha piazzato una carta in posizione ", nickname, x, y);
         try {
             p.placeCard(x, y, numCard, isCardBack);
         } catch (PersonalizedException.InvalidPlacementException e) {
@@ -230,24 +231,13 @@ public class GameManager extends Observable implements GameController {
         } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
             throw e;
         }
-        System.out.printf("%s ha piazzato una carta in posizione X:%d Y:%d\n", nickname, x, y);
-        endGameCheckScoreBoard();
-    }
-
-    @Override
-    public void playerPlayStarterCard(String nickname, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
-        Player p = nickToPlayer(nickname);
-        try {
-            p.placeCard(p.getGameMap().getMapArray().length/2, (p.getGameMap().getMapArray()[0]).length/2, 0, isCardBack);
-        } catch (PersonalizedException.InvalidPlacementException e) {
-            throw e; // Propagate the caught exception directly
-        } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
-            throw e;
+        if(starterCards<players.length) {
+            starterCards++;
+            if (starterCards == players.length)
+                gamePhase2();
+        } else {
+            endGameCheckScoreBoard();
         }
-        System.out.printf("%s placed his starter card\n", nickname);
-        starterCards++;
-        if(starterCards==players.length)
-            gamePhase2();
     }
 
     @Override
@@ -315,6 +305,7 @@ public class GameManager extends Observable implements GameController {
                         }
                     }
                 }
+                i++;
             }
         }while(!playerTurn.isPlayerAlive());
         System.out.printf("é il turno di %s\n", playerTurn.getNickname());
