@@ -1,10 +1,14 @@
 package it.polimi.codexnaturalis.model.game;
 
+import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
+import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
+import it.polimi.codexnaturalis.utils.UtilCostantValue;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,6 +32,7 @@ class GameManagerTest {
     }
 
     @Test
+    @BeforeEach
     void initializeGame() {
         gameManager.initializeGame();
         for(Map.Entry<String, ColorType> entry: playerInfo.entrySet()) {
@@ -52,29 +57,49 @@ class GameManagerTest {
     }
 
     @Test
-    void playerDraw() {/*
-        gameManager.playerDraw("Maria", 1, "RESOURCE");
+    void playerPlayCard() {
+        String playingPlayer=gameManager.getPlayerTurn().getNickname();
         try {
-            gameManager.playerPlayCard("Maria", 1, 1, 0, false);
+            gameManager.playerPlayCard(playingPlayer, (UtilCostantValue.lunghezzaMaxMappa/2) + 1,UtilCostantValue.lunghezzaMaxMappa/2,1,false);
         } catch (PersonalizedException.InvalidPlacementException |
                  PersonalizedException.InvalidPlaceCardRequirementException e) {
             throw new RuntimeException(e);
         }
-    */
     }
 
     @Test
-    void playerPersonalMissionSelect() {
+    void playerDraw() {
+        String playingPlayer=gameManager.getPlayerTurn().getNickname();
+        try {
+            gameManager.playerPlayCard(playingPlayer, (UtilCostantValue.lunghezzaMaxMappa/2) + 1,UtilCostantValue.lunghezzaMaxMappa/2,1,false);
+        } catch (PersonalizedException.InvalidPlacementException |
+                 PersonalizedException.InvalidPlaceCardRequirementException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            gameManager.playerDraw(playingPlayer,1, "RESOURCE");
+        } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
-    void playerPlayCard() {
+    void nextTurn(){
+        for(int i=0; i<8; i++) {
+            String playingPlayer = gameManager.getPlayerTurn().getNickname();
+            try {
+                gameManager.playerPlayCard(playingPlayer, (UtilCostantValue.lunghezzaMaxMappa / 2) - 1, UtilCostantValue.lunghezzaMaxMappa / 2, 1, false);
+            } catch (PersonalizedException.InvalidPlacementException |
+                     PersonalizedException.InvalidPlaceCardRequirementException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                gameManager.playerDraw(playingPlayer, 1, "RESOURCE");
+            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
-
-    @Test
-    void playerPlayStarterCard() {
-    }
-
     @Test
     void typeMessage() {
     }

@@ -160,20 +160,24 @@ public class GameManager extends Observable implements GameController {
             players[i] = a;
         }
         playerTurn = players[0];
+        System.out.printf("inizia %s\n\n", players[0].getNickname());
     }
 
-    private Player nickToPlayer(String nickname){//TODO:throw exception da aggiungere
-        for(Player p: players) {
-            if (p.getNickname().equals(nickname))
-                return p;
-        }
-        return null;//caso player non trovato
+    private Player nickToPlayer(String nickname)/* throws PersonalizedException.InvalidNickname*/ {//TODO:throw exception da aggiungere
+            for (Player p : players) {
+                if (p.getNickname().equals(nickname))
+                    return p;
+            }
+        //throw new PersonalizedException.InvalidNickname;
+        return null;
     }
 
     @Override
     public void disconnectPlayer(String nickname) {
-        nickToPlayer(nickname).setStatus(false);
-        nextTurn();
+        Player dcPlayer=nickToPlayer(nickname);
+        dcPlayer.setStatus(false);
+        if (dcPlayer.equals(playerTurn))
+            nextTurn();
     }
 
     @Override
@@ -184,18 +188,19 @@ public class GameManager extends Observable implements GameController {
     @Override
     public void playerDraw(String nickname, int numShopCard, String type) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
         Player p = nickToPlayer(nickname);
-        if(type.equals(ShopType.RESOURCE)) {
+        if(type.equals("RESOURCE")) {
             p.addHandCard(resourceShop.drawFromShopPlayer(numShopCard));
-            nextTurn();
-            endGameCheckFinishedShop();
             System.out.printf("%s drew from the Resource Shop\n", nickname);
-        } else if(type.equals(ShopType.OBJECTIVE)) {
-            p.addHandCard(objectiveShop.drawFromShopPlayer(numShopCard));
-            nextTurn();
             endGameCheckFinishedShop();
+            nextTurn();;
+        } else if(type.equals("OBJECTIVE")) {
+            p.addHandCard(objectiveShop.drawFromShopPlayer(numShopCard));
             System.out.printf("%s drew from the Objective Shop\n", nickname);
+            endGameCheckFinishedShop();
+            nextTurn();
         }
         else{
+            System.out.printf("wrong type shop", nickname);
             notifyObserver(new NetworkMessage(nickname, MessageType.WRONG_TYPE_SHOP));
         }
     }
@@ -225,6 +230,7 @@ public class GameManager extends Observable implements GameController {
         } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
             throw e;
         }
+        System.out.printf("%s ha piazzato una carta in posizione X:%d Y:%d\n", nickname, x, y);
         endGameCheckScoreBoard();
     }
 
@@ -232,7 +238,7 @@ public class GameManager extends Observable implements GameController {
     public void playerPlayStarterCard(String nickname, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
         Player p = nickToPlayer(nickname);
         try {
-            p.placeCard(p.getGameMap().getMapArray()[0].length/2, (p.getGameMap().getMapArray()).length/2, 0, isCardBack);
+            p.placeCard(p.getGameMap().getMapArray().length/2, (p.getGameMap().getMapArray()[0]).length/2, 0, isCardBack);
         } catch (PersonalizedException.InvalidPlacementException e) {
             throw e; // Propagate the caught exception directly
         } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
@@ -288,12 +294,19 @@ public class GameManager extends Observable implements GameController {
 
     private void nextTurn(){
         do{
-            for(int i = 0; i < players.length; i++) {
+            boolean playerfound=false;
+            int i=0;
+            while(!playerfound && i<players.length) {
                 if (playerTurn.equals(players[i])) {
-                    if (i != players.length - 1)
+                    if (i != players.length - 1) {
                         playerTurn = players[i + 1];
+                        playerfound=true;
+                        System.out.printf("per ora %s\n", playerTurn.getNickname());
+                    }
                     else {
                         playerTurn = players[0];
+                        playerfound=true;
+                        System.out.printf("per ora %s\n", playerTurn.getNickname());
                         if(isFinalTurn){
                             if(remainingRounds==0)
                                 setWinner();
@@ -304,6 +317,7 @@ public class GameManager extends Observable implements GameController {
                 }
             }
         }while(!playerTurn.isPlayerAlive());
+        System.out.printf("é il turno di %s\n", playerTurn.getNickname());
     }
 
     private void setWinner(){
@@ -341,5 +355,9 @@ public class GameManager extends Observable implements GameController {
         for(Player p: winningPlayers){
             System.out.printf("-%s%n", p.getNickname());
         }
+    }
+
+    public Player getPlayerTurn() {
+        return playerTurn;
     }
 }
