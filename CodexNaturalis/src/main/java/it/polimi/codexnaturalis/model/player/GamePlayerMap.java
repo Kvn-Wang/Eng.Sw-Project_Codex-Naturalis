@@ -158,7 +158,6 @@ public class GamePlayerMap {
         if(adiacentNumCard == 0 && mapArray[UtilCostantValue.lunghezzaMaxMappa/2][UtilCostantValue.lunghezzaMaxMappa/2]!=null) {
             throw new PersonalizedException.InvalidPlacementException();
         }
-
         return adiacentNumCard;
     }
 
