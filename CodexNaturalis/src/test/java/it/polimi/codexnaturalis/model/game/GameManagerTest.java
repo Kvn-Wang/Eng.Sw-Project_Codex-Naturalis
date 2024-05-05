@@ -85,7 +85,7 @@ class GameManagerTest {
 
     @Test
     void nextTurn(){
-        for(int i=0; i<8; i++) {
+        for(int i=0; i<12; i++) {
             String playingPlayer = gameManager.getPlayerTurn().getNickname();
             try {
                 gameManager.playerPlayCard(playingPlayer, (UtilCostantValue.lunghezzaMaxMappa / 2) - 1-(i/4), UtilCostantValue.lunghezzaMaxMappa / 2, 1, true);
