@@ -223,7 +223,7 @@ public class GameManager extends Observable implements GameController {
     @Override
     public void playerPlayCard(String nickname, int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
         Player p = nickToPlayer(nickname);
-        System.out.printf("%s ha piazzato una carta in posizione ", nickname, x, y);
+        System.out.printf("\n%s ha piazzato una carta in posizione", nickname, x, y);
         try {
             p.placeCard(x, y, numCard, isCardBack);
         } catch (PersonalizedException.InvalidPlacementException e) {

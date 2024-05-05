@@ -14,7 +14,7 @@ public class GeneralShop extends Shop {
     }
 
     public Card drawFromShopPlayer(int numCard){
-        System.out.printf("drawing card\n");
+        System.out.printf("\ndrawing card\n");
         Card supp;
 
         switch(numCard) {

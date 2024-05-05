@@ -50,7 +50,7 @@ public class Player implements PlayerInterface {
     @Override
     public void placeCard(int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
         Card playedCard;
-        int placeResult;
+        int placeResult = 0;
 
         try {
             playedCard = hand.popCard(numCard);
@@ -60,7 +60,7 @@ public class Player implements PlayerInterface {
             throw new RuntimeException(e);
         }
         if(playedCard.getColor()==ResourceType.NONE){
-            //placeResult = gameMap.placeStarterCard(playedCard, isCardBack);
+            placeResult = gameMap.placeStarterCard(playedCard, isCardBack);
         }else{
             try {
                 placeResult = gameMap.placeCard(x, y, playedCard, isCardBack);
