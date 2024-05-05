@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.model.shop.card;
 
+import it.polimi.codexnaturalis.model.enumeration.CardType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.GamePlayerMap;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
@@ -36,7 +37,7 @@ public class StarterCard extends Card{
     public ArrayList<ResourceType> getCardResources() {
         ArrayList<ResourceType> temp = new ArrayList<>();
 
-        if(isBack) {
+        if(!isBack) {
             if(checkValidResource(frontNorthResource)) {
                 temp.add(frontNorthResource);
             }
@@ -48,6 +49,11 @@ public class StarterCard extends Card{
             }
             if(checkValidResource(frontWestResource)) {
                 temp.add(frontWestResource);
+            }
+            for(ResourceType element : backCentralResource) {
+                if(checkValidResource(element)) {
+                    temp.add(element);
+                }
             }
         } else {
             if(checkValidResource(backNorthResource)) {
@@ -61,11 +67,6 @@ public class StarterCard extends Card{
             }
             if(checkValidResource(backEastResource)) {
                 temp.add(backEastResource);
-            }
-            for(ResourceType element : backCentralResource) {
-                if(checkValidResource(element)) {
-                    temp.add(element);
-                }
             }
         }
         return temp;
@@ -94,5 +95,10 @@ public class StarterCard extends Card{
     @Override
     protected ResourceType getBackWestResource() {
         return backWestResource;
+    }
+
+    @Override
+    public CardType getCardType() {
+        return CardType.STARTER;
     }
 }

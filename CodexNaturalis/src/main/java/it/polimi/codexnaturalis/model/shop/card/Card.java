@@ -2,6 +2,7 @@ package it.polimi.codexnaturalis.model.shop.card;
 
 import com.google.gson.annotations.SerializedName;
 import it.polimi.codexnaturalis.model.enumeration.CardCorner;
+import it.polimi.codexnaturalis.model.enumeration.CardType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 
@@ -32,6 +33,7 @@ public abstract class Card {
     protected abstract ResourceType getBackSouthResource();
     protected abstract ResourceType getBackEastResource();
     protected abstract ResourceType getBackWestResource();
+    public abstract CardType getCardType();
 
     //NB: ritorna NONE se il corner è utilizzabile per piazzare carte, null altrimenti
     public ResourceType getCardCorner(CardCorner corner){

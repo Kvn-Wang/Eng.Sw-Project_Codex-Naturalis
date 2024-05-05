@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.model.shop.card;
 
+import it.polimi.codexnaturalis.model.enumeration.CardType;
 import it.polimi.codexnaturalis.model.enumeration.ConditionResourceType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.GamePlayerMap;
@@ -36,6 +37,11 @@ public class ObjectiveCard extends Card {
             }
         }
         return true;
+    }
+
+    @Override
+    public CardType getCardType(){
+        return CardType.OBJECTIVE;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.model.player;
 
+import it.polimi.codexnaturalis.model.enumeration.CardCorner;
 import it.polimi.codexnaturalis.model.enumeration.ConditionResourceType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.shop.card.Card;
@@ -34,15 +35,6 @@ class GamePlayerMapTest {
         StarterCard westTestCard = starterCard;
         ObjectiveCard testPlacedCard = new ObjectiveCard(41, null, ResourceType.QUILL, ResourceType.NONE, ResourceType.NONE, ResourceType.FUNGI, ConditionResourceType.QUILL, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
     }
-
-    /*public void test(){
-        Scanner scanner = new Scanner(System.in);
-        String inputString;
-        new StarterCard(81,ResourceType.NONE,ResourceType.NONE,ResourceType.PLANT, ResourceType.INSECT,new ResourceType[]{ResourceType.INSECT},ResourceType.FUNGI,ResourceType.ANIMAL,ResourceType.PLANT,ResourceType.INSECT);
-        new ResourceCard(1,ResourceType.FUNGI,null,ResourceType.NONE,ResourceType.FUNGI,ResourceType.FUNGI,0);
-        new ObjectiveCard(41,null,ResourceType.QUILL,ResourceType.NONE,ResourceType.NONE,ResourceType.FUNGI, ConditionResourceType.QUILL,1,new ResourceType[]{ResourceType.FUNGI,ResourceType.FUNGI,ResourceType.ANIMAL});
-
-    }*/
     @Test
     public void testMapArray() {
         Card[][] resultArray;
@@ -66,24 +58,29 @@ class GamePlayerMapTest {
     @Test
     public void testPlaceCard() throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
         int middle = UtilCostantValue.lunghezzaMaxMappa / 2;
-        ArrayList<ResourceType> tempListOfResources;
-        PlayerScoreResource testScoreCard = gamePlayerMap.getPlayerScoreCard();
-        Card[][] mapArray = gamePlayerMap.getMapArray();
-        int point;
-
-        mapArray[middle][middle+1] = firstTestCard;
-        mapArray[middle][middle-1] = secondTestCard;
-        tempListOfResources = firstTestCard.getCardResources();
-        for(ResourceType element : tempListOfResources) {
-            testScoreCard.addScore(element);
-        }
-        tempListOfResources = secondTestCard.getCardResources();
-        for(ResourceType element : tempListOfResources) {
-            testScoreCard.addScore(element);
-        }
-        PlayerScoreResource checkScoreCard = testScoreCard;
-        assertThrows(PersonalizedException.InvalidPlaceCardRequirementException.class, ()-> gamePlayerMap.placeCard(middle-1,middle,thirdTestCard,false));
+        assertThrows(PersonalizedException.InvalidPlacementException.class, ()-> gamePlayerMap.placeCard(middle,middle,firstTestCard,true));
+        gamePlayerMap.placeCard(middle,middle,starterCard,true);
+        PlayerScoreResource test = gamePlayerMap.getPlayerScoreCard();
+        gamePlayerMap.placeCard(middle,middle+1,firstTestCard,false);
+        gamePlayerMap.placeCard(middle,middle-1,secondTestCard,false);
+        gamePlayerMap.placeCard(middle+1,middle,thirdTestCard,false);
+        assertThrows(PersonalizedException.InvalidPlaceCardRequirementException.class, ()-> gamePlayerMap.placeCard(middle+2,middle,thirdTestCard,false));
         assertThrows(PersonalizedException.InvalidPlacementException.class, ()-> gamePlayerMap.placeCard(1,1,thirdTestCard,true));
-
+        for(int i = middle+2; i < UtilCostantValue.lunghezzaMaxMappa  ;i++){
+            gamePlayerMap.placeCard(middle, i, firstTestCard, true);
+        }
+        assertThrows(PersonalizedException.InvalidPlacementException.class, ()-> gamePlayerMap.placeCard(middle, UtilCostantValue.lunghezzaMaxMappa, firstTestCard, true));
+        for(int i = middle-2; i >= 0 ; i--){
+            gamePlayerMap.placeCard(middle, i, firstTestCard, true);
+        }
+        assertThrows(PersonalizedException.InvalidPlacementException.class, ()-> gamePlayerMap.placeCard(middle, -1 , firstTestCard, true));
+        for(int i = middle-1; i >= 0 ; i--){
+            gamePlayerMap.placeCard(i , middle, firstTestCard, true);
+        }
+        assertThrows(PersonalizedException.InvalidPlacementException.class, ()-> gamePlayerMap.placeCard( -1 ,middle, firstTestCard, true));
+        for(int i = middle+2; i < UtilCostantValue.lunghezzaMaxMappa  ;i++){
+            gamePlayerMap.placeCard( i, middle, firstTestCard, true);
+        }
+        assertThrows(PersonalizedException.InvalidPlacementException.class, ()-> gamePlayerMap.placeCard( UtilCostantValue.lunghezzaMaxMappa, middle, firstTestCard, true));
     }
 }

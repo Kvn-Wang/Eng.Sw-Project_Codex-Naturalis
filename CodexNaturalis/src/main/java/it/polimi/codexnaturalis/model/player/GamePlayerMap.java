@@ -1,6 +1,7 @@
 package it.polimi.codexnaturalis.model.player;
 
 import it.polimi.codexnaturalis.model.enumeration.CardCorner;
+import it.polimi.codexnaturalis.model.enumeration.CardType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
@@ -42,8 +43,7 @@ public class GamePlayerMap {
         if(checkValidityXY(x, y)) {
             //controlla le carte adiacenti per eventuali impossibilità per piazzare la carta
             neightbouringCard = checkValidPosition(x, y);
-            System.out.println(neightbouringCard);
-            if(neightbouringCard > 0 || mapArray[UtilCostantValue.lunghezzaMaxMappa/2][UtilCostantValue.lunghezzaMaxMappa/2]==null){
+            if(neightbouringCard > 0 || (mapArray[UtilCostantValue.lunghezzaMaxMappa/2][UtilCostantValue.lunghezzaMaxMappa/2]==null && card.getCardType() == CardType.STARTER)){
                 //funzione per controllare i requisiti per le carte obbiettivo
                 if(card.checkPlaceableCardCondition(playerScoreCard) || isCardBack) {
                     //piazza la carta
@@ -162,42 +162,41 @@ public class GamePlayerMap {
     }
 
     private ArrayList<ResourceType> checkResourceCovered(int x, int y) {
-        ArrayList<ResourceType> coveredResource = null;
+        ArrayList<ResourceType> coveredResource = new ArrayList<ResourceType>();
         ResourceType temp;
 
-        if(mapArray[x + 1][y]!=null) {
-            temp = mapArray[x + 1][y].getCardCorner(CardCorner.WEST);
+        if(x < 159 && mapArray[x + 1][y]!=null) {
+            temp = mapArray[x + 1][y].getCardCorner(CardCorner.NORTH);
             if (temp != null && temp != ResourceType.NONE) {
                 coveredResource.add(temp);
             }
         }
 
-        if(mapArray[x - 1][y]!=null) {
-            temp = mapArray[x - 1][y].getCardCorner(CardCorner.EAST);
+        if(x > 0 && mapArray[x - 1][y]!=null && x > 0) {
+            temp = mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH);
             if (temp != null && temp != ResourceType.NONE) {
                 coveredResource.add(temp);
             }
         }
 
-        if(mapArray[x][y + 1]!=null) {
-            temp = mapArray[x][y + 1].getCardCorner(CardCorner.NORTH);
+        if(y < 159 && mapArray[x][y + 1]!=null) {
+            temp = mapArray[x][y + 1].getCardCorner(CardCorner.EAST);
             if (temp != null && temp != ResourceType.NONE) {
                 coveredResource.add(temp);
             }
         }
 
-        if(mapArray[x][y - 1]!=null) {
-            temp = mapArray[x][y - 1].getCardCorner(CardCorner.SOUTH);
+        if( y > 0 && mapArray[x][y - 1]!=null) {
+            temp = mapArray[x][y - 1].getCardCorner(CardCorner.WEST);
             if (temp != null && temp != ResourceType.NONE) {
                 coveredResource.add(temp);
             }
         }
-
         return coveredResource;
     }
 
     private boolean checkValidityXY(int x, int y) {
-        if(x < 0 || y < 0 || x > UtilCostantValue.lunghezzaMaxMappa || y > UtilCostantValue.lunghezzaMaxMappa) {
+        if(x < 0 || y < 0 || x >= UtilCostantValue.lunghezzaMaxMappa || y >= UtilCostantValue.lunghezzaMaxMappa) {
             return false;
         } else {
             return true;

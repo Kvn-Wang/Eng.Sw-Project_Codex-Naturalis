@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.model.shop.card;
 
+import it.polimi.codexnaturalis.model.enumeration.CardType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,6 +59,11 @@ class CardTest {
 
             @Override
             protected ResourceType getBackWestResource() {
+                return null;
+            }
+
+            @Override
+            public CardType getCardType() {
                 return null;
             }
         };

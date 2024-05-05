@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.model.shop.card;
 
+import it.polimi.codexnaturalis.model.enumeration.CardType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.GamePlayerMap;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
@@ -82,5 +83,10 @@ public class ResourceCard extends Card{
     @Override
     protected ResourceType getBackWestResource() {
         return ResourceType.NONE;
+    }
+
+    @Override
+    public CardType getCardType() {
+        return CardType.RESOURCE;
     }
 }
