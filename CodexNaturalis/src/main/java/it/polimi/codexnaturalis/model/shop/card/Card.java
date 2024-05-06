@@ -79,7 +79,7 @@ public abstract class Card {
     }
 
     public boolean checkValidResource(ResourceType resourceType) {
-        if(resourceType != ResourceType.NONE && resourceType != null) {
+        if(resourceType != ResourceType.NONE && resourceType != ResourceType.UNASSIGNABLE) {
             return true;
         } else {
             return false;

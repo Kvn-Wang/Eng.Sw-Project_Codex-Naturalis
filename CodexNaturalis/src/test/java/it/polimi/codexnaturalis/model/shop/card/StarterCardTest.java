@@ -23,6 +23,17 @@ class StarterCardTest {
     public void testGetCardResources(){
         int i = 0;
         StarterCard starterCard = new StarterCard(81, ResourceType.NONE, ResourceType.NONE, ResourceType.PLANT, ResourceType.INSECT, new ResourceType[]{ResourceType.INSECT}, ResourceType.FUNGI, ResourceType.ANIMAL, ResourceType.PLANT, ResourceType.INSECT);
-        ArrayList<ResourceType> temp = starterCard.getCardResources();
+        ArrayList<ResourceType> temp = new ArrayList<ResourceType>();
+        temp.add(ResourceType.PLANT);
+        temp.add(ResourceType.INSECT);
+        temp.add(ResourceType.INSECT);
+        assertEquals(temp, starterCard.getCardResources());
+        temp.clear();
+        starterCard.setIsBack(true);
+        temp.add(ResourceType.FUNGI);
+        temp.add(ResourceType.ANIMAL);
+        temp.add(ResourceType.INSECT);
+        temp.add(ResourceType.PLANT);
+        assertEquals(temp, starterCard.getCardResources());
     }
 }

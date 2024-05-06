@@ -48,7 +48,7 @@ public class ObjectiveCard extends Card {
     public ArrayList<ResourceType> getCardResources() {
         ArrayList<ResourceType> temp = new ArrayList<>();
 
-        if(isBack) {
+        if(!isBack) {
             if(checkValidResource(frontNorthResource)) {
                 temp.add(frontNorthResource);
             }

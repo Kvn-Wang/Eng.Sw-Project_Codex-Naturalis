@@ -59,30 +59,26 @@ public class Player implements PlayerInterface {
         } catch (PersonalizedException.InvalidPopCardException e) {
             throw new RuntimeException(e);
         }
-        if(playedCard.getColor()==ResourceType.NONE){
-            placeResult = gameMap.placeStarterCard(playedCard, isCardBack);
-        }else{
+        try {
+            placeResult = gameMap.placeCard(x, y, playedCard, isCardBack);
+            personalScoreBoardScore+=placeResult;
+        } catch (PersonalizedException.InvalidPlacementException e) {
+            //ripiazza la carta nella mano
             try {
-                placeResult = gameMap.placeCard(x, y, playedCard, isCardBack);
-                personalScoreBoardScore+=placeResult;
-            } catch (PersonalizedException.InvalidPlacementException e) {
-                //ripiazza la carta nella mano
-                try {
-                    hand.addCard(playedCard);
-                } catch (PersonalizedException.InvalidAddCardException ex) {
-                    throw new RuntimeException(ex);
-                }
-                throw e; // Propagate the caught exception directly
-            } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
-                //ripiazza la carta nella mano
-                try {
-                    hand.addCard(playedCard);
-                } catch (PersonalizedException.InvalidAddCardException ex) {
-                    throw new RuntimeException(ex);
-                }
-                throw e; // Propagate the caught exception directly
+                hand.addCard(playedCard);
+            } catch (PersonalizedException.InvalidAddCardException ex) {
+                throw new RuntimeException(ex);
             }
-        }
+            throw e; // Propagate the caught exception directly
+        } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
+            //ripiazza la carta nella mano
+            try {
+                hand.addCard(playedCard);
+            } catch (PersonalizedException.InvalidAddCardException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw e; // Propagate the caught exception directly
+            }
     }
 
     @Override
