@@ -51,10 +51,6 @@ public class ServerContainer {
         lobbyThread = getLobbyThread(lobbyName);
 
         if(lobbyThread.connectPlayer(player)) {
-            // se c'è qualche player nella lobby (controllo utile nel caso di lobby appena creata)
-            if(lobbyThread.getListOfPlayers() != null) {
-                notifyClient(lobbyThread.getListOfPlayers(), player.getNickname() + " has joined the lobby!");
-            }
             return true;
         } else {
             return false;
@@ -72,11 +68,6 @@ public class ServerContainer {
         if(!lobbyThread.disconnectPlayer(player)) {
             activeLobby.remove(lobbyThread);
         }
-
-        // se c'è qualche player nella lobby (controllo utile nel caso di lobby appena creata)
-        if(lobbyThread.getListOfPlayers() != null) {
-            notifyClient(lobbyThread.getListOfPlayers(), player.getNickname() + " has left the lobby!");
-        }
     }
 
     public void setPlayerReady(String playerNickname, String lobbyName) throws RemoteException {
@@ -87,13 +78,6 @@ public class ServerContainer {
         lobbyThread = getLobbyThread(lobbyName);
 
         lobbyThread.setPlayerReady(player);
-        notifyClient(lobbyThread.getListOfPlayers(), player.getNickname() + " is ready!");
-    }
-
-    private void notifyClient(ArrayList<PlayerInfo> notifiedPlayer, String message) throws RemoteException {
-        for(PlayerInfo elem : notifiedPlayer) {
-            elem.notifyPlayer(message);
-        }
     }
 
     public boolean checkNickGlobalNicknameValidity(String checkNickname) {

@@ -26,7 +26,7 @@ public class BendMission extends Mission  {
         int match = 0;
 
         switch (decorationPosition) {
-            case CardCorner.EAST:
+            case EAST:
                 for (int i = 0; i < (mapArray.length - 1); i++) {
                     for (int j = 2; j < (mapArray[0].length); j++) {
                         if (mapArray[i][j] != null) {
@@ -42,7 +42,7 @@ public class BendMission extends Mission  {
                     }
                 }
                 break;
-            case CardCorner.NORTH:
+            case NORTH:
                 for (int i = 0; i < (mapArray.length - 2); i++) {
                     for (int j = 1; j < (mapArray[0].length); j++) {
                         if (mapArray[i][j] != null) {
@@ -58,7 +58,7 @@ public class BendMission extends Mission  {
                     }
                 }
                 break;
-            case CardCorner.WEST:
+            case WEST:
                 for (int i = 1; i < (mapArray.length); i++) {
                     for (int j = 0; j < (mapArray[0].length - 2); j++) {
                         if (mapArray[i][j] != null) {
@@ -74,7 +74,7 @@ public class BendMission extends Mission  {
                     }
                 }
                 break;
-            case CardCorner.SOUTH:
+            case SOUTH:
                 for (int i = 0; i < (mapArray.length); i++) {
                     for (int j = 0; j < (mapArray[0].length); j++) {
                         if (mapArray[i][j] != null) {

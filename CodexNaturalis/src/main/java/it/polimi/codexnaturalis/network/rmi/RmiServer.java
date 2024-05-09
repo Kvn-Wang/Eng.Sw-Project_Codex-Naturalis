@@ -28,7 +28,6 @@ public class RmiServer extends Thread implements VirtualServer {
         nicknameLessClients = new HashMap<>();
     }
 
-    // TODO: come contraddistinguere nickname già preso ma offline od online?
     @Override
     public String connect(VirtualView client) throws RemoteException, InterruptedException {
         String clientId;
@@ -59,20 +58,20 @@ public class RmiServer extends Thread implements VirtualServer {
     }
 
     @Override
-    public String getAvailableLobby(String nickname) throws RemoteException {
-        Gson gson = new Gson();
-        String json;
-        ArrayList<LobbyInfo> lobbies = new ArrayList<>();
+    public ArrayList<LobbyInfo> getAvailableLobby(String nickname) throws RemoteException {
+        /*Gson gson = new Gson();
+        String json;*/
+        ArrayList<LobbyInfo> lobbiesInfo = new ArrayList<>();
 
         //TODO da pulire
         for(LobbyThread elem : serverContainer.getActiveLobby()) {
-            lobbies.add(elem.getLobbyInfo());
+            lobbiesInfo.add(elem.getLobbyInfo());
         }
-        json = gson.toJson(lobbies);
+        //json = gson.toJson(lobbies);
 
         //System.out.println("Lobby Json sent: " + json);
 
-        return json;
+        return lobbiesInfo;
     }
 
     @Override

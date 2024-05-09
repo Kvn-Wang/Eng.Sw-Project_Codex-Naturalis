@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.network;
 
+import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.network.rmi.VirtualView;
 import javafx.scene.paint.Color;
 
@@ -8,7 +9,7 @@ import java.rmi.RemoteException;
 
 public class PlayerInfo  {
     private String nickname;
-    private Color colorChosen;
+    private ColorType colorChosen;
     private boolean isPlayerReady;
     private VirtualView clientHandler;
 
@@ -27,11 +28,11 @@ public class PlayerInfo  {
         this.nickname = nickname;
     }
 
-    public Color getColorChosen() {
+    public ColorType getColorChosen() {
         return colorChosen;
     }
 
-    public void setColorChosen(Color colorChosen) {
+    public void setColorChosen(ColorType colorChosen) {
         this.colorChosen = colorChosen;
     }
 

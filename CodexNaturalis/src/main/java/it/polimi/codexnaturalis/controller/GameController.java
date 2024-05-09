@@ -3,7 +3,9 @@ package it.polimi.codexnaturalis.controller;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 
-public interface GameController {
+import java.io.Serializable;
+
+public interface GameController extends Serializable {
     void initializeGame();
 //void setPlayerColor(String nickname, String color);
     void disconnectPlayer(String nickname);//vedi issues

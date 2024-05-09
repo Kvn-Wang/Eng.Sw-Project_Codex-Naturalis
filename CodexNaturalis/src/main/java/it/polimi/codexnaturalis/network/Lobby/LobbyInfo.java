@@ -1,7 +1,9 @@
 package it.polimi.codexnaturalis.network.Lobby;
 
 
-public class LobbyInfo {
+import java.io.Serializable;
+
+public class LobbyInfo implements Serializable {
     protected String lobbyName;
     protected Boolean isLobbyStarted;
     protected final int maxPlayer;
