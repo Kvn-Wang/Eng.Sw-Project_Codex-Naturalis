@@ -1,12 +1,1 @@
-Ho aggiunto la dipendenza per parametrizedTest di junit, va bene?
-
-manteniamo solo threadLobby come unico thread o facciamo che questo accetta SOLO le richieste e incarica un altro thread game?
-
-per la disconnessione, un utente si identifica con un username, ma dopo che si disconnette, altri potrebbero "rubargli" il nickname e quindi potenzialmente accedere alla sua partita -> vogliamo che dopo la creazione della partita memorizziamo anche qualcos'altro per identificare univocamente il player? come ad es: indirizzo IP?
-
-risposte differenti su come gestire una disconnessione nel mezzo di un round
-
-Come fare meglio poliformismo su playerInfo
-va bene che tx un oggetto via rete? in RMI client
-
-ready bloccante? se no, come si fa?
+Ma devo aggiungere al registry di RMI anche l'interfaccia controller? o va bene che lo passi l'istanza attraverso un'altra istanza RMI

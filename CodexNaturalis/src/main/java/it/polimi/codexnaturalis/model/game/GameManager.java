@@ -24,7 +24,7 @@ public class GameManager extends Observable implements GameController {
     private GeneralShop resourceShop;
     private GeneralShop objectiveShop;
     private String pathToFile;
-    private Map<String, ColorType> playerInfo = new HashMap<>();
+    private Map<String, ColorType> playerInfo;
     private Player[] players;
     private Player playerTurn;
     private ChatManager chatManager;

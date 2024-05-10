@@ -1,36 +1,32 @@
 package it.polimi.codexnaturalis.network.Lobby;
 
 import it.polimi.codexnaturalis.controller.GameController;
-import it.polimi.codexnaturalis.model.enumeration.ColorType;
-import it.polimi.codexnaturalis.model.game.GameManager;
+import it.polimi.codexnaturalis.model.enumeration.MessageType;
 import it.polimi.codexnaturalis.network.NetworkMessage;
 import it.polimi.codexnaturalis.network.PlayerInfo;
-import it.polimi.codexnaturalis.utils.PersonalizedException;
+import it.polimi.codexnaturalis.network.VirtualGame;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
-import it.polimi.codexnaturalis.utils.observer.Observer;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
-public class LobbyThread extends Thread implements Observer {
+public class Lobby {
     private LobbyInfo lobbyInfo;
-    final int timoutGameStart;
+    //final int timoutGameStart;
 
     // TODO: data Race
     private ArrayList<PlayerInfo> listOfPlayers;
     private GameController gameController;
 
-    public LobbyThread(String lobbyName) {
+    public Lobby(String lobbyName) {
         this.listOfPlayers = new ArrayList<>();
         lobbyInfo = new LobbyInfo(lobbyName, false, UtilCostantValue.maxPlayerPerLobby);
-        this.timoutGameStart = UtilCostantValue.timeoutSecGameStart;
+        //this.timoutGameStart = UtilCostantValue.timeoutSecGameStart;
     }
 
     public boolean connectPlayer(PlayerInfo player) throws RemoteException {
         if(lobbyInfo.addPlayer()) {
-            notifyClient(player.getNickname() + " has joined the lobby!");
+            broadCastNotify(player.getNickname() + " has joined the lobby!");
 
             listOfPlayers.add(player);
             return true;
@@ -43,7 +39,7 @@ public class LobbyThread extends Thread implements Observer {
     public boolean disconnectPlayer(PlayerInfo player) throws RemoteException {
         listOfPlayers.remove(player);
 
-        notifyClient(player.getNickname() + " has left the lobby!");
+        broadCastNotify(player.getNickname() + " has left the lobby!");
 
         if(lobbyInfo.removePlayer()) {
             return true;
@@ -55,7 +51,7 @@ public class LobbyThread extends Thread implements Observer {
     public void setPlayerReady(PlayerInfo player) throws RemoteException {
         listOfPlayers.get(listOfPlayers.indexOf(player)).setPlayerReady(true);
 
-        notifyClient(player.getNickname() + " is ready!");
+        broadCastNotify(player.getNickname() + " is ready!");
 
         startGame();
     }
@@ -80,37 +76,24 @@ public class LobbyThread extends Thread implements Observer {
             }
         } else {
             // TODO: dopo che il player si mette in ready, non può più fare nulla, va bene?
-            notifyClient("Waiting for more player before starting");
+            broadCastNotify("Waiting for more player before starting");
         }
         //TODO manca il metodo per registrare questo observer agli observable
     }
 
     private void connectPlayerToGame() throws RemoteException {
-        Map<String, ColorType> playerInfoNicknameColor;
-
-        playerInfoNicknameColor = new HashMap<>();
-        for(PlayerInfo playerInfo : listOfPlayers) {
-            playerInfoNicknameColor.put(playerInfo.getNickname(), playerInfo.getColorChosen());
-        }
-
-        gameController = new GameManager(playerInfoNicknameColor);
+        gameController = new VirtualGame(listOfPlayers);
         for(PlayerInfo playerInfo : listOfPlayers) {
             playerInfo.getClientHandler().connectToGame(gameController);
         }
 
-        notifyClient("Game has Started!");
+        broadCastNotify("Game has Started!");
     }
 
-    private void notifyClient(String message) throws RemoteException {
+    private void broadCastNotify(String message) throws RemoteException {
         for(PlayerInfo elem : listOfPlayers) {
-            elem.notifyPlayer(message);
+            elem.notifyPlayer(new NetworkMessage(elem.getNickname(), MessageType.COMUNICATION_NETWORK_LOBBY, message));
         }
-    }
-
-    //TODO
-    @Override
-    public void run() {
-        super.run();
     }
 
     public String getLobbyName() {
@@ -123,26 +106,6 @@ public class LobbyThread extends Thread implements Observer {
 
     public LobbyInfo getLobbyInfo() {
         return lobbyInfo;
-    }
-
-    //TODO come gestire i messaggi al client
-    @Override
-    public void update(NetworkMessage message) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
-        switch(message.getMessageType().toString()) {
-            case "CORRECT_CHOSEN_COLOR":
-
-                break;
-            case "COLOR_ALREADY_CHOSEN":
-
-                break;
-
-            case "WRONG_TYPE_SHOP":
-
-                break;
-
-            default:
-                throw new PersonalizedException.InvalidRequestTypeOfNetworkMessage(message.getMessageType().toString());
-        }
     }
 }
 

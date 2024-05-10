@@ -5,10 +5,17 @@ import it.polimi.codexnaturalis.model.enumeration.MessageType;
 public class NetworkMessage {
     String nickname;
     MessageType messageType;
+    String args;
 
     public NetworkMessage(String nickname, MessageType messageType) {
         this.nickname = nickname;
         this.messageType = messageType;
+    }
+
+    public NetworkMessage(String nickname, MessageType messageType, String args) {
+        this.nickname = nickname;
+        this.messageType = messageType;
+        this.args = args;
     }
 
     public String getNickname() {

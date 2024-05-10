@@ -2,7 +2,6 @@ package it.polimi.codexnaturalis.network;
 
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.network.rmi.VirtualView;
-import javafx.scene.paint.Color;
 
 import java.rmi.RemoteException;
 
@@ -44,8 +43,8 @@ public class PlayerInfo  {
         isPlayerReady = playerReady;
     }
 
-    public void notifyPlayer(String message) throws RemoteException {
-        clientHandler.showValue(message);
+    public void notifyPlayer(NetworkMessage message) throws RemoteException {
+        clientHandler.showMessage(message);
     }
 
     public VirtualView getClientHandler() {

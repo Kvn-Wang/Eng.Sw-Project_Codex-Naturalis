@@ -2,6 +2,7 @@ package it.polimi.codexnaturalis.network.rmi;
 
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.network.Lobby.LobbyInfo;
+import it.polimi.codexnaturalis.network.NetworkMessage;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 import java.rmi.NotBoundException;
@@ -34,7 +35,7 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
     }
 
     @Override
-    public void showValue(String message) throws RemoteException {
+    public void showMessage(NetworkMessage message) throws RemoteException {
         System.out.println(message);
     }
 

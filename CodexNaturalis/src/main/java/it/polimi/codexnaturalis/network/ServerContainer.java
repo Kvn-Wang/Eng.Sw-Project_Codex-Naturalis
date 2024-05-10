@@ -1,6 +1,6 @@
 package it.polimi.codexnaturalis.network;
 
-import it.polimi.codexnaturalis.network.Lobby.LobbyThread;
+import it.polimi.codexnaturalis.network.Lobby.Lobby;
 import it.polimi.codexnaturalis.network.rmi.VirtualView;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class ServerContainer {
     private static ServerContainer instance;
     private static ArrayList<PlayerInfo> lobbyLessClients;
-    private static ArrayList<LobbyThread> activeLobby;
+    private static ArrayList<Lobby> activeLobby;
 
     private ServerContainer() {
         lobbyLessClients = new ArrayList<>();
@@ -30,27 +30,27 @@ public class ServerContainer {
         lobbyLessClients.add(playerInfo);
     }
 
-    public LobbyThread lobbyCreation(String lobbyname) {
-        for(LobbyThread elem : activeLobby) {
+    public Lobby lobbyCreation(String lobbyname) {
+        for(Lobby elem : activeLobby) {
             if(elem.getLobbyName() == lobbyname) {
                 return null;
             }
         }
 
-        LobbyThread newLobbyThread = new LobbyThread(lobbyname);
-        activeLobby.add(newLobbyThread);
-        return newLobbyThread;
+        Lobby newLobby = new Lobby(lobbyname);
+        activeLobby.add(newLobby);
+        return newLobby;
     }
 
 
     public boolean joinPlayerToLobby(String playerNickname, String lobbyName) throws RemoteException {
         PlayerInfo player;
-        LobbyThread lobbyThread;
+        Lobby lobby;
 
         player = stringToPlayer(playerNickname);
-        lobbyThread = getLobbyThread(lobbyName);
+        lobby = getLobbyThread(lobbyName);
 
-        if(lobbyThread.connectPlayer(player)) {
+        if(lobby.connectPlayer(player)) {
             return true;
         } else {
             return false;
@@ -59,25 +59,25 @@ public class ServerContainer {
 
     public void leaveLobby(String playerNickname, String lobbyName) throws RemoteException {
         PlayerInfo player;
-        LobbyThread lobbyThread;
+        Lobby lobby;
 
         player = stringToPlayer(playerNickname);
-        lobbyThread = getLobbyThread(lobbyName);
+        lobby = getLobbyThread(lobbyName);
 
         //remove the player, and if currentPlayer == 0, eliminate the thread
-        if(!lobbyThread.disconnectPlayer(player)) {
-            activeLobby.remove(lobbyThread);
+        if(!lobby.disconnectPlayer(player)) {
+            activeLobby.remove(lobby);
         }
     }
 
     public void setPlayerReady(String playerNickname, String lobbyName) throws RemoteException {
         PlayerInfo player;
-        LobbyThread lobbyThread;
+        Lobby lobby;
 
         player = stringToPlayer(playerNickname);
-        lobbyThread = getLobbyThread(lobbyName);
+        lobby = getLobbyThread(lobbyName);
 
-        lobbyThread.setPlayerReady(player);
+        lobby.setPlayerReady(player);
     }
 
     public boolean checkNickGlobalNicknameValidity(String checkNickname) {
@@ -88,7 +88,7 @@ public class ServerContainer {
             }
         }
 
-        for(LobbyThread elem : activeLobby) {
+        for(Lobby elem : activeLobby) {
             for(PlayerInfo elem1 : elem.getListOfPlayers()) {
                 if(elem1.getNickname().equals(checkNickname)) {
                     return false;
@@ -99,7 +99,7 @@ public class ServerContainer {
     }
 
     public boolean checkNickGlobalLobbyNameValidity(String checkLobbyNickname) {
-        for(LobbyThread elem : activeLobby) {
+        for(Lobby elem : activeLobby) {
             if(elem.getLobbyName().equals(checkLobbyNickname)) {
                 return false;
             }
@@ -123,8 +123,8 @@ public class ServerContainer {
         }
     }
 
-    private LobbyThread getLobbyThread(String lobbyName) {
-        for(LobbyThread elem : activeLobby) {
+    private Lobby getLobbyThread(String lobbyName) {
+        for(Lobby elem : activeLobby) {
             if (elem.getLobbyName().equals(lobbyName)) {
                 //remove the player, and if currentPlayer == 0, eliminate the thread
                 return elem;
@@ -134,7 +134,7 @@ public class ServerContainer {
         throw new PersonalizedException.LobbyNotFoundException(lobbyName);
     }
 
-    public ArrayList<LobbyThread> getActiveLobby() {
+    public ArrayList<Lobby> getActiveLobby() {
         return activeLobby;
     }
 }

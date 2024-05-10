@@ -1,8 +1,6 @@
 package it.polimi.codexnaturalis.network.rmi;
 
-import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.network.Lobby.LobbyInfo;
-import it.polimi.codexnaturalis.network.Lobby.LobbyThread;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

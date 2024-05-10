@@ -1,12 +1,9 @@
 package it.polimi.codexnaturalis.network.rmi;
 
-import com.google.gson.Gson;
-import it.polimi.codexnaturalis.network.Lobby.LobbyThread;
+import it.polimi.codexnaturalis.network.Lobby.Lobby;
 import it.polimi.codexnaturalis.network.Lobby.LobbyInfo;
-import it.polimi.codexnaturalis.network.NetworkMessage;
 import it.polimi.codexnaturalis.network.ServerContainer;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
-import it.polimi.codexnaturalis.utils.observer.Observer;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -64,7 +61,7 @@ public class RmiServer extends Thread implements VirtualServer {
         ArrayList<LobbyInfo> lobbiesInfo = new ArrayList<>();
 
         //TODO da pulire
-        for(LobbyThread elem : serverContainer.getActiveLobby()) {
+        for(Lobby elem : serverContainer.getActiveLobby()) {
             lobbiesInfo.add(elem.getLobbyInfo());
         }
         //json = gson.toJson(lobbies);
@@ -76,7 +73,7 @@ public class RmiServer extends Thread implements VirtualServer {
 
     @Override
     public boolean joinLobby(String playerNickname, String lobbyName) throws RemoteException {
-        for(LobbyThread elem : serverContainer.getActiveLobby()) {
+        for(Lobby elem : serverContainer.getActiveLobby()) {
             if(elem.getLobbyName().equals(lobbyName)) {
                 return serverContainer.joinPlayerToLobby(playerNickname, lobbyName);
             }
