@@ -9,12 +9,21 @@ public class NetworkMessage {
 
     //useful for TCP communication
     public NetworkMessage(MessageType messageType, String args) {
+        this.nickname = null;
         this.messageType = messageType;
+        this.args = args;
+    }
+
+    public NetworkMessage(MessageType messageType) {
+        this.nickname = null;
+        this.messageType = messageType;
+        this.args = null;
     }
 
     public NetworkMessage(String nickname, MessageType messageType) {
         this.nickname = nickname;
         this.messageType = messageType;
+        this.args = null;
     }
 
     public NetworkMessage(String nickname, MessageType messageType, String args) {

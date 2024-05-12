@@ -25,7 +25,7 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
     private Registry registry;
     Scanner scan = new Scanner(System.in);
 
-    protected RmiClient() throws RemoteException, NotBoundException, InterruptedException {
+    public RmiClient() throws RemoteException, NotBoundException, InterruptedException {
         registry = LocateRegistry.getRegistry(UtilCostantValue.ipAddressServer, UtilCostantValue.portNumberServer);
         this.serverCommunication = (VirtualServer) registry.lookup(serverName);
         System.out.println("Connessso al server RMI");
@@ -39,11 +39,6 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
     @Override
     public void showMessage(NetworkMessage message) throws RemoteException {
         System.out.println(message.getArgs());
-    }
-
-    @Override
-    public void reportError(String details) throws RemoteException {
-
     }
 
     @Override
@@ -167,10 +162,5 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
                     break;
             }
         }
-    }
-
-    //TODO: temporaneo
-    public static void main(String[] args) throws NotBoundException, RemoteException, InterruptedException {
-        new RmiClient();
     }
 }

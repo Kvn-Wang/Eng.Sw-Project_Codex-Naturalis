@@ -28,18 +28,13 @@ public class RmiServer extends Thread implements VirtualServer {
     }
 
     @Override
-    public String connect(VirtualView client) throws RemoteException, InterruptedException {
+    public String connect(VirtualView client) throws RemoteException {
         String clientId;
 
         clientId = UUID.randomUUID().toString(); // Generate unique identifier
         nicknameLessClients.put(clientId, client); // Store client with its identifier
 
         System.out.println("Someone Connected");
-
-        /*for (Map.Entry<String, VirtualView> entry : nicknameLessClients.entrySet()) {
-            System.out.println("Lista K: "+ entry.getKey());
-            System.out.println("Lista V: "+ entry.getValue());
-        } */
 
         return clientId;
     }
@@ -56,17 +51,11 @@ public class RmiServer extends Thread implements VirtualServer {
 
     @Override
     public ArrayList<LobbyInfo> getAvailableLobby(String nickname) throws RemoteException {
-        /*Gson gson = new Gson();
-        String json;*/
         ArrayList<LobbyInfo> lobbiesInfo = new ArrayList<>();
 
-        //TODO da pulire
         for(Lobby elem : serverContainer.getActiveLobby()) {
             lobbiesInfo.add(elem.getLobbyInfo());
         }
-        //json = gson.toJson(lobbies);
-
-        //System.out.println("Lobby Json sent: " + json);
 
         return lobbiesInfo;
     }

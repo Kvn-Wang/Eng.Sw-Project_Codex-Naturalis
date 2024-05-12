@@ -1,6 +1,7 @@
 package it.polimi.codexnaturalis.network.socket;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.MessageType;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
@@ -16,6 +17,8 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class ClientHandler extends Thread implements VirtualView {
+    String playerNickname;
+    String lobbyNickname;
     final PrintWriter output;
     final BufferedReader input;
     final ServerContainer serverContainer;
@@ -24,34 +27,71 @@ public class ClientHandler extends Thread implements VirtualView {
         this.serverContainer = serverContainer;
         this.input = input;
         this.output = new PrintWriter(output);
+        playerNickname = null;
+        lobbyNickname = null;
     }
 
     public void runSocketListener() throws IOException {
         String jsonRX;
+        String argsTX;
         NetworkMessage messageRX;
         NetworkMessage messageTX;
-        String args;
+        Gson gson;
 
+        gson = new Gson();
         while ((jsonRX = input.readLine()) != null) {
             messageRX = deSerializeMesssage(jsonRX);
 
             switch (messageRX.getMessageType()) {
                 case COM_SET_NICKNAME_TCP:
                     //get nickname
-                    args = messageRX.getArgs();
-                    if(serverContainer.playerCreation(this, args)) {
-                        messageTX = new NetworkMessage(MessageType.COM_SET_NICKNAME_OUTCOME_TCP, String.valueOf(true));
-                    } else {
-                        messageTX = new NetworkMessage(MessageType.COM_SET_NICKNAME_OUTCOME_TCP, String.valueOf(false));
-                    }
+                    argsTX = messageRX.getArgs();
 
-                    showMessage(messageTX);
+                    if(serverContainer.playerCreation(this, argsTX)) {
+                        playerNickname = argsTX;
+                        messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(true));
+                    } else {
+                        messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(false));
+                    }
                     break;
+
+                case COM_GET_LOBBIES_TCP:
+                    //translation of the lobbies in json
+                    argsTX = gson.toJson(serverContainer.getActiveLobby(), new TypeToken<ArrayList<LobbyInfo>>(){}.getType());
+
+                    messageTX = new NetworkMessage(MessageType.COM_GET_LOBBIES_TCP, argsTX);
+                    break;
+
+                case COM_JOIN_LOBBY_TCP:
+                    //get lobby name
+                    argsTX = messageRX.getArgs();
+
+                    if(serverContainer.joinPlayerToLobby(playerNickname, argsTX)) {
+                        lobbyNickname = argsTX;
+                        messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(true));
+                    } else {
+                        messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(false));
+                    }
+                    break;
+
+                case COM_SET_READY_LOBBY_TCP:
+                    serverContainer.setPlayerReady(playerNickname, lobbyNickname);
+                    messageTX = new NetworkMessage(MessageType.COM_ACK_TCP);
+                    break;
+
+                case COM_LEAVE_LOBBY_TCP:
+                    serverContainer.leaveLobby(playerNickname, lobbyNickname);
+                    lobbyNickname = null;
+
+                    messageTX = new NetworkMessage(MessageType.COM_ACK_TCP);
+                    break;
+
                 default:
-                    //TODO comunicazione comando errato al client
-                    System.err.println("[INVALID MESSAGE]");
+                    messageTX = new NetworkMessage(MessageType.COM_ERROR_TCP);
+
                     break;
             }
+            showMessage(messageTX);
         }
     }
 
@@ -80,11 +120,6 @@ public class ClientHandler extends Thread implements VirtualView {
         jsonTX = serializeMesssage(message);
         output.println(jsonTX);
         output.flush();
-    }
-
-    @Override
-    public void reportError(String details) throws RemoteException {
-
     }
 
     @Override

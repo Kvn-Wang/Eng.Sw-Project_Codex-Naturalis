@@ -25,7 +25,7 @@ public class ServerContainer {
         return instance;
     }
 
-    //returns true if the creation is successful (the nickname is globally unique)
+    //returns true if the creation is successful (the nickname is globally unique) and add it to the globally unique arraylist
     public boolean playerCreation(VirtualView client, String nickname) {
         PlayerInfo playerInfo;
 
@@ -53,6 +53,7 @@ public class ServerContainer {
     }
 
 
+    //add the setted player (with a functioning handler) to the arraylist of lobby
     public boolean joinPlayerToLobby(String playerNickname, String lobbyName) throws RemoteException {
         PlayerInfo player;
         Lobby lobby;
