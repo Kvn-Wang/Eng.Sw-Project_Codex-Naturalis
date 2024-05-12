@@ -1,6 +1,6 @@
-package it.polimi.codexnaturalis.network.rmi;
+package it.polimi.codexnaturalis.network.communicationInterfaces;
 
-import it.polimi.codexnaturalis.network.Lobby.LobbyInfo;
+import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

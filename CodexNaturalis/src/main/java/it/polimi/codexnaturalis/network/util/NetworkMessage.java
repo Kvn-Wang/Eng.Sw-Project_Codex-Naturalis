@@ -1,4 +1,4 @@
-package it.polimi.codexnaturalis.network;
+package it.polimi.codexnaturalis.network.util;
 
 import it.polimi.codexnaturalis.model.enumeration.MessageType;
 
@@ -6,6 +6,11 @@ public class NetworkMessage {
     String nickname;
     MessageType messageType;
     String args;
+
+    //useful for TCP communication
+    public NetworkMessage(MessageType messageType, String args) {
+        this.messageType = messageType;
+    }
 
     public NetworkMessage(String nickname, MessageType messageType) {
         this.nickname = nickname;
@@ -28,6 +33,10 @@ public class NetworkMessage {
 
     public MessageType getMessageType() {
         return messageType;
+    }
+
+    public String getArgs() {
+        return args;
     }
 
     public void setMessageType(MessageType messageType) {

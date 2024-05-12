@@ -1,7 +1,7 @@
-package it.polimi.codexnaturalis.network;
+package it.polimi.codexnaturalis.network.util;
 
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
-import it.polimi.codexnaturalis.network.rmi.VirtualView;
+import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 
 import java.rmi.RemoteException;
 

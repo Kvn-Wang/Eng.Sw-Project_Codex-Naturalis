@@ -1,4 +1,4 @@
-package it.polimi.codexnaturalis.network.Lobby;
+package it.polimi.codexnaturalis.network.lobby;
 
 
 import java.io.Serializable;

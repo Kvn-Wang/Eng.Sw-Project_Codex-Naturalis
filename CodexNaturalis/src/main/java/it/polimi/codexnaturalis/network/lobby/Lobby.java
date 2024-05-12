@@ -1,10 +1,10 @@
-package it.polimi.codexnaturalis.network.Lobby;
+package it.polimi.codexnaturalis.network.lobby;
 
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.MessageType;
-import it.polimi.codexnaturalis.network.NetworkMessage;
-import it.polimi.codexnaturalis.network.PlayerInfo;
-import it.polimi.codexnaturalis.network.VirtualGame;
+import it.polimi.codexnaturalis.network.util.NetworkMessage;
+import it.polimi.codexnaturalis.network.util.PlayerInfo;
+import it.polimi.codexnaturalis.network.util.VirtualGame;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 import java.rmi.RemoteException;
@@ -92,7 +92,7 @@ public class Lobby {
 
     private void broadCastNotify(String message) throws RemoteException {
         for(PlayerInfo elem : listOfPlayers) {
-            elem.notifyPlayer(new NetworkMessage(elem.getNickname(), MessageType.COMUNICATION_NETWORK_LOBBY, message));
+            elem.notifyPlayer(new NetworkMessage(elem.getNickname(), MessageType.COM_LOBBY_RMI, message));
         }
     }
 

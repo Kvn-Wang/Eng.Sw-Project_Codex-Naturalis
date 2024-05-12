@@ -1,8 +1,10 @@
 package it.polimi.codexnaturalis.network.rmi;
 
-import it.polimi.codexnaturalis.network.Lobby.Lobby;
-import it.polimi.codexnaturalis.network.Lobby.LobbyInfo;
-import it.polimi.codexnaturalis.network.ServerContainer;
+import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
+import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
+import it.polimi.codexnaturalis.network.lobby.Lobby;
+import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
+import it.polimi.codexnaturalis.network.util.ServerContainer;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 import java.rmi.RemoteException;
@@ -44,9 +46,7 @@ public class RmiServer extends Thread implements VirtualServer {
 
     @Override
     public boolean setNickname(String userID, String nickname) throws RemoteException {
-        if(serverContainer.checkNickGlobalNicknameValidity(nickname)) {
-            System.out.println("Created player nickname: " + nickname);
-            serverContainer.playerCreation(nicknameLessClients.get(userID), nickname);
+        if(serverContainer.playerCreation(nicknameLessClients.get(userID), nickname)) {
             nicknameLessClients.remove(userID);
             return true;
         } else {

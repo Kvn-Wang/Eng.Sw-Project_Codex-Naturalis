@@ -1,7 +1,7 @@
-package it.polimi.codexnaturalis.network;
+package it.polimi.codexnaturalis.network.util;
 
-import it.polimi.codexnaturalis.network.Lobby.Lobby;
-import it.polimi.codexnaturalis.network.rmi.VirtualView;
+import it.polimi.codexnaturalis.network.lobby.Lobby;
+import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 
 import java.rmi.RemoteException;
@@ -25,9 +25,19 @@ public class ServerContainer {
         return instance;
     }
 
-    public void playerCreation(VirtualView client, String nickname) {
-        PlayerInfo playerInfo = new PlayerInfo(client, nickname);
-        lobbyLessClients.add(playerInfo);
+    //returns true if the creation is successful (the nickname is globally unique)
+    public boolean playerCreation(VirtualView client, String nickname) {
+        PlayerInfo playerInfo;
+
+        if(checkNickGlobalNicknameValidity(nickname)) {
+            System.out.println("Created player nickname: " + nickname);
+            playerInfo = new PlayerInfo(client, nickname);
+            lobbyLessClients.add(playerInfo);
+
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Lobby lobbyCreation(String lobbyname) {

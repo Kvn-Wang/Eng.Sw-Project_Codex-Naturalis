@@ -1,6 +1,6 @@
 package it.polimi.codexnaturalis.utils.observer;
 
-import it.polimi.codexnaturalis.network.NetworkMessage;
+import it.polimi.codexnaturalis.network.util.NetworkMessage;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 
 import java.util.ArrayList;

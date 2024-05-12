@@ -10,7 +10,7 @@ import it.polimi.codexnaturalis.model.mission.MissionSelector;
 import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.shop.GeneralShop;
 import it.polimi.codexnaturalis.model.shop.Shop;
-import it.polimi.codexnaturalis.network.NetworkMessage;
+import it.polimi.codexnaturalis.network.util.NetworkMessage;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.utils.observer.Observable;

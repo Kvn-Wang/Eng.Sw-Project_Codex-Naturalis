@@ -1,7 +1,7 @@
-package it.polimi.codexnaturalis.network.rmi;
+package it.polimi.codexnaturalis.network.communicationInterfaces;
 
 import it.polimi.codexnaturalis.controller.GameController;
-import it.polimi.codexnaturalis.network.NetworkMessage;
+import it.polimi.codexnaturalis.network.util.NetworkMessage;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

@@ -1,4 +1,4 @@
-package it.polimi.codexnaturalis.network;
+package it.polimi.codexnaturalis.network.util;
 
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
@@ -44,11 +44,6 @@ public class VirtualGame implements GameController, Observer {
     }
 
     @Override
-    public void initializeGame() {
-
-    }
-
-    @Override
     public void disconnectPlayer(String nickname) {
 
     }
@@ -83,23 +78,18 @@ public class VirtualGame implements GameController, Observer {
 
     }
 
-    @Override
-    public void endGame() {
-
-    }
-
     //TODO come gestire i messaggi al client
     @Override
     public void update(NetworkMessage message) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
-        switch(message.getMessageType().toString()) {
-            case "CORRECT_CHOSEN_COLOR":
+        switch(message.getMessageType()) {
+            case CORRECT_CHOSEN_COLOR:
 
                 break;
-            case "COLOR_ALREADY_CHOSEN":
+            case COLOR_ALREADY_CHOSEN:
 
                 break;
 
-            case "WRONG_TYPE_SHOP":
+            case WRONG_TYPE_SHOP:
 
                 break;
 
