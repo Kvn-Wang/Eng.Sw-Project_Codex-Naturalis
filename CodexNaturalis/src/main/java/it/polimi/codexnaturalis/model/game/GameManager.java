@@ -3,7 +3,7 @@ package it.polimi.codexnaturalis.model.game;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.chat.ChatManager;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
-import it.polimi.codexnaturalis.model.enumeration.MessageType;
+import it.polimi.codexnaturalis.network.util.MessageType;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.mission.MissionSelector;

@@ -17,7 +17,7 @@ import java.util.Scanner;
 
 public class RmiClient extends UnicastRemoteObject implements VirtualView {
     private final String serverName = UtilCostantValue.RMIServerName;
-    private final VirtualServer serverCommunication;
+    private final VirtualServer server;
     private GameController gameController;
     private String personalID;
     private String nickname;
@@ -27,11 +27,10 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
 
     public RmiClient() throws RemoteException, NotBoundException, InterruptedException {
         registry = LocateRegistry.getRegistry(UtilCostantValue.ipAddressServer, UtilCostantValue.portNumberServer);
-        this.serverCommunication = (VirtualServer) registry.lookup(serverName);
-        System.out.println("Connessso al server RMI");
+        this.server = (VirtualServer) registry.lookup(serverName);
 
         // scambio dell'oggetto per comunicare col server
-        personalID = serverCommunication.connect(this);
+        personalID = server.connect(this);
 
         initializeClient();
     }
@@ -46,7 +45,7 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
         this.gameController = gameController;
     }
 
-    private void initializeClient() throws RemoteException, InterruptedException {
+    private void initializeClient() throws RemoteException {
         boolean notYetReady;
 
         setNicknameProcedure();
@@ -57,10 +56,10 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
             selectionOfLobbies();
 
             if(waitingInLobbyResult()) {
-                serverCommunication.setPlayerReady(nickname, lobby);
+                server.setPlayerReady(nickname, lobby);
                 notYetReady = false;
             } else {
-                serverCommunication.leaveLobby(nickname, lobby);
+                server.leaveLobby(nickname, lobby);
             }
         }
     }
@@ -69,7 +68,7 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
         System.out.println("Inserisci il tuo nickname:");
         while(true) {
             nickname = scan.nextLine();
-            if(!serverCommunication.setNickname(personalID, nickname)) {
+            if(!server.setNickname(personalID, nickname)) {
                 System.out.println("Nickname già preso, si prega di selezionare un altro: ");
             } else {
                 System.out.println("Benvenuto: "+nickname);
@@ -79,21 +78,13 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
     }
 
     private ArrayList<LobbyInfo> getLobbies() throws RemoteException {
-        /*String json;
-        Gson gson = new Gson();*/
         ArrayList<LobbyInfo> lobbies;
 
-        lobbies = serverCommunication.getAvailableLobby(nickname);
-        /*if(!json.equals("[]")) {
-            lobbies = gson.fromJson(json, new TypeToken<ArrayList<LobbyInfo>>(){}.getType());
-        } else {
-            lobbies = null;
-        }*/
+        lobbies = server.getAvailableLobby(nickname);
 
         return lobbies;
     }
 
-    //TODO come implementare refresh? ogni volta che dò un input refresho? chiedendo il json; pulire il codice che fa schifo
     private void selectionOfLobbies() throws RemoteException {
         boolean isPlayerLobbyLess;
         ArrayList<LobbyInfo> lobbies;
@@ -122,7 +113,7 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
 
                         if(lobby.equals("LEAVE")) {
                             break;
-                        } else if(serverCommunication.createLobby(nickname, lobby)) {
+                        } else if(server.createLobby(nickname, lobby)) {
                             isPlayerLobbyLess = false;
                             break;
                         } else {
@@ -131,7 +122,7 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
                     }
                     break;
                 default:
-                    if(serverCommunication.joinLobby(nickname, lobby)) {
+                    if(server.joinLobby(nickname, lobby)) {
                         isPlayerLobbyLess = false;
                         break;
                     } else {
@@ -162,5 +153,9 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
                     break;
             }
         }
+    }
+
+    public VirtualServer getServer() {
+        return server;
     }
 }

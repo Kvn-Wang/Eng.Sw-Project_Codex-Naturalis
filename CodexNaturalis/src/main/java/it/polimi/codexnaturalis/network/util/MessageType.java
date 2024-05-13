@@ -1,4 +1,4 @@
-package it.polimi.codexnaturalis.model.enumeration;
+package it.polimi.codexnaturalis.network.util;
 
 //If before the enum the args are not specified, it's not expected additional argument for the network message
 public enum MessageType {

@@ -3,7 +3,7 @@ package it.polimi.codexnaturalis.network.socket;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.codexnaturalis.controller.GameController;
-import it.polimi.codexnaturalis.model.enumeration.MessageType;
+import it.polimi.codexnaturalis.network.util.MessageType;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.network.util.NetworkMessage;

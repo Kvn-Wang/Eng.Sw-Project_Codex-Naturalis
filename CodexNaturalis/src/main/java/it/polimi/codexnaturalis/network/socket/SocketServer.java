@@ -1,15 +1,11 @@
 package it.polimi.codexnaturalis.network.socket;
 
 import it.polimi.codexnaturalis.network.util.ServerContainer;
-import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class SocketServer extends Thread {
@@ -23,7 +19,7 @@ public class SocketServer extends Thread {
         serverSocket = new ServerSocket(portServer);
     }
 
-    private void runServer() throws IOException {
+    private void runRxServer() throws IOException {
         Socket clientSocket;
         while ((clientSocket = this.serverSocket.accept()) != null) {
             InputStreamReader clientSocketRX = new InputStreamReader(clientSocket.getInputStream());
@@ -38,7 +34,7 @@ public class SocketServer extends Thread {
         System.out.println("TCP server started");
 
         try {
-            runServer();
+            runRxServer();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

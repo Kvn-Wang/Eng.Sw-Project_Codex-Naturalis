@@ -1,7 +1,5 @@
 package it.polimi.codexnaturalis.network.util;
 
-import it.polimi.codexnaturalis.model.enumeration.MessageType;
-
 public class NetworkMessage {
     String nickname;
     MessageType messageType;
