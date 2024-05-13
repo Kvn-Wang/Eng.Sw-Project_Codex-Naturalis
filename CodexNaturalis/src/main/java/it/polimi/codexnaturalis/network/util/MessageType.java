@@ -13,6 +13,8 @@ public enum MessageType {
     COM_SET_READY_LOBBY_TCP,
     COM_LEAVE_LOBBY_TCP,
     COM_ERROR_TCP,
+    //args = lobbyName
+    COM_CREATE_LOBBY_TCP,
     COM_LOBBY_RMI,
 
     /* ---ENUMS FOR THE GAME PHASE--- */

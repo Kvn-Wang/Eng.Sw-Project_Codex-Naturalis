@@ -80,7 +80,7 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
     private ArrayList<LobbyInfo> getLobbies() throws RemoteException {
         ArrayList<LobbyInfo> lobbies;
 
-        lobbies = server.getAvailableLobby(nickname);
+        lobbies = server.getAvailableLobby();
 
         return lobbies;
     }

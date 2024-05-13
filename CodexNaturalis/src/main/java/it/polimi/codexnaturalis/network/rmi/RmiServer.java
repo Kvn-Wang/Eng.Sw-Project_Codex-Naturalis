@@ -50,7 +50,7 @@ public class RmiServer extends Thread implements VirtualServer {
     }
 
     @Override
-    public ArrayList<LobbyInfo> getAvailableLobby(String nickname) throws RemoteException {
+    public ArrayList<LobbyInfo> getAvailableLobby() throws RemoteException {
         ArrayList<LobbyInfo> lobbiesInfo = new ArrayList<>();
 
         for(Lobby elem : serverContainer.getActiveLobby()) {
@@ -79,8 +79,7 @@ public class RmiServer extends Thread implements VirtualServer {
 
     @Override
     public boolean createLobby(String playerNickname, String lobbyName) throws RemoteException {
-        if(serverContainer.checkNickGlobalLobbyNameValidity(lobbyName)) {
-            serverContainer.lobbyCreation(lobbyName);
+        if(serverContainer.lobbyCreation(lobbyName)) {
             System.out.println(lobbyName + " lobby has been created");
 
             serverContainer.joinPlayerToLobby(playerNickname, lobbyName);

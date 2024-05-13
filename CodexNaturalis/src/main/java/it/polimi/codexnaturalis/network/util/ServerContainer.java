@@ -40,16 +40,20 @@ public class ServerContainer {
         }
     }
 
-    public Lobby lobbyCreation(String lobbyname) {
-        for(Lobby elem : activeLobby) {
-            if(elem.getLobbyName() == lobbyname) {
-                return null;
+    public boolean lobbyCreation(String lobbyName) {
+        if(checkNickGlobalLobbyNameValidity(lobbyName)) {
+            for(Lobby elem : activeLobby) {
+                if(elem.getLobbyName() == lobbyName) {
+                    return null;
+                }
             }
-        }
 
-        Lobby newLobby = new Lobby(lobbyname);
-        activeLobby.add(newLobby);
-        return newLobby;
+            Lobby newLobby = new Lobby(lobbyName);
+            activeLobby.add(newLobby);
+            return newLobby;
+        } else {
+            return null;
+        }
     }
 
 

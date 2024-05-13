@@ -3,6 +3,8 @@ package it.polimi.codexnaturalis.network.socket;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
+import it.polimi.codexnaturalis.network.lobby.Lobby;
 import it.polimi.codexnaturalis.network.util.MessageType;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
@@ -16,7 +18,7 @@ import java.io.PrintWriter;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-public class ClientHandler extends Thread implements VirtualView {
+public class ClientHandler extends Thread implements VirtualView, VirtualServer {
     String playerNickname;
     String lobbyNickname;
     final PrintWriter output;
@@ -33,7 +35,7 @@ public class ClientHandler extends Thread implements VirtualView {
 
     public void runSocketListener() throws IOException {
         String jsonRX;
-        String argsTX;
+        String argsRX;
         NetworkMessage messageRX;
         NetworkMessage messageTX;
         Gson gson;
@@ -45,10 +47,10 @@ public class ClientHandler extends Thread implements VirtualView {
             switch (messageRX.getMessageType()) {
                 case COM_SET_NICKNAME_TCP:
                     //get nickname
-                    argsTX = messageRX.getArgs();
+                    argsRX = messageRX.getArgs();
 
-                    if(serverContainer.playerCreation(this, argsTX)) {
-                        playerNickname = argsTX;
+                    if(setNickname(null, argsRX)) {
+                        playerNickname = argsRX;
                         messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(true));
                     } else {
                         messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(false));
@@ -57,17 +59,29 @@ public class ClientHandler extends Thread implements VirtualView {
 
                 case COM_GET_LOBBIES_TCP:
                     //translation of the lobbies in json
-                    argsTX = gson.toJson(serverContainer.getActiveLobby(), new TypeToken<ArrayList<LobbyInfo>>(){}.getType());
+                    argsRX = gson.toJson(getAvailableLobby(), new TypeToken<ArrayList<LobbyInfo>>(){}.getType());
 
-                    messageTX = new NetworkMessage(MessageType.COM_GET_LOBBIES_TCP, argsTX);
+                    messageTX = new NetworkMessage(MessageType.COM_GET_LOBBIES_TCP, argsRX);
+                    break;
+
+                case COM_CREATE_LOBBY_TCP:
+                    //get lobby nickname
+                    argsRX = messageRX.getArgs();
+
+                    if(createLobby(playerNickname, argsRX)) {
+                        messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(true));
+                    } else {
+                        messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(false));
+                    }
+
                     break;
 
                 case COM_JOIN_LOBBY_TCP:
                     //get lobby name
-                    argsTX = messageRX.getArgs();
+                    argsRX = messageRX.getArgs();
 
-                    if(serverContainer.joinPlayerToLobby(playerNickname, argsTX)) {
-                        lobbyNickname = argsTX;
+                    if(joinLobby(playerNickname, argsRX)) {
+                        lobbyNickname = argsRX;
                         messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(true));
                     } else {
                         messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(false));
@@ -75,13 +89,13 @@ public class ClientHandler extends Thread implements VirtualView {
                     break;
 
                 case COM_SET_READY_LOBBY_TCP:
-                    serverContainer.setPlayerReady(playerNickname, lobbyNickname);
+                    setPlayerReady(playerNickname, lobbyNickname);
+
                     messageTX = new NetworkMessage(MessageType.COM_ACK_TCP);
                     break;
 
                 case COM_LEAVE_LOBBY_TCP:
-                    serverContainer.leaveLobby(playerNickname, lobbyNickname);
-                    lobbyNickname = null;
+                    leaveLobby(playerNickname, lobbyNickname);
 
                     messageTX = new NetworkMessage(MessageType.COM_ACK_TCP);
                     break;
@@ -133,5 +147,63 @@ public class ClientHandler extends Thread implements VirtualView {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public String connect(VirtualView client) throws RemoteException, InterruptedException {
+        return null;
+    }
+
+    @Override
+    public boolean setNickname(String userID, String nickname) throws RemoteException {
+        if(serverContainer.playerCreation(this, nickname)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public ArrayList<LobbyInfo> getAvailableLobby() throws RemoteException {
+        ArrayList<LobbyInfo> lobbiesInfo = new ArrayList<>();
+
+        for(Lobby elem : serverContainer.getActiveLobby()) {
+            lobbiesInfo.add(elem.getLobbyInfo());
+        }
+
+        return lobbiesInfo;
+    }
+
+    @Override
+    public boolean joinLobby(String playerNickname, String lobbyName) throws RemoteException {
+        if(serverContainer.joinPlayerToLobby(playerNickname, lobbyName)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void leaveLobby(String playerNickname, String lobbyName) throws RemoteException {
+        serverContainer.leaveLobby(playerNickname, lobbyNickname);
+        lobbyNickname = null;
+    }
+
+    @Override
+    public boolean createLobby(String playerNickname, String lobbyName) throws RemoteException {
+        if(serverContainer.lobbyCreation(lobbyName)) {
+            System.out.println(lobbyName + " lobby has been created");
+
+            serverContainer.joinPlayerToLobby(playerNickname, lobbyName);
+            System.out.println(playerNickname + " has joined " + lobbyName + " lobby");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void setPlayerReady(String playerNickname, String lobbyName) throws RemoteException {
+        serverContainer.setPlayerReady(playerNickname, lobbyNickname);
     }
 }
