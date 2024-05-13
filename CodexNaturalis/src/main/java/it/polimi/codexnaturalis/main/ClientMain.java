@@ -11,30 +11,35 @@ import java.rmi.RemoteException;
 import java.util.Scanner;
 
 public class ClientMain {
-    /*VirtualServer server;
-    GameController gameController;
-    public void ClientMain(RmiClient client) {
-        System.out.println("Connessso al server RMI");
-        server = client.getServer();
-        runCli();
-    }
-
-    public void ClientMain(SocketClient client) {
-        System.out.println("Connessso al server Socket");
-    }
-
-    public void runCli() {
+    public static void main(String[] args) throws NotBoundException, RemoteException, InterruptedException {
+        int typeOfconnectionClient;
+        int typeOfUserView;
         Scanner scan = new Scanner(System.in);
 
-        while(true) {
+        typeOfconnectionClient = 0;
+        do {
+            System.out.println("1 for socket, 2 for RMI :");
+            try {
+                typeOfconnectionClient = Integer.parseInt(scan.nextLine());
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid value!");
+            }
+        }while (typeOfconnectionClient != 2 && typeOfconnectionClient != 1);
 
+        typeOfUserView = 0;
+        do {
+            System.out.println("1 for GUI, 2 for TUI :");
+            try {
+                typeOfUserView = Integer.parseInt(scan.nextLine());
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid value!");
+            }
+        }while (typeOfUserView != 2 && typeOfUserView != 1);
+
+        if(typeOfconnectionClient == 1) {
+            new SocketClient();
+        } else {
+            new RmiClient();
         }
-    }*/
-
-    //TODO: scelta se socket o RMI da linea di comando
-    public static void main(String[] args) throws NotBoundException, RemoteException, InterruptedException {
-        new RmiClient();
-        //GameController gameController = virtualServer.
-        //new SocketClient();
     }
 }

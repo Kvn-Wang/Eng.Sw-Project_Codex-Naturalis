@@ -43,16 +43,16 @@ public class ServerContainer {
     public boolean lobbyCreation(String lobbyName) {
         if(checkNickGlobalLobbyNameValidity(lobbyName)) {
             for(Lobby elem : activeLobby) {
-                if(elem.getLobbyName() == lobbyName) {
-                    return null;
+                if(elem.getLobbyName().equals(lobbyName)) {
+                    return false;
                 }
             }
 
             Lobby newLobby = new Lobby(lobbyName);
             activeLobby.add(newLobby);
-            return newLobby;
+            return true;
         } else {
-            return null;
+            return false;
         }
     }
 

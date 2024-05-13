@@ -101,7 +101,7 @@ public class RmiServer extends Thread implements VirtualServer {
 
         try {
             stub = (VirtualServer) UnicastRemoteObject.exportObject(engine, 0);
-            registry = LocateRegistry.createRegistry(UtilCostantValue.portNumberServer);
+            registry = LocateRegistry.createRegistry(UtilCostantValue.portRmiServer);
             registry.rebind(name, stub);
         } catch (RemoteException e) {
             throw new RuntimeException(e);

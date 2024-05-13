@@ -37,13 +37,11 @@ public class GameManager extends Observable implements GameController {
     public GameManager(Map<String, ColorType> playerInfo) {
         this.playerInfo = playerInfo;
         players = new Player[playerInfo.size()];
-    }
 
-    @Override
-    public void initializeGame() {
         //initializeGame ora é diviso in 3 phases
         gamePhase1();
     }
+
     private void gamePhase1(){
         initializeScoreboard();
         resourceShop = initializeShop(ShopType.RESOURCE);
@@ -254,17 +252,12 @@ public class GameManager extends Observable implements GameController {
 
     private void endGameCheckFinishedShop(){
         if(objectiveShop.checkEmptyShop() && resourceShop.checkEmptyShop())
-            endGame();
+            isFinalTurn = true;
     }
 
     private void endGameCheckScoreBoard(){
         if(playerTurn.getPersonalScore() >= 20)
-            endGame();
-    }
-
-    @Override
-    public void endGame() {
-        isFinalTurn=true;
+            isFinalTurn = true;
     }
 
     private void executeSharedMission(){

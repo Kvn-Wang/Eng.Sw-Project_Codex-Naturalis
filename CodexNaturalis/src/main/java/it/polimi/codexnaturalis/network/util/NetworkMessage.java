@@ -1,6 +1,8 @@
 package it.polimi.codexnaturalis.network.util;
 
-public class NetworkMessage {
+import java.io.Serializable;
+
+public class NetworkMessage implements Serializable {
     String nickname;
     MessageType messageType;
     String args;

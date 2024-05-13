@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="MainServer" type="Application" factoryName="Application">
+  <configuration default="false" name="ServerApp" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="it.polimi.codexnaturalis.main.ServerMain" />
     <module name="CodexNaturalis" />
     <method v="2">

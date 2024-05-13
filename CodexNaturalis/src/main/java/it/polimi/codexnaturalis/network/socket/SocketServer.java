@@ -14,7 +14,7 @@ public class SocketServer extends Thread {
     ServerSocket serverSocket;
 
     public SocketServer() throws IOException {
-        portServer = UtilCostantValue.portNumberServer;
+        portServer = UtilCostantValue.portSocketServer;
         this.serverContainer = ServerContainer.getInstance();
         serverSocket = new ServerSocket(portServer);
     }

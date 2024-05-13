@@ -9,7 +9,6 @@ import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import java.io.*;
 import java.net.Socket;
 import java.rmi.RemoteException;
-import java.util.Scanner;
 
 public class SocketClient implements VirtualView {
     Socket serverSocket;
@@ -19,7 +18,7 @@ public class SocketClient implements VirtualView {
     public void SocketCLient() throws IOException {
         //TODO bisognerà poi settarlo dinamicamente da linea di comando
         String host = "127.0.0.1";
-        int port = UtilCostantValue.portNumberServer;
+        int port = UtilCostantValue.portSocketServer;
 
         serverSocket = new Socket(host, port);
 

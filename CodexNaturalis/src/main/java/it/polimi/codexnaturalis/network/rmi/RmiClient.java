@@ -26,7 +26,7 @@ public class RmiClient extends UnicastRemoteObject implements VirtualView {
     Scanner scan = new Scanner(System.in);
 
     public RmiClient() throws RemoteException, NotBoundException, InterruptedException {
-        registry = LocateRegistry.getRegistry(UtilCostantValue.ipAddressServer, UtilCostantValue.portNumberServer);
+        registry = LocateRegistry.getRegistry(UtilCostantValue.ipAddressSocketServer, UtilCostantValue.portRmiServer);
         this.server = (VirtualServer) registry.lookup(serverName);
 
         // scambio dell'oggetto per comunicare col server

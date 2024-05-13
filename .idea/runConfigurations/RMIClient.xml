@@ -1,9 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="RMIClient" type="Application" factoryName="Application" singleton="false">
-    <option name="MAIN_CLASS_NAME" value="it.polimi.codexnaturalis.network.rmi.RmiClient" />
-    <module name="CodexNaturalis" />
-    <method v="2">
-      <option name="Make" enabled="true" />
-    </method>
-  </configuration>
-</component>
