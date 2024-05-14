@@ -116,9 +116,8 @@ public class Shop {
                 }
             }
         } catch (IOException e) {
-            System.err.println("File JSON Card non trovato");
             e.printStackTrace();
-            throw new RuntimeException("File JSON"+ cardsFile +" non trovato");
+            throw new RuntimeException("File JSON: "+ cardsFile +" non trovato");
         }
 
         shuffleCardDeck();

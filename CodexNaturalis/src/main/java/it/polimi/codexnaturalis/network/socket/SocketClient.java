@@ -14,6 +14,9 @@ public class SocketClient implements VirtualView {
     Socket serverSocket;
     BufferedReader socketRx;
     PrintWriter socketTx;
+    // variabili usata per la logica di invio e aspetta la risposta
+    boolean ackArrived;
+    boolean outcomeReceived;
 
     public void SocketCLient() throws IOException {
         //TODO bisognerà poi settarlo dinamicamente da linea di comando
@@ -24,6 +27,8 @@ public class SocketClient implements VirtualView {
 
         socketRx = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
         socketTx = new PrintWriter(new OutputStreamWriter(serverSocket.getOutputStream()));
+
+        ackArrived = false;
 
         new Thread(() -> {
             try {
@@ -45,6 +50,7 @@ public class SocketClient implements VirtualView {
             // Read message and perform action
             switch (messageRX.getMessageType()) {
                 case COM_ACK_TCP:
+                    ackArrived = true;
                     break;
                 case COM_ERROR_TCP:
                     break;
