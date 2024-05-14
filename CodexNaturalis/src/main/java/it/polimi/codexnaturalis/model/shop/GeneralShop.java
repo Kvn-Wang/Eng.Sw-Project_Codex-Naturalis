@@ -3,6 +3,8 @@ package it.polimi.codexnaturalis.model.shop;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 
+import java.io.Serializable;
+
 public class GeneralShop extends Shop {
     private Card visibleCard1;
     private Card visibleCard2;

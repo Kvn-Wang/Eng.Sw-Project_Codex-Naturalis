@@ -82,7 +82,9 @@ public class Lobby {
     }
 
     private void connectPlayerToGame() throws RemoteException {
+        System.out.println("prima");
         gameController = new VirtualGame(listOfPlayers);
+        System.out.println("dopo");
         for(PlayerInfo playerInfo : listOfPlayers) {
             playerInfo.getClientHandler().connectToGame(gameController);
         }

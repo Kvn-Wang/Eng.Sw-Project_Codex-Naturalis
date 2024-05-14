@@ -14,6 +14,7 @@ import it.polimi.codexnaturalis.network.util.NetworkMessage;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.utils.observer.Observable;
+import it.polimi.codexnaturalis.utils.observer.Observer;
 
 import java.util.*;
 
@@ -198,7 +199,7 @@ public class GameManager extends Observable implements GameController {
             nextTurn();
         }
         else{
-            System.out.printf("wrong type shop", nickname);
+            System.out.println("wrong type shop");
             notifyObserver(new NetworkMessage(nickname, MessageType.WRONG_TYPE_SHOP));
         }
     }
@@ -250,6 +251,11 @@ public class GameManager extends Observable implements GameController {
         nickToPlayer(reqPlayer).switchPlayerView(nickToPlayer(target));
     }
 
+    @Override
+    public void endGame() {
+        isFinalTurn = true;
+    }
+    
     private void endGameCheckFinishedShop(){
         if(objectiveShop.checkEmptyShop() && resourceShop.checkEmptyShop())
             isFinalTurn = true;
@@ -261,11 +267,8 @@ public class GameManager extends Observable implements GameController {
     }
 
     private void executeSharedMission(){
-        int points = 0;
         for(Player p: players){
-            points = sharedMission1.ruleAlgorithmCheck(p) + sharedMission2.ruleAlgorithmCheck(p);
-            p.addMissionScore(points);
-            points = 0;
+            p.addMissionScore(sharedMission1.ruleAlgorithmCheck(p) + sharedMission2.ruleAlgorithmCheck(p));
         }
     }
 
@@ -276,7 +279,7 @@ public class GameManager extends Observable implements GameController {
     }
 
     private void nextTurn(){
-        do{
+        /*do{
             boolean playerfound=false;
             int i=0;
             while(!playerfound && i<players.length) {
@@ -301,7 +304,7 @@ public class GameManager extends Observable implements GameController {
                 i++;
             }
         }while(!playerTurn.isPlayerAlive());
-        System.out.printf("é il turno di %s\n", playerTurn.getNickname());
+        System.out.printf("é il turno di %s\n", playerTurn.getNickname());*/
     }
 
     private void setWinner(){
