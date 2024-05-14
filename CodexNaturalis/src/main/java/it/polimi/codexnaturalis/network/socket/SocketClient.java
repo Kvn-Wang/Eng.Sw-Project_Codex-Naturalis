@@ -42,6 +42,7 @@ public class SocketClient implements VirtualView {
     private void runRxClient() throws IOException {
         NetworkMessage messageRX;
         String jsonRX;
+        String argsRX;
 
         // Read message type
         while ((jsonRX = socketRx.readLine()) != null) {
@@ -51,8 +52,15 @@ public class SocketClient implements VirtualView {
             switch (messageRX.getMessageType()) {
                 case COM_ACK_TCP:
                     ackArrived = true;
+                    //getArgs = (String) boolean
+                    argsRX = messageRX.getArgs();
+
+                    outcomeReceived = Boolean.parseBoolean(argsRX);
+                    notify();
                     break;
+
                 case COM_ERROR_TCP:
+                    //TODO
                     break;
                 default:
                     break;
