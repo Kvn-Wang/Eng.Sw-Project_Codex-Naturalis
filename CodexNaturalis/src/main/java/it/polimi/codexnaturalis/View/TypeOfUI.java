@@ -1,17 +1,17 @@
 package it.polimi.codexnaturalis.View;
 
 import it.polimi.codexnaturalis.network.lobby.Lobby;
+import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 
 import java.util.ArrayList;
 
 public interface TypeOfUI {
     void connectVirtualNetwork(VirtualNetworkCommand virtualNetworkCommand);
     void printSelectionNicknameRequest();
-    void printSelectionNicknameRequestOutcome();
-    void printLobby(ArrayList<Lobby> lobbies);
+    void printSelectionNicknameRequestOutcome(boolean positiveOutcome, String nickname);
+    void printLobby(ArrayList<LobbyInfo> lobbies);
     void printSelectionCreateOrJoinLobbyRequest();
-    void printCreationLobbyRequest();
-    void printCreationLobbyRequestOutcome();
+    void printCreationLobbyRequestOutcome(boolean outcomePositive, String lobbyName);
     void printReadyOrLeaveSelection();
-    void printReadyOrLeaveSelectionOutcome();
+    void printReadyOrLeaveSelectionOutcome(boolean isReady);
 }

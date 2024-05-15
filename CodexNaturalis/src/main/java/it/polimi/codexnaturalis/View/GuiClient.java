@@ -1,6 +1,7 @@
 package it.polimi.codexnaturalis.View;
 
 import it.polimi.codexnaturalis.network.lobby.Lobby;
+import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 
 import java.util.ArrayList;
 
@@ -18,12 +19,12 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
-    public void printSelectionNicknameRequestOutcome() {
+    public void printSelectionNicknameRequestOutcome(boolean positiveOutcome, String nickname) {
 
     }
 
     @Override
-    public void printLobby(ArrayList<Lobby> lobbies) {
+    public void printLobby(ArrayList<LobbyInfo> lobbies) {
 
     }
 
@@ -33,12 +34,7 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
-    public void printCreationLobbyRequest() {
-
-    }
-
-    @Override
-    public void printCreationLobbyRequestOutcome() {
+    public void printCreationLobbyRequestOutcome(boolean outcomePositive, String lobbyName) {
 
     }
 
@@ -48,7 +44,7 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
-    public void printReadyOrLeaveSelectionOutcome() {
+    public void printReadyOrLeaveSelectionOutcome(boolean isReady) {
 
     }
 }
