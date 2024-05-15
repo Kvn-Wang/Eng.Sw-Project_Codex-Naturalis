@@ -37,7 +37,11 @@ public class ClientMain {
         }while (typeOfUserView != 2 && typeOfUserView != 1);
 
         if(typeOfconnectionClient == 1) {
-            new SocketClient();
+            if(typeOfUserView == 1) {
+                new SocketClient();
+            } else {
+
+            }
         } else {
             new RmiClient();
         }
