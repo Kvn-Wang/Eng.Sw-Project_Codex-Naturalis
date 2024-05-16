@@ -7,6 +7,8 @@ import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.network.util.NetworkMessage;
 import it.polimi.codexnaturalis.network.util.GeneralTuiClient;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
+import it.polimi.codexnaturalis.view.GenericClient;
+import it.polimi.codexnaturalis.view.TypeOfUI;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -15,16 +17,18 @@ import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class RmiClient extends GeneralTuiClient implements VirtualView {
+public class RmiClient extends GenericClient {
     private final String serverName = UtilCostantValue.RMIServerName;
     private final VirtualServer server;
     private GameController gameController;
     private String personalID;
-    private String nickname;
-    private String lobby;
     private Registry registry;
 
-    public RmiClient() throws RemoteException, NotBoundException, InterruptedException {
+    public RmiClient(TypeOfUI typeOfUI) throws RemoteException, NotBoundException, InterruptedException {
+        //setup communicazione bidirezionale tra rete e oggetto grafico
+        super(typeOfUI);
+        typeOfUI.connectVirtualNetwork(this);
+
         registry = LocateRegistry.getRegistry(UtilCostantValue.ipAddressSocketServer, UtilCostantValue.portRmiServer);
         this.server = (VirtualServer) registry.lookup(serverName);
 
@@ -49,15 +53,25 @@ public class RmiClient extends GeneralTuiClient implements VirtualView {
         String outcomeChosen;
 
         //set nickname phase
-        while(true){
+        /*while(true){
             nickname = setNicknameProcedure(personalID);
             if(printNicknameProcedureOutcome(!server.setNickname(personalID, nickname))) {
                 break;
             }
-        }
+        }*/
+
+        // per com'è stato scritto il codice, dopo questa riga avremo un nickname sicuramente settato correttamente
+        // stessa cosa vale per le righe successive
+        typeOfUI.printSelectionNicknameRequest();
+
+        //setup lobbyName unico
+        typeOfUI.printLobby(server.getAvailableLobby());
+        typeOfUI.printSelectionCreateOrJoinLobbyRequest();
+
+        typeOfUI.printReadyOrLeaveSelection();
 
         //join a lobby phase
-        notYetReady = true;
+        /*notYetReady = true;
         while(notYetReady) {
             //after this function, the player must have joined a lobby
             while(true) {
@@ -85,18 +99,58 @@ public class RmiClient extends GeneralTuiClient implements VirtualView {
             } else {
                 server.leaveLobby(nickname, lobby);
             }
-        }
-    }
-
-    public ArrayList<LobbyInfo> getLobbies() throws RemoteException {
-        ArrayList<LobbyInfo> lobbies;
-
-        lobbies = server.getAvailableLobby();
-
-        return lobbies;
+        }*/
     }
 
     public VirtualServer getServer() {
         return server;
+    }
+
+    @Override
+    public void selectNickname(String nickname) throws RemoteException {
+        if(server.setNickname(personalID, nickname)) {
+            this.playerNickname = nickname;
+            typeOfUI.printSelectionNicknameRequestOutcome(true, this.playerNickname);
+        } else {
+            typeOfUI.printSelectionNicknameRequestOutcome(false, nickname);
+
+            //emula un loop infinito finchè non sceglie un nickname corretto
+            typeOfUI.printSelectionNicknameRequest();
+        }
+    }
+
+    @Override
+    public void joinLobby(String lobbyName) throws RemoteException {
+        if(server.joinLobby(playerNickname, lobbyName)) {
+            this.lobbyNickname = lobbyName;
+            typeOfUI.printJoinLobbyOutcome(true, this.lobbyNickname);
+        } else {
+            typeOfUI.printJoinLobbyOutcome(false, lobbyName);
+
+            //start loop
+            typeOfUI.printSelectionCreateOrJoinLobbyRequest();
+        }
+    }
+
+    @Override
+    public void createLobby(String lobbyName) throws RemoteException {
+        if(server.createLobby(playerNickname, lobbyName)) {
+            this.lobbyNickname = lobbyName;
+            typeOfUI.printCreationLobbyRequestOutcome(true, this.lobbyNickname);
+        } else {
+            typeOfUI.printCreationLobbyRequestOutcome(false, lobbyName);
+        }
+    }
+
+    @Override
+    public void setReady() throws RemoteException {
+        server.setPlayerReady(playerNickname, lobbyNickname);
+        typeOfUI.printReadyOrLeaveSelectionOutcome(true);
+    }
+
+    @Override
+    public void leaveLobby() throws RemoteException {
+        server.leaveLobby(playerNickname, lobbyNickname);
+        typeOfUI.printReadyOrLeaveSelectionOutcome(true);
     }
 }

@@ -5,6 +5,8 @@ import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.rmi.RmiClient;
 import it.polimi.codexnaturalis.network.socket.SocketClient;
+import it.polimi.codexnaturalis.view.GuiClient;
+import it.polimi.codexnaturalis.view.TuiClient;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -40,10 +42,14 @@ public class ClientMain {
             if(typeOfUserView == 1) {
                 new SocketClient();
             } else {
-
+                new SocketClient();
             }
         } else {
-            new RmiClient();
+            if(typeOfUserView == 1) {
+                new RmiClient(new GuiClient());
+            } else {
+                new RmiClient(new TuiClient());
+            }
         }
     }
 }

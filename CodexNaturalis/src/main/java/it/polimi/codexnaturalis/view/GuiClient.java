@@ -1,8 +1,8 @@
-package it.polimi.codexnaturalis.View;
+package it.polimi.codexnaturalis.view;
 
-import it.polimi.codexnaturalis.network.lobby.Lobby;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class GuiClient implements TypeOfUI {
@@ -30,6 +30,11 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printSelectionCreateOrJoinLobbyRequest() {
+
+    }
+
+    @Override
+    public void printJoinLobbyOutcome(boolean positiveOutcome, String lobbyName) throws RemoteException {
 
     }
 

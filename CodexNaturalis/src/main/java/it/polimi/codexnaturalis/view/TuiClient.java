@@ -1,15 +1,17 @@
-package it.polimi.codexnaturalis.View;
+package it.polimi.codexnaturalis.view;
 
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class TuiClient implements TypeOfUI {
-    private VirtualNetworkCommand networkCommand;
+    protected VirtualNetworkCommand networkCommand;
     Scanner scan;
 
-    public void TuiClient() {
+    public TuiClient() {
         scan = new Scanner(System.in);
     }
 
@@ -19,7 +21,7 @@ public class TuiClient implements TypeOfUI {
     }
 
     @Override
-    public void printSelectionNicknameRequest() {
+    public void printSelectionNicknameRequest() throws RemoteException {
         String nickname;
 
         System.out.println("Inserisci il tuo nickname:");
@@ -50,7 +52,7 @@ public class TuiClient implements TypeOfUI {
     }
 
     @Override
-    public void printSelectionCreateOrJoinLobbyRequest() {
+    public void printSelectionCreateOrJoinLobbyRequest() throws RemoteException {
         String command;
 
         System.out.println("Write the name of an existing lobby to join it or write 'CREATE' to create a new lobby");
@@ -70,6 +72,15 @@ public class TuiClient implements TypeOfUI {
     }
 
     @Override
+    public void printJoinLobbyOutcome(boolean positiveOutcome, String lobbyName) throws RemoteException {
+        if(positiveOutcome) {
+            System.out.println("you've joined the lobby: "+lobbyName);
+        } else {
+            System.out.println("you failed to join the lobby");
+        }
+    }
+
+    @Override
     public void printCreationLobbyRequestOutcome(boolean outcomePositive, String lobbyName) {
         if(outcomePositive) {
             System.out.println("You successfully created the lobby: "+ lobbyName);
@@ -79,7 +90,7 @@ public class TuiClient implements TypeOfUI {
     }
 
     @Override
-    public void printReadyOrLeaveSelection() {
+    public void printReadyOrLeaveSelection() throws RemoteException {
         String command;
         boolean flag;
 
