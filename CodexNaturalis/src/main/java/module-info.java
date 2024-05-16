@@ -19,8 +19,7 @@ module it.polimi.codexnaturalis {
     exports it.polimi.codexnaturalis.controller;
     opens it.polimi.codexnaturalis.controller to javafx.fxml;
     exports it.polimi.codexnaturalis.network.rmi;
-    exports it.polimi.codexnaturalis.network.lobby;
-    //opens it.polimi.codexnaturalis.network.lobby to com.google.gson;
+    opens it.polimi.codexnaturalis.network.lobby to com.google.gson;
     exports it.polimi.codexnaturalis.network.communicationInterfaces;
     exports it.polimi.codexnaturalis.network.util;
     opens it.polimi.codexnaturalis.network.util to javafx.fxml;

@@ -7,6 +7,7 @@ import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.network.util.ServerContainer;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -18,7 +19,6 @@ import java.util.UUID;
 
 public class RmiServer extends Thread implements VirtualServer {
     private Registry registry;
-    private String name = UtilCostantValue.RMIServerName;
     private Map<String, VirtualView> nicknameLessClients;
     ServerContainer serverContainer;
 
@@ -98,6 +98,7 @@ public class RmiServer extends Thread implements VirtualServer {
     public void run() {
         VirtualServer engine = new RmiServer();
         VirtualServer stub = null;
+        String name = UtilCostantValue.RMIServerName;
 
         try {
             stub = (VirtualServer) UnicastRemoteObject.exportObject(engine, 0);
@@ -107,6 +108,6 @@ public class RmiServer extends Thread implements VirtualServer {
             throw new RuntimeException(e);
         }
 
-        System.out.println("RMI server started");
+        System.out.println("RMI server started: "+name);
     }
 }

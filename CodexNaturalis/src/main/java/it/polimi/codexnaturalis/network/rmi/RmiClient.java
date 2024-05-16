@@ -32,6 +32,8 @@ public class RmiClient extends GenericClient {
         registry = LocateRegistry.getRegistry(UtilCostantValue.ipAddressSocketServer, UtilCostantValue.portRmiServer);
         this.server = (VirtualServer) registry.lookup(serverName);
 
+        System.out.println("Collegato al server: " + serverName);
+
         // scambio dell'oggetto per comunicare col server
         personalID = server.connect(this);
 
@@ -151,6 +153,6 @@ public class RmiClient extends GenericClient {
     @Override
     public void leaveLobby() throws RemoteException {
         server.leaveLobby(playerNickname, lobbyNickname);
-        typeOfUI.printReadyOrLeaveSelectionOutcome(true);
+        typeOfUI.printReadyOrLeaveSelectionOutcome(false);
     }
 }
