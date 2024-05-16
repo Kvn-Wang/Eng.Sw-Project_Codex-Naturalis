@@ -24,11 +24,6 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
-    public void printLobby(ArrayList<LobbyInfo> lobbies) {
-
-    }
-
-    @Override
     public void printSelectionCreateOrJoinLobbyRequest() {
 
     }

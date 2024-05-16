@@ -9,7 +9,6 @@ public interface TypeOfUI {
     void connectVirtualNetwork(VirtualNetworkCommand virtualNetworkCommand);
     void printSelectionNicknameRequest() throws RemoteException;
     void printSelectionNicknameRequestOutcome(boolean positiveOutcome, String nickname);
-    void printLobby(ArrayList<LobbyInfo> lobbies);
     void printSelectionCreateOrJoinLobbyRequest() throws RemoteException;
     void printJoinLobbyOutcome(boolean positiveOutcome, String lobbyName) throws RemoteException;
     void printCreationLobbyRequestOutcome(boolean outcomePositive, String lobbyName);

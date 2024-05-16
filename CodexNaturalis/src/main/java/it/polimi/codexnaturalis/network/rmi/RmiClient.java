@@ -51,57 +51,14 @@ public class RmiClient extends GenericClient {
     }
 
     private void initializeClient() throws RemoteException {
-        boolean notYetReady;
-        String outcomeChosen;
-
-        //set nickname phase
-        /*while(true){
-            nickname = setNicknameProcedure(personalID);
-            if(printNicknameProcedureOutcome(!server.setNickname(personalID, nickname))) {
-                break;
-            }
-        }*/
-
         // per com'è stato scritto il codice, dopo questa riga avremo un nickname sicuramente settato correttamente
         // stessa cosa vale per le righe successive
         typeOfUI.printSelectionNicknameRequest();
 
         //setup lobbyName unico
-        typeOfUI.printLobby(server.getAvailableLobby());
         typeOfUI.printSelectionCreateOrJoinLobbyRequest();
 
         typeOfUI.printReadyOrLeaveSelection();
-
-        //join a lobby phase
-        /*notYetReady = true;
-        while(notYetReady) {
-            //after this function, the player must have joined a lobby
-            while(true) {
-                outcomeChosen = joinOrCreateSelection();
-                if(outcomeChosen.equals("CREATE")) {
-                    lobby = createLobbySelection();
-
-                    if(lobby.equals("LEAVE")) {
-                        break;
-                    }else if(server.createLobby(nickname, lobby)) {
-                        System.out.println("You created a lobby");
-                        break;
-                    } else {
-                        System.out.println("Inserted lobby name already exists");
-                    }
-                } else {
-                    printJoinLobbyOutcome(server.joinLobby(nickname, lobby));
-                }
-            }
-
-            //set ready or leave phase
-            if(waitingInLobbyResult()) {
-                server.setPlayerReady(nickname, lobby);
-                notYetReady = false;
-            } else {
-                server.leaveLobby(nickname, lobby);
-            }
-        }*/
     }
 
     public VirtualServer getServer() {
@@ -119,6 +76,11 @@ public class RmiClient extends GenericClient {
             //emula un loop infinito finchè non sceglie un nickname corretto
             typeOfUI.printSelectionNicknameRequest();
         }
+    }
+
+    @Override
+    public ArrayList<LobbyInfo> getLobbies() throws RemoteException {
+        return server.getAvailableLobby();
     }
 
     @Override

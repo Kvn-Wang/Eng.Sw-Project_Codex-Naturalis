@@ -39,8 +39,10 @@ public class TuiClient implements TypeOfUI {
         }
     }
 
-    @Override
-    public void printLobby(ArrayList<LobbyInfo> lobbies) {
+    private void printLobby() throws RemoteException {
+        ArrayList<LobbyInfo> lobbies;
+
+        lobbies = networkCommand.getLobbies();
         System.out.println("Lobby list:");
         if(lobbies != null) {
             for (LobbyInfo elem : lobbies) {
@@ -55,6 +57,8 @@ public class TuiClient implements TypeOfUI {
     public void printSelectionCreateOrJoinLobbyRequest() throws RemoteException {
         String command;
 
+        printLobby();
+
         System.out.println("Write the name of an existing lobby to join it or write 'CREATE' to create a new lobby");
         command = scan.nextLine();
 
@@ -63,7 +67,11 @@ public class TuiClient implements TypeOfUI {
                 System.out.println("Inserisci il nuovo nome della lobby, LEAVE per uscire dalla modalità CREATE");
                 command = scan.nextLine();
 
-                networkCommand.createLobby(command);
+                if(command.equals("LEAVE")) {
+                    printSelectionCreateOrJoinLobbyRequest();
+                } else {
+                    networkCommand.createLobby(command);
+                }
                 break;
             default:
                 networkCommand.joinLobby(command);
