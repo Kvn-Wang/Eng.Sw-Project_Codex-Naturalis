@@ -34,11 +34,21 @@ public class GameManager extends Observable implements GameController {
     private String scoreCardImg;
     private int starterCards;
     private int remainingRounds=1;
+    private Observer vobs;
 
     public GameManager(Map<String, ColorType> playerInfo) {
+        //PER I TEST
         this.playerInfo = playerInfo;
         players = new Player[playerInfo.size()];
+        //initializeGame ora é diviso in 3 phases
+        gamePhase1();
+    }
 
+    public GameManager(Map<String, ColorType> playerInfo, Observer observer) {
+        this.playerInfo = playerInfo;
+        players = new Player[playerInfo.size()];
+        vobs = observer;
+        addObserver(observer);
         //initializeGame ora é diviso in 3 phases
         gamePhase1();
     }
@@ -73,7 +83,7 @@ public class GameManager extends Observable implements GameController {
         for (Map.Entry<String, ColorType> entry : playerInfo.entrySet()) {
             String nickname = entry.getKey();
             ColorType colorPlayer = entry.getValue();
-            players[i] = new Player(nickname, colorPlayer);
+            players[i] = new Player(nickname, colorPlayer, vobs);
             i++;
         }
     }

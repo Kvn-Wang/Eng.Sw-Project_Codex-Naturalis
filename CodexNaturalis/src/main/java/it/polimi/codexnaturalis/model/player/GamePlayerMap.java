@@ -4,8 +4,11 @@ import it.polimi.codexnaturalis.model.enumeration.CardCorner;
 import it.polimi.codexnaturalis.model.enumeration.CardType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.shop.card.Card;
+import it.polimi.codexnaturalis.network.util.NetworkMessage;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
+import it.polimi.codexnaturalis.utils.observer.Observable;
+
 import java.util.ArrayList;
 
 public class GamePlayerMap {
@@ -15,7 +18,6 @@ public class GamePlayerMap {
     private PlayerScoreResource playerScoreCard;
 
     public PlayerScoreResource getPlayerScoreCard() {
-
         return playerScoreCard;
     }
 
@@ -64,9 +66,9 @@ public class GamePlayerMap {
                         }
                     }
 
+
                     //ritorna i punti da aggiungere a playerScore
                     pointToAdd = card.getCardPoints(playerScoreCard, neightbouringCard);
-
                     return pointToAdd;
                 } else {
                     throw new PersonalizedException.InvalidPlaceCardRequirementException();

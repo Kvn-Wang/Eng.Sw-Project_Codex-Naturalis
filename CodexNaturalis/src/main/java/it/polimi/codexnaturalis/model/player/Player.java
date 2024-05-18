@@ -4,9 +4,13 @@ import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.shop.card.Card;
+import it.polimi.codexnaturalis.network.util.MessageType;
+import it.polimi.codexnaturalis.network.util.NetworkMessage;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
+import it.polimi.codexnaturalis.utils.observer.Observable;
+import it.polimi.codexnaturalis.utils.observer.Observer;
 
-public class Player implements PlayerInterface {
+public class Player extends Observable implements PlayerInterface {
     private String nickname;
     private int personalScoreBoardScore;
     private int personalMissionTotalScore;
@@ -33,7 +37,9 @@ public class Player implements PlayerInterface {
     public void addHandCard(Card drawnCard) {
         try {
             hand.addCard(drawnCard);
-        } catch (PersonalizedException.InvalidAddCardException e) {
+            notifyObserver(new NetworkMessage(nickname, MessageType.CORRECT_DRAW_CARD, this.argsGenerator(hand)));
+        } catch (PersonalizedException.InvalidAddCardException |
+                 PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
             throw new RuntimeException(e);
         }
     }
@@ -62,6 +68,16 @@ public class Player implements PlayerInterface {
         try {
             placeResult = gameMap.placeCard(x, y, playedCard, isCardBack);
             personalScoreBoardScore+=placeResult;
+            try {
+                notifyObserver(new NetworkMessage(nickname, MessageType.CORRECT_PLACEMENT, argsGenerator(getScoreResource())));
+            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                notifyObserver(new NetworkMessage(nickname, MessageType.SCORE_UPDATE, argsGenerator(personalScoreBoardScore)));
+            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
+                throw new RuntimeException(e);
+            }
         } catch (PersonalizedException.InvalidPlacementException e) {
             //ripiazza la carta nella mano
             try {
@@ -101,18 +117,36 @@ public class Player implements PlayerInterface {
     //selection = 1 -> mission1, selection = 2 -> mission2
     @Override
     public void setPersonalMissionFinal(int selection) {
-        if(selection == 1) {
-            selectedPersonalMission = personalMission1;
-        } else if(selection == 2) {
-            selectedPersonalMission = personalMission2;
+        if(selection == 1||selection ==2) {
+            switch(selection){
+                case 1:
+                    selectedPersonalMission = personalMission1;
+                case 2:
+                    selectedPersonalMission = personalMission2;
+            }
+            try {
+                notifyObserver(new NetworkMessage(nickname, MessageType.COM_ACK_TCP, "true"));
+            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
+                throw new RuntimeException(e);
+            }
         } else {
             System.err.println("Errore Selezione Missione Player");
+            try {
+                notifyObserver(new NetworkMessage(nickname, MessageType.COM_ACK_TCP,"false"));
+            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     @Override
     public void switchPlayerView(Player target) {
         playerView=target;
+        try {
+            notifyObserver(new NetworkMessage(nickname, MessageType.SWITCH_PLAYER_VIEW, argsGenerator(playerView.getGameMap())));
+        } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -174,6 +208,23 @@ public class Player implements PlayerInterface {
         hand = new Hand();
         pawnImg = null;//TODO:mettere case con inserimento immagine
         alive = true;
+    }
+
+    public Player(String nick, ColorType color, Observer observer){
+        nickname = nick;
+        pawnColor = color;
+        personalScoreBoardScore = 0;
+        personalMissionTotalScore = 0;
+        personalMission1 = null;
+        personalMission2 = null;
+        selectedPersonalMission = null;
+        playerView = this;
+        scoreResource = new PlayerScoreResource();
+        gameMap = new GamePlayerMap(scoreResource);
+        hand = new Hand();
+        pawnImg = null;//TODO:mettere case con inserimento immagine
+        alive = true;
+        addObserver(observer);
     }
 
     public String getPawnImg() {

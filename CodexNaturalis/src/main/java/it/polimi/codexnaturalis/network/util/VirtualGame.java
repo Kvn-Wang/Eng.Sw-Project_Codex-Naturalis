@@ -33,7 +33,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
         for(PlayerInfo playerInfo : this.players) {
             playerInfoNicknameColor.put(playerInfo.getNickname(), playerInfo.getColorChosen());
         }
-        gameController = new GameManager(playerInfoNicknameColor);
+        gameController = new GameManager(playerInfoNicknameColor, this);
     }
 
     private PlayerInfo getNextPlayer() {
@@ -118,10 +118,40 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
 
                 break;
 
-            case WRONG_TYPE_SHOP:
-
+            case COM_ACK_TCP, CORRECT_PLACEMENT:
+                try {
+                    nickToPlayerInfo(message.getNickname()).getClientHandler().showMessage(message);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
 
+            case WRONG_TYPE_SHOP:
+                try {
+                    nickToPlayerInfo(message.getNickname()).getClientHandler().showMessage(new NetworkMessage(MessageType.WRONG_TYPE_SHOP, "WRONG_TYPE_SHOP"));
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+
+            case CORRECT_DRAW_CARD:
+                try {
+                    nickToPlayerInfo(message.getNickname()).getClientHandler().showMessage(message);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+                getNextPlayer();
+                break;
+
+            case SCORE_UPDATE:
+                for(PlayerInfo p: players){
+                    try {
+                        p.getClientHandler().showMessage(new NetworkMessage(MessageType.SCORE_UPDATE, message.getNickname()+"$"+message.getArgs()));
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                break;
 
             default:
                 // come mandare il messaggio ad un certo player

@@ -9,7 +9,7 @@ import java.rmi.RemoteException;
 
 public interface GameController extends Remote {
     //void initializeGame();
-//void setPlayerColor(String nickname, String color);
+    //void setPlayerColor(String nickname, String color);
     void disconnectPlayer(String nickname) throws RemoteException;//vedi issues
     void reconnectPlayer(String nickname) throws RemoteException;
     void playerDraw(String nickname, int Numcard, String type) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage, RemoteException;// vedi issues

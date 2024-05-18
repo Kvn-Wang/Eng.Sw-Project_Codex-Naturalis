@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.utils.observer;
 
+import com.google.gson.Gson;
 import it.polimi.codexnaturalis.network.util.NetworkMessage;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 
@@ -20,5 +21,10 @@ public class Observable {
         for(Observer element : observers) {
             element.update(message);
         }
+    }
+
+    public String argsGenerator(Object object){
+        Gson gson = new Gson();
+        return gson.toJson(object);
     }
 }
