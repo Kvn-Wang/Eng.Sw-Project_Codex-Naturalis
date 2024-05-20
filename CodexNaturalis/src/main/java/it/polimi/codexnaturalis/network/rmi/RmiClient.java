@@ -2,10 +2,8 @@ package it.polimi.codexnaturalis.network.rmi;
 
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
-import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.network.util.NetworkMessage;
-import it.polimi.codexnaturalis.network.util.GeneralTuiClient;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.view.GenericClient;
 import it.polimi.codexnaturalis.view.TypeOfUI;
@@ -15,7 +13,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class RmiClient extends GenericClient {
     private final String serverName = UtilCostantValue.RMIServerName;
