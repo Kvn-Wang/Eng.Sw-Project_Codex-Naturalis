@@ -9,9 +9,9 @@ module it.polimi.codexnaturalis {
     exports it.polimi.codexnaturalis.model.enumeration;
     opens it.polimi.codexnaturalis.model.enumeration to javafx.fxml;
     exports it.polimi.codexnaturalis.model.shop.card;
-    opens it.polimi.codexnaturalis.model.shop.card to javafx.fxml;
+    opens it.polimi.codexnaturalis.model.shop.card to javafx.fxml, com.google.gson;
     exports it.polimi.codexnaturalis.model.player;
-    opens it.polimi.codexnaturalis.model.player to javafx.fxml;
+    opens it.polimi.codexnaturalis.model.player to javafx.fxml, com.google.gson;
     exports it.polimi.codexnaturalis.model.mission;
     opens it.polimi.codexnaturalis.model.mission to javafx.fxml;
     exports it.polimi.codexnaturalis.model.game;

@@ -113,5 +113,7 @@ public class RmiClient extends GenericClient {
     public void leaveLobby() throws RemoteException {
         server.leaveLobby(playerNickname, lobbyNickname);
         typeOfUI.printReadyOrLeaveSelectionOutcome(false);
+        typeOfUI.printSelectionCreateOrJoinLobbyRequest();
+        typeOfUI.printReadyOrLeaveSelection();
     }
 }
