@@ -41,6 +41,7 @@ public class RmiClient extends GenericClient {
     public void showMessage(NetworkMessage message) throws RemoteException {
         switch(message.getMessageType()) {
             case STATUS_PLAYER_CHANGE:
+
                 break;
 
             case WRONG_TYPE_SHOP:
@@ -60,11 +61,8 @@ public class RmiClient extends GenericClient {
 
             case CORRECT_PLACEMENT:
                 break;
-
-            default:
-                throw new RuntimeException("Received invalid typeOfMessage: "+ message.getMessageType());
         }
-        System.out.println(message.getArgs());
+        System.out.println(message.getArgs().get(0));
     }
 
     @Override
@@ -125,6 +123,7 @@ public class RmiClient extends GenericClient {
             typeOfUI.printCreationLobbyRequestOutcome(true, this.lobbyNickname);
         } else {
             typeOfUI.printCreationLobbyRequestOutcome(false, lobbyName);
+            typeOfUI.printSelectionCreateOrJoinLobbyRequest();
         }
     }
 

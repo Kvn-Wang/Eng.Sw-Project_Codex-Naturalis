@@ -1,17 +1,20 @@
 package it.polimi.codexnaturalis.network.util;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class NetworkMessage implements Serializable {
     String nickname;
     MessageType messageType;
-    String args;
+    ArrayList<String> args = new ArrayList<>();;
 
     //useful for TCP communication
-    public NetworkMessage(MessageType messageType, String args) {
+    public NetworkMessage(MessageType messageType, String ... newArgs) {
         this.nickname = null;
         this.messageType = messageType;
-        this.args = args;
+        // Aggiungi tutti i nuovi argomenti alla lista
+        Collections.addAll(args, newArgs);
     }
 
     public NetworkMessage(MessageType messageType) {
@@ -26,10 +29,14 @@ public class NetworkMessage implements Serializable {
         this.args = null;
     }
 
-    public NetworkMessage(String nickname, MessageType messageType, String args) {
+    public NetworkMessage(String nickname, MessageType messageType, String ... newArgs) {
         this.nickname = nickname;
         this.messageType = messageType;
-        this.args = args;
+        System.out.println(newArgs[0]);
+        System.out.println(args);
+
+        // Aggiungi tutti i nuovi argomenti alla lista
+        Collections.addAll(args, newArgs);
     }
 
     public String getNickname() {
@@ -44,7 +51,7 @@ public class NetworkMessage implements Serializable {
         return messageType;
     }
 
-    public String getArgs() {
+    public ArrayList<String> getArgs() {
         return args;
     }
 

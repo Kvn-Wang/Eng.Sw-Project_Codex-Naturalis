@@ -47,7 +47,7 @@ public class ClientHandler extends Thread implements VirtualView, VirtualServer 
             switch (messageRX.getMessageType()) {
                 case COM_SET_NICKNAME_TCP:
                     //get nickname
-                    argsRX = messageRX.getArgs();
+                    argsRX = messageRX.getArgs().get(0);
 
                     if(setNickname(null, argsRX)) {
                         playerNickname = argsRX;
@@ -66,7 +66,7 @@ public class ClientHandler extends Thread implements VirtualView, VirtualServer 
 
                 case COM_CREATE_LOBBY_TCP:
                     //get lobby nickname
-                    argsRX = messageRX.getArgs();
+                    argsRX = messageRX.getArgs().get(0);
 
                     if(createLobby(playerNickname, argsRX)) {
                         messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(true));
@@ -78,7 +78,7 @@ public class ClientHandler extends Thread implements VirtualView, VirtualServer 
 
                 case COM_JOIN_LOBBY_TCP:
                     //get lobby name
-                    argsRX = messageRX.getArgs();
+                    argsRX = messageRX.getArgs().get(0);
 
                     if(joinLobby(playerNickname, argsRX)) {
                         lobbyNickname = argsRX;

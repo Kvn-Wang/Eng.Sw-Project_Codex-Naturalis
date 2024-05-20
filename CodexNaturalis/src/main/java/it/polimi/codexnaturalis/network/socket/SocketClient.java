@@ -61,7 +61,7 @@ public class SocketClient extends GenericClient {
                 case COM_ACK_TCP:
                     ackArrived = true;
                     //getArgs = (String) boolean
-                    argsRX = messageRX.getArgs();
+                    argsRX = messageRX.getArgs().get(0);
 
                     outcomeReceived = Boolean.parseBoolean(argsRX);
                     notify();
@@ -94,6 +94,7 @@ public class SocketClient extends GenericClient {
     public void showMessage(NetworkMessage message) throws RemoteException {
         switch(message.getMessageType()) {
             case STATUS_PLAYER_CHANGE:
+
                 break;
 
             case WRONG_TYPE_SHOP:
@@ -114,10 +115,8 @@ public class SocketClient extends GenericClient {
             case CORRECT_PLACEMENT:
                 break;
 
-            default:
-                throw new RuntimeException("Received invalid typeOfMessage: "+ message.getMessageType());
         }
-        System.out.println(message.getArgs());
+        System.out.println(message.getArgs().get(0));
     }
 
     @Override

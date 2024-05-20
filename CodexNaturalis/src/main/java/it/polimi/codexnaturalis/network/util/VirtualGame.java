@@ -139,7 +139,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
             case SCORE_UPDATE, STATUS_PLAYER_CHANGE:
                 for(PlayerInfo p: players){
                     try {
-                        p.getClientHandler().showMessage(new NetworkMessage(message.getMessageType(), message.getNickname()+"$"+message.getArgs()));
+                        p.getClientHandler().showMessage(new NetworkMessage(message.getMessageType(), message.getNickname(), message.getArgs().get(0)));
                     } catch (RemoteException e) {
                         throw new RuntimeException(e);
                     }
@@ -147,8 +147,6 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
                 break;
 
             default:
-                // come mandare il messaggio ad un certo player
-                //players.get(0).getClientHandler().showValue("bohh");
                 throw new PersonalizedException.InvalidRequestTypeOfNetworkMessage(message.getMessageType().toString());
         }
     }
