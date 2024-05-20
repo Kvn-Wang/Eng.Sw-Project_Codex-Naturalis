@@ -2,6 +2,7 @@ package it.polimi.codexnaturalis.model.game;
 
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.chat.ChatManager;
+import it.polimi.codexnaturalis.model.chat.ChatMessage;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.network.util.MessageType;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
@@ -250,10 +251,11 @@ public class GameManager extends Observable implements GameController {
     }
 
     @Override
-    public void typeMessage(String receiver, String sender, String msg) {
-        Player rec = nickToPlayer(receiver);
-        Player send = nickToPlayer(sender);
-        chatManager.writeComment(rec, send, msg);
+    public void typeMessage(String recipient, String sender, String msg) {
+        if(recipient.equals("everyone"))
+            chatManager.writeComment(sender, msg);
+        else
+            chatManager.writeComment(recipient, sender, msg);
     }
 
     @Override

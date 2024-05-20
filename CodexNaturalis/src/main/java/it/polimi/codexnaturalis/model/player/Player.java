@@ -176,6 +176,11 @@ public class Player extends Observable implements PlayerInterface {
     @Override
     public void setStatus(boolean status){
         alive = status;
+        try {
+            notifyObserver(new NetworkMessage(nickname, MessageType.STATUS_PLAYER_CHANGE, Boolean.toString(status)));
+        } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public PlayerScoreResource getScoreResource() {

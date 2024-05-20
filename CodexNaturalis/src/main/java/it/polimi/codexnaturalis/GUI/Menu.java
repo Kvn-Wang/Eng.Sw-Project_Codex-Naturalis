@@ -1,17 +1,13 @@
 package it.polimi.codexnaturalis.GUI;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
 import java.io.IOException;
-public class menu extends Application{
+public class Menu extends Application{
     Button RMI;
     Button Socket;
     Stage window;

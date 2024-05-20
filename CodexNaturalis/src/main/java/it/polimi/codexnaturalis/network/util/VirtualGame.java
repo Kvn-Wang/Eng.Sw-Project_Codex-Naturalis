@@ -143,10 +143,10 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
                 getNextPlayer();
                 break;
 
-            case SCORE_UPDATE:
+            case SCORE_UPDATE, STATUS_PLAYER_CHANGE:
                 for(PlayerInfo p: players){
                     try {
-                        p.getClientHandler().showMessage(new NetworkMessage(MessageType.SCORE_UPDATE, message.getNickname()+"$"+message.getArgs()));
+                        p.getClientHandler().showMessage(new NetworkMessage(message.getMessageType(), message.getNickname()+"$"+message.getArgs()));
                     } catch (RemoteException e) {
                         throw new RuntimeException(e);
                     }

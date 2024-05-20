@@ -23,4 +23,5 @@ module it.polimi.codexnaturalis {
     exports it.polimi.codexnaturalis.network.communicationInterfaces;
     exports it.polimi.codexnaturalis.network.util;
     opens it.polimi.codexnaturalis.network.util to javafx.fxml;
+    exports it.polimi.codexnaturalis.GUI to javafx.graphics;
 }
