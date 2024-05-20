@@ -3,20 +3,28 @@ package it.polimi.codexnaturalis.network.socket;
 import com.google.gson.Gson;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
+import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.network.util.NetworkMessage;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
+import it.polimi.codexnaturalis.view.GenericClient;
+import it.polimi.codexnaturalis.view.TypeOfUI;
 
 import java.io.*;
 import java.net.Socket;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
-public class SocketClient implements VirtualView {
+public class SocketClient extends GenericClient {
     Socket serverSocket;
     BufferedReader socketRx;
     PrintWriter socketTx;
     // variabili usata per la logica di invio e aspetta la risposta
     boolean ackArrived;
     boolean outcomeReceived;
+
+    public SocketClient(TypeOfUI typeOfUI) throws RemoteException {
+        super(typeOfUI);
+    }
 
     public void SocketCLient() throws IOException {
         //TODO bisognerà poi settarlo dinamicamente da linea di comando
@@ -84,7 +92,32 @@ public class SocketClient implements VirtualView {
 
     @Override
     public void showMessage(NetworkMessage message) throws RemoteException {
-        
+        switch(message.getMessageType()) {
+            case STATUS_PLAYER_CHANGE:
+                break;
+
+            case WRONG_TYPE_SHOP:
+                break;
+
+            case NOT_YOUR_TURN:
+                break;
+
+            case SCORE_UPDATE:
+                break;
+
+            case SWITCH_PLAYER_VIEW:
+                break;
+
+            case CORRECT_DRAW_CARD:
+                break;
+
+            case CORRECT_PLACEMENT:
+                break;
+
+            default:
+                throw new RuntimeException("Received invalid typeOfMessage: "+ message.getMessageType());
+        }
+        System.out.println(message.getArgs());
     }
 
     @Override
@@ -108,5 +141,35 @@ public class SocketClient implements VirtualView {
         networkMessage = gson.fromJson(json, NetworkMessage.class);
 
         return networkMessage;
+    }
+
+    @Override
+    public void selectNickname(String nickname) throws RemoteException {
+
+    }
+
+    @Override
+    public ArrayList<LobbyInfo> getLobbies() throws RemoteException {
+        return null;
+    }
+
+    @Override
+    public void joinLobby(String selection) throws RemoteException {
+
+    }
+
+    @Override
+    public void createLobby(String lobbyName) throws RemoteException {
+
+    }
+
+    @Override
+    public void setReady() throws RemoteException {
+
+    }
+
+    @Override
+    public void leaveLobby() throws RemoteException {
+
     }
 }

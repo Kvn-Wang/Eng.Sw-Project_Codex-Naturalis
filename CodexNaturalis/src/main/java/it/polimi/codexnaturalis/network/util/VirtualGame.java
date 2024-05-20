@@ -111,13 +111,6 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     @Override
     public void update(NetworkMessage message) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
         switch(message.getMessageType()) {
-            case CORRECT_CHOSEN_COLOR:
-
-                break;
-            case COLOR_ALREADY_CHOSEN:
-
-                break;
-
             case COM_ACK_TCP, CORRECT_PLACEMENT:
                 try {
                     nickToPlayerInfo(message.getNickname()).getClientHandler().showMessage(message);

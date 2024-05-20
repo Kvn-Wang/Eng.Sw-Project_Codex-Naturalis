@@ -27,5 +27,4 @@ public enum MessageType {
     SWITCH_PLAYER_VIEW,
     CORRECT_DRAW_CARD,
     CORRECT_PLACEMENT,
-
 }

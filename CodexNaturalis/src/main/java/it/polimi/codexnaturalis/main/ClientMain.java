@@ -40,9 +40,9 @@ public class ClientMain {
 
         if(typeOfconnectionClient == 1) {
             if(typeOfUserView == 1) {
-                new SocketClient();
+                new SocketClient(new GuiClient());
             } else {
-                new SocketClient();
+                new SocketClient(new TuiClient());
             }
         } else {
             if(typeOfUserView == 1) {

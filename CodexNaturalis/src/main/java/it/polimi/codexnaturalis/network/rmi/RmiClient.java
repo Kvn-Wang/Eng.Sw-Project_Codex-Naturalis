@@ -39,6 +39,31 @@ public class RmiClient extends GenericClient {
 
     @Override
     public void showMessage(NetworkMessage message) throws RemoteException {
+        switch(message.getMessageType()) {
+            case STATUS_PLAYER_CHANGE:
+                break;
+
+            case WRONG_TYPE_SHOP:
+                break;
+
+            case NOT_YOUR_TURN:
+                break;
+
+            case SCORE_UPDATE:
+                break;
+
+            case SWITCH_PLAYER_VIEW:
+                break;
+
+            case CORRECT_DRAW_CARD:
+                break;
+
+            case CORRECT_PLACEMENT:
+                break;
+
+            default:
+                throw new RuntimeException("Received invalid typeOfMessage: "+ message.getMessageType());
+        }
         System.out.println(message.getArgs());
     }
 
