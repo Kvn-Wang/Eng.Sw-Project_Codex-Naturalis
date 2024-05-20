@@ -18,14 +18,18 @@ public enum MessageType {
     COM_LOBBY_RMI,
 
     /* ---ENUMS FOR THE GAME PHASE--- */
-    CORRECT_CHOSEN_COLOR,
     STATUS_PLAYER_CHANGE,
-    COLOR_ALREADY_CHOSEN,
+    //args = "true" o "false" boolean to string
     WRONG_TYPE_SHOP,
+    //in GameManager non ha args, arrivata in VirtualGame aggiunge "WRONG_TYPE_SHOP" come args
     NOT_YOUR_TURN,
+    //no args
     SCORE_UPDATE,
+    //in GameManager ha personalScoreBoardScore, arrivata in VirtualGame args diventa message.getNickname()+"$"+message.getArgs()
     SWITCH_PLAYER_VIEW,
+    //args = argsGenerator(playerView.getGameMap())
     CORRECT_DRAW_CARD,
+    //args = argsGenerator(this.hand)
     CORRECT_PLACEMENT,
-
+    //args = argsGenerator(getScoreResource()
 }
