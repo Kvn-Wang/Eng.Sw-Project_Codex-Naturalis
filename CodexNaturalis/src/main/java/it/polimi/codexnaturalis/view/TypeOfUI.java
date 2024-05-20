@@ -6,6 +6,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public interface TypeOfUI {
+    // collegare la UI alla network
     void connectVirtualNetwork(VirtualNetworkCommand virtualNetworkCommand);
     void printSelectionNicknameRequest() throws RemoteException;
     void printSelectionNicknameRequestOutcome(boolean positiveOutcome, String nickname);
