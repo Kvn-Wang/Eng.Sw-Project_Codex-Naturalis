@@ -25,6 +25,10 @@ public class PersonalizedException {
         public InvalidPopCardException() {super("this position in the hand is empty");}
     }
 
+    public static class InvalidGetCardPointsException extends Exception{
+        public InvalidGetCardPointsException() {super("invalid ConditionResourceType passed as argument");}
+    }
+
     public static class InvalidRequestTypeOfNetworkMessage extends Exception{
         public InvalidRequestTypeOfNetworkMessage(String networkMessageType) {super("Error: requested an unknown type of message: "
                 + networkMessageType + ", check LobbyThread if it's present in the switch case construct");}

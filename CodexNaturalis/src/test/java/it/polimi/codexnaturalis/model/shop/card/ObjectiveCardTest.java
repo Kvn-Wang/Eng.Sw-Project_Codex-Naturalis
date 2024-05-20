@@ -49,10 +49,23 @@ class ObjectiveCardTest {
 
     @Test
     public void testGetCardPoints(){
-        ConditionResourceType[] allConditions = new ConditionResourceType[] {ConditionResourceType.NONE, ConditionResourceType.INKWELL, ConditionResourceType.MANUSCRIPT, ConditionResourceType.QUILL, ConditionResourceType.OCCUPIEDSPACE};
-
+        ConditionResourceType[] allConditions = new ConditionResourceType[] {ConditionResourceType.NONE, ConditionResourceType.INKWELL, ConditionResourceType.MANUSCRIPT, ConditionResourceType.OCCUPIEDSPACE, ConditionResourceType.QUILL};
+        int testNeighboringCard = 4;
+        int check = 1;
+        PlayerScoreResource testScoreCard = new PlayerScoreResource();
+        for(int i=0; i<5;i++){
+            if(i<2){
+                testScoreCard.addScore(ResourceType.INKWELL);
+            }
+            if(i<3){
+                testScoreCard.addScore(ResourceType.MANUSCRIPT);
+            }
+            testScoreCard.addScore(ResourceType.QUILL);
+        }
         for(ConditionResourceType testCondition : allConditions){
-
+            ObjectiveCard thirdTestCard = new ObjectiveCard(41, null, ResourceType.QUILL, ResourceType.NONE, ResourceType.NONE, ResourceType.FUNGI, testCondition, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
+            assertEquals(check, thirdTestCard.getCardPoints(testScoreCard, testNeighboringCard));
+            check++;
         }
     }
 }
