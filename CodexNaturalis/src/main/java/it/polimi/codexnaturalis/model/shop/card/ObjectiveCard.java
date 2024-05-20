@@ -70,20 +70,21 @@ public class ObjectiveCard extends Card {
     }
 
     @Override
-    public int getCardPoints(PlayerScoreResource scoreCard, int neightbouringCard) {
-        if(isBack) {
+    public int getCardPoints(PlayerScoreResource scoreCard, int neighbouringCard) {
+        if(isBack || neighbouringCard <0 || neighbouringCard >4) {
             return 0;
         } else {
             if(pointPerConditionResource == ConditionResourceType.NONE) {
                 return pointPerCondition;
             } else if(pointPerConditionResource == ConditionResourceType.OCCUPIEDSPACE) {
-                return neightbouringCard * pointPerCondition;
+                return neighbouringCard * pointPerCondition;
             } else if(pointPerConditionResource == ConditionResourceType.INKWELL) {
                 return (scoreCard.getScoreInkwell() * pointPerCondition);
             } else if(pointPerConditionResource == ConditionResourceType.MANUSCRIPT) {
                 return (scoreCard.getScoreManuscript() * pointPerCondition);
-            } else //pointPerConditionResource == ConditionResourceType.QUILL
+            } else if(pointPerConditionResource == ConditionResourceType.QUILL){
                 return (scoreCard.getScoreQuill() * pointPerCondition);
+            } else return 0;
         }
     }
 
