@@ -12,7 +12,6 @@ public class GuiClient implements TypeOfUI {
     private VirtualNetworkCommand virtualNetworkCommand;
 
     public GuiClient(){
-        Menu.setupMenu(virtualNetworkCommand);
         javafx.application.Application.launch(Menu.class);
     }
 
@@ -22,6 +21,7 @@ public class GuiClient implements TypeOfUI {
     @Override
     public void connectVirtualNetwork(VirtualNetworkCommand virtualNetworkCommand) {
         this.virtualNetworkCommand = virtualNetworkCommand;
+        Menu.setupMenu(this.virtualNetworkCommand);
     }
 
     @Override

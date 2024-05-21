@@ -17,7 +17,9 @@ import java.rmi.RemoteException;
 
 public class Menu extends Application {
 
-    static VirtualNetworkCommand vnc;
+    private static VirtualNetworkCommand vnc;
+
+    static Stage mainStage;
     public static void main(String[] args) {
         launch(args);
     }
@@ -35,12 +37,14 @@ public class Menu extends Application {
             popup.getContent().add(nick);
             popup.getContent().add(okpop);
             okpop.setTranslateY(20);
+            popup.show(mainStage);
 
        // }
     }
     @Override
     public void start(Stage menuStage) throws Exception {
         startScene(menuStage);
+        mainStage = menuStage;
         menuStage.show();
     }
 
@@ -87,17 +91,17 @@ public class Menu extends Application {
             confirm.setVisible(true);
         });
         nickname.setOnAction(event -> {
-            try {
+        /*    try {
                 vnc.selectNickname(nickname.getText());
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
-
-        /*    try {
+        22*/
+            try {
                 lobbyListScene(menuStage);
             } catch (Exception e) {
                 throw new RuntimeException(e);
-          }*/
+          }
         });
 
         back.setTranslateX(-200);
