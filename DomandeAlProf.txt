@@ -1,3 +1,0 @@
-Ma devo aggiungere al registry di RMI anche l'interfaccia controller? o va bene che lo passi l'istanza attraverso un'altra istanza RMI
-
-ma va bene per RMI se il client ha l'oggetto che ha tecnicamente accesso solo il server? (es: playerInfo) -> in base alla risposta possiamo alleggerire il carico di serverContainer
