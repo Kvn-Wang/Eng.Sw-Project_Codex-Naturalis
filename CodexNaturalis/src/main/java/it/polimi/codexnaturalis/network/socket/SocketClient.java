@@ -2,7 +2,6 @@ package it.polimi.codexnaturalis.network.socket;
 
 import com.google.gson.Gson;
 import it.polimi.codexnaturalis.controller.GameController;
-import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.network.util.NetworkMessage;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
@@ -17,24 +16,29 @@ import java.util.ArrayList;
 public class SocketClient extends GenericClient {
     Socket serverSocket;
     BufferedReader socketRx;
-    PrintWriter socketTx;
+    ServerProxySocket socketTx;
     // variabili usata per la logica di invio e aspetta la risposta
     boolean ackArrived;
+    private final Object lock = new Object();
     boolean outcomeReceived;
 
-    public SocketClient(TypeOfUI typeOfUI) throws RemoteException {
+    public SocketClient(TypeOfUI typeOfUI) throws IOException {
         super(typeOfUI);
-    }
+        typeOfUI.connectVirtualNetwork(this);
 
-    public void SocketCLient() throws IOException {
-        //TODO bisognerà poi settarlo dinamicamente da linea di comando
         String host = "127.0.0.1";
         int port = UtilCostantValue.portSocketServer;
 
         serverSocket = new Socket(host, port);
 
         socketRx = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
-        socketTx = new PrintWriter(new OutputStreamWriter(serverSocket.getOutputStream()));
+        //socketTx = new ServerProxySocket(new PrintWriter(serverSocket.getOutputStream(), true));
+        socketTx = new ServerProxySocket(new PrintWriter(new BufferedWriter(new OutputStreamWriter(serverSocket.getOutputStream()))));
+
+        System.out.println("asd");
+
+        socketTx.output.println("ciao");
+
 
         ackArrived = false;
 
@@ -45,6 +49,8 @@ public class SocketClient extends GenericClient {
                 throw new RuntimeException(e);
             }
         }).start();
+
+        initializeClient();
     }
 
     private void runRxClient() throws IOException {
@@ -56,6 +62,8 @@ public class SocketClient extends GenericClient {
         while ((jsonRX = socketRx.readLine()) != null) {
             messageRX = deSerializeMesssage(jsonRX);
 
+            System.out.println(messageRX);
+
             // Read message and perform action
             switch (messageRX.getMessageType()) {
                 case COM_ACK_TCP:
@@ -64,7 +72,7 @@ public class SocketClient extends GenericClient {
                     argsRX = messageRX.getArgs().get(0);
 
                     outcomeReceived = Boolean.parseBoolean(argsRX);
-                    notify();
+                    doNotify();
                     break;
 
                 case COM_ERROR_TCP:
@@ -76,25 +84,10 @@ public class SocketClient extends GenericClient {
         }
     }
 
-    /*private void runCli() throws RemoteException {
-        Scanner scan = new Scanner(System.in);
-        while (true) {
-            System.out.print("> ");
-            int command = scan.nextInt();
-
-            if (command == 0) {
-                server.reset();
-            } else {
-                server.add(command);
-            }
-        }
-    }*/
-
     @Override
     public void showMessage(NetworkMessage message) throws RemoteException {
         switch(message.getMessageType()) {
             case STATUS_PLAYER_CHANGE:
-
                 break;
 
             case WRONG_TYPE_SHOP:
@@ -124,15 +117,6 @@ public class SocketClient extends GenericClient {
 
     }
 
-    private String serializeMesssage(NetworkMessage message) {
-        String json;
-        Gson gson = new Gson();
-
-        json = gson.toJson(message);
-
-        return json;
-    }
-
     private NetworkMessage deSerializeMesssage(String json) {
         NetworkMessage networkMessage;
         Gson gson = new Gson();
@@ -144,7 +128,29 @@ public class SocketClient extends GenericClient {
 
     @Override
     public void selectNickname(String nickname) throws RemoteException {
+        socketTx.setNickname(null, nickname);
+        doWait();
+        if(outcomeReceived == true) {
+            System.out.println("yey");
+        } else {
+            System.out.println("dio");
+        }
+    }
 
+    private void doWait() {
+        synchronized (lock) {
+            try {
+                lock.wait();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); // ripristina lo stato di interruzione
+            }
+        }
+    }
+
+    private void doNotify() {
+        synchronized (lock) {
+            lock.notify();
+        }
     }
 
     @Override

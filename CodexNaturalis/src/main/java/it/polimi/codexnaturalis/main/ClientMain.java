@@ -8,12 +8,13 @@ import it.polimi.codexnaturalis.network.socket.SocketClient;
 import it.polimi.codexnaturalis.view.GuiClient;
 import it.polimi.codexnaturalis.view.TuiClient;
 
+import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Scanner;
 
 public class ClientMain {
-    public static void main(String[] args) throws NotBoundException, RemoteException, InterruptedException {
+    public static void main(String[] args) throws NotBoundException, IOException, InterruptedException {
         int typeOfconnectionClient;
         int typeOfUserView;
         Scanner scan = new Scanner(System.in);

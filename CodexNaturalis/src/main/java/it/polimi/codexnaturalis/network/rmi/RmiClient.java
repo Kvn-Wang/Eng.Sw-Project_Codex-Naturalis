@@ -70,17 +70,6 @@ public class RmiClient extends GenericClient {
         this.gameController = gameController;
     }
 
-    private void initializeClient() throws RemoteException {
-        // per com'è stato scritto il codice, dopo questa riga avremo un nickname sicuramente settato correttamente
-        // stessa cosa vale per le righe successive
-        typeOfUI.printSelectionNicknameRequest();
-
-        //setup lobbyName unico
-        typeOfUI.printSelectionCreateOrJoinLobbyRequest();
-
-        typeOfUI.printReadyOrLeaveSelection();
-    }
-
     public VirtualServer getServer() {
         return server;
     }
@@ -137,7 +126,7 @@ public class RmiClient extends GenericClient {
     public void leaveLobby() throws RemoteException {
         server.leaveLobby(playerNickname, lobbyNickname);
         typeOfUI.printReadyOrLeaveSelectionOutcome(false);
-        typeOfUI.printSelectionCreateOrJoinLobbyRequest();
-        typeOfUI.printReadyOrLeaveSelection();
+
+        initializationPhase2();
     }
 }
