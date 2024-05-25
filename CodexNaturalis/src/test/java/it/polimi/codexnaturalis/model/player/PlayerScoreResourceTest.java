@@ -24,13 +24,15 @@ class PlayerScoreResourceTest {
     public void testAddScore(ResourceType resourceType) {
         if(resourceType == ResourceType.NONE) {
             assertThrows(IllegalArgumentException.class, () -> {playerScoreResource.addScore(ResourceType.NONE);});
+        } else if (resourceType == ResourceType.UNASSIGNABLE) {
+            assertThrows(IllegalArgumentException.class, () -> {playerScoreResource.addScore(ResourceType.UNASSIGNABLE);});
         } else {
             playerScoreResource.addScore(resourceType);
             assertEquals(1, playerScoreResource.getScore(resourceType));
 
             ResourceType[] values = ResourceType.values();
             for(ResourceType i : values) {
-                if(resourceType != i && i != ResourceType.NONE) {
+                if(resourceType != i && i != ResourceType.NONE && i!=ResourceType.UNASSIGNABLE) {
                     assertEquals(0, playerScoreResource.getScore(i));
                 }
             }

@@ -14,9 +14,6 @@ public class GuiClient implements TypeOfUI {
     private VirtualServer virtualNetworkCommand;
     private GameController virtualGame;
 
-    public GuiClient(){
-        javafx.application.Application.launch(Menu.class);
-    }
 
     @Override
     public void connectVirtualNetwork(VirtualServer virtualNetworkCommand) {
@@ -31,7 +28,7 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printSelectionNicknameRequest() {
-
+        javafx.application.Application.launch(Menu.class);
     }
 
     @Override
