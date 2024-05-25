@@ -14,6 +14,11 @@ public class DiagonalMission extends Mission  {
         super(pngNumber, pointPerCondition);
         this.isLeftToRight = isLeftToRight;
         this.resourceType = typeOfResource;
+        for(int i=0; i<usedCardArray.length; i++) {
+            for(int j=0; j<usedCardArray[i].length; j++) {
+                usedCardArray[i][j] = false;
+            }
+        }
     }
 
     @Override
