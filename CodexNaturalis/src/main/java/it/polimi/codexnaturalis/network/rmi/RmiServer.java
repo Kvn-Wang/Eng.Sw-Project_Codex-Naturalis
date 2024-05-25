@@ -28,15 +28,10 @@ public class RmiServer extends Thread implements VirtualServer {
     }
 
     @Override
-    public String connect(VirtualView client) throws RemoteException {
-        String clientId;
-
-        clientId = UUID.randomUUID().toString(); // Generate unique identifier
-        nicknameLessClients.put(clientId, client); // Store client with its identifier
+    public void connectRMI(VirtualView client, String UUID) throws RemoteException {
+        nicknameLessClients.put(UUID, client); // Store client with its identifier
 
         System.out.println("Someone Connected");
-
-        return clientId;
     }
 
     @Override

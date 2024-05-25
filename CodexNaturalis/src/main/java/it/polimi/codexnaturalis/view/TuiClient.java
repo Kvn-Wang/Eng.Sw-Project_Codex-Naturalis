@@ -1,14 +1,16 @@
 package it.polimi.codexnaturalis.view;
 
+import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class TuiClient implements TypeOfUI {
-    protected VirtualNetworkCommand networkCommand;
+    protected VirtualServer networkCommand;
+    protected GameController virtualGame;
     Scanner scan;
 
     public TuiClient() {
@@ -16,8 +18,13 @@ public class TuiClient implements TypeOfUI {
     }
 
     @Override
-    public void connectVirtualNetwork(VirtualNetworkCommand virtualNetworkCommand) {
+    public void connectVirtualNetwork(VirtualServer virtualNetworkCommand) {
         this.networkCommand = virtualNetworkCommand;
+    }
+
+    @Override
+    public void connectGameController(GameController virtualGame) {
+        this.virtualGame = virtualGame;
     }
 
     @Override
@@ -27,7 +34,7 @@ public class TuiClient implements TypeOfUI {
         System.out.println("Inserisci il tuo nickname:");
 
         nickname = scan.nextLine();
-        networkCommand.selectNickname(nickname);
+        networkCommand.setNickname(nickname);
     }
 
     @Override
@@ -42,7 +49,7 @@ public class TuiClient implements TypeOfUI {
     private void printLobby() throws RemoteException {
         ArrayList<LobbyInfo> lobbies;
 
-        lobbies = networkCommand.getLobbies();
+        lobbies = networkCommand.getAvailableLobby();
         System.out.println("Lobby list:");
         if(lobbies != null) {
             for (LobbyInfo elem : lobbies) {
@@ -70,11 +77,11 @@ public class TuiClient implements TypeOfUI {
                 if(command.equals("LEAVE")) {
                     printSelectionCreateOrJoinLobbyRequest();
                 } else {
-                    networkCommand.createLobby(command);
+                    networkCommand.createLobby(null, command);
                 }
                 break;
             default:
-                networkCommand.joinLobby(command);
+                networkCommand.joinLobby(null, command);
                 break;
         }
     }
@@ -109,12 +116,12 @@ public class TuiClient implements TypeOfUI {
 
             switch(command) {
                 case "READY":
-                    networkCommand.setReady();
+                    networkCommand.setPlayerReady(null);
                     flag = false;
                     break;
 
                 case "LEAVE":
-                    networkCommand.leaveLobby();
+                    networkCommand.leaveLobby(null);
                     flag = false;
                     break;
 

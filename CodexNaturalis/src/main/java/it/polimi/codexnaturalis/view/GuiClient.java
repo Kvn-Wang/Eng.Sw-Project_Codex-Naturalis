@@ -1,6 +1,8 @@
 package it.polimi.codexnaturalis.view;
 
 import it.polimi.codexnaturalis.GUI.Menu;
+import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import javafx.application.Application;
 
@@ -9,19 +11,22 @@ import java.util.ArrayList;
 import java.util.random.RandomGenerator;
 
 public class GuiClient implements TypeOfUI {
-    private VirtualNetworkCommand virtualNetworkCommand;
+    private VirtualServer virtualNetworkCommand;
+    private GameController virtualGame;
 
     public GuiClient(){
         javafx.application.Application.launch(Menu.class);
     }
 
-    public VirtualNetworkCommand getvnc(){
-        return virtualNetworkCommand;
-    }
     @Override
-    public void connectVirtualNetwork(VirtualNetworkCommand virtualNetworkCommand) {
+    public void connectVirtualNetwork(VirtualServer virtualNetworkCommand) {
         this.virtualNetworkCommand = virtualNetworkCommand;
         Menu.setupMenu(this.virtualNetworkCommand);
+    }
+
+    @Override
+    public void connectGameController(GameController virtualGame) {
+
     }
 
     @Override
