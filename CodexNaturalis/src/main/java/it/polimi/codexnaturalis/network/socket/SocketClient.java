@@ -2,6 +2,7 @@ package it.polimi.codexnaturalis.network.socket;
 
 import com.google.gson.Gson;
 import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.network.util.NetworkMessage;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 public class SocketClient extends GenericClient {
     Socket serverSocket;
     BufferedReader socketRx;
-    ServerProxySocket socketTx;
+    PrintWriter socketTx;
     // variabili usata per la logica di invio e aspetta la risposta
     boolean ackArrived;
     private final Object lock = new Object();
@@ -24,7 +25,6 @@ public class SocketClient extends GenericClient {
 
     public SocketClient(TypeOfUI typeOfUI) throws IOException {
         super(typeOfUI);
-        typeOfUI.connectVirtualNetwork(this);
 
         String host = "127.0.0.1";
         int port = UtilCostantValue.portSocketServer;
@@ -33,11 +33,11 @@ public class SocketClient extends GenericClient {
 
         socketRx = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
         //socketTx = new ServerProxySocket(new PrintWriter(serverSocket.getOutputStream(), true));
-        socketTx = new ServerProxySocket(new PrintWriter(new BufferedWriter(new OutputStreamWriter(serverSocket.getOutputStream()))));
+        socketTx = new PrintWriter(new BufferedWriter(new OutputStreamWriter(serverSocket.getOutputStream())));
 
         System.out.println("asd");
 
-        socketTx.output.println("ciao");
+        //socketTx.println("ciao");
 
 
         ackArrived = false;
@@ -50,7 +50,7 @@ public class SocketClient extends GenericClient {
             }
         }).start();
 
-        initializeClient();
+        initializeClient(this);
     }
 
     private void runRxClient() throws IOException {
@@ -113,7 +113,7 @@ public class SocketClient extends GenericClient {
     }
 
     @Override
-    public void connectToGame(GameController gameController) throws RemoteException {
+    public void connectToGame(GameController gameController) {
 
     }
 
@@ -124,17 +124,6 @@ public class SocketClient extends GenericClient {
         networkMessage = gson.fromJson(json, NetworkMessage.class);
 
         return networkMessage;
-    }
-
-    @Override
-    public void selectNickname(String nickname) throws RemoteException {
-        socketTx.setNickname(null, nickname);
-        doWait();
-        if(outcomeReceived == true) {
-            System.out.println("yey");
-        } else {
-            System.out.println("dio");
-        }
     }
 
     private void doWait() {
@@ -154,27 +143,43 @@ public class SocketClient extends GenericClient {
     }
 
     @Override
-    public ArrayList<LobbyInfo> getLobbies() throws RemoteException {
+    public boolean setNickname(String UUID, String nickname) throws RemoteException {
+        //socketTx.setNickname(nickname);
+        doWait();
+        if(outcomeReceived == true) {
+            System.out.println("yey");
+        } else {
+            System.out.println("dio");
+        }
+
+        return false;
+    }
+
+    @Override
+    public void connectRMI(VirtualView client, String UUID) throws RemoteException {}
+
+    @Override
+    public ArrayList<LobbyInfo> getAvailableLobby() throws RemoteException {
         return null;
     }
 
     @Override
-    public void joinLobby(String selection) throws RemoteException {
+    public boolean joinLobby(String playerNickname, String lobbyName) throws RemoteException {
+        return false;
+    }
+
+    @Override
+    public void leaveLobby(String playerNickname) throws RemoteException {
 
     }
 
     @Override
-    public void createLobby(String lobbyName) throws RemoteException {
-
+    public boolean createLobby(String playerNickname, String lobbyName) throws RemoteException {
+        return false;
     }
 
     @Override
-    public void setReady() throws RemoteException {
-
-    }
-
-    @Override
-    public void leaveLobby() throws RemoteException {
+    public void setPlayerReady(String playerNickname) throws RemoteException {
 
     }
 }

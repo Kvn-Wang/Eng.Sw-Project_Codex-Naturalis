@@ -28,15 +28,10 @@ public class RmiServer extends Thread implements VirtualServer {
     }
 
     @Override
-    public String connect(VirtualView client) throws RemoteException {
-        String clientId;
-
-        clientId = UUID.randomUUID().toString(); // Generate unique identifier
-        nicknameLessClients.put(clientId, client); // Store client with its identifier
+    public void connectRMI(VirtualView client, String UUID) throws RemoteException {
+        nicknameLessClients.put(UUID, client); // Store client with its identifier
 
         System.out.println("Someone Connected");
-
-        return clientId;
     }
 
     @Override
@@ -72,9 +67,9 @@ public class RmiServer extends Thread implements VirtualServer {
     }
 
     @Override
-    public void leaveLobby(String playerNickname, String lobbyName) throws RemoteException {
-        serverContainer.leaveLobby(playerNickname, lobbyName);
-        System.out.println(playerNickname + " has left " + lobbyName + " lobby");
+    public void leaveLobby(String playerNickname) throws RemoteException {
+        serverContainer.leaveLobby(playerNickname);
+        System.out.println(playerNickname + " has left the lobby");
     }
 
     @Override
@@ -91,8 +86,8 @@ public class RmiServer extends Thread implements VirtualServer {
     }
 
     @Override
-    public void setPlayerReady(String playerNickname, String lobbyName) throws RemoteException {
-        serverContainer.setPlayerReady(playerNickname, lobbyName);
+    public void setPlayerReady(String playerNickname) throws RemoteException {
+        serverContainer.setPlayerReady(playerNickname);
     }
 
     public void run() {
