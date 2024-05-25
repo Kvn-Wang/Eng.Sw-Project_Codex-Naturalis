@@ -22,6 +22,6 @@ module it.polimi.codexnaturalis {
     opens it.polimi.codexnaturalis.network.lobby to com.google.gson, javafx.base;
     exports it.polimi.codexnaturalis.network.communicationInterfaces;
     exports it.polimi.codexnaturalis.network.util;
-    opens it.polimi.codexnaturalis.network.util to javafx.fxml;
+    opens it.polimi.codexnaturalis.network.util to com.google.gson, javafx.fxml;
     exports it.polimi.codexnaturalis.GUI to javafx.graphics;
 }

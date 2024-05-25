@@ -31,10 +31,6 @@ public class PlayerInfo  {
         return colorChosen;
     }
 
-    public void setColorChosen(ColorType colorChosen) {
-        this.colorChosen = colorChosen;
-    }
-
     public boolean isPlayerReady() {
         return isPlayerReady;
     }

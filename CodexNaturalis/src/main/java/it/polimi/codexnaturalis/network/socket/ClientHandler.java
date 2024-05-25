@@ -18,7 +18,7 @@ import java.io.PrintWriter;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-public class ClientHandler extends Thread implements VirtualView, VirtualServer {
+public class ClientHandler implements VirtualView, VirtualServer {
     String playerNickname;
     String lobbyNickname;
     final PrintWriter output;
@@ -31,6 +31,14 @@ public class ClientHandler extends Thread implements VirtualView, VirtualServer 
         this.output = new PrintWriter(output);
         playerNickname = null;
         lobbyNickname = null;
+
+        new Thread(() -> {
+            try {
+                runSocketListener();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
     }
 
     public void runSocketListener() throws IOException {
@@ -38,11 +46,15 @@ public class ClientHandler extends Thread implements VirtualView, VirtualServer 
         String argsRX;
         NetworkMessage messageRX;
         NetworkMessage messageTX;
-        Gson gson;
+        Gson gson = new Gson();
 
-        gson = new Gson();
+        System.out.println("Socket Listener Avviato");
         while ((jsonRX = input.readLine()) != null) {
+            System.out.println("asd");
             messageRX = deSerializeMesssage(jsonRX);
+
+            System.out.println(messageRX.getNickname());
+            System.out.println(messageRX.getArgs());
 
             switch (messageRX.getMessageType()) {
                 case COM_SET_NICKNAME_TCP:
@@ -102,7 +114,6 @@ public class ClientHandler extends Thread implements VirtualView, VirtualServer 
 
                 default:
                     messageTX = new NetworkMessage(MessageType.COM_ERROR_TCP);
-
                     break;
             }
             showMessage(messageTX);
@@ -141,16 +152,8 @@ public class ClientHandler extends Thread implements VirtualView, VirtualServer 
 
     }
 
-    public void run() {
-        try {
-            runSocketListener();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @Override
-    public String connect(VirtualView client) throws RemoteException, InterruptedException {
+    public String connect(VirtualView client) throws RemoteException {
         return null;
     }
 

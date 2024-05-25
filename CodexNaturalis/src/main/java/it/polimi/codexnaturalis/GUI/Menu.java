@@ -10,14 +10,16 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Popup;
+import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
 import java.rmi.RemoteException;
 
 public class Menu extends Application {
 
-    static VirtualNetworkCommand vnc;
+    private static VirtualNetworkCommand vnc;
+
+    static Stage mainStage;
     public static void main(String[] args) {
         launch(args);
     }
@@ -30,17 +32,28 @@ public class Menu extends Application {
        // }
        // else{
             Popup popup = new Popup();
-            Button okpop = new Button();
+            Button closePop = new Button("close");
             Label nick = new Label(nickname+" é già stato selezionato");
-            popup.getContent().add(nick);
-            popup.getContent().add(okpop);
-            okpop.setTranslateY(20);
+            closePop.setOnAction(event -> {
+            if (popup.isShowing()) {
+                popup.hide();
+            }
+             });
+            VBox vBox = new VBox(
+                nick,
+                closePop
+            );
+
+            popup.getContent().add(vBox);
+            closePop.setTranslateY(20);
+            popup.show(mainStage);
 
        // }
     }
     @Override
     public void start(Stage menuStage) throws Exception {
         startScene(menuStage);
+        mainStage = menuStage;
         menuStage.show();
     }
 
@@ -92,12 +105,13 @@ public class Menu extends Application {
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
-
-        /*    try {
+        /*
+            try {
                 lobbyListScene(menuStage);
             } catch (Exception e) {
                 throw new RuntimeException(e);
-          }*/
+          }
+         */
         });
 
         back.setTranslateX(-200);

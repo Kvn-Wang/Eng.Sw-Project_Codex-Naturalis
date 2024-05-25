@@ -11,10 +11,6 @@ import java.util.random.RandomGenerator;
 public class GuiClient implements TypeOfUI {
     private VirtualNetworkCommand virtualNetworkCommand;
 
-    public GuiClient(){
-        Menu.setupMenu(virtualNetworkCommand);
-        javafx.application.Application.launch(Menu.class);
-    }
 
     public VirtualNetworkCommand getvnc(){
         return virtualNetworkCommand;
@@ -22,11 +18,12 @@ public class GuiClient implements TypeOfUI {
     @Override
     public void connectVirtualNetwork(VirtualNetworkCommand virtualNetworkCommand) {
         this.virtualNetworkCommand = virtualNetworkCommand;
+        Menu.setupMenu(this.virtualNetworkCommand);
     }
 
     @Override
     public void printSelectionNicknameRequest() {
-
+        javafx.application.Application.launch(Menu.class);
     }
 
     @Override
