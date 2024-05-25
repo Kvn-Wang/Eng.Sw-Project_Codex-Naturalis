@@ -1,7 +1,7 @@
 package it.polimi.codexnaturalis.GUI;
 
+import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
-import it.polimi.codexnaturalis.view.VirtualNetworkCommand;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -17,13 +17,13 @@ import java.rmi.RemoteException;
 
 public class Menu extends Application {
 
-    private static VirtualNetworkCommand vnc;
+    private static VirtualServer vnc;
 
     static Stage mainStage;
     public static void main(String[] args) {
         launch(args);
     }
-    public static void setupMenu(VirtualNetworkCommand virtualNetworkCommand){
+    public static void setupMenu(VirtualServer virtualNetworkCommand){
         vnc = virtualNetworkCommand;
     }
     public static void setupNickname(boolean outcome, String nickname){
@@ -102,7 +102,7 @@ public class Menu extends Application {
         });
         nickname.setOnAction(event -> {
             try {
-                vnc.selectNickname(nickname.getText());
+                vnc.setNickname(null, nickname.getText());
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
