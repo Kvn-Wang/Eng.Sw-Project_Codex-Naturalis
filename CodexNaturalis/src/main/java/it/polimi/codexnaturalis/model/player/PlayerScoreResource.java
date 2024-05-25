@@ -56,6 +56,7 @@ public class PlayerScoreResource {
     public boolean substractScore(ResourceType type) {
         switch(type){
             case ANIMAL:
+                System.out.println(type);
                 if(scoreAnimal > 0) {
                     scoreAnimal-=1;
                 } else {

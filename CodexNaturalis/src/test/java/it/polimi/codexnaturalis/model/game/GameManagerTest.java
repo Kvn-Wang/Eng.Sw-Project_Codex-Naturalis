@@ -34,7 +34,7 @@ class GameManagerTest {
     @Test
     @BeforeEach
     void initializeGame() {
-        gameManager.initializeGame();
+        //gameManager.initializeGame();
         for(Map.Entry<String, ColorType> entry: playerInfo.entrySet()) {
             try {
                 gameManager.playerPlayCard(entry.getKey(), 1, 3, 0, true);

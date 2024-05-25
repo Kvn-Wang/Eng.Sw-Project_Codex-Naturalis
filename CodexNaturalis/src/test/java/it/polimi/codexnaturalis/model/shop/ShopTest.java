@@ -9,6 +9,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ShopTest {
     Shop testShop;
+
+    @Test
+    public void gen(){
+
+    }
     @Test
     public void testShop(){
         testShop = new Shop(ShopType.STARTER);
