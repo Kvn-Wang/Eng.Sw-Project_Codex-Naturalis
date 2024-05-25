@@ -3,6 +3,8 @@ package it.polimi.codexnaturalis.GUI;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -10,57 +12,83 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Popup;
-import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 public class Menu extends Application {
 
     private static VirtualServer vnc;
 
-    static Stage mainStage;
+     static Stage gameWindow;
+     private static Scene startScene;
+     private static Scene nickScene;
+     private static Scene lobbyListScene;
+
     public static void main(String[] args) {
         launch(args);
     }
     public static void setupMenu(VirtualServer virtualNetworkCommand){
         vnc = virtualNetworkCommand;
     }
-    public static void setupNickname(boolean outcome, String nickname){
-        //if(outcome){
 
-       // }
-       // else{
+    public static void setNickname(boolean outcome, String nickname){
+        if(outcome){
+            gameWindow.setScene(lobbyListScene);
+        } else{
             Popup popup = new Popup();
             Button closePop = new Button("close");
             Label nick = new Label(nickname+" é già stato selezionato");
             closePop.setOnAction(event -> {
-            if (popup.isShowing()) {
-                popup.hide();
-            }
-             });
+                if (popup.isShowing()) {
+                    popup.hide();
+                }
+            });
             VBox vBox = new VBox(
-                nick,
-                closePop
+                    nick,
+                    closePop
             );
 
             popup.getContent().add(vBox);
             closePop.setTranslateY(20);
-            popup.show(mainStage);
-
-       // }
+            popup.show(gameWindow);
+        }
     }
+
+    private static void updateLobbyList(TableView lobbyList){
+        ArrayList<LobbyInfo> lobbyInfo;
+
+        try {
+            lobbyInfo = vnc.getAvailableLobby();
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+
+        for(LobbyInfo lobby : lobbyInfo){
+            lobbyList.getItems().add(lobby);
+        }
+
+    }
+
+    private static void createLobby(TableView lobbyList){
+
+    }
+
     @Override
     public void start(Stage gameStage) throws Exception {
-        startScene(gameStage);
-        mainStage = gameStage;
-        gameStage.show();
+        Menu.gameWindow = gameStage;
+        startScene = startScene();
+        nickScene = nickScene();
+        lobbyListScene = lobbyListScene();
+        gameWindow.setScene(startScene);
+        gameWindow.show();
     }
 
-    private void startScene(Stage gameStage) throws Exception {
-        gameStage.setTitle("CodexNaturalis");
+    private static Scene startScene() throws Exception {
+        gameWindow.setTitle("CodexNaturalis");
         Button play = new Button("PLAY");
-        Label title = new Label("Codex Naturalis");;
+        Label title = new Label("Codex Naturalis");
 
         title.setFont(new Font("Arial", 30));
         title.setTranslateY(-100);
@@ -68,22 +96,16 @@ public class Menu extends Application {
 
         play.setTranslateY(20);
         play.setPrefSize(100, 50);
-        play.setOnAction(actionEvent -> {
-            try {
-                rmiScene(gameStage);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        play.setOnAction(actionEvent -> gameWindow.setScene(nickScene));
 
         StackPane menuPane = new StackPane(
                 title,
                 play
         );
-        gameStage.setScene(new Scene(menuPane, 500, 300));
+        return new Scene(menuPane, 500, 300);
     }
 
-    private void rmiScene(Stage menuStage) throws Exception {
+    private static Scene nickScene() throws Exception {
 
         Button back = new Button("<-");
         TextField nickname = new TextField();
@@ -106,37 +128,26 @@ public class Menu extends Application {
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
-        /*
-            try {
-                lobbyListScene(menuStage);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-          }
-         */
         });
 
         back.setTranslateX(-200);
         back.setTranslateY(-100);
-        back.setOnAction(actionEvent -> {
-            try {
-                startScene(menuStage);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        back.setOnAction(event -> gameWindow.setScene(startScene));
 
         StackPane menuPane = new StackPane(
                 nickname,
                 back,
                 confirm
         );
-        menuStage.setScene(new Scene(menuPane, 500, 300));
+        return new Scene(menuPane, 500, 300);
     }
 
-    private void lobbyListScene(Stage menuStage) throws Exception {
+    private static Scene lobbyListScene() throws Exception {
 
         Button back = new Button("<-");
-        TableView lobbyList = new TableView();
+        Button refresh = new Button("refresh");
+        Button create = new Button("create lobby");
+        TableView lobbyTable = new TableView();
 
         TableColumn<String, String> column1 =
                 new TableColumn<>("Lobby Name");
@@ -153,37 +164,37 @@ public class Menu extends Application {
         column3.setCellValueFactory(
                 new PropertyValueFactory<>("MaxPlayer"));
 
-
-        lobbyList.getColumns().add(column1);
-        lobbyList.setMaxWidth(300);
-        lobbyList.getColumns().add(column2);
-        lobbyList.getColumns().add(column3);
-        lobbyList.getItems().add(
-                new LobbyInfo("Lobby1", false, 3));
-        lobbyList.getItems().add(
-                new LobbyInfo("Lobby2", false, 4));
-        lobbyList.getItems().add(
-                new LobbyInfo("Kevin stellina", true, 1));
-
+        lobbyTable.getColumns().add(column1);
+        lobbyTable.setMaxWidth(300);
+        lobbyTable.getColumns().add(column2);
+        lobbyTable.getColumns().add(column3);
 
         back.setTranslateX(-200);
         back.setTranslateY(-100);
-        back.setOnAction(actionEvent -> {
-            try {
-                rmiScene(menuStage);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+        back.setOnAction(actionEvent -> gameWindow.setScene(nickScene));
+
+        refresh.setTranslateX(-200);
+        refresh.setTranslateY(100);
+        refresh.setOnAction(actionEvent -> {
+            lobbyTable.getItems().clear();
+            updateLobbyList(lobbyTable);
+        });
+
+        create.setTranslateX(-200);
+        create.setTranslateY(0);
+        create.setOnAction(actionEvent -> {
+
         });
 
         StackPane menuPane = new StackPane(
-                lobbyList,
+                lobbyTable,
+                refresh,
                 back
         );
-        menuStage.setScene(new Scene(menuPane, 500, 300));
+        return new Scene(menuPane, 500, 300);
     }
 
-    private void lobbyScene(Stage menuStage) throws Exception {
+    private void lobbyScene(Stage gameStage) throws Exception {
 
         Button back = new Button("<-");
         VBox playerBox = new VBox();
@@ -221,35 +232,17 @@ public class Menu extends Application {
 
         back.setTranslateX(-200);
         back.setTranslateY(-100);
-        back.setOnAction(actionEvent -> {
-            try {
-                lobbyListScene(menuStage);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        back.setOnAction(actionEvent -> gameWindow.setScene(lobbyListScene));
 
         StackPane menuPane = new StackPane(
                 lobby,
                 back
         );
-        menuStage.setScene(new Scene(menuPane, 500, 300));
+        gameStage.setScene(new Scene(menuPane, 500, 300));
     }
 
     private String playerJoin(String nickname){
         Label player = new Label();
         return nickname;
     }
-
-    /*
-
-    @Override
-    public void start(Stage stage) throws Exception {
-        VBox vBox = new VBox(new Label("A JavaFX Label"));
-        Scene scene = new Scene(vBox);
-
-        stage.setScene(scene);
-        stage.show();
-    }
-     */
 }

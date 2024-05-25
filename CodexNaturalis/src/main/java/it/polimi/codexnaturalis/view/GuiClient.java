@@ -19,6 +19,7 @@ public class GuiClient implements TypeOfUI {
     public void connectVirtualNetwork(VirtualServer virtualNetworkCommand) {
         this.virtualNetworkCommand = virtualNetworkCommand;
         Menu.setupMenu(this.virtualNetworkCommand);
+        javafx.application.Application.launch(Menu.class);
     }
 
     @Override
@@ -28,12 +29,11 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printSelectionNicknameRequest() {
-        javafx.application.Application.launch(Menu.class);
     }
 
     @Override
     public void printSelectionNicknameRequestOutcome(boolean positiveOutcome, String nickname) {
-            Menu.setupNickname(positiveOutcome,nickname);
+            Menu.setNickname(positiveOutcome,nickname);
     }
 
     @Override
