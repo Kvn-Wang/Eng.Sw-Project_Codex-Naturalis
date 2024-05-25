@@ -67,9 +67,9 @@ public class RmiServer extends Thread implements VirtualServer {
     }
 
     @Override
-    public void leaveLobby(String playerNickname, String lobbyName) throws RemoteException {
-        serverContainer.leaveLobby(playerNickname, lobbyName);
-        System.out.println(playerNickname + " has left " + lobbyName + " lobby");
+    public void leaveLobby(String playerNickname) throws RemoteException {
+        serverContainer.leaveLobby(playerNickname);
+        System.out.println(playerNickname + " has left the lobby");
     }
 
     @Override
@@ -86,8 +86,8 @@ public class RmiServer extends Thread implements VirtualServer {
     }
 
     @Override
-    public void setPlayerReady(String playerNickname, String lobbyName) throws RemoteException {
-        serverContainer.setPlayerReady(playerNickname, lobbyName);
+    public void setPlayerReady(String playerNickname) throws RemoteException {
+        serverContainer.setPlayerReady(playerNickname);
     }
 
     public void run() {

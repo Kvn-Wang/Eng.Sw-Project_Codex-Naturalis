@@ -21,6 +21,8 @@ public class RmiClient extends GenericClient {
     private final VirtualServer server;
     private GameController gameController;
     private Registry registry;
+    // variabile di identificativo temporanea -> inutile dopo il setting del nickname
+    private String ID;
 
     public RmiClient(TypeOfUI typeOfUI) throws RemoteException, NotBoundException, InterruptedException {
         //setup communicazione bidirezionale tra rete e oggetto grafico
@@ -32,7 +34,8 @@ public class RmiClient extends GenericClient {
         System.out.println("Collegato al server: " + serverName);
 
         // scambio dell'oggetto per comunicare col server
-        server.connectRMI(this, UUID.randomUUID().toString());
+        ID = UUID.randomUUID().toString();
+        server.connectRMI(this, ID);
 
         initializeClient(this);
     }
@@ -74,8 +77,8 @@ public class RmiClient extends GenericClient {
     public void connectRMI(VirtualView client, String UUID) throws RemoteException {}
 
     @Override
-    public boolean setNickname(String nickname) throws RemoteException {
-        if(server.setNickname(nickname)) {
+    public boolean setNickname(String UUID, String nickname) throws RemoteException {
+        if(server.setNickname(this.ID, nickname)) {
             this.playerNickname = nickname;
             typeOfUI.printSelectionNicknameRequestOutcome(true, this.playerNickname);
         } else {

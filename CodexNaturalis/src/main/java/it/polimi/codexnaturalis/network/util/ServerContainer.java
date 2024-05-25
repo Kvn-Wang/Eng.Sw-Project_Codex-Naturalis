@@ -63,7 +63,7 @@ public class ServerContainer {
         Lobby lobby;
 
         player = stringToPlayer(playerNickname);
-        lobby = getLobbyThread(lobbyName);
+        lobby = getLobby(lobbyName);
 
         if(lobby.connectPlayer(player)) {
             return true;
@@ -72,12 +72,12 @@ public class ServerContainer {
         }
     }
 
-    public void leaveLobby(String playerNickname, String lobbyName) throws RemoteException {
+    public void leaveLobby(String playerNickname) throws RemoteException {
         PlayerInfo player;
         Lobby lobby;
 
         player = stringToPlayer(playerNickname);
-        lobby = getLobbyThread(lobbyName);
+        lobby = getLobbyByPlayer(playerNickname);
 
         //remove the player, and if currentPlayer == 0, eliminate the thread
         if(!lobby.disconnectPlayer(player)) {
@@ -85,12 +85,12 @@ public class ServerContainer {
         }
     }
 
-    public void setPlayerReady(String playerNickname, String lobbyName) throws RemoteException {
+    public void setPlayerReady(String playerNickname) throws RemoteException {
         PlayerInfo player;
         Lobby lobby;
 
         player = stringToPlayer(playerNickname);
-        lobby = getLobbyThread(lobbyName);
+        lobby = getLobbyByPlayer(playerNickname);
 
         lobby.setPlayerReady(player);
     }
@@ -138,7 +138,7 @@ public class ServerContainer {
         }
     }
 
-    private Lobby getLobbyThread(String lobbyName) {
+    private Lobby getLobby(String lobbyName) {
         for(Lobby elem : activeLobby) {
             if (elem.getLobbyName().equals(lobbyName)) {
                 //remove the player, and if currentPlayer == 0, eliminate the thread
@@ -147,6 +147,18 @@ public class ServerContainer {
         }
 
         throw new PersonalizedException.LobbyNotFoundException(lobbyName);
+    }
+
+    private Lobby getLobbyByPlayer(String playerName) {
+        for(Lobby elem : activeLobby) {
+            for(PlayerInfo player : elem.getListOfPlayers()) {
+                if(player.getNickname().equals(playerName)) {
+                    return elem;
+                }
+            }
+        }
+
+        throw new PersonalizedException.LobbyNotFoundException("Lobby non trovata per player: " + playerName);
     }
 
     public ArrayList<Lobby> getActiveLobby() {

@@ -101,7 +101,7 @@ public class Menu extends Application {
         });
         nickname.setOnAction(event -> {
             try {
-                vnc.selectNickname(nickname.getText());
+                vnc.setNickname(null, nickname.getText());
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }

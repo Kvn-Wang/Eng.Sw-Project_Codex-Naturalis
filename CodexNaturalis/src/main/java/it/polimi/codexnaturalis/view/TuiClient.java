@@ -34,7 +34,7 @@ public class TuiClient implements TypeOfUI {
         System.out.println("Inserisci il tuo nickname:");
 
         nickname = scan.nextLine();
-        networkCommand.setNickname(nickname);
+        networkCommand.setNickname(null, nickname);
     }
 
     @Override

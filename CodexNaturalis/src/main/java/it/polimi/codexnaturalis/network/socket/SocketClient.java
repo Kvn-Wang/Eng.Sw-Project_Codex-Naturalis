@@ -143,7 +143,7 @@ public class SocketClient extends GenericClient {
     }
 
     @Override
-    public boolean setNickname(String nickname) throws RemoteException {
+    public boolean setNickname(String UUID, String nickname) throws RemoteException {
         //socketTx.setNickname(nickname);
         doWait();
         if(outcomeReceived == true) {

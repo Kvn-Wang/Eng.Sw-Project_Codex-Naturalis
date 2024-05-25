@@ -101,13 +101,13 @@ public class ClientHandler implements VirtualView, VirtualServer {
                     break;
 
                 case COM_SET_READY_LOBBY_TCP:
-                    setPlayerReady(playerNickname, lobbyNickname);
+                    setPlayerReady(playerNickname);
 
                     messageTX = new NetworkMessage(MessageType.COM_ACK_TCP);
                     break;
 
                 case COM_LEAVE_LOBBY_TCP:
-                    leaveLobby(playerNickname, lobbyNickname);
+                    leaveLobby(playerNickname);
 
                     messageTX = new NetworkMessage(MessageType.COM_ACK_TCP);
                     break;
@@ -153,9 +153,7 @@ public class ClientHandler implements VirtualView, VirtualServer {
     }
 
     @Override
-    public String connect(VirtualView client) throws RemoteException {
-        return null;
-    }
+    public void connectRMI(VirtualView client, String UUID) throws RemoteException {}
 
     @Override
     public boolean setNickname(String userID, String nickname) throws RemoteException {
@@ -187,8 +185,8 @@ public class ClientHandler implements VirtualView, VirtualServer {
     }
 
     @Override
-    public void leaveLobby(String playerNickname, String lobbyName) throws RemoteException {
-        serverContainer.leaveLobby(playerNickname, lobbyNickname);
+    public void leaveLobby(String playerNickname) throws RemoteException {
+        serverContainer.leaveLobby(playerNickname);
         lobbyNickname = null;
     }
 
@@ -206,7 +204,7 @@ public class ClientHandler implements VirtualView, VirtualServer {
     }
 
     @Override
-    public void setPlayerReady(String playerNickname, String lobbyName) throws RemoteException {
-        serverContainer.setPlayerReady(playerNickname, lobbyNickname);
+    public void setPlayerReady(String playerNickname) throws RemoteException {
+        serverContainer.setPlayerReady(playerNickname);
     }
 }

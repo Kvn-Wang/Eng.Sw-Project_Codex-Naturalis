@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public interface VirtualServer extends Remote {
     void connectRMI(VirtualView client, String UUID) throws RemoteException, InterruptedException;
     //return false if the setting of nickname fails
-    boolean setNickname(String nickname) throws RemoteException;
+    boolean setNickname(String UUID, String nickname) throws RemoteException;
     ArrayList<LobbyInfo> getAvailableLobby() throws RemoteException;
     boolean joinLobby(String playerNickname, String lobbyName) throws RemoteException;
     void leaveLobby(String playerNickname) throws RemoteException;
