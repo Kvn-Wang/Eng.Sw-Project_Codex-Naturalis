@@ -51,13 +51,14 @@ public class Menu extends Application {
        // }
     }
     @Override
-    public void start(Stage menuStage) throws Exception {
-        startScene(menuStage);
-        mainStage = menuStage;
-        menuStage.show();
+    public void start(Stage gameStage) throws Exception {
+        startScene(gameStage);
+        mainStage = gameStage;
+        gameStage.show();
     }
 
-    private void startScene(Stage menuStage) throws Exception {
+    private void startScene(Stage gameStage) throws Exception {
+        gameStage.setTitle("CodexNaturalis");
         Button play = new Button("PLAY");
         Label title = new Label("Codex Naturalis");;
 
@@ -69,7 +70,7 @@ public class Menu extends Application {
         play.setPrefSize(100, 50);
         play.setOnAction(actionEvent -> {
             try {
-                rmiScene(menuStage);
+                rmiScene(gameStage);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -79,7 +80,7 @@ public class Menu extends Application {
                 title,
                 play
         );
-        menuStage.setScene(new Scene(menuPane, 500, 300));
+        gameStage.setScene(new Scene(menuPane, 500, 300));
     }
 
     private void rmiScene(Stage menuStage) throws Exception {

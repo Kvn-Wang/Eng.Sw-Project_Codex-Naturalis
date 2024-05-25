@@ -15,6 +15,7 @@ public class Map extends Gui {
 
     @Override
     public void start(Stage primaryStage) {
+        primaryStage.setTitle("CodexNaturalis");
         TableView<Person> tableView = new TableView<>();
 
         TableColumn<Person, String> firstNameCol = new TableColumn<>("First Name");
