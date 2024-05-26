@@ -20,7 +20,6 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void connectGameController(GameController virtualGame) {
-
     }
 
     @Override
@@ -39,7 +38,6 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printJoinLobbyOutcome(boolean positiveOutcome, String lobbyName) throws RemoteException {
-
     }
 
     @Override

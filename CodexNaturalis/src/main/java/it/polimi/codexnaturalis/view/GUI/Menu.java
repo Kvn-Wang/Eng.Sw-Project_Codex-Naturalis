@@ -5,9 +5,11 @@ import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableListBase;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Popup;
@@ -15,6 +17,7 @@ import javafx.stage.Stage;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Menu extends Application {
 
@@ -71,24 +74,38 @@ public class Menu extends Application {
         }
     }
 
-    private static void updateLobbyList(TableView lobbyList){
-        ArrayList<LobbyInfo> lobbyInfo;
+    private static void updateLobbyList(ObservableList<LobbyInfo> lobbyList){
+        ArrayList<LobbyInfo> lobbyInfoList;
 
         try {
-            lobbyInfo = vnc.getAvailableLobby();
+            lobbyInfoList = vnc.getAvailableLobby();
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
 
-        for(LobbyInfo lobby : lobbyInfo){
-            lobbyList.getItems().add(lobby);
-        }
+        lobbyList.addAll(lobbyInfoList);
+    }
 
+    private static void updatePlayerList(ObservableList<String> playerList){
+        String[] players = new String[0];
+
+        /*try {
+            players = vnc.funzione mancante;
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }*/
+
+        playerList.addAll(players);
     }
 
     private static void createLobby(){
         LobbyCreationBox lobbyAlert = new LobbyCreationBox();
-        lobbyAlert.display("Create lobby", 100,100);
+        try {
+            vnc.createLobby("piggo", lobbyAlert.display("Create lobby", 100,100));
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+        gameWindow.setScene(lobbyScene);
     }
 
 
@@ -168,27 +185,27 @@ public class Menu extends Application {
         Button back = new Button("<-");
         Button refresh = new Button("refresh");
         Button create = new Button("create lobby");
-        TableView lobbyTable = new TableView();
+        TableView<LobbyInfo> lobbyTable = new TableView<>();
+        ObservableList<LobbyInfo> lobbyList = FXCollections.observableArrayList();
 
         TableColumn<String, String> column1 =
                 new TableColumn<>("Lobby Name");
         column1.setCellValueFactory(
-                new PropertyValueFactory<>("LobbyName"));
+                new PropertyValueFactory<>("lobbyName"));
 
         TableColumn<String, String> column2 =
                 new TableColumn<>("Started");
         column2.setCellValueFactory(
-                new PropertyValueFactory<>("IsLobbyStarted"));
+                new PropertyValueFactory<>("isLobbyStarted"));
 
         TableColumn<String, String> column3 =
                 new TableColumn<>("Players");
         column3.setCellValueFactory(
-                new PropertyValueFactory<>("MaxPlayer"));
+                new PropertyValueFactory<>("maxPlayer"));
 
-        lobbyTable.getColumns().add(column1);
+        updateLobbyList(lobbyList);
         lobbyTable.setMaxWidth(300);
-        lobbyTable.getColumns().add(column2);
-        lobbyTable.getColumns().add(column3);
+        lobbyTable.setItems(lobbyList);
 
         back.setTranslateX(-200);
         back.setTranslateY(-100);
@@ -198,13 +215,18 @@ public class Menu extends Application {
         refresh.setTranslateY(100);
         refresh.setOnAction(actionEvent -> {
             lobbyTable.getItems().clear();
-            updateLobbyList(lobbyTable);
+            updateLobbyList(lobbyList);
         });
         lobbyTable.setRowFactory(tv -> {
                     TableRow<LobbyInfo> row = new TableRow<>();
                     row.setOnMouseClicked(event -> {
-                        if (!row.isEmpty() && event.getButton() == javafx.scene.input.MouseButton.PRIMARY && event.getClickCount() == 2) {
+                        if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                             LobbyInfo clickedRow = row.getItem();
+                            try {
+                                vnc.joinLobby("piggo", clickedRow.getLobbyName());
+                            } catch (RemoteException e) {
+                                throw new RuntimeException(e);
+                            }
                             gameWindow.setScene(lobbyScene);
                         }
                     });
@@ -227,26 +249,40 @@ public class Menu extends Application {
     private Scene lobbyScene(){
 
         Button back = new Button("<-");
+        Button ready = new Button("Ready");
         VBox playerBox = new VBox();
 
         ListView<String> lobby = new ListView<>();
-        //ObservableList<String> players = FXCollections.observableList("pippo","luca", "giovanni", "lorenzo");
+        ObservableList<String> players = FXCollections.observableArrayList();
 
         lobby.setMaxWidth(300);
 
-
         back.setTranslateX(-200);
         back.setTranslateY(-100);
-        back.setOnAction(actionEvent -> gameWindow.setScene(lobbyListScene));
+        back.setOnAction(actionEvent -> {
+            try {
+                vnc.leaveLobby("piggo");
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+            gameWindow.setScene(lobbyListScene);
+        });
+
+        ready.setTranslateX(-200);
+        ready.setTranslateY(-200);
+        ready.setOnAction(actionEvent -> {
+            try {
+                vnc.setPlayerReady("piggo");
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+            ready.setVisible(false);
+        });
 
         VBox lobbyLayout = new VBox();
-        //    lobbyLayout.getChildren().add();
-        //    lobbyLayout.getChildren().add();
+            lobbyLayout.getChildren().add(lobby);
+            lobbyLayout.getChildren().add(back);
+        lobbyLayout.getChildren().add(ready);
         return new Scene(lobbyLayout);
-    }
-
-    private String playerJoin(String nickname){
-        Label player = new Label();
-        return nickname;
     }
 }

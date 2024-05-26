@@ -8,9 +8,9 @@ import javafx.stage.Stage;
 
 public abstract class AlertBox {
 
-    public void display(String name, double width, double height){
-        Stage alertWindow = new Stage();
-
+    protected String retstring;
+    protected Stage alertWindow = new Stage();
+    public String display(String name, double width, double height){
         alertWindow.setMinWidth(width);
         alertWindow.setMinWidth(height);
         alertWindow.initModality(Modality.APPLICATION_MODAL);
@@ -20,6 +20,8 @@ public abstract class AlertBox {
 
         alertWindow.setScene(scene);
         alertWindow.showAndWait();
+
+        return retstring;
     }
 
     protected Scene scene() {
