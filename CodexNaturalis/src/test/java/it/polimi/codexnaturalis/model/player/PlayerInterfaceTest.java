@@ -37,7 +37,6 @@ class PlayerInterfaceTest {
         testMap1.placeCard(middle,middle-4,firstTestCard,true);
         testMap1.placeCard(middle,middle-5,firstTestCard,true);
         assertEquals(4, testPlayer1.executePersonalMission());
-        testDiagonalMission.getUsedArray();
         //assertEquals(0, testPlayer1.executePersonalMission());
         testPlayer2.setPersonalMissions(testDiagonalMission1,testResourceMission);
         testPlayer2.setPersonalMissionFinal(1);
