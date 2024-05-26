@@ -23,6 +23,7 @@ public abstract class GenericClient extends UnicastRemoteObject implements Virtu
 
     //chiamata che garantisce il setup del nickname univoco
     protected void initializationPhase1(VirtualServer virtualServer) throws RemoteException {
+        // aggiungo alla UI il potere di comunicare con l'esterno
         typeOfUI.connectVirtualNetwork(virtualServer);
 
         // per com'è stato scritto il codice, dopo questa riga avremo un nickname sicuramente settato correttamente

@@ -3,17 +3,22 @@ package it.polimi.codexnaturalis.network.util;
 //If before the enum the args are not specified, it's not expected additional argument for the network message
 public enum MessageType {
     /* ---ENUMS FOR THE COMMUNICATION PHASE--- */
-    // args = nickname
+    // args(0) = nickname
     COM_SET_NICKNAME_TCP,
-    // args = outcome (boolean); useful to communicate the outcome after receiving an order that can fail (like setNickname or joiningLobby)
+    // args(0) = outcome (boolean); useful to communicate the outcome after receiving an order that can fail (like setNickname or joiningLobby)
     COM_ACK_TCP,
+    //args(0) = lobbies in json (when receiving from the server)
     COM_GET_LOBBIES_TCP,
-    //args = lobbyName
+    //args(0) = playerName
+    //args(1) = lobbyName
     COM_JOIN_LOBBY_TCP,
+    //args(0) = playerNickname
     COM_SET_READY_LOBBY_TCP,
+    //args(0) = playerNickname
     COM_LEAVE_LOBBY_TCP,
     COM_ERROR_TCP,
-    //args = lobbyName
+    //args(0) = playerNickname
+    //args(1) = lobbyName
     COM_CREATE_LOBBY_TCP,
     COM_LOBBY_RMI,
 

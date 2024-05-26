@@ -1,8 +1,11 @@
-package it.polimi.codexnaturalis.network.util;
+package it.polimi.codexnaturalis.network;
 
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.game.GameManager;
+import it.polimi.codexnaturalis.network.util.MessageType;
+import it.polimi.codexnaturalis.network.util.NetworkMessage;
+import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.observer.Observer;
 

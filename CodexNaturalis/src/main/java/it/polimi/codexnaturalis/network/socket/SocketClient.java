@@ -1,9 +1,11 @@
 package it.polimi.codexnaturalis.network.socket;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
+import it.polimi.codexnaturalis.network.util.MessageType;
 import it.polimi.codexnaturalis.network.util.NetworkMessage;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.view.GenericClient;
@@ -22,9 +24,13 @@ public class SocketClient extends GenericClient {
     boolean ackArrived;
     private final Object lock = new Object();
     boolean outcomeReceived;
+    String argsRX; // TODO data Race
+    Gson gson;
 
     public SocketClient(TypeOfUI typeOfUI) throws IOException {
         super(typeOfUI);
+
+        gson = new Gson();
 
         String host = "127.0.0.1";
         int port = UtilCostantValue.portSocketServer;
@@ -33,12 +39,7 @@ public class SocketClient extends GenericClient {
 
         socketRx = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
         //socketTx = new ServerProxySocket(new PrintWriter(serverSocket.getOutputStream(), true));
-        socketTx = new PrintWriter(new BufferedWriter(new OutputStreamWriter(serverSocket.getOutputStream())));
-
-        System.out.println("asd");
-
-        //socketTx.println("ciao");
-
+        socketTx = new PrintWriter(new OutputStreamWriter(serverSocket.getOutputStream()), true);
 
         ackArrived = false;
 
@@ -56,24 +57,26 @@ public class SocketClient extends GenericClient {
     private void runRxClient() throws IOException {
         NetworkMessage messageRX;
         String jsonRX;
-        String argsRX;
 
         // Read message type
         while ((jsonRX = socketRx.readLine()) != null) {
             messageRX = deSerializeMesssage(jsonRX);
 
-            System.out.println(messageRX);
-
             // Read message and perform action
             switch (messageRX.getMessageType()) {
                 case COM_ACK_TCP:
                     ackArrived = true;
+
                     //getArgs = (String) boolean
                     argsRX = messageRX.getArgs().get(0);
 
-                    outcomeReceived = Boolean.parseBoolean(argsRX);
                     doNotify();
                     break;
+
+                case COM_GET_LOBBIES_TCP:
+                    // getArgs = json of lobbiesInfo
+                    argsRX = messageRX.getArgs().get(0);
+                    doNotify();
 
                 case COM_ERROR_TCP:
                     //TODO
@@ -117,6 +120,15 @@ public class SocketClient extends GenericClient {
 
     }
 
+    private String serializeMesssage(NetworkMessage message) {
+        String json;
+        Gson gson = new Gson();
+
+        json = gson.toJson(message);
+
+        return json;
+    }
+
     private NetworkMessage deSerializeMesssage(String json) {
         NetworkMessage networkMessage;
         Gson gson = new Gson();
@@ -144,14 +156,24 @@ public class SocketClient extends GenericClient {
 
     @Override
     public boolean setNickname(String UUID, String nickname) throws RemoteException {
-        //socketTx.setNickname(nickname);
+        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_SET_NICKNAME_TCP, nickname)));
         doWait();
-        if(outcomeReceived == true) {
-            System.out.println("yey");
+
+        outcomeReceived = Boolean.parseBoolean(argsRX);
+
+        // fa partire una specie di ricorsione finchè il nick non è valido
+        if(outcomeReceived == false) {
+            typeOfUI.printSelectionNicknameRequestOutcome(false, playerNickname);
+            typeOfUI.printSelectionNicknameRequest();
         } else {
-            System.out.println("dio");
+            playerNickname = nickname;
+            typeOfUI.printSelectionNicknameRequestOutcome(true, playerNickname);
         }
 
+        //reset della variabile in attesa di altri ACK
+        outcomeReceived = false;
+
+        //return inutile
         return false;
     }
 
@@ -160,26 +182,81 @@ public class SocketClient extends GenericClient {
 
     @Override
     public ArrayList<LobbyInfo> getAvailableLobby() throws RemoteException {
-        return null;
+        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_GET_LOBBIES_TCP)));
+        doWait();
+
+        ArrayList<LobbyInfo> lobbies = gson.fromJson(argsRX, new TypeToken<ArrayList<LobbyInfo>>() {}.getType());
+
+        return lobbies;
     }
 
     @Override
     public boolean joinLobby(String playerNickname, String lobbyName) throws RemoteException {
+        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_JOIN_LOBBY_TCP, this.playerNickname, lobbyName)));
+        doWait();
+
+        outcomeReceived = Boolean.parseBoolean(argsRX);
+
+        // fa partire una specie di ricorsione finchè il nick non è valido
+        if(outcomeReceived == false) {
+            typeOfUI.printJoinLobbyOutcome(false, lobbyName);
+            typeOfUI.printSelectionCreateOrJoinLobbyRequest();
+        } else {
+            lobbyNickname = lobbyName;
+            typeOfUI.printJoinLobbyOutcome(true, lobbyName);
+        }
+
+        //reset della variabile in attesa di altri ACK
+        outcomeReceived = false;
+
+        //return inutile
         return false;
     }
 
     @Override
     public void leaveLobby(String playerNickname) throws RemoteException {
+        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_LEAVE_LOBBY_TCP, this.playerNickname)));
+        doWait();
 
+        typeOfUI.printReadyOrLeaveSelectionOutcome(false);
+
+        //reset della variabile in attesa di altri ACK
+        outcomeReceived = false;
+
+        initializationPhase2();
     }
 
     @Override
     public boolean createLobby(String playerNickname, String lobbyName) throws RemoteException {
+        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_CREATE_LOBBY_TCP, this.playerNickname, lobbyName)));
+        doWait();
+
+        outcomeReceived = Boolean.parseBoolean(argsRX);
+
+        // fa partire una specie di ricorsione finchè il nick non è valido
+        if(outcomeReceived == false) {
+            typeOfUI.printCreationLobbyRequestOutcome(false, lobbyName);
+            typeOfUI.printSelectionCreateOrJoinLobbyRequest();
+        } else {
+            lobbyNickname = lobbyName;
+            typeOfUI.printSelectionNicknameRequestOutcome(true, lobbyName);
+        }
+
+        //reset della variabile in attesa di altri ACK
+        outcomeReceived = false;
+
+        //return inutile
         return false;
     }
 
     @Override
     public void setPlayerReady(String playerNickname) throws RemoteException {
+        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_SET_READY_LOBBY_TCP, this.playerNickname)));
+        doWait();
 
+        typeOfUI.printReadyOrLeaveSelectionOutcome(true);
+
+        //reset della variabile in attesa di altri ACK
+        outcomeReceived = false;
     }
 }

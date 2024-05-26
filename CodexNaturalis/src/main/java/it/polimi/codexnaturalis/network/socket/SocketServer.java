@@ -25,10 +25,8 @@ public class SocketServer extends Thread {
             clientSocket = this.serverSocket.accept();
 
             System.out.println("Someone has connected using Socket");
-            InputStreamReader clientSocketRX = new InputStreamReader(clientSocket.getInputStream());
-            OutputStreamWriter clientSocketTx = new OutputStreamWriter(clientSocket.getOutputStream());
 
-            ClientHandler handler = new ClientHandler(serverContainer, new BufferedReader(clientSocketRX), new BufferedWriter(clientSocketTx));
+            new ClientHandler(serverContainer, clientSocket);
         }
     }
 

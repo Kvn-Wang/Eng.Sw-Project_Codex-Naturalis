@@ -18,6 +18,7 @@ public final class UtilCostantValue {
     public static String pathToYellowPawnImg = "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/graphics/Pawn_Yellow.png";
     public static String pathToBluePawnImg = "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/graphics/Pawn_Blue.png";
     public static String pathToGreenPawnImg = "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/graphics/Pawn_Green.png";
+    public static String pathToBackGroundImg = "CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/graphics/CODEX_Rulebook_IT/f269eecc-f47c-410a-afe9-246598ffc46f-01.png";
     public static int maxPlayerPerLobby = 4;
     public static int minPlayerPerLobby = 2;
     public static int timeoutSecGameStart = 30;

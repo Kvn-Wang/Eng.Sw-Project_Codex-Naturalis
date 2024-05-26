@@ -1,4 +1,4 @@
-package it.polimi.codexnaturalis.GUI;
+package it.polimi.codexnaturalis.view.GUI;
 
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
@@ -8,8 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
@@ -25,9 +24,25 @@ public class Menu extends Application {
      private static Scene startScene;
      private static Scene nickScene;
      private static Scene lobbyListScene;
+     private static Scene lobbyScene;
+/*     private static final BackgroundImage bgi = new BackgroundImage(
+             new Image(UtilCostantValue.pathToBackGroundImg),
+             BackgroundRepeat.NO_REPEAT,
+             BackgroundRepeat.NO_REPEAT,
+             BackgroundPosition.CENTER,
+             new BackgroundSize(
+                     100,
+                     100,
+                     true,
+                     true,
+                     true,
+                     true
+             )
+             );
 
+ */
     public static void main(String[] args) {
-        launch(args);
+        launch(args); //
     }
     public static void setupMenu(VirtualServer virtualNetworkCommand){
         vnc = virtualNetworkCommand;
@@ -71,9 +86,11 @@ public class Menu extends Application {
 
     }
 
-    private static void createLobby(TableView lobbyList){
-
+    private static void createLobby(){
+        LobbyCreationBox lobbyAlert = new LobbyCreationBox();
+        lobbyAlert.display("Create lobby", 100,100);
     }
+
 
     @Override
     public void start(Stage gameStage) throws Exception {
@@ -81,6 +98,7 @@ public class Menu extends Application {
         startScene = startScene();
         nickScene = nickScene();
         lobbyListScene = lobbyListScene();
+        lobbyScene = lobbyScene();
         gameWindow.setScene(startScene);
         gameWindow.show();
     }
@@ -102,6 +120,9 @@ public class Menu extends Application {
                 title,
                 play
         );
+
+        //Background bg = new Background(bgi);
+        //menuPane.setBackground(bg);
         return new Scene(menuPane, 500, 300);
     }
 
@@ -179,66 +200,49 @@ public class Menu extends Application {
             lobbyTable.getItems().clear();
             updateLobbyList(lobbyTable);
         });
+        lobbyTable.setRowFactory(tv -> {
+                    TableRow<LobbyInfo> row = new TableRow<>();
+                    row.setOnMouseClicked(event -> {
+                        if (!row.isEmpty() && event.getButton() == javafx.scene.input.MouseButton.PRIMARY && event.getClickCount() == 2) {
+                            LobbyInfo clickedRow = row.getItem();
+                            gameWindow.setScene(lobbyScene);
+                        }
+                    });
+                    return row;
+                });
 
         create.setTranslateX(-200);
         create.setTranslateY(0);
-        create.setOnAction(actionEvent -> {
-
-        });
+        create.setOnAction(actionEvent -> createLobby());
 
         StackPane menuPane = new StackPane(
                 lobbyTable,
                 refresh,
+                create,
                 back
         );
         return new Scene(menuPane, 500, 300);
     }
 
-    private void lobbyScene(Stage gameStage) throws Exception {
+    private Scene lobbyScene(){
 
         Button back = new Button("<-");
         VBox playerBox = new VBox();
 
+        ListView<String> lobby = new ListView<>();
+        //ObservableList<String> players = FXCollections.observableList("pippo","luca", "giovanni", "lorenzo");
 
-        TableView lobby = new TableView();
-
-        TableColumn<String, String> column1 =
-                new TableColumn<>("Lobby Name");
-        column1.setCellValueFactory(
-                new PropertyValueFactory<>("LobbyName"));
-
-        TableColumn<String, String> column2 =
-                new TableColumn<>("Started");
-        column2.setCellValueFactory(
-                new PropertyValueFactory<>("IsLobbyStarted"));
-
-        TableColumn<String, String> column3 =
-                new TableColumn<>("Players");
-        column3.setCellValueFactory(
-                new PropertyValueFactory<>("MaxPlayer"));
-
-
-        lobby.getColumns().add(column1);
         lobby.setMaxWidth(300);
-        lobby.getColumns().add(column2);
-        lobby.getColumns().add(column3);
-        lobby.getItems().add(
-                new LobbyInfo("Lobby1", false, 3));
-        lobby.getItems().add(
-                new LobbyInfo("Lobby2", false, 4));
-        lobby.getItems().add(
-                new LobbyInfo("Kevin stellina", true, 1));
 
 
         back.setTranslateX(-200);
         back.setTranslateY(-100);
         back.setOnAction(actionEvent -> gameWindow.setScene(lobbyListScene));
 
-        StackPane menuPane = new StackPane(
-                lobby,
-                back
-        );
-        gameStage.setScene(new Scene(menuPane, 500, 300));
+        VBox lobbyLayout = new VBox();
+        //    lobbyLayout.getChildren().add();
+        //    lobbyLayout.getChildren().add();
+        return new Scene(lobbyLayout);
     }
 
     private String playerJoin(String nickname){
