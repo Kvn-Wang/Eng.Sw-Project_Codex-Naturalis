@@ -68,7 +68,6 @@ public class RmiClient extends GenericClient {
             case CORRECT_PLACEMENT:
                 break;
         }
-        System.out.println(message.getArgs().get(0));
     }
 
     @Override

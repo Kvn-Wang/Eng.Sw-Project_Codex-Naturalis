@@ -12,7 +12,7 @@ public class PlayerInfo implements Serializable {
     private String nickname;
     private ColorType colorChosen;
     private boolean isPlayerReady;
-    private VirtualView clientHandler;
+    private transient VirtualView clientHandler;
 
     public PlayerInfo(VirtualView clientHandler, String nickname) {
         this.clientHandler = clientHandler;

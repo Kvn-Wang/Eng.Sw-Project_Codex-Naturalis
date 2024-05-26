@@ -32,8 +32,6 @@ public class NetworkMessage implements Serializable {
     public NetworkMessage(String nickname, MessageType messageType, String ... newArgs) {
         this.nickname = nickname;
         this.messageType = messageType;
-        System.out.println(newArgs[0]);
-        System.out.println(args);
 
         // Aggiungi tutti i nuovi argomenti alla lista
         Collections.addAll(args, newArgs);

@@ -54,10 +54,6 @@ public class Lobby {
 
         broadCastNotify(player.getNickname() + " is ready!");
 
-        /*for(PlayerInfo elem : listOfPlayers) {
-            System.out.println(elem.getNickname() + " connesso");
-        }*/
-
         startGame();
     }
 

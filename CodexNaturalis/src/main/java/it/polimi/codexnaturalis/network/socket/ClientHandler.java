@@ -17,11 +17,11 @@ import java.net.Socket;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-public class ClientHandler implements VirtualView, VirtualServer, Serializable {
+public class ClientHandler implements VirtualView, VirtualServer {
     final PrintWriter output;
     final BufferedReader input;
     final ServerContainer serverContainer;
-    private transient Gson gson = new Gson();
+    private final Gson gson = new Gson();
 
     public ClientHandler(ServerContainer serverContainer, Socket clientSocket) throws IOException {
         this.serverContainer = serverContainer;
@@ -44,7 +44,6 @@ public class ClientHandler implements VirtualView, VirtualServer, Serializable {
         NetworkMessage messageTX;
         Gson gson = new Gson();
 
-        System.out.println("Socket Listener Avviato");
         while ((jsonRX = input.readLine()) != null) {
             messageRX = deSerializeMesssage(jsonRX);
 
@@ -123,14 +122,6 @@ public class ClientHandler implements VirtualView, VirtualServer, Serializable {
         return json;
     }
 
-    private String argGenerator(Object object) {
-        String json;
-
-        json = gson.toJson(object);
-
-        return json;
-    }
-
     private NetworkMessage deSerializeMesssage(String json) {
         NetworkMessage networkMessage;
         Gson gson = new Gson();
@@ -151,8 +142,12 @@ public class ClientHandler implements VirtualView, VirtualServer, Serializable {
     @Override
     public void connectToGame(GameController gameController, ArrayList<PlayerInfo> listOtherPlayer) throws RemoteException {
         String jsonTX;
+        String arg;
 
-        jsonTX = serializeMesssage(new NetworkMessage(MessageType.COM_CONNECT_GAME_TCP, argGenerator(gameController), argGenerator(listOtherPlayer)));
+        arg = gson.toJson(listOtherPlayer);
+
+        //non passa il gameController via rete perchè con TCP non si può, sarà poi il client che emulerà il suo comportamento
+        jsonTX = serializeMesssage(new NetworkMessage(MessageType.COM_CONNECT_GAME_TCP, arg));
         output.println(jsonTX);
     }
 

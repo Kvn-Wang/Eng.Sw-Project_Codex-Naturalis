@@ -103,6 +103,6 @@ public class RmiServer extends Thread implements VirtualServer {
             throw new RuntimeException(e);
         }
 
-        System.out.println("RMI server started: "+name);
+        System.out.println("RMI server started");
     }
 }

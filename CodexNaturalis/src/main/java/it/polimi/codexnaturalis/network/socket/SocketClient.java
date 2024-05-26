@@ -78,9 +78,9 @@ public class SocketClient extends GenericClient {
                     break;
 
                 case COM_CONNECT_GAME_TCP:
-                    ArrayList<PlayerInfo> arg1 = gson.fromJson(argsRX.get(1), new TypeToken<ArrayList<PlayerInfo>>() {}.getType());
+                    ArrayList<PlayerInfo> arg0 = gson.fromJson(argsRX.get(0), new TypeToken<ArrayList<PlayerInfo>>() {}.getType());
 
-                    connectToGame(this, arg1);
+                    connectToGame(this, arg0);
                     break;
 
                 case COM_ERROR_TCP:
@@ -120,7 +120,6 @@ public class SocketClient extends GenericClient {
                 break;
 
         }
-        System.out.println(message.getArgs().get(0));
     }
 
     @Override
