@@ -1,14 +1,10 @@
 package it.polimi.codexnaturalis.view;
 
-import it.polimi.codexnaturalis.GUI.Menu;
+import it.polimi.codexnaturalis.view.GUI.Menu;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
-import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
-import javafx.application.Application;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.random.RandomGenerator;
 
 public class GuiClient implements TypeOfUI {
     private VirtualServer virtualNetworkCommand;
