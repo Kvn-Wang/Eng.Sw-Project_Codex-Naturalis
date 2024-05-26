@@ -7,6 +7,8 @@ import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.network.util.MessageType;
 import it.polimi.codexnaturalis.network.util.NetworkMessage;
+import it.polimi.codexnaturalis.network.util.PlayerInfo;
+import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.view.GenericClient;
 import it.polimi.codexnaturalis.view.TypeOfUI;
@@ -24,7 +26,7 @@ public class SocketClient extends GenericClient {
     boolean ackArrived;
     private final Object lock = new Object();
     boolean outcomeReceived;
-    String argsRX; // TODO data Race
+    ArrayList<String> argsRX; // TODO data Race
     Gson gson;
 
     public SocketClient(TypeOfUI typeOfUI) throws IOException {
@@ -62,26 +64,32 @@ public class SocketClient extends GenericClient {
         while ((jsonRX = socketRx.readLine()) != null) {
             messageRX = deSerializeMesssage(jsonRX);
 
+            argsRX = messageRX.getArgs();
+            //risveglia il thread in wait per la risposta del server
+            doNotify();
+
             // Read message and perform action
             switch (messageRX.getMessageType()) {
                 case COM_ACK_TCP:
                     ackArrived = true;
-
-                    //getArgs = (String) boolean
-                    argsRX = messageRX.getArgs().get(0);
-
-                    doNotify();
                     break;
 
                 case COM_GET_LOBBIES_TCP:
-                    // getArgs = json of lobbiesInfo
-                    argsRX = messageRX.getArgs().get(0);
-                    doNotify();
+                    break;
+
+                case COM_CONNECT_GAME_TCP:
+                    ArrayList<PlayerInfo> arg1 = gson.fromJson(argsRX.get(1), new TypeToken<ArrayList<PlayerInfo>>() {}.getType());
+
+                    connectToGame(this, arg1);
+                    break;
 
                 case COM_ERROR_TCP:
                     //TODO
                     break;
+
                 default:
+                    // sono messaggi di notifiche
+                    System.out.println(messageRX.getArgs().get(0));
                     break;
             }
         }
@@ -116,8 +124,8 @@ public class SocketClient extends GenericClient {
     }
 
     @Override
-    public void connectToGame(GameController gameController) {
-
+    public void connectToGame(GameController gameController, ArrayList<PlayerInfo> listOtherPlayer) {
+        joinPlayerToGame(gameController, listOtherPlayer);
     }
 
     private String serializeMesssage(NetworkMessage message) {
@@ -159,7 +167,8 @@ public class SocketClient extends GenericClient {
         socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_SET_NICKNAME_TCP, nickname)));
         doWait();
 
-        outcomeReceived = Boolean.parseBoolean(argsRX);
+        //getArgs = (String) boolean
+        outcomeReceived = Boolean.parseBoolean(argsRX.get(0));
 
         // fa partire una specie di ricorsione finchè il nick non è valido
         if(outcomeReceived == false) {
@@ -185,7 +194,8 @@ public class SocketClient extends GenericClient {
         socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_GET_LOBBIES_TCP)));
         doWait();
 
-        ArrayList<LobbyInfo> lobbies = gson.fromJson(argsRX, new TypeToken<ArrayList<LobbyInfo>>() {}.getType());
+        // getArgs = json of lobbiesInfo
+        ArrayList<LobbyInfo> lobbies = gson.fromJson(argsRX.get(0), new TypeToken<ArrayList<LobbyInfo>>() {}.getType());
 
         return lobbies;
     }
@@ -195,7 +205,8 @@ public class SocketClient extends GenericClient {
         socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_JOIN_LOBBY_TCP, this.playerNickname, lobbyName)));
         doWait();
 
-        outcomeReceived = Boolean.parseBoolean(argsRX);
+        //getArgs = (String) boolean
+        outcomeReceived = Boolean.parseBoolean(argsRX.get(0));
 
         // fa partire una specie di ricorsione finchè il nick non è valido
         if(outcomeReceived == false) {
@@ -231,7 +242,8 @@ public class SocketClient extends GenericClient {
         socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_CREATE_LOBBY_TCP, this.playerNickname, lobbyName)));
         doWait();
 
-        outcomeReceived = Boolean.parseBoolean(argsRX);
+        //getArgs = (String) boolean
+        outcomeReceived = Boolean.parseBoolean(argsRX.get(0));
 
         // fa partire una specie di ricorsione finchè il nick non è valido
         if(outcomeReceived == false) {
@@ -239,7 +251,7 @@ public class SocketClient extends GenericClient {
             typeOfUI.printSelectionCreateOrJoinLobbyRequest();
         } else {
             lobbyNickname = lobbyName;
-            typeOfUI.printSelectionNicknameRequestOutcome(true, lobbyName);
+            typeOfUI.printCreationLobbyRequestOutcome(true, lobbyName);
         }
 
         //reset della variabile in attesa di altri ACK
@@ -258,5 +270,45 @@ public class SocketClient extends GenericClient {
 
         //reset della variabile in attesa di altri ACK
         outcomeReceived = false;
+    }
+
+    @Override
+    public void disconnectPlayer(String nickname) throws RemoteException {
+
+    }
+
+    @Override
+    public void reconnectPlayer(String nickname) throws RemoteException {
+
+    }
+
+    @Override
+    public void playerDraw(String nickname, int Numcard, String type) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage, RemoteException {
+
+    }
+
+    @Override
+    public void playerPersonalMissionSelect(String nickname, int numMission) throws RemoteException {
+
+    }
+
+    @Override
+    public void playerPlayCard(String nickname, int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException, RemoteException {
+
+    }
+
+    @Override
+    public void typeMessage(String receiver, String sender, String msg) throws RemoteException {
+
+    }
+
+    @Override
+    public void switchPlayer(String reqPlayer, String target) throws RemoteException {
+
+    }
+
+    @Override
+    public void endGame() throws RemoteException {
+
     }
 }

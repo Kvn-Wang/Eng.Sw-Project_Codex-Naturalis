@@ -5,6 +5,8 @@ import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.network.util.NetworkMessage;
+import it.polimi.codexnaturalis.network.util.PlayerInfo;
+import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.view.GenericClient;
 import it.polimi.codexnaturalis.view.TypeOfUI;
@@ -23,6 +25,7 @@ public class RmiClient extends GenericClient {
     private Registry registry;
     // variabile di identificativo temporanea -> inutile dopo il setting del nickname
     private String ID;
+    private GameController personalGameController;
 
     public RmiClient(TypeOfUI typeOfUI) throws RemoteException, NotBoundException, InterruptedException {
         //setup communicazione bidirezionale tra rete e oggetto grafico
@@ -69,8 +72,9 @@ public class RmiClient extends GenericClient {
     }
 
     @Override
-    public void connectToGame(GameController gameController) {
-        this.gameController = gameController;
+    public void connectToGame(GameController gameController, ArrayList<PlayerInfo> listOtherPlayer) {
+        this.personalGameController = gameController;
+        joinPlayerToGame(this, listOtherPlayer);
     }
 
     @Override
@@ -138,5 +142,45 @@ public class RmiClient extends GenericClient {
     public void setPlayerReady(String playerNickname) throws RemoteException {
         server.setPlayerReady(this.playerNickname);
         typeOfUI.printReadyOrLeaveSelectionOutcome(true);
+    }
+
+    @Override
+    public void disconnectPlayer(String nickname) throws RemoteException {
+        personalGameController.disconnectPlayer(nickname);
+    }
+
+    @Override
+    public void reconnectPlayer(String nickname) throws RemoteException {
+        personalGameController.reconnectPlayer(nickname);
+    }
+
+    @Override
+    public void playerDraw(String nickname, int Numcard, String type) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage, RemoteException {
+        personalGameController.playerDraw(nickname, Numcard, type);
+    }
+
+    @Override
+    public void playerPersonalMissionSelect(String nickname, int numMission) throws RemoteException {
+        personalGameController.playerPersonalMissionSelect(nickname, numMission);
+    }
+
+    @Override
+    public void playerPlayCard(String nickname, int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException, RemoteException {
+        personalGameController.playerPlayCard(nickname, x, y, numCard, isCardBack);
+    }
+
+    @Override
+    public void typeMessage(String receiver, String sender, String msg) throws RemoteException {
+        personalGameController.typeMessage(receiver, sender, msg);
+    }
+
+    @Override
+    public void switchPlayer(String reqPlayer, String target) throws RemoteException {
+        personalGameController.switchPlayer(reqPlayer, target);
+    }
+
+    @Override
+    public void endGame() throws RemoteException {
+        personalGameController.endGame();
     }
 }

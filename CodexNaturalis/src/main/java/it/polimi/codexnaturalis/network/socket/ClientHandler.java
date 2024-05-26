@@ -9,6 +9,7 @@ import it.polimi.codexnaturalis.network.util.MessageType;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.network.util.NetworkMessage;
+import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.network.util.ServerContainer;
 
 import java.io.*;
@@ -16,10 +17,11 @@ import java.net.Socket;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-public class ClientHandler implements VirtualView, VirtualServer {
+public class ClientHandler implements VirtualView, VirtualServer, Serializable {
     final PrintWriter output;
     final BufferedReader input;
     final ServerContainer serverContainer;
+    private transient Gson gson = new Gson();
 
     public ClientHandler(ServerContainer serverContainer, Socket clientSocket) throws IOException {
         this.serverContainer = serverContainer;
@@ -115,18 +117,16 @@ public class ClientHandler implements VirtualView, VirtualServer {
 
     private String serializeMesssage(NetworkMessage message) {
         String json;
-        Gson gson = new Gson();
 
         json = gson.toJson(message);
 
         return json;
     }
 
-    private String serializeMesssage(GameController virtualGameController) {
+    private String argGenerator(Object object) {
         String json;
-        Gson gson = new Gson();
 
-        json = gson.toJson(virtualGameController);
+        json = gson.toJson(object);
 
         return json;
     }
@@ -149,12 +149,11 @@ public class ClientHandler implements VirtualView, VirtualServer {
     }
 
     @Override
-    public void connectToGame(GameController gameController) throws RemoteException {
+    public void connectToGame(GameController gameController, ArrayList<PlayerInfo> listOtherPlayer) throws RemoteException {
         String jsonTX;
 
-        jsonTX = serializeMesssage(gameController);
+        jsonTX = serializeMesssage(new NetworkMessage(MessageType.COM_CONNECT_GAME_TCP, argGenerator(gameController), argGenerator(listOtherPlayer)));
         output.println(jsonTX);
-        output.flush();
     }
 
     @Override

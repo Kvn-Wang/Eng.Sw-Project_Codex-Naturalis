@@ -20,6 +20,9 @@ public enum MessageType {
     //args(0) = playerNickname
     //args(1) = lobbyName
     COM_CREATE_LOBBY_TCP,
+    //args(0) = GameController
+    //args(1) = ArrayList<PlayerInfo> otherPlayers
+    COM_CONNECT_GAME_TCP,
     COM_LOBBY_RMI,
 
     /* ---ENUMS FOR THE GAME PHASE--- */

@@ -7,6 +7,7 @@ import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.network.VirtualGame;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
+import java.lang.reflect.Array;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
@@ -53,11 +54,11 @@ public class Lobby {
 
         broadCastNotify(player.getNickname() + " is ready!");
 
-        startGame();
-    }
+        /*for(PlayerInfo elem : listOfPlayers) {
+            System.out.println(elem.getNickname() + " connesso");
+        }*/
 
-    public boolean playerChooseColor() {
-        return false;
+        startGame();
     }
 
     private void startGame() throws RemoteException {
@@ -84,10 +85,21 @@ public class Lobby {
     private void connectPlayerToGame() throws RemoteException {
         gameController = new VirtualGame(listOfPlayers);
         for(PlayerInfo playerInfo : listOfPlayers) {
-            playerInfo.getClientHandler().connectToGame(gameController);
+            // passo ad ogni player il virtualGameController e la lista degli altri player
+            playerInfo.getClientHandler().connectToGame(gameController, copyArrayListExceptOne(listOfPlayers, playerInfo));
+        }
+    }
+
+    private ArrayList<PlayerInfo> copyArrayListExceptOne(ArrayList<PlayerInfo> players, PlayerInfo exception) {
+        ArrayList<PlayerInfo> playerList = new ArrayList<>();
+
+        for(PlayerInfo elem : players) {
+            if(!(elem == exception)) {
+                playerList.add(elem);
+            }
         }
 
-        broadCastNotify("Game has Started!");
+        return playerList;
     }
 
     private void broadCastNotify(String message) throws RemoteException {

@@ -3,10 +3,12 @@ package it.polimi.codexnaturalis.network.util;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.rmi.RemoteException;
 
 
-public class PlayerInfo  {
+public class PlayerInfo implements Serializable {
     private String nickname;
     private ColorType colorChosen;
     private boolean isPlayerReady;

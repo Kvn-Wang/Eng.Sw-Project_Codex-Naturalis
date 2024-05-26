@@ -3,14 +3,17 @@ package it.polimi.codexnaturalis.view;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
+import it.polimi.codexnaturalis.network.util.PlayerInfo;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 
-public abstract class GenericClient extends UnicastRemoteObject implements VirtualServer, VirtualView {
+public abstract class GenericClient extends UnicastRemoteObject implements GameController, VirtualServer, VirtualView {
     protected String playerNickname;
     protected String lobbyNickname;
     protected TypeOfUI typeOfUI;
+    ArrayList<PlayerInfo> listOtherPlayer;
 
     public GenericClient(TypeOfUI typeOfUI) throws RemoteException  {
         this.typeOfUI = typeOfUI;
@@ -39,7 +42,9 @@ public abstract class GenericClient extends UnicastRemoteObject implements Virtu
         typeOfUI.printReadyOrLeaveSelection();
     }
 
-    public void connectToGame(GameController virtualGameController) {
+    public void joinPlayerToGame(GameController virtualGameController, ArrayList<PlayerInfo> listOtherPlayer) {
+        System.out.print("Game Has Started!");
         typeOfUI.connectGameController(virtualGameController);
+        this.listOtherPlayer = listOtherPlayer;
     }
 }
