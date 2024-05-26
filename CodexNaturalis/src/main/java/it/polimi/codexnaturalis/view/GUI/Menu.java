@@ -188,23 +188,19 @@ public class Menu extends Application {
         TableView<LobbyInfo> lobbyTable = new TableView<>();
         ObservableList<LobbyInfo> lobbyList = FXCollections.observableArrayList();
 
-        TableColumn<String, String> column1 =
-                new TableColumn<>("Lobby Name");
-        column1.setCellValueFactory(
-                new PropertyValueFactory<>("lobbyName"));
+        TableColumn<LobbyInfo, String> column1 = new TableColumn<>("Lobby Name");
+        column1.setCellValueFactory(new PropertyValueFactory<>("lobbyName"));
 
-        TableColumn<String, String> column2 =
-                new TableColumn<>("Started");
-        column2.setCellValueFactory(
-                new PropertyValueFactory<>("isLobbyStarted"));
+        TableColumn<LobbyInfo, Boolean> column2 = new TableColumn<>("Started");
+        column2.setCellValueFactory(new PropertyValueFactory<>("isLobbyStarted"));
 
-        TableColumn<String, String> column3 =
-                new TableColumn<>("Players");
-        column3.setCellValueFactory(
-                new PropertyValueFactory<>("maxPlayer"));
+        TableColumn<LobbyInfo, Integer> column3 = new TableColumn<>("Players");
+        column3.setCellValueFactory(new PropertyValueFactory<>("maxPlayer"));
 
-        updateLobbyList(lobbyList);
+        lobbyTable.getColumns().addAll(column1, column2, column3);
+        lobbyTable.setItems(lobbyList);
         lobbyTable.setMaxWidth(300);
+        updateLobbyList(lobbyList);
         lobbyTable.setItems(lobbyList);
 
         back.setTranslateX(-200);
@@ -217,21 +213,22 @@ public class Menu extends Application {
             lobbyTable.getItems().clear();
             updateLobbyList(lobbyList);
         });
+
         lobbyTable.setRowFactory(tv -> {
-                    TableRow<LobbyInfo> row = new TableRow<>();
-                    row.setOnMouseClicked(event -> {
-                        if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                            LobbyInfo clickedRow = row.getItem();
-                            try {
-                                vnc.joinLobby("piggo", clickedRow.getLobbyName());
-                            } catch (RemoteException e) {
-                                throw new RuntimeException(e);
-                            }
-                            gameWindow.setScene(lobbyScene);
-                        }
-                    });
-                    return row;
-                });
+            TableRow<LobbyInfo> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                    LobbyInfo clickedRow = row.getItem();
+                    try {
+                        vnc.joinLobby("piggo", clickedRow.getLobbyName());
+                        gameWindow.setScene(lobbyScene);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+            return row;
+        });
 
         create.setTranslateX(-200);
         create.setTranslateY(0);
@@ -248,7 +245,7 @@ public class Menu extends Application {
 
     private Scene lobbyScene(){
 
-        Button back = new Button("<-");
+        Button leave = new Button("<-");
         Button ready = new Button("Ready");
         VBox playerBox = new VBox();
 
@@ -257,9 +254,7 @@ public class Menu extends Application {
 
         lobby.setMaxWidth(300);
 
-        back.setTranslateX(-200);
-        back.setTranslateY(-100);
-        back.setOnAction(actionEvent -> {
+        leave.setOnAction(actionEvent -> {
             try {
                 vnc.leaveLobby("piggo");
             } catch (RemoteException e) {
@@ -281,7 +276,7 @@ public class Menu extends Application {
 
         VBox lobbyLayout = new VBox();
             lobbyLayout.getChildren().add(lobby);
-            lobbyLayout.getChildren().add(back);
+            lobbyLayout.getChildren().add(leave);
         lobbyLayout.getChildren().add(ready);
         return new Scene(lobbyLayout);
     }

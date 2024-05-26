@@ -33,21 +33,19 @@ public class Map extends Gui {
         StackPane root = new StackPane(tableView);
         Scene scene = new Scene(root, 800, 600);
 
-        addZoomFunctionality(tableView);
-
-        primaryStage.setTitle("Zoomable TableView");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
-    private void addZoomFunctionality(TableView<?> tableView) {
         tableView.setOnScroll(event -> {
             double deltaY = event.getDeltaY();
             double scaleFactor = (deltaY > 0) ? 1.1 : 0.9;
             tableView.setScaleX(tableView.getScaleX() * scaleFactor);
             tableView.setScaleY(tableView.getScaleY() * scaleFactor);
         });
+
+        primaryStage.setTitle("Zoomable TableView");
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
+
+
 
     public static class Person {
         private final String firstName;
