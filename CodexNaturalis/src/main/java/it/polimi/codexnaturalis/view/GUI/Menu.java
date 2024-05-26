@@ -229,9 +229,8 @@ public class Menu extends Application {
         Button back = new Button("<-");
         VBox playerBox = new VBox();
 
-        vnc.
         ListView<String> lobby = new ListView<>();
-        ObservableList<String> players = FXCollections.observableList("pippo","luca", "giovanni", "lorenzo");
+        //ObservableList<String> players = FXCollections.observableList("pippo","luca", "giovanni", "lorenzo");
 
         lobby.setMaxWidth(300);
 
@@ -241,8 +240,8 @@ public class Menu extends Application {
         back.setOnAction(actionEvent -> gameWindow.setScene(lobbyListScene));
 
         VBox lobbyLayout = new VBox();
-            lobbyLayout.getChildren().add();
-            lobbyLayout.getChildren().add();
+        //    lobbyLayout.getChildren().add();
+        //    lobbyLayout.getChildren().add();
         return new Scene(lobbyLayout);
     }
 
