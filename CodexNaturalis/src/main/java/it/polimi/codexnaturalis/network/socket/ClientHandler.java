@@ -11,26 +11,20 @@ import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.network.util.NetworkMessage;
 import it.polimi.codexnaturalis.network.util.ServerContainer;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.net.Socket;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class ClientHandler implements VirtualView, VirtualServer {
-    String playerNickname;
-    String lobbyNickname;
     final PrintWriter output;
     final BufferedReader input;
     final ServerContainer serverContainer;
 
-    public ClientHandler(ServerContainer serverContainer, BufferedReader input, BufferedWriter output) {
+    public ClientHandler(ServerContainer serverContainer, Socket clientSocket) throws IOException {
         this.serverContainer = serverContainer;
-        this.input = input;
-        this.output = new PrintWriter(output);
-        playerNickname = null;
-        lobbyNickname = null;
+        this.input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));;
+        this.output = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
 
         new Thread(() -> {
             try {
@@ -43,26 +37,21 @@ public class ClientHandler implements VirtualView, VirtualServer {
 
     public void runSocketListener() throws IOException {
         String jsonRX;
-        String argsRX;
+        String argsRX0, argsRX1;
         NetworkMessage messageRX;
         NetworkMessage messageTX;
         Gson gson = new Gson();
 
         System.out.println("Socket Listener Avviato");
         while ((jsonRX = input.readLine()) != null) {
-            System.out.println("asd");
             messageRX = deSerializeMesssage(jsonRX);
-
-            System.out.println(messageRX.getNickname());
-            System.out.println(messageRX.getArgs());
 
             switch (messageRX.getMessageType()) {
                 case COM_SET_NICKNAME_TCP:
                     //get nickname
-                    argsRX = messageRX.getArgs().get(0);
+                    argsRX0 = messageRX.getArgs().get(0);
 
-                    if(setNickname(null, argsRX)) {
-                        playerNickname = argsRX;
+                    if(setNickname(null, argsRX0)) {
                         messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(true));
                     } else {
                         messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(false));
@@ -71,16 +60,18 @@ public class ClientHandler implements VirtualView, VirtualServer {
 
                 case COM_GET_LOBBIES_TCP:
                     //translation of the lobbies in json
-                    argsRX = gson.toJson(getAvailableLobby(), new TypeToken<ArrayList<LobbyInfo>>(){}.getType());
+                    argsRX0 = gson.toJson(getAvailableLobby(), new TypeToken<ArrayList<LobbyInfo>>(){}.getType());
 
-                    messageTX = new NetworkMessage(MessageType.COM_GET_LOBBIES_TCP, argsRX);
+                    messageTX = new NetworkMessage(MessageType.COM_GET_LOBBIES_TCP, argsRX0);
                     break;
 
                 case COM_CREATE_LOBBY_TCP:
+                    //get player nickname
+                    argsRX0 = messageRX.getArgs().get(0);
                     //get lobby nickname
-                    argsRX = messageRX.getArgs().get(0);
+                    argsRX1 = messageRX.getArgs().get(1);
 
-                    if(createLobby(playerNickname, argsRX)) {
+                    if(createLobby(argsRX0, argsRX1)) {
                         messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(true));
                     } else {
                         messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(false));
@@ -89,11 +80,11 @@ public class ClientHandler implements VirtualView, VirtualServer {
                     break;
 
                 case COM_JOIN_LOBBY_TCP:
-                    //get lobby name
-                    argsRX = messageRX.getArgs().get(0);
+                    //get player name
+                    argsRX0 = messageRX.getArgs().get(0);
+                    argsRX1 = messageRX.getArgs().get(1);
 
-                    if(joinLobby(playerNickname, argsRX)) {
-                        lobbyNickname = argsRX;
+                    if(joinLobby(argsRX0, argsRX1)) {
                         messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(true));
                     } else {
                         messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(false));
@@ -101,15 +92,17 @@ public class ClientHandler implements VirtualView, VirtualServer {
                     break;
 
                 case COM_SET_READY_LOBBY_TCP:
-                    setPlayerReady(playerNickname);
+                    argsRX0 = messageRX.getArgs().get(0);
+                    setPlayerReady(argsRX0);
 
-                    messageTX = new NetworkMessage(MessageType.COM_ACK_TCP);
+                    messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(true));
                     break;
 
                 case COM_LEAVE_LOBBY_TCP:
-                    leaveLobby(playerNickname);
+                    argsRX0 = messageRX.getArgs().get(0);
+                    leaveLobby(argsRX0);
 
-                    messageTX = new NetworkMessage(MessageType.COM_ACK_TCP);
+                    messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(true));
                     break;
 
                 default:
@@ -129,6 +122,15 @@ public class ClientHandler implements VirtualView, VirtualServer {
         return json;
     }
 
+    private String serializeMesssage(GameController virtualGameController) {
+        String json;
+        Gson gson = new Gson();
+
+        json = gson.toJson(virtualGameController);
+
+        return json;
+    }
+
     private NetworkMessage deSerializeMesssage(String json) {
         NetworkMessage networkMessage;
         Gson gson = new Gson();
@@ -144,12 +146,15 @@ public class ClientHandler implements VirtualView, VirtualServer {
 
         jsonTX = serializeMesssage(message);
         output.println(jsonTX);
-        output.flush();
     }
 
     @Override
     public void connectToGame(GameController gameController) throws RemoteException {
+        String jsonTX;
 
+        jsonTX = serializeMesssage(gameController);
+        output.println(jsonTX);
+        output.flush();
     }
 
     @Override
@@ -187,7 +192,6 @@ public class ClientHandler implements VirtualView, VirtualServer {
     @Override
     public void leaveLobby(String playerNickname) throws RemoteException {
         serverContainer.leaveLobby(playerNickname);
-        lobbyNickname = null;
     }
 
     @Override

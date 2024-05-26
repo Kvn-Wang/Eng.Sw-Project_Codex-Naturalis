@@ -65,10 +65,15 @@ public class ServerContainer {
         player = stringToPlayer(playerNickname);
         lobby = getLobby(lobbyName);
 
-        if(lobby.connectPlayer(player)) {
-            return true;
-        } else {
+        // if lobby has not been found
+        if(lobby == null) {
             return false;
+        } else {
+            if(lobby.connectPlayer(player)) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
@@ -146,7 +151,7 @@ public class ServerContainer {
             }
         }
 
-        throw new PersonalizedException.LobbyNotFoundException(lobbyName);
+        return null;
     }
 
     private Lobby getLobbyByPlayer(String playerName) {

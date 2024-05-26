@@ -4,7 +4,7 @@ import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.network.util.MessageType;
 import it.polimi.codexnaturalis.network.util.NetworkMessage;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
-import it.polimi.codexnaturalis.network.util.VirtualGame;
+import it.polimi.codexnaturalis.network.VirtualGame;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 import java.rmi.RemoteException;
