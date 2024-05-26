@@ -1,4 +1,4 @@
-package it.polimi.codexnaturalis.GUI;
+package it.polimi.codexnaturalis.view.GUI;
 
 import javafx.application.Application;
 
