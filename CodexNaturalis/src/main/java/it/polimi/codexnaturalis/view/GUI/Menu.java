@@ -2,6 +2,7 @@ package it.polimi.codexnaturalis.view.GUI;
 
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
+import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -11,7 +12,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
@@ -23,6 +27,8 @@ import java.util.List;
 public class Menu extends Application {
 
     private static VirtualServer vnc;
+    private double orgSceneX, orgSceneY;
+    private double orgTranslateX, orgTranslateY;
 
      static Stage gameWindow;
      private static Scene startScene;
@@ -300,25 +306,87 @@ public class Menu extends Application {
 
     public Scene gameScene() {
 
-        GridPane table = new GridPane();
-        for (int row = 0; row < 5; row++) {
-            for (int col = 0; col < 5; col++) {
-                Label cell = new Label(" ");
-                cell.setStyle("-fx-border-color: black; -fx-padding: 20px;");
-                table.add(cell, col, row);
+        Pane map = new Pane();
+        Scene scene = new Scene(map, 800, 600);
+
+        // Create a draggable node
+        Circle draggableNode = createDraggableNode(100, 100);
+
+        map.getChildren().add(draggableNode);
+        for(Circle[] rows : getAnchorPoints()) {
+            for (Circle anchor : rows) {
+                map.getChildren().add(anchor);
             }
         }
-
-        StackPane root = new StackPane(table);
-        Scene scene = new Scene(root, 800, 600);
-
-        table.setOnScroll(event -> {
+        map.setOnScroll(event -> {
             double deltaY = event.getDeltaY();
             double scaleFactor = (deltaY > 0) ? 1.1 : 0.9;
-            table.setScaleX(table.getScaleX() * scaleFactor);
-            table.setScaleY(table.getScaleY() * scaleFactor);
+            map.setScaleX(map.getScaleX() * scaleFactor);
+            map.setScaleY(map.getScaleY() * scaleFactor);
         });
 
         return scene;
+    }
+
+    private Circle createDraggableNode(double x, double y) {
+        Circle circle = new Circle(x, y, 20, Color.BLUE);
+
+        circle.setOnMousePressed((MouseEvent event) -> {
+            orgSceneX = event.getSceneX();
+            orgSceneY = event.getSceneY();
+            orgTranslateX = circle.getTranslateX();
+            orgTranslateY = circle.getTranslateY();
+        });
+
+        circle.setOnMouseDragged((MouseEvent event) -> {
+            double offsetX = event.getSceneX() - orgSceneX;
+            double offsetY = event.getSceneY() - orgSceneY;
+            circle.setTranslateX(orgTranslateX + offsetX);
+            circle.setTranslateY(orgTranslateY + offsetY);
+        });
+
+        circle.setOnMouseReleased((MouseEvent event) -> {
+            // Snap to the nearest anchor point if close enough
+            double closestDistance = Double.MAX_VALUE;
+            Circle closestAnchor = null;
+
+            for(Circle[] rows : getAnchorPoints()) {
+                for (Circle anchor : rows) {
+                    double distance = Math.hypot(
+                            anchor.getCenterX() - (circle.getTranslateX() + circle.getCenterX()),
+                            anchor.getCenterY() - (circle.getTranslateY() + circle.getCenterY())
+                    );
+
+                    if (distance < closestDistance) {
+                        closestDistance = distance;
+                        closestAnchor = anchor;
+                    }
+                }
+            }
+
+            double snapThreshold = 50;
+            if (closestAnchor != null && closestDistance < snapThreshold) {
+                circle.setTranslateX(closestAnchor.getCenterX() - circle.getCenterX());
+                circle.setTranslateY(closestAnchor.getCenterY() - circle.getCenterY());
+            }
+        });
+
+        return circle;
+    }
+
+    private Circle createAnchorPoint(double x, double y) {
+        Circle anchor = new Circle(x, y, 10, Color.RED);
+        anchor.setOpacity(0.5);  // Make it semi-transparent
+        return anchor;
+    }
+
+    private Circle[][] getAnchorPoints() {
+        Circle[][] map = new Circle[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
+        for(int i = -(UtilCostantValue.lunghezzaMaxMappa/2); i< (UtilCostantValue.lunghezzaMaxMappa/2); i++){
+            for(int j = -(UtilCostantValue.lunghezzaMaxMappa/2); j< (UtilCostantValue.lunghezzaMaxMappa/2); j++){
+                map[i+UtilCostantValue.lunghezzaMaxMappa/2][j+UtilCostantValue.lunghezzaMaxMappa/2] = createAnchorPoint(i*100, j*100);
+            }
+        }
+        return map;
     }
 }
