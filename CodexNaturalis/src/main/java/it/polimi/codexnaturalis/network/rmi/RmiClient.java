@@ -47,7 +47,6 @@ public class RmiClient extends GenericClient {
     public void showMessage(NetworkMessage message) throws RemoteException {
         switch(message.getMessageType()) {
             case STATUS_PLAYER_CHANGE:
-
                 break;
 
             case WRONG_TYPE_SHOP:
@@ -66,6 +65,15 @@ public class RmiClient extends GenericClient {
                 break;
 
             case CORRECT_PLACEMENT:
+                break;
+
+            case COM_LOBBY:
+                typeOfUI.notifyLobbyStatus(message.getNickname(), message.getArgs().get(0));
+                break;
+
+            default:
+                //se non è nessuno dei messaggi precedenti, vuol dire che devo mostrare il messaggio
+                System.out.println(message.getArgs().get(0));
                 break;
         }
     }

@@ -3,6 +3,7 @@ package it.polimi.codexnaturalis.view;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
+import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class TuiClient implements TypeOfUI {
     }
 
     @Override
-    public void connectGameController(GameController virtualGame) {
+    public void connectGameController(GameController virtualGame, ClientContainerController clientContainerController) {
         this.virtualGame = virtualGame;
     }
 
@@ -135,9 +136,24 @@ public class TuiClient implements TypeOfUI {
     @Override
     public void printReadyOrLeaveSelectionOutcome(boolean isReady) {
         if(isReady) {
-            System.out.println("You set yourself ready!");
+            //System.out.println("You set yourself ready!");
         } else {
             System.out.println("You've left the lobby!");
+        }
+    }
+
+    @Override
+    public void notifyLobbyStatus(String otherPlayerNickname, String status) {
+        if(status.equals("JOIN")) {
+            System.out.println(otherPlayerNickname + " has joined the lobby!");
+        } else if(status.equals("LEFT")){
+            System.out.println(otherPlayerNickname + " has left the lobby");
+        } else if(status.equals("READY")) {
+            System.out.println(otherPlayerNickname + " is ready");
+        } else if(status.equals("WAIT")) {
+            System.out.println("Wait for more players");
+        } else {
+            System.err.println("Has been called an invalid command: "+status);
         }
     }
 }

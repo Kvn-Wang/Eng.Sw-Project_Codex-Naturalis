@@ -4,6 +4,8 @@ import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
+import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
+import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -13,7 +15,7 @@ public abstract class GenericClient extends UnicastRemoteObject implements GameC
     protected String playerNickname;
     protected String lobbyNickname;
     protected TypeOfUI typeOfUI;
-    ArrayList<PlayerInfo> listOtherPlayer;
+    ClientContainerController clientContainerController;
 
     public GenericClient(TypeOfUI typeOfUI) throws RemoteException  {
         this.typeOfUI = typeOfUI;
@@ -42,9 +44,10 @@ public abstract class GenericClient extends UnicastRemoteObject implements GameC
         typeOfUI.printReadyOrLeaveSelection();
     }
 
-    public void joinPlayerToGame(GameController virtualGameController, ArrayList<PlayerInfo> listOtherPlayer) {
+    protected void joinPlayerToGame(GameController virtualGameController, ArrayList<PlayerInfo> listOtherPlayer) {
         System.out.print("Game Has Started!");
-        typeOfUI.connectGameController(virtualGameController);
-        this.listOtherPlayer = listOtherPlayer;
+        clientContainerController = new ClientContainer(listOtherPlayer);
+
+        typeOfUI.connectGameController(virtualGameController, clientContainerController);
     }
 }

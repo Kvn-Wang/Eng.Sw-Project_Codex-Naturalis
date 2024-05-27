@@ -7,7 +7,6 @@ import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.network.VirtualGame;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
-import java.lang.reflect.Array;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
@@ -27,7 +26,7 @@ public class Lobby {
 
     public boolean connectPlayer(PlayerInfo player) throws RemoteException {
         if(lobbyInfo.addPlayer()) {
-            broadCastNotify(player.getNickname() + " has joined the lobby!");
+            broadCastNotify(player.getNickname(), "JOIN");
 
             listOfPlayers.add(player);
             return true;
@@ -40,7 +39,7 @@ public class Lobby {
     public boolean disconnectPlayer(PlayerInfo player) throws RemoteException {
         listOfPlayers.remove(player);
 
-        broadCastNotify(player.getNickname() + " has left the lobby!");
+        broadCastNotify(player.getNickname(), "LEFT");
 
         if(lobbyInfo.removePlayer()) {
             return true;
@@ -52,7 +51,7 @@ public class Lobby {
     public void setPlayerReady(PlayerInfo player) throws RemoteException {
         listOfPlayers.get(listOfPlayers.indexOf(player)).setPlayerReady(true);
 
-        broadCastNotify(player.getNickname() + " is ready!");
+        broadCastNotify(player.getNickname(), "READY");
 
         startGame();
     }
@@ -73,7 +72,7 @@ public class Lobby {
             }
         } else {
             // TODO: dopo che il player si mette in ready, non può più fare nulla, va bene?
-            broadCastNotify("Waiting for more player before starting");
+            broadCastNotify(listOfPlayers.get(0).getNickname(), "WAIT");
         }
         //TODO manca il metodo per registrare questo observer agli observable
     }
@@ -98,9 +97,9 @@ public class Lobby {
         return playerList;
     }
 
-    private void broadCastNotify(String message) throws RemoteException {
+    private void broadCastNotify(String player, String command) throws RemoteException {
         for(PlayerInfo elem : listOfPlayers) {
-            elem.notifyPlayer(new NetworkMessage(elem.getNickname(), MessageType.COM_LOBBY_RMI, message));
+            elem.notifyPlayer(new NetworkMessage(player, MessageType.COM_LOBBY, command));
         }
     }
 
