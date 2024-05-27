@@ -382,9 +382,9 @@ public class Menu extends Application {
 
     private Circle[][] getAnchorPoints() {
         Circle[][] map = new Circle[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
-        for(int i = -(UtilCostantValue.lunghezzaMaxMappa/2); i< (UtilCostantValue.lunghezzaMaxMappa/2); i++){
-            for(int j = -(UtilCostantValue.lunghezzaMaxMappa/2); j< (UtilCostantValue.lunghezzaMaxMappa/2); j++){
-                map[i+UtilCostantValue.lunghezzaMaxMappa/2][j+UtilCostantValue.lunghezzaMaxMappa/2] = createAnchorPoint(i*100, j*100);
+        for(int y = -(UtilCostantValue.lunghezzaMaxMappa/2); y< (UtilCostantValue.lunghezzaMaxMappa/2); y++){
+            for(int x = -(UtilCostantValue.lunghezzaMaxMappa/2); x< (UtilCostantValue.lunghezzaMaxMappa/2); x++){
+                map[y+UtilCostantValue.lunghezzaMaxMappa/2][x+UtilCostantValue.lunghezzaMaxMappa/2] = createAnchorPoint((x*100 * Math.cos(Math.toRadians(45)) - y*100 * Math.sin(Math.toRadians(45)))*2, x*100 * Math.sin(Math.toRadians(45)) + y*100 * Math.cos(Math.toRadians(45)));
             }
         }
         return map;
