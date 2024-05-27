@@ -68,7 +68,7 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
-    public void connectGameController(GameController virtualGame) {
+    public void connectGameController(GameController virtualGame, ClientContainerController clientContainerController) {
         Menu.startGame();
     }
 }
