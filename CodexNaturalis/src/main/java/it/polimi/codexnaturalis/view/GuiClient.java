@@ -19,10 +19,6 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
-    public void connectGameController(GameController virtualGame) {
-    }
-
-    @Override
     public void printSelectionNicknameRequest() {
     }
 
@@ -53,5 +49,10 @@ public class GuiClient implements TypeOfUI {
     @Override
     public void printReadyOrLeaveSelectionOutcome(boolean isReady) {
 
+    }
+
+    @Override
+    public void connectGameController(GameController virtualGame) {
+        Menu.startGame();
     }
 }

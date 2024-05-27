@@ -1,49 +1,18 @@
 package it.polimi.codexnaturalis.view.GUI;
 
+import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
+import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
-public class Map extends Gui {
+public class Map {
 
-    public static void main(String[] args) {
-        launch(args);
-    }
 
-    @Override
-    public void start(Stage primaryStage) {
-        primaryStage.setTitle("CodexNaturalis");
-        TableView<Person> tableView = new TableView<>();
-
-        TableColumn<Person, String> firstNameCol = new TableColumn<>("First Name");
-        firstNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-
-        TableColumn<Person, String> lastNameCol = new TableColumn<>("Last Name");
-        lastNameCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-
-        tableView.getColumns().add(firstNameCol);
-        tableView.getColumns().add(lastNameCol);
-
-        tableView.getItems().add(new Person("John", "Doe"));
-        tableView.getItems().add(new Person("Jane", "Smith"));
-
-        StackPane root = new StackPane(tableView);
-        Scene scene = new Scene(root, 800, 600);
-
-        tableView.setOnScroll(event -> {
-            double deltaY = event.getDeltaY();
-            double scaleFactor = (deltaY > 0) ? 1.1 : 0.9;
-            tableView.setScaleX(tableView.getScaleX() * scaleFactor);
-            tableView.setScaleY(tableView.getScaleY() * scaleFactor);
-        });
-
-        primaryStage.setTitle("Zoomable TableView");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
 
 
 
