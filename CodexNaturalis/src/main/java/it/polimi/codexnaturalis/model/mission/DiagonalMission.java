@@ -14,18 +14,12 @@ public class DiagonalMission extends Mission  {
         super(pngNumber, pointPerCondition);
         this.isLeftToRight = isLeftToRight;
         this.resourceType = typeOfResource;
-        for(int i=0; i<usedCardArray.length; i++) {
-            for(int j=0; j<usedCardArray[i].length; j++) {
-                usedCardArray[i][j] = false;
-            }
-        }
     }
 
     @Override
     public int ruleAlgorithmCheck(Player player) {
         mapArray = player.getGameMap().getMapArray();
         int match = 0;
-
         if(isLeftToRight){
             for(int i = 0; i < (mapArray.length - 2); i++) {
                 for (int j = 0; j < (mapArray[0].length); j++) {
@@ -71,4 +65,6 @@ public class DiagonalMission extends Mission  {
     public ResourceType getResourceType() {
         return resourceType;
     }
+
+
 }
