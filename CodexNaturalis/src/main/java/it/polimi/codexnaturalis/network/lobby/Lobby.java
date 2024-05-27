@@ -7,7 +7,6 @@ import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.network.VirtualGame;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
-import java.lang.reflect.Array;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
@@ -27,7 +26,7 @@ public class Lobby {
 
     public boolean connectPlayer(PlayerInfo player) throws RemoteException {
         if(lobbyInfo.addPlayer()) {
-            broadCastNotify(player.getNickname() + " has joined the lobby!");
+            broadCastNotify(player.getNickname(), "JOIN");
 
             listOfPlayers.add(player);
             return true;
@@ -40,7 +39,7 @@ public class Lobby {
     public boolean disconnectPlayer(PlayerInfo player) throws RemoteException {
         listOfPlayers.remove(player);
 
-        broadCastNotify(player.getNickname() + " has left the lobby!");
+        broadCastNotify(player.getNickname(), "LEFT");
 
         if(lobbyInfo.removePlayer()) {
             return true;
@@ -52,8 +51,9 @@ public class Lobby {
     public void setPlayerReady(PlayerInfo player) throws RemoteException {
         listOfPlayers.get(listOfPlayers.indexOf(player)).setPlayerReady(true);
 
-        broadCastNotify(player.getNickname() + " is ready!");
+        broadCastNotify(player.getNickname(), "READY");
 
+        //ogni volta che qualcuno si mette in ready, prova ad avviare la partita
         startGame();
     }
 
@@ -72,13 +72,14 @@ public class Lobby {
                 connectPlayerToGame();
             }
         } else {
-            // TODO: dopo che il player si mette in ready, non può più fare nulla, va bene?
-            broadCastNotify("Waiting for more player before starting");
+            broadCastNotify(listOfPlayers.get(0).getNickname(), "WAIT");
         }
-        //TODO manca il metodo per registrare questo observer agli observable
     }
 
+    // crea il game e passa l'interfaccia ad ogni player (RMI)
     private void connectPlayerToGame() throws RemoteException {
+        lobbyInfo.isLobbyStarted = true;
+
         gameController = new VirtualGame(listOfPlayers);
         for(PlayerInfo playerInfo : listOfPlayers) {
             // passo ad ogni player il virtualGameController e la lista degli altri player
@@ -98,9 +99,9 @@ public class Lobby {
         return playerList;
     }
 
-    private void broadCastNotify(String message) throws RemoteException {
+    private void broadCastNotify(String player, String command) throws RemoteException {
         for(PlayerInfo elem : listOfPlayers) {
-            elem.notifyPlayer(new NetworkMessage(elem.getNickname(), MessageType.COM_LOBBY_RMI, message));
+            elem.notifyPlayer(new NetworkMessage(player, MessageType.COM_LOBBY, command));
         }
     }
 

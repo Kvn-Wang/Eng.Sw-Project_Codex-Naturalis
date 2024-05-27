@@ -2,7 +2,9 @@ package it.polimi.codexnaturalis.view.GUI;
 
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
+import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableListBase;
@@ -10,7 +12,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
@@ -22,12 +27,15 @@ import java.util.List;
 public class Menu extends Application {
 
     private static VirtualServer vnc;
+    private double orgSceneX, orgSceneY;
+    private double orgTranslateX, orgTranslateY;
 
      static Stage gameWindow;
      private static Scene startScene;
      private static Scene nickScene;
      private static Scene lobbyListScene;
      private static Scene lobbyScene;
+     private static Scene gameScene;
 /*     private static final BackgroundImage bgi = new BackgroundImage(
              new Image(UtilCostantValue.pathToBackGroundImg),
              BackgroundRepeat.NO_REPEAT,
@@ -90,7 +98,7 @@ public class Menu extends Application {
         String[] players = new String[0];
 
         /*try {
-            players = vnc.funzione mancante;
+            players = vnc.;
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }*/
@@ -108,6 +116,16 @@ public class Menu extends Application {
         gameWindow.setScene(lobbyScene);
     }
 
+    public static void startGame(){
+        Platform.runLater(() -> {
+            try {
+                gameWindow.setScene(gameScene);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
 
     @Override
     public void start(Stage gameStage) throws Exception {
@@ -116,6 +134,7 @@ public class Menu extends Application {
         nickScene = nickScene();
         lobbyListScene = lobbyListScene();
         lobbyScene = lobbyScene();
+        gameScene = gameScene();
         gameWindow.setScene(startScene);
         gameWindow.show();
     }
@@ -123,6 +142,7 @@ public class Menu extends Application {
     private static Scene startScene() throws Exception {
         gameWindow.setTitle("CodexNaturalis");
         Button play = new Button("PLAY");
+        Button skip = new Button("SKIP");
         Label title = new Label("Codex Naturalis");
 
         title.setFont(new Font("Arial", 30));
@@ -133,9 +153,14 @@ public class Menu extends Application {
         play.setPrefSize(100, 50);
         play.setOnAction(actionEvent -> gameWindow.setScene(nickScene));
 
+        skip.setTranslateY(-40);
+        skip.setPrefSize(100, 50);
+        skip.setOnAction(actionEvent -> gameWindow.setScene(gameScene));
+
         StackPane menuPane = new StackPane(
                 title,
-                play
+                play,
+                skip
         );
 
         //Background bg = new Background(bgi);
@@ -263,8 +288,6 @@ public class Menu extends Application {
             gameWindow.setScene(lobbyListScene);
         });
 
-        ready.setTranslateX(-200);
-        ready.setTranslateY(-200);
         ready.setOnAction(actionEvent -> {
             try {
                 vnc.setPlayerReady("piggo");
@@ -279,5 +302,91 @@ public class Menu extends Application {
             lobbyLayout.getChildren().add(leave);
         lobbyLayout.getChildren().add(ready);
         return new Scene(lobbyLayout);
+    }
+
+    public Scene gameScene() {
+
+        Pane map = new Pane();
+        Scene scene = new Scene(map, 800, 600);
+
+        // Create a draggable node
+        Circle draggableNode = createDraggableNode(100, 100);
+
+        map.getChildren().add(draggableNode);
+        for(Circle[] rows : getAnchorPoints()) {
+            for (Circle anchor : rows) {
+                map.getChildren().add(anchor);
+            }
+        }
+        map.setOnScroll(event -> {
+            double deltaY = event.getDeltaY();
+            double scaleFactor = (deltaY > 0) ? 1.1 : 0.9;
+            map.setScaleX(map.getScaleX() * scaleFactor);
+            map.setScaleY(map.getScaleY() * scaleFactor);
+        });
+
+        return scene;
+    }
+
+    private Circle createDraggableNode(double x, double y) {
+        Circle circle = new Circle(x, y, 20, Color.BLUE);
+
+        circle.setOnMousePressed((MouseEvent event) -> {
+            orgSceneX = event.getSceneX();
+            orgSceneY = event.getSceneY();
+            orgTranslateX = circle.getTranslateX();
+            orgTranslateY = circle.getTranslateY();
+        });
+
+        circle.setOnMouseDragged((MouseEvent event) -> {
+            double offsetX = event.getSceneX() - orgSceneX;
+            double offsetY = event.getSceneY() - orgSceneY;
+            circle.setTranslateX(orgTranslateX + offsetX);
+            circle.setTranslateY(orgTranslateY + offsetY);
+        });
+
+        circle.setOnMouseReleased((MouseEvent event) -> {
+            // Snap to the nearest anchor point if close enough
+            double closestDistance = Double.MAX_VALUE;
+            Circle closestAnchor = null;
+
+            for(Circle[] rows : getAnchorPoints()) {
+                for (Circle anchor : rows) {
+                    double distance = Math.hypot(
+                            anchor.getCenterX() - (circle.getTranslateX() + circle.getCenterX()),
+                            anchor.getCenterY() - (circle.getTranslateY() + circle.getCenterY())
+                    );
+
+                    if (distance < closestDistance) {
+                        closestDistance = distance;
+                        closestAnchor = anchor;
+                    }
+                }
+            }
+
+            double snapThreshold = 50;
+            if (closestAnchor != null && closestDistance < snapThreshold) {
+                circle.setTranslateX(closestAnchor.getCenterX() - circle.getCenterX());
+                circle.setTranslateY(closestAnchor.getCenterY() - circle.getCenterY());
+            }
+        });
+
+        return circle;
+    }
+
+    private Circle createAnchorPoint(double x, double y) {
+        Circle anchor = new Circle(x, y, 10, Color.RED);
+        anchor.setOpacity(0.5);  // Make it semi-transparent
+        return anchor;
+    }
+
+    private Circle[][] getAnchorPoints() {
+        Circle[][] map = new Circle[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
+        for(int y = -(UtilCostantValue.lunghezzaMaxMappa/2); y< (UtilCostantValue.lunghezzaMaxMappa/2); y++){
+            for(int x = -(UtilCostantValue.lunghezzaMaxMappa/2); x< (UtilCostantValue.lunghezzaMaxMappa/2); x++){
+                map[y+UtilCostantValue.lunghezzaMaxMappa/2][x+UtilCostantValue.lunghezzaMaxMappa/2] = createAnchorPoint((x*100 * Math.cos(Math.toRadians(45)) - y*100 * Math.sin(Math.toRadians(45)))*2, x*100 * Math.sin(Math.toRadians(45)) + y*100 * Math.cos(Math.toRadians(45)));
+            }
+        }
+        return map;
     }
 }

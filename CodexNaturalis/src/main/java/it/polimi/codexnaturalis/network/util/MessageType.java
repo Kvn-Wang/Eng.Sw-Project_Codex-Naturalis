@@ -22,7 +22,9 @@ public enum MessageType {
     COM_CREATE_LOBBY_TCP,
     //args(0) = ArrayList<PlayerInfo> otherPlayers
     COM_CONNECT_GAME_TCP,
-    COM_LOBBY_RMI,
+    //nickname = playerNickname
+    //args(0) = action that the player has done (JOIN, LEFT, READY, WAIT)
+    COM_LOBBY,
 
     /* ---ENUMS FOR THE GAME PHASE--- */
     //quando un player va online/offline,
@@ -39,7 +41,7 @@ public enum MessageType {
     SCORE_UPDATE,
     //args = argsGenerator(playerView.getGameMap())
     SWITCH_PLAYER_VIEW,
-    //args = argsGenerator(this.hand)
+    //args = argsGenerator(Hand)
     CORRECT_DRAW_CARD,
     //args = argsGenerator(getScoreResource()
     CORRECT_PLACEMENT

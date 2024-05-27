@@ -135,10 +135,10 @@ public class GameManager extends Observable implements GameController {
 */
     private void initializeStarterCard(){
         Shop starterShop = new Shop(ShopType.STARTER);
-        for(Player p: players){
+        for(Player p: players) {
             p.addHandCard(starterShop.drawTopDeckCard());
         }
-        System.out.print("\nStarter cards being placed\n");
+        System.out.println("Starter cards being placed");
     }
 
     private void initializePlayerHand(){
@@ -200,12 +200,12 @@ public class GameManager extends Observable implements GameController {
         Player p = nickToPlayer(nickname);
         if(type.equals("RESOURCE")) {
             p.addHandCard(resourceShop.drawFromShopPlayer(numShopCard));
-            System.out.printf("%s drew from the Resource Shop\n", nickname);
+            System.out.println(nickname+" drew from the Resource Shop\n");
             endGameCheckFinishedShop();
             nextTurn();
         } else if(type.equals("OBJECTIVE")) {
             p.addHandCard(objectiveShop.drawFromShopPlayer(numShopCard));
-            System.out.printf("%s drew from the Objective Shop\n", nickname);
+            System.out.printf(nickname+" drew from the Objective Shop\n");
             endGameCheckFinishedShop();
             nextTurn();
         }
@@ -233,7 +233,7 @@ public class GameManager extends Observable implements GameController {
     @Override
     public void playerPlayCard(String nickname, int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
         Player p = nickToPlayer(nickname);
-        System.out.printf("\n%s ha piazzato una carta in posizione", nickname, x, y);
+        System.out.println(nickname + " ha piazzato una carta in posizione: ("+x+","+y+")");
         try {
             p.placeCard(x, y, numCard, isCardBack);
         } catch (PersonalizedException.InvalidPlacementException e) {
@@ -241,7 +241,7 @@ public class GameManager extends Observable implements GameController {
         } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
             throw e;
         }
-        if(starterCards<players.length) {
+        if(starterCards < players.length) {
             starterCards++;
             if (starterCards == players.length)
                 gamePhase2();

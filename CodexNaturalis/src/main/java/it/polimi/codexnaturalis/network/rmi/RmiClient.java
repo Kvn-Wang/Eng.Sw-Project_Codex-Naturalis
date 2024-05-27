@@ -1,6 +1,10 @@
 package it.polimi.codexnaturalis.network.rmi;
 
+import com.google.gson.Gson;
 import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.model.player.Hand;
+import it.polimi.codexnaturalis.model.shop.card.Card;
+import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
@@ -26,6 +30,7 @@ public class RmiClient extends GenericClient {
     // variabile di identificativo temporanea -> inutile dopo il setting del nickname
     private String ID;
     private GameController personalGameController;
+    Gson gson = new Gson();
 
     public RmiClient(TypeOfUI typeOfUI) throws RemoteException, NotBoundException, InterruptedException {
         //setup communicazione bidirezionale tra rete e oggetto grafico
@@ -47,7 +52,6 @@ public class RmiClient extends GenericClient {
     public void showMessage(NetworkMessage message) throws RemoteException {
         switch(message.getMessageType()) {
             case STATUS_PLAYER_CHANGE:
-
                 break;
 
             case WRONG_TYPE_SHOP:
@@ -63,9 +67,22 @@ public class RmiClient extends GenericClient {
                 break;
 
             case CORRECT_DRAW_CARD:
+                System.out.println("received card: "+ message.getArgs().get(0));
+                Hand hand = gson.fromJson(message.getArgs().get(0), Hand.class);
+
+                playStarterCard(hand);
                 break;
 
             case CORRECT_PLACEMENT:
+                break;
+
+            case COM_LOBBY:
+                typeOfUI.notifyLobbyStatus(message.getNickname(), message.getArgs().get(0));
+                break;
+
+            default:
+                //se non è nessuno dei messaggi precedenti, vuol dire che devo mostrare il messaggio
+                System.out.println(message.getArgs().get(0));
                 break;
         }
     }

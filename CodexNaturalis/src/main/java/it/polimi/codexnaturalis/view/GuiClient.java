@@ -1,8 +1,12 @@
 package it.polimi.codexnaturalis.view;
 
+import it.polimi.codexnaturalis.model.mission.Mission;
+import it.polimi.codexnaturalis.model.player.Hand;
+import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.view.GUI.Menu;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
+import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
 
 import java.rmi.RemoteException;
 
@@ -16,10 +20,6 @@ public class GuiClient implements TypeOfUI {
         this.virtualNetworkCommand = virtualNetworkCommand;
         Menu.setupMenu(this.virtualNetworkCommand);
         javafx.application.Application.launch(Menu.class);
-    }
-
-    @Override
-    public void connectGameController(GameController virtualGame) {
     }
 
     @Override
@@ -53,5 +53,40 @@ public class GuiClient implements TypeOfUI {
     @Override
     public void printReadyOrLeaveSelectionOutcome(boolean isReady) {
 
+    }
+
+    @Override
+    public void notifyLobbyStatus(String otherPlayerNickname, String status) {
+        if(status.equals("JOIN")) {
+            System.out.println(otherPlayerNickname + " has joined the lobby!");
+        } else if(status.equals("LEFT")){
+            System.out.println(otherPlayerNickname + " has left the lobby");
+        } else if(status.equals("READY")) {
+            System.out.println(otherPlayerNickname + " is ready");
+        } else if(status.equals("WAIT")) {
+            System.out.println("Wait for more players");
+        } else {
+            System.err.println("Has been called an invalid command: "+status);
+        }
+    }
+
+    @Override
+    public void printHand(Hand hand) {
+
+    }
+
+    @Override
+    public void printGeneralMission(Mission mission1, Mission mission2) {
+
+    }
+
+    @Override
+    public void notifyIsYourTurn(boolean isYourTurn) {
+
+    }
+
+    @Override
+    public void connectGameController(GameController virtualGame, ClientContainerController clientContainerController) {
+        Menu.startGame();
     }
 }
