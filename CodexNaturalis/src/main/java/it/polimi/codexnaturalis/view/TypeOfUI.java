@@ -2,11 +2,9 @@ package it.polimi.codexnaturalis.view;
 
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
-import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 
 public interface TypeOfUI {
     // collegare la UI alla network
@@ -19,4 +17,5 @@ public interface TypeOfUI {
     void printCreationLobbyRequestOutcome(boolean outcomePositive, String lobbyName);
     void printReadyOrLeaveSelection() throws RemoteException;
     void printReadyOrLeaveSelectionOutcome(boolean isReady);
+    void notifyLobbyStatus(String otherPlayerNickname, String status);
 }

@@ -54,4 +54,19 @@ public class GuiClient implements TypeOfUI {
     public void printReadyOrLeaveSelectionOutcome(boolean isReady) {
 
     }
+
+    @Override
+    public void notifyLobbyStatus(String otherPlayerNickname, String status) {
+        if(status.equals("JOIN")) {
+            System.out.println(otherPlayerNickname + " has joined the lobby!");
+        } else if(status.equals("LEFT")){
+            System.out.println(otherPlayerNickname + " has left the lobby");
+        } else if(status.equals("READY")) {
+            System.out.println(otherPlayerNickname + " is ready");
+        } else if(status.equals("WAIT")) {
+            System.out.println("Wait for more players");
+        } else {
+            System.err.println("Has been called an invalid command: "+status);
+        }
+    }
 }

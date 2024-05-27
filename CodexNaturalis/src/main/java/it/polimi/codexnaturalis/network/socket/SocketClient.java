@@ -83,6 +83,10 @@ public class SocketClient extends GenericClient {
                     connectToGame(this, arg0);
                     break;
 
+                case COM_LOBBY:
+                    typeOfUI.notifyLobbyStatus(messageRX.getNickname(), argsRX.get(0));
+                    break;
+
                 case COM_ERROR_TCP:
                     //TODO
                     break;
@@ -118,7 +122,6 @@ public class SocketClient extends GenericClient {
 
             case CORRECT_PLACEMENT:
                 break;
-
         }
     }
 
