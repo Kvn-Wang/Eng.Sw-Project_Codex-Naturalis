@@ -1,6 +1,7 @@
 package it.polimi.codexnaturalis.view;
 
 import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
@@ -15,7 +16,7 @@ public abstract class GenericClient extends UnicastRemoteObject implements GameC
     protected String playerNickname;
     protected String lobbyNickname;
     protected TypeOfUI typeOfUI;
-    ClientContainerController clientContainerController;
+    protected ClientContainerController clientContainerController;
 
     public GenericClient(TypeOfUI typeOfUI) throws RemoteException  {
         this.typeOfUI = typeOfUI;
@@ -49,5 +50,9 @@ public abstract class GenericClient extends UnicastRemoteObject implements GameC
         clientContainerController = new ClientContainer(listOtherPlayer);
 
         typeOfUI.connectGameController(virtualGameController, clientContainerController);
+    }
+
+    protected void playStarterCard(Hand hand) {
+        clientContainerController.setHand(hand);
     }
 }

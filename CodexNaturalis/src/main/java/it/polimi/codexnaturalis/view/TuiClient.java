@@ -1,6 +1,8 @@
 package it.polimi.codexnaturalis.view;
 
 import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.model.mission.Mission;
+import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
@@ -12,6 +14,7 @@ import java.util.Scanner;
 public class TuiClient implements TypeOfUI {
     protected VirtualServer networkCommand;
     protected GameController virtualGame;
+    protected ClientContainerController clientContainer;
     Scanner scan;
 
     public TuiClient() {
@@ -26,6 +29,8 @@ public class TuiClient implements TypeOfUI {
     @Override
     public void connectGameController(GameController virtualGame, ClientContainerController clientContainerController) {
         this.virtualGame = virtualGame;
+        this.clientContainer = clientContainerController;
+        playGame();
     }
 
     @Override
@@ -154,6 +159,27 @@ public class TuiClient implements TypeOfUI {
             System.out.println("Wait for more players");
         } else {
             System.err.println("Has been called an invalid command: "+status);
+        }
+    }
+
+    @Override
+    public void printHand(Hand hand) {
+
+    }
+
+    @Override
+    public void printGeneralMission(Mission mission1, Mission mission2) {
+
+    }
+
+    @Override
+    public void notifyIsYourTurn(boolean isYourTurn) {
+
+    }
+
+    private void playGame() {
+        while(true) {
+            System.out.println();
         }
     }
 }

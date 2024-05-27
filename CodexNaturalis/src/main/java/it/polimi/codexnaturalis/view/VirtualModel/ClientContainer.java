@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.view.VirtualModel;
 
+import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
 
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 public class ClientContainer implements ClientContainerController {
     private ArrayList<PlayerInfo> otherPlayerList;
     private Card[][] personalGameMap;
-    private Card[] personalHand;
+    private Hand personalHand;
 
     public ClientContainer(ArrayList<PlayerInfo> otherPlayerList) {
         this.otherPlayerList = otherPlayerList;
@@ -25,12 +26,12 @@ public class ClientContainer implements ClientContainerController {
     }
 
     @Override
-    public void setHand(Card[] hand) {
+    public void setHand(Hand hand) {
         personalHand = hand;
     }
 
     @Override
-    public Card[] getHand() {
+    public Hand getHand() {
         return personalHand;
     }
 }

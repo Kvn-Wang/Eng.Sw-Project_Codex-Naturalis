@@ -41,7 +41,7 @@ public enum MessageType {
     SCORE_UPDATE,
     //args = argsGenerator(playerView.getGameMap())
     SWITCH_PLAYER_VIEW,
-    //args = argsGenerator(this.hand)
+    //args = argsGenerator(Hand)
     CORRECT_DRAW_CARD,
     //args = argsGenerator(getScoreResource()
     CORRECT_PLACEMENT

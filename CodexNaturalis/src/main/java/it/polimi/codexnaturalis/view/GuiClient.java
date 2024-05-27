@@ -1,5 +1,8 @@
 package it.polimi.codexnaturalis.view;
 
+import it.polimi.codexnaturalis.model.mission.Mission;
+import it.polimi.codexnaturalis.model.player.Hand;
+import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.view.GUI.Menu;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
@@ -65,6 +68,21 @@ public class GuiClient implements TypeOfUI {
         } else {
             System.err.println("Has been called an invalid command: "+status);
         }
+    }
+
+    @Override
+    public void printHand(Hand hand) {
+
+    }
+
+    @Override
+    public void printGeneralMission(Mission mission1, Mission mission2) {
+
+    }
+
+    @Override
+    public void notifyIsYourTurn(boolean isYourTurn) {
+
     }
 
     @Override

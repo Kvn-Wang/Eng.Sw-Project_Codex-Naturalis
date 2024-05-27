@@ -74,7 +74,6 @@ public class Lobby {
         } else {
             broadCastNotify(listOfPlayers.get(0).getNickname(), "WAIT");
         }
-        //TODO manca il metodo per registrare questo observer agli observable
     }
 
     // crea il game e passa l'interfaccia ad ogni player (RMI)

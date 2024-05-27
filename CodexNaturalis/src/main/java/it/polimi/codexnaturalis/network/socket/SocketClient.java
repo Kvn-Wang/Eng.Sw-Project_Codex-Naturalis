@@ -3,6 +3,9 @@ package it.polimi.codexnaturalis.network.socket;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.model.player.Hand;
+import it.polimi.codexnaturalis.model.shop.card.Card;
+import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.network.util.MessageType;
@@ -85,6 +88,31 @@ public class SocketClient extends GenericClient {
 
                 case COM_LOBBY:
                     typeOfUI.notifyLobbyStatus(messageRX.getNickname(), argsRX.get(0));
+                    break;
+
+                case STATUS_PLAYER_CHANGE:
+                    break;
+
+                case WRONG_TYPE_SHOP:
+                    break;
+
+                case NOT_YOUR_TURN:
+                    break;
+
+                case SCORE_UPDATE:
+                    break;
+
+                case SWITCH_PLAYER_VIEW:
+                    break;
+
+                case CORRECT_DRAW_CARD:
+                    System.out.println("received card: "+ argsRX.get(0));
+                    Hand hand = gson.fromJson(argsRX.get(0), Hand.class);
+
+                    playStarterCard(hand);
+                    break;
+
+                case CORRECT_PLACEMENT:
                     break;
 
                 case COM_ERROR_TCP:

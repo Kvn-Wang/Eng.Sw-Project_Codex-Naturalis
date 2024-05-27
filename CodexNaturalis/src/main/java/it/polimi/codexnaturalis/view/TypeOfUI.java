@@ -1,6 +1,9 @@
 package it.polimi.codexnaturalis.view;
 
 import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.model.mission.Mission;
+import it.polimi.codexnaturalis.model.player.Hand;
+import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
 
@@ -18,4 +21,8 @@ public interface TypeOfUI {
     void printReadyOrLeaveSelection() throws RemoteException;
     void printReadyOrLeaveSelectionOutcome(boolean isReady);
     void notifyLobbyStatus(String otherPlayerNickname, String status);
+    // la starter card sarà in posizione 0 nella hand
+    void printHand(Hand hand);
+    void printGeneralMission(Mission mission1, Mission mission2);
+    void notifyIsYourTurn(boolean isYourTurn);
 }
