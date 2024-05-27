@@ -3,6 +3,7 @@ package it.polimi.codexnaturalis.view;
 import it.polimi.codexnaturalis.view.GUI.Menu;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
+import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
 
 import java.rmi.RemoteException;
 
@@ -19,8 +20,7 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
-    public void connectGameController(GameController virtualGame) {
-    }
+    public void connectGameController(GameController virtualGame, ClientContainerController clientContainerController) {}
 
     @Override
     public void printSelectionNicknameRequest() {
