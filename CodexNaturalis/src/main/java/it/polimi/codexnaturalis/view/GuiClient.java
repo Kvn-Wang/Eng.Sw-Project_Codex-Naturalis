@@ -20,9 +20,6 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
-    public void connectGameController(GameController virtualGame, ClientContainerController clientContainerController) {}
-
-    @Override
     public void printSelectionNicknameRequest() {
     }
 
@@ -68,5 +65,10 @@ public class GuiClient implements TypeOfUI {
         } else {
             System.err.println("Has been called an invalid command: "+status);
         }
+    }
+
+    @Override
+    public void connectGameController(GameController virtualGame, ClientContainerController clientContainerController) {
+        Menu.startGame();
     }
 }

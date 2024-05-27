@@ -3,6 +3,7 @@ package it.polimi.codexnaturalis.view.GUI;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableListBase;
@@ -28,6 +29,7 @@ public class Menu extends Application {
      private static Scene nickScene;
      private static Scene lobbyListScene;
      private static Scene lobbyScene;
+     private static Scene gameScene;
 /*     private static final BackgroundImage bgi = new BackgroundImage(
              new Image(UtilCostantValue.pathToBackGroundImg),
              BackgroundRepeat.NO_REPEAT,
@@ -90,7 +92,7 @@ public class Menu extends Application {
         String[] players = new String[0];
 
         /*try {
-            players = vnc.funzione mancante;
+            players = vnc.;
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }*/
@@ -108,6 +110,16 @@ public class Menu extends Application {
         gameWindow.setScene(lobbyScene);
     }
 
+    public static void startGame(){
+        Platform.runLater(() -> {
+            try {
+                gameWindow.setScene(gameScene);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
 
     @Override
     public void start(Stage gameStage) throws Exception {
@@ -116,6 +128,7 @@ public class Menu extends Application {
         nickScene = nickScene();
         lobbyListScene = lobbyListScene();
         lobbyScene = lobbyScene();
+        gameScene = gameScene();
         gameWindow.setScene(startScene);
         gameWindow.show();
     }
@@ -123,6 +136,7 @@ public class Menu extends Application {
     private static Scene startScene() throws Exception {
         gameWindow.setTitle("CodexNaturalis");
         Button play = new Button("PLAY");
+        Button skip = new Button("SKIP");
         Label title = new Label("Codex Naturalis");
 
         title.setFont(new Font("Arial", 30));
@@ -133,9 +147,14 @@ public class Menu extends Application {
         play.setPrefSize(100, 50);
         play.setOnAction(actionEvent -> gameWindow.setScene(nickScene));
 
+        skip.setTranslateY(-40);
+        skip.setPrefSize(100, 50);
+        skip.setOnAction(actionEvent -> gameWindow.setScene(gameScene));
+
         StackPane menuPane = new StackPane(
                 title,
-                play
+                play,
+                skip
         );
 
         //Background bg = new Background(bgi);
@@ -263,8 +282,6 @@ public class Menu extends Application {
             gameWindow.setScene(lobbyListScene);
         });
 
-        ready.setTranslateX(-200);
-        ready.setTranslateY(-200);
         ready.setOnAction(actionEvent -> {
             try {
                 vnc.setPlayerReady("piggo");
@@ -279,5 +296,29 @@ public class Menu extends Application {
             lobbyLayout.getChildren().add(leave);
         lobbyLayout.getChildren().add(ready);
         return new Scene(lobbyLayout);
+    }
+
+    public Scene gameScene() {
+
+        GridPane table = new GridPane();
+        for (int row = 0; row < 5; row++) {
+            for (int col = 0; col < 5; col++) {
+                Label cell = new Label(" ");
+                cell.setStyle("-fx-border-color: black; -fx-padding: 20px;");
+                table.add(cell, col, row);
+            }
+        }
+
+        StackPane root = new StackPane(table);
+        Scene scene = new Scene(root, 800, 600);
+
+        table.setOnScroll(event -> {
+            double deltaY = event.getDeltaY();
+            double scaleFactor = (deltaY > 0) ? 1.1 : 0.9;
+            table.setScaleX(table.getScaleX() * scaleFactor);
+            table.setScaleY(table.getScaleY() * scaleFactor);
+        });
+
+        return scene;
     }
 }
