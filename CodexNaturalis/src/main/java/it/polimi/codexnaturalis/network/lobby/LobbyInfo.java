@@ -33,7 +33,7 @@ public class LobbyInfo implements Serializable {
     }
 
     public boolean addPlayer() {
-        if(currentPlayer >= maxPlayer) {
+        if(currentPlayer >= maxPlayer || isLobbyStarted) {
             return false;
         } else {
             currentPlayer++;

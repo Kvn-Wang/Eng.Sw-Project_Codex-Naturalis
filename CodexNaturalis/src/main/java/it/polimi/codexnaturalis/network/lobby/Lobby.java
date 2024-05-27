@@ -53,6 +53,7 @@ public class Lobby {
 
         broadCastNotify(player.getNickname(), "READY");
 
+        //ogni volta che qualcuno si mette in ready, prova ad avviare la partita
         startGame();
     }
 
@@ -71,13 +72,15 @@ public class Lobby {
                 connectPlayerToGame();
             }
         } else {
-            // TODO: dopo che il player si mette in ready, non può più fare nulla, va bene?
             broadCastNotify(listOfPlayers.get(0).getNickname(), "WAIT");
         }
         //TODO manca il metodo per registrare questo observer agli observable
     }
 
+    // crea il game e passa l'interfaccia ad ogni player (RMI)
     private void connectPlayerToGame() throws RemoteException {
+        lobbyInfo.isLobbyStarted = true;
+
         gameController = new VirtualGame(listOfPlayers);
         for(PlayerInfo playerInfo : listOfPlayers) {
             // passo ad ogni player il virtualGameController e la lista degli altri player
