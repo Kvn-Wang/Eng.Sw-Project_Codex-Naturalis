@@ -48,8 +48,12 @@ class GameManagerTest {
         }
     }
 
+
+
     @Test
     void disconnectPlayer() {
+        gameManager.disconnectPlayer("valerio");
+        playerInfo.get("valerio");
     }
 
     @Test

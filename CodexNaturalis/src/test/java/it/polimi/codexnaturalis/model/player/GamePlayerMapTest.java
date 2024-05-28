@@ -21,8 +21,8 @@ class GamePlayerMapTest {
     private GamePlayerMap gamePlayerMap;
     StarterCard starterCard = new StarterCard(81, ResourceType.NONE, ResourceType.NONE, ResourceType.PLANT, ResourceType.INSECT, new ResourceType[]{ResourceType.INSECT}, ResourceType.FUNGI, ResourceType.ANIMAL, ResourceType.PLANT, ResourceType.INSECT);
     ResourceCard firstTestCard = new ResourceCard(1, ResourceType.FUNGI, null, ResourceType.NONE, ResourceType.FUNGI, ResourceType.FUNGI, 0);
-    ResourceCard secondTestCard = new ResourceCard(1, ResourceType.FUNGI, null, ResourceType.NONE, ResourceType.FUNGI, ResourceType.FUNGI, 0);
-    ObjectiveCard thirdTestCard = new ObjectiveCard(41, null, ResourceType.QUILL, ResourceType.NONE, ResourceType.NONE, ResourceType.FUNGI, ConditionResourceType.QUILL, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
+    ResourceCard secondTestCard = new ResourceCard(1, ResourceType.FUNGI, ResourceType.UNASSIGNABLE, ResourceType.NONE, ResourceType.FUNGI, ResourceType.FUNGI, 0);
+    ObjectiveCard thirdTestCard = new ObjectiveCard(41, ResourceType.UNASSIGNABLE, ResourceType.QUILL, ResourceType.NONE, ResourceType.NONE, ResourceType.FUNGI, ConditionResourceType.QUILL, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
     StarterCard fourthTestCard = starterCard;
     ObjectiveCard testPlacedCard = new ObjectiveCard(41, null, ResourceType.QUILL, ResourceType.NONE, ResourceType.NONE, ResourceType.FUNGI, ConditionResourceType.QUILL, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
     @BeforeEach
@@ -61,9 +61,11 @@ class GamePlayerMapTest {
         assertThrows(PersonalizedException.InvalidPlacementException.class, ()-> gamePlayerMap.placeCard(middle,middle,firstTestCard,true));
         gamePlayerMap.placeCard(middle,middle,starterCard,true);
         PlayerScoreResource test = gamePlayerMap.getPlayerScoreCard();
-        gamePlayerMap.placeCard(middle,middle+1,firstTestCard,false);
+        gamePlayerMap.placeCard(middle,middle+1,starterCard,true);
         gamePlayerMap.placeCard(middle,middle-1,secondTestCard,false);
         gamePlayerMap.placeCard(middle+1,middle,thirdTestCard,false);
+        PlayerScoreResource testscorecard = gamePlayerMap.getPlayerScoreCard();
+        System.out.println(testscorecard.getScore(ResourceType.ANIMAL));
         assertThrows(PersonalizedException.InvalidPlaceCardRequirementException.class, ()-> gamePlayerMap.placeCard(middle+2,middle,thirdTestCard,false));
         assertThrows(PersonalizedException.InvalidPlacementException.class, ()-> gamePlayerMap.placeCard(1,1,thirdTestCard,true));
         for(int i = middle+2; i < UtilCostantValue.lunghezzaMaxMappa  ;i++){

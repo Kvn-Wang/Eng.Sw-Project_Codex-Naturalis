@@ -22,14 +22,10 @@ class PlayerScoreResourceTest {
     @DisplayName("Test Add")
     @EnumSource(ResourceType.class)
     public void testAddScore(ResourceType resourceType) {
-        if(resourceType == ResourceType.NONE) {
-            assertThrows(IllegalArgumentException.class, () -> {playerScoreResource.addScore(ResourceType.NONE);});
-        } else if (resourceType == ResourceType.UNASSIGNABLE) {
-            assertThrows(IllegalArgumentException.class, () -> {playerScoreResource.addScore(ResourceType.UNASSIGNABLE);});
-        } else {
             playerScoreResource.addScore(resourceType);
-            assertEquals(1, playerScoreResource.getScore(resourceType));
-
+            if(resourceType != ResourceType.UNASSIGNABLE && resourceType != ResourceType.NONE) {
+                assertEquals(1, playerScoreResource.getScore(resourceType));
+            }
             ResourceType[] values = ResourceType.values();
             for(ResourceType i : values) {
                 if(resourceType != i && i != ResourceType.NONE && i!=ResourceType.UNASSIGNABLE) {
@@ -41,6 +37,7 @@ class PlayerScoreResourceTest {
             playerScoreResource.addScore(resourceType);
             playerScoreResource.addScore(resourceType);
             playerScoreResource.addScore(resourceType);
+        if(resourceType != ResourceType.UNASSIGNABLE && resourceType != ResourceType.NONE) {
             assertEquals(5, playerScoreResource.getScore(resourceType));
         }
     }

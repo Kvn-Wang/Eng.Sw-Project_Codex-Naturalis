@@ -19,8 +19,6 @@ class BendMissionTest {
     BendMission testBendMission1 = new BendMission(91,3,ResourceType.FUNGI,ResourceType.PLANT, CardCorner.NORTH);
     BendMission testBendMission2 = new BendMission(91,3,ResourceType.FUNGI,ResourceType.PLANT, CardCorner.EAST);
     BendMission testBendMission3 = new BendMission(91,3,ResourceType.FUNGI,ResourceType.PLANT, CardCorner.WEST);
-
-    ResourceMission testResourceMission = new ResourceMission(95, 2,3,new ResourceType[] {ResourceType.FUNGI});
     Player testPlayer1 = new Player("nick", ColorType.RED);
     Player testPlayer2 = new Player("nack", ColorType.BLUE);
     Player testPlayer3 = new Player("nock", ColorType.YELLOW);
