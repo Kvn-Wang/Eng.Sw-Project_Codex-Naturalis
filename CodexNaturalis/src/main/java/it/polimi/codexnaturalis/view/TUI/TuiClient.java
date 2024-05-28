@@ -1,10 +1,12 @@
-package it.polimi.codexnaturalis.view;
+package it.polimi.codexnaturalis.view.TUI;
 
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Hand;
+import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
+import it.polimi.codexnaturalis.view.TypeOfUI;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
 
 import java.rmi.RemoteException;
@@ -163,12 +165,25 @@ public class TuiClient implements TypeOfUI {
     }
 
     @Override
+    public void printStarterCardReq(Card starterCard) {
+        System.out.println("Here's your starter card");
+        PrintCardClass.printCard(starterCard, true);
+        PrintCardClass.printCard(starterCard, false);
+        System.out.println("Type FRONT or BACK to select the face of the starting card");
+    }
+
+    @Override
     public void printHand(Hand hand) {
 
     }
 
     @Override
-    public void printGeneralMission(Mission mission1, Mission mission2) {
+    public void printCommonMission(Mission mission1, Mission mission2) {
+
+    }
+
+    @Override
+    public void printPersonalMissionReq(Mission choice1, Mission choice2) {
 
     }
 

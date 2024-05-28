@@ -10,8 +10,10 @@ import java.util.ArrayList;
 
 public class ObjectiveCard extends Card {
     protected ResourceType backCentralResource;
+    // rappresenta il sopra
     protected ConditionResourceType pointPerConditionResource;
     protected int pointPerCondition;
+    // rappresenta il sotto
     protected ResourceType[] conditionResources;
 
     public ObjectiveCard(int png, ResourceType frontNorthResource, ResourceType frontSouthResource, ResourceType frontEastResource, ResourceType frontWestResource,
@@ -23,7 +25,8 @@ public class ObjectiveCard extends Card {
         this.conditionResources = conditionResource;
     }
 
-    public ResourceType getColor() {
+    @Override
+    public ResourceType getCardColor() {
         return backCentralResource;
     }
 
@@ -90,22 +93,42 @@ public class ObjectiveCard extends Card {
 
 
     @Override
-    protected ResourceType getBackNorthResource() {
+    public ResourceType getBackNorthResource() {
         return ResourceType.NONE;
     }
 
     @Override
-    protected ResourceType getBackSouthResource() {
+    public ResourceType getBackSouthResource() {
         return ResourceType.NONE;
     }
 
     @Override
-    protected ResourceType getBackEastResource() {
+    public ResourceType getBackEastResource() {
         return ResourceType.NONE;
     }
 
     @Override
-    protected ResourceType getBackWestResource() {
+    public ResourceType getBackWestResource() {
         return ResourceType.NONE;
+    }
+
+    @Override
+    public ResourceType[] getBackCentralResources() {
+        return new ResourceType[]{backCentralResource};
+    }
+
+    @Override
+    public ConditionResourceType getCondition() {
+        return pointPerConditionResource;
+    }
+
+    @Override
+    public ResourceType[] getPlaceableCardResources() {
+        return conditionResources;
+    }
+
+    @Override
+    public int getFrontalNumber() {
+        return pointPerCondition;
     }
 }

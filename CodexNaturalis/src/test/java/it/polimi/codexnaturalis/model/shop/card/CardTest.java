@@ -1,6 +1,7 @@
 package it.polimi.codexnaturalis.model.shop.card;
 
 import it.polimi.codexnaturalis.model.enumeration.CardType;
+import it.polimi.codexnaturalis.model.enumeration.ConditionResourceType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +26,7 @@ class CardTest {
         ResourceType west = null;
         Card testCard = new Card(png, north,south,east,west) {
             @Override
-            public ResourceType getColor() {
+            public ResourceType getCardColor() {
                 return null;
             }
 
@@ -45,20 +46,30 @@ class CardTest {
             }
 
             @Override
-            protected ResourceType getBackNorthResource() {
+            public ResourceType getBackNorthResource() {
                 return null;
             }
 
             @Override
-            protected ResourceType getBackSouthResource() {
+            public ResourceType getBackSouthResource() {
                 return null;
             }
 
             @Override
-            protected ResourceType getBackEastResource() {return null;}
+            public ResourceType getBackEastResource() {return null;}
 
             @Override
-            protected ResourceType getBackWestResource() {
+            public ResourceType getBackWestResource() {
+                return null;
+            }
+
+            @Override
+            public ResourceType[] getBackCentralResources() {
+                return new ResourceType[0];
+            }
+
+            @Override
+            public ConditionResourceType getCondition() {
                 return null;
             }
 
