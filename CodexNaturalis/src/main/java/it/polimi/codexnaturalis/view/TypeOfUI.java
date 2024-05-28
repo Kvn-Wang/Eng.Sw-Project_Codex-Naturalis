@@ -22,7 +22,9 @@ public interface TypeOfUI {
     void printReadyOrLeaveSelectionOutcome(boolean isReady);
     void notifyLobbyStatus(String otherPlayerNickname, String status);
     // la starter card sarà in posizione 0 nella hand
+    void printStarterCardReq(Card starterCard);
     void printHand(Hand hand);
-    void printGeneralMission(Mission mission1, Mission mission2);
+    void printCommonMission(Mission mission1, Mission mission2);
+    void printPersonalMissionReq(Mission choice1, Mission choice2);
     void notifyIsYourTurn(boolean isYourTurn);
 }

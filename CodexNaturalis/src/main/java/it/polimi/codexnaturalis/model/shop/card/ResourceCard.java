@@ -1,6 +1,7 @@
 package it.polimi.codexnaturalis.model.shop.card;
 
 import it.polimi.codexnaturalis.model.enumeration.CardType;
+import it.polimi.codexnaturalis.model.enumeration.ConditionResourceType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.GamePlayerMap;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
@@ -22,7 +23,8 @@ public class ResourceCard extends Card{
         return frontCardPoint;
     }
 
-    public ResourceType getColor() {
+    @Override
+    public ResourceType getCardColor() {
         return backCentralResource;
     }
 
@@ -66,23 +68,43 @@ public class ResourceCard extends Card{
     }
 
     @Override
-    protected ResourceType getBackNorthResource() {
+    public ResourceType getBackNorthResource() {
         return ResourceType.NONE;
     }
 
     @Override
-    protected ResourceType getBackSouthResource() {
+    public ResourceType getBackSouthResource() {
         return ResourceType.NONE;
     }
 
     @Override
-    protected ResourceType getBackEastResource() {
+    public ResourceType getBackEastResource() {
         return ResourceType.NONE;
     }
 
     @Override
-    protected ResourceType getBackWestResource() {
+    public ResourceType getBackWestResource() {
         return ResourceType.NONE;
+    }
+
+    @Override
+    public ResourceType[] getBackCentralResources() {
+        return new ResourceType[]{backCentralResource};
+    }
+
+    @Override
+    public ConditionResourceType getCondition() {
+        return ConditionResourceType.NONE;
+    }
+
+    @Override
+    public ResourceType[] getPlaceableCardResources() {
+        return new ResourceType[0];
+    }
+
+    @Override
+    public int getFrontalNumber() {
+        return frontCardPoint;
     }
 
     @Override

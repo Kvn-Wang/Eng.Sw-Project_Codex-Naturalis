@@ -1,6 +1,5 @@
 package it.polimi.codexnaturalis.model.mission;
 
-import com.google.gson.annotations.SerializedName;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.shop.card.Card;
@@ -24,8 +23,8 @@ public class DiagonalMission extends Mission  {
             for(int i = 0; i < (mapArray.length - 2); i++) {
                 for (int j = 0; j < (mapArray[0].length); j++) {
                     if (mapArray[i][j] != null) {
-                        if (mapArray[i][j].getColor() == resourceType && !usedCardArray[i][j]) {
-                            if (mapArray[i + 1][j].getColor() == resourceType && mapArray[i + 2][j].getColor() == resourceType) {
+                        if (mapArray[i][j].getCardColor() == resourceType && !usedCardArray[i][j]) {
+                            if (mapArray[i + 1][j].getCardColor() == resourceType && mapArray[i + 2][j].getCardColor() == resourceType) {
                                 match++;
                                 usedCardArray[i][j] = true;
                                 usedCardArray[i + 1][j] = true;
@@ -39,8 +38,8 @@ public class DiagonalMission extends Mission  {
             for(int i = 0; i < (mapArray.length); i++) {
                 for (int j = mapArray[0].length -  1; j >= 2; j--) {
                     if (mapArray[i][j] != null) {
-                        if (mapArray[i][j].getColor() == resourceType && !usedCardArray[i][j]) {
-                            if (mapArray[i][j - 1] != null && mapArray[i][j - 2] != null && mapArray[i][j - 1].getColor() == resourceType && mapArray[i][j - 2].getColor() == resourceType) {
+                        if (mapArray[i][j].getCardColor() == resourceType && !usedCardArray[i][j]) {
+                            if (mapArray[i][j - 1] != null && mapArray[i][j - 2] != null && mapArray[i][j - 1].getCardColor() == resourceType && mapArray[i][j - 2].getCardColor() == resourceType) {
                                 match++;
                                 usedCardArray[i][j] = true;
                                 usedCardArray[i][j - 1] = true;

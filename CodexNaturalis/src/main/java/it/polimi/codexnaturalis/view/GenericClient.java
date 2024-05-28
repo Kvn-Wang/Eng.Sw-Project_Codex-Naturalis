@@ -1,10 +1,12 @@
 package it.polimi.codexnaturalis.view;
 
 import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
+import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
 
@@ -52,7 +54,29 @@ public abstract class GenericClient extends UnicastRemoteObject implements GameC
         typeOfUI.connectGameController(virtualGameController, clientContainerController);
     }
 
+    //la starterCard deve essere nella prima carta della mano (non la memorizziamo nel container)
     protected void playStarterCard(Hand hand) {
+        try {
+            typeOfUI.printStarterCardReq(hand.popCard(0));
+        } catch (PersonalizedException.InvalidPopCardException e) {
+            throw new RuntimeException(e);
+        } catch (PersonalizedException.InvalidNumPopCardException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //ricevo una mano di 2 carte risorsa e 1 carta oro
+    protected void initializeInitialHand(Hand hand) {
         clientContainerController.setHand(hand);
+        typeOfUI.printHand(hand);
+    }
+
+    protected void initializeCommonMission(Mission mission1, Mission mission2) {
+        clientContainerController.setCommonMission(mission1, mission2);
+        typeOfUI.printCommonMission(mission1, mission2);
+    }
+
+    protected void initializePersonalMission(Mission personalMission1, Mission personalMission2) {
+        typeOfUI.printPersonalMissionReq(personalMission1, personalMission2);
     }
 }

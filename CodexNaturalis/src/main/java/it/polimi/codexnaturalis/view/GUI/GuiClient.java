@@ -1,4 +1,4 @@
-package it.polimi.codexnaturalis.view;
+package it.polimi.codexnaturalis.view.GUI;
 
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Hand;
@@ -6,6 +6,7 @@ import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.view.GUI.Menu;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
+import it.polimi.codexnaturalis.view.TypeOfUI;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
 
 import java.rmi.RemoteException;
@@ -71,12 +72,22 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
+    public void printStarterCardReq(Card starterCard) {
+
+    }
+
+    @Override
     public void printHand(Hand hand) {
 
     }
 
     @Override
-    public void printGeneralMission(Mission mission1, Mission mission2) {
+    public void printCommonMission(Mission mission1, Mission mission2) {
+
+    }
+
+    @Override
+    public void printPersonalMissionReq(Mission choice1, Mission choice2) {
 
     }
 

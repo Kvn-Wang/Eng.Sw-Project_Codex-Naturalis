@@ -1,16 +1,12 @@
 package it.polimi.codexnaturalis.main;
 
-import it.polimi.codexnaturalis.controller.GameController;
-import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
-import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.rmi.RmiClient;
 import it.polimi.codexnaturalis.network.socket.SocketClient;
-import it.polimi.codexnaturalis.view.GuiClient;
-import it.polimi.codexnaturalis.view.TuiClient;
+import it.polimi.codexnaturalis.view.GUI.GuiClient;
+import it.polimi.codexnaturalis.view.TUI.TuiClient;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
 import java.util.Scanner;
 
 public class ClientMain {

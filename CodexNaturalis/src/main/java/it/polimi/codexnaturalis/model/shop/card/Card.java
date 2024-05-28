@@ -1,8 +1,8 @@
 package it.polimi.codexnaturalis.model.shop.card;
 
-import com.google.gson.annotations.SerializedName;
 import it.polimi.codexnaturalis.model.enumeration.CardCorner;
 import it.polimi.codexnaturalis.model.enumeration.CardType;
+import it.polimi.codexnaturalis.model.enumeration.ConditionResourceType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 
@@ -12,7 +12,6 @@ public abstract class Card {
     protected int png;
     protected ResourceType frontNorthResource;
     protected ResourceType frontSouthResource;
-
     protected ResourceType frontEastResource;
     protected ResourceType frontWestResource;
     protected boolean isBack;
@@ -25,15 +24,36 @@ public abstract class Card {
         this.frontWestResource = frontWestResource;
         this.isBack = false;
     }
-    public abstract ResourceType getColor();
+    public abstract ResourceType getCardColor();
     public abstract boolean checkPlaceableCardCondition(PlayerScoreResource scoreCard);
     public abstract ArrayList<ResourceType> getCardResources();
     public abstract int getCardPoints(PlayerScoreResource scoreCard, int neightbouringCard);
-    protected abstract ResourceType getBackNorthResource();
-    protected abstract ResourceType getBackSouthResource();
-    protected abstract ResourceType getBackEastResource();
-    protected abstract ResourceType getBackWestResource();
+    public abstract ResourceType getBackNorthResource();
+    public abstract ResourceType getBackSouthResource();
+    public abstract ResourceType getBackEastResource();
+    public abstract ResourceType getBackWestResource();
+    public abstract ResourceType[] getBackCentralResources();
+    public abstract ConditionResourceType getCondition();
+    public abstract ResourceType[] getPlaceableCardResources();
+    //può essere il numero della risorsa che da punti, oppure quella della condition card che da punti per ogni condizione soddisfatta
+    public abstract int getFrontalNumber();
     public abstract CardType getCardType();
+
+    public ResourceType getFrontNorthResource() {
+        return frontNorthResource;
+    }
+
+    public ResourceType getFrontSouthResource() {
+        return frontSouthResource;
+    }
+
+    public ResourceType getFrontEastResource() {
+        return frontEastResource;
+    }
+
+    public ResourceType getFrontWestResource() {
+        return frontWestResource;
+    }
 
     //NB: ritorna NONE se il corner è utilizzabile per piazzare carte, null altrimenti
     public ResourceType getCardCorner(CardCorner corner){
