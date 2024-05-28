@@ -2,6 +2,7 @@ package it.polimi.codexnaturalis.view.GUI;
 
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.shop.card.Card;
+import it.polimi.codexnaturalis.model.shop.card.ResourceCard;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
@@ -313,7 +314,7 @@ public class Menu extends Application {
         Pane map = new Pane();
         Scene scene = new Scene(map, 800, 600);
 
-        Card card = new StarterCard(    81,
+        Card card1 = new StarterCard(    81,
                 ResourceType.NONE,
                 ResourceType.NONE,
                 ResourceType.PLANT,
@@ -324,10 +325,20 @@ public class Menu extends Application {
                 ResourceType.PLANT,
                 ResourceType.INSECT);
 
+        Card card2 = new ResourceCard(    4,
+                ResourceType.NONE,
+                ResourceType.NONE,
+                ResourceType.PLANT,
+                ResourceType.INSECT,
+                ResourceType.PLANT,
+                0);
+
 
         Circle[][]  anchorPointsMatrix = getAnchorPoints();
-        GuiCard card1 = new GuiCard(card, anchorPointsMatrix);
-        Rectangle draggableCard = card1.getRectangle();
+        GuiCard vCard1 = new GuiCard(card1, anchorPointsMatrix);
+        GuiCard vCard2 = new GuiCard(card2, anchorPointsMatrix);
+        Rectangle draggableCard1 = vCard1.getRectangle();
+        Rectangle draggableCard2 = vCard2.getRectangle();
 
 
         for(Circle[] rows : anchorPointsMatrix) {
@@ -335,7 +346,8 @@ public class Menu extends Application {
                 map.getChildren().add(anchor);
             }
         }
-        map.getChildren().add(draggableCard);
+        map.getChildren().add(draggableCard1);
+        map.getChildren().add(draggableCard2);
         map.setOnScroll(event -> {
             double deltaY = event.getDeltaY();
             double scaleFactor = (deltaY > 0) ? 1.1 : 0.9;

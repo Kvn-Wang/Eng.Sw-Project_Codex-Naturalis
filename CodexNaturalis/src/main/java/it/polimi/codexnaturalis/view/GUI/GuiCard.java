@@ -2,8 +2,10 @@ package it.polimi.codexnaturalis.view.GUI;
 
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.shop.card.Card;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
@@ -13,13 +15,17 @@ public class GuiCard {
     private double orgSceneX;
     private double orgSceneY;
     private Rectangle vCard;
+    private Image cardImg;
     public Rectangle getRectangle() {
         return vCard;
     }
     public GuiCard(Card card, Circle[][] matrix) {
-        double x=160;
+        double x=170;
         double y=100;
-        switch (card.getColor()){
+        System.out.println();
+        //cardImg =new Image("src/main/resources/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+card.getPng()+".png");
+
+        switch (card.getCardColor()){
             case ResourceType.FUNGI:
                 vCard = new Rectangle(x, y, Color.ORANGE);
                 break;
@@ -37,7 +43,7 @@ public class GuiCard {
                 break;
         }
 
-
+//    vCard.setFill(new ImagePattern(cardImg));
 
         vCard.setOnMousePressed((MouseEvent event) -> {
             orgSceneX = event.getSceneX();
