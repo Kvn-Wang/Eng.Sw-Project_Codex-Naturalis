@@ -1,9 +1,12 @@
 package it.polimi.codexnaturalis.network.rmi;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.player.Hand;
+import it.polimi.codexnaturalis.model.player.HandGsonAdapter;
 import it.polimi.codexnaturalis.model.shop.card.Card;
+import it.polimi.codexnaturalis.model.shop.card.CardTypeAdapter;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
@@ -67,8 +70,13 @@ public class RmiClient extends GenericClient {
                 break;
 
             case CORRECT_DRAW_CARD:
+                Gson handTranslator = new GsonBuilder()
+                        .registerTypeAdapter(Card.class, new CardTypeAdapter())
+                        .registerTypeAdapter(Hand.class, new HandGsonAdapter())
+                        .create();
+
                 System.out.println("received card: "+ message.getArgs().get(0));
-                Hand hand = gson.fromJson(message.getArgs().get(0), Hand.class);
+                Hand hand = handTranslator.fromJson(message.getArgs().get(0), Hand.class);
 
                 playStarterCard(hand);
                 break;
