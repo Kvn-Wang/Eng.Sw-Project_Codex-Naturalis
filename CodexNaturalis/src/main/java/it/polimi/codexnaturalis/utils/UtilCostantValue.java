@@ -9,7 +9,7 @@ public final class UtilCostantValue {
     private static int numeroMaxCarteRisorsa = 40;
     private static int numeroMaxCarteObbiettivo = 40;
     public static int lunghezzaMaxMappa = (numeroMaxCarteRisorsa + numeroMaxCarteObbiettivo) * 2;
-    public static String pathToResourceJson = "src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/resourceCardsFile.json";
+    public static String pathToResourceJson = "/it/polimi/codexnaturalis/matchCardFileInfo/resourceCardsFile.json";
     public static String pathToObjectiveJson = "src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/objectiveCardsFile.json";
     public static String pathToStarterJson = "src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/starterCardsFile.json";
     public static String pathToMissionJson = "src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/missionFile.json";

@@ -32,5 +32,4 @@ public class Hand {
             throw new PersonalizedException.InvalidPopCardException();
         }
     }
-
 }

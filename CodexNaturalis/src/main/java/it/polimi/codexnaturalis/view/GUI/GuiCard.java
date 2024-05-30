@@ -23,7 +23,7 @@ public class GuiCard {
         double x=170;
         double y=100;
         System.out.println();
-        //cardImg =new Image("src/main/resources/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+card.getPng()+".png");
+        cardImg =new Image("/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+card.getPng()+".png");
 
         switch (card.getCardColor()){
             case ResourceType.FUNGI:

@@ -1,9 +1,11 @@
 package it.polimi.codexnaturalis.network.socket;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.player.Hand;
+import it.polimi.codexnaturalis.model.player.HandGsonAdapter;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
@@ -106,8 +108,12 @@ public class SocketClient extends GenericClient {
                     break;
 
                 case CORRECT_DRAW_CARD:
+                    Gson dump = new GsonBuilder()
+                            .registerTypeAdapter(Hand.class, new HandGsonAdapter())
+                            .create();
+
                     System.out.println("received card: "+ argsRX.get(0));
-                    Hand hand = gson.fromJson(argsRX.get(0), Hand.class);
+                    Hand hand = dump.fromJson(argsRX.get(0), Hand.class);
 
                     playStarterCard(hand);
                     break;
@@ -177,13 +183,13 @@ public class SocketClient extends GenericClient {
     }
 
     private void doWait() {
-        synchronized (lock) {
+        /*synchronized (lock) {
             try {
                 lock.wait();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // ripristina lo stato di interruzione
             }
-        }
+        }*/
     }
 
     private void doNotify() {
