@@ -72,7 +72,7 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printStarterCardReq(Card starterCard) {
-
+        GuiGame.addStarter(starterCard);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printCommonMission(Mission mission1, Mission mission2) {
-
+        GuiGame.missionSelection(mission1,mission2);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void notifyIsYourTurn(boolean isYourTurn) {
-
+        GuiGame.turnNotify();
     }
 
     @Override

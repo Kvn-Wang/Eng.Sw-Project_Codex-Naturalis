@@ -20,6 +20,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     //variable used to decide who can play
     int currentPlayerIndex;
     int startingPlayerIndex;
+    int starterCardPlaced = 0;
     GameController gameController;
     public VirtualGame(ArrayList<PlayerInfo> players) throws RemoteException {
         super();
@@ -76,7 +77,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
 
     @Override
     public void playerPlayCard(String nickname, int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException, RemoteException {
-        if(nickname.equals(players.get(currentPlayerIndex).getNickname()))
+        if(nickname.equals(players.get(currentPlayerIndex).getNickname())||starterCardPlaced<players.size())
             gameController.playerPlayCard(nickname, x, y, numCard, isCardBack);
         else {
             try {

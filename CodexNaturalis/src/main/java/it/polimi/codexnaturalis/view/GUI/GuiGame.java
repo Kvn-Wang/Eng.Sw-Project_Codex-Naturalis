@@ -1,16 +1,13 @@
 package it.polimi.codexnaturalis.view.GUI;
 
 import it.polimi.codexnaturalis.controller.GameController;
-import it.polimi.codexnaturalis.model.enumeration.ResourceType;
+import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.shop.card.Card;
-import it.polimi.codexnaturalis.model.shop.card.ResourceCard;
-import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
-import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -19,13 +16,13 @@ import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.Image;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -34,13 +31,12 @@ import javafx.stage.Stage;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class GuiGame extends Application {
 
     private static VirtualServer vnc;
     private static GameController vgc;
-    private static ClientContainer cContainer;
+    private static ClientContainerController containerController;
     private static Circle[][]  anchorPointsMatrix;
     private static ArrayList<GuiCard> handCards;
     private static Pane vHand;
@@ -127,7 +123,15 @@ public class GuiGame extends Application {
 //        playerList.addAll(players);
 //    }
 
+    public static void addStarter(Card starter){
+        handCards.add(new GuiCard(starter, anchorPointsMatrix));
+        vHand.getChildren().add(handCards.getLast().getRectangle());
+        handCards.getLast().setNum(0);
+        handCards.getLast().getRectangle().setTranslateX(170);
+    }
+
     public static void UpdateHand(Hand hand){
+        System.out.println("update");
         boolean alreadyInHand;
         for(int i=0; i<hand.getCards().size(); i++) {
             alreadyInHand=false;
@@ -146,10 +150,34 @@ public class GuiGame extends Application {
         }
     }
 
+    public static void turnNotify(){
+        Popup popup = new Popup();
+        Button closePop = new Button("ok");
+        Label nick = new Label("é il tuo turno");
+        closePop.setOnAction(event -> {
+            if (popup.isShowing()) {
+                popup.hide();
+            }
+        });
+        VBox vBox = new VBox(
+                nick,
+                closePop
+        );
+    }
+
+    public static void missionSelection(Mission mission1, Mission mission2){
+        MissionSelectBox missionAlert = new MissionSelectBox();
+        try {
+            vgc.playerPersonalMissionSelect(playerNickname,Integer.valueOf(missionAlert.display("Mission selection", 800,700)));
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private static void createLobby(){
         LobbyCreationBox lobbyAlert = new LobbyCreationBox();
         try {
-            vnc.createLobby("piggo", lobbyAlert.display("Create lobby", 100,100));
+            vnc.createLobby(playerNickname, lobbyAlert.display("Create lobby", 300,200));
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -159,6 +187,7 @@ public class GuiGame extends Application {
     public static void startGame(GameController gameController, ClientContainerController clientContainerController){
         Platform.runLater(() -> {
             vgc=gameController;
+            containerController = clientContainerController;
 
             try {
                 gameWindow.setScene(gameScene);
@@ -287,7 +316,7 @@ public class GuiGame extends Application {
                 if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                     LobbyInfo clickedRow = row.getItem();
                     try {
-                        vnc.joinLobby("piggo", clickedRow.getLobbyName());
+                        vnc.joinLobby(playerNickname, clickedRow.getLobbyName());
                         gameWindow.setScene(lobbyScene);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
@@ -323,7 +352,7 @@ public class GuiGame extends Application {
 
         leave.setOnAction(actionEvent -> {
             try {
-                vnc.leaveLobby("piggo");
+                vnc.leaveLobby(playerNickname);
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
@@ -331,7 +360,7 @@ public class GuiGame extends Application {
         });
         ready.setOnAction(actionEvent -> {
             try {
-                vnc.setPlayerReady("piggo");
+                vnc.setPlayerReady(playerNickname);
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
@@ -370,7 +399,6 @@ public class GuiGame extends Application {
             e.consume();
         });
         map.setOnDragDropped(e -> {
-            /* data dropped */
             Dragboard db = e.getDragboard();
             boolean success = false;
             if (db.hasString()) {
@@ -520,34 +548,34 @@ public class GuiGame extends Application {
         handCards = new ArrayList<GuiCard>();
         Pane vHand= new Pane();
 
-        StarterCard card1 = new StarterCard(    81,
-                ResourceType.NONE,
-                ResourceType.NONE,
-                ResourceType.PLANT,
-                ResourceType.INSECT,
-                new ResourceType[]{ResourceType.INSECT},
-                ResourceType.FUNGI,
-                ResourceType.ANIMAL,
-                ResourceType.PLANT,
-                ResourceType.INSECT);
-
-        ResourceCard card2 = new ResourceCard(    4,
-                ResourceType.NONE,
-                ResourceType.NONE,
-                ResourceType.PLANT,
-                ResourceType.INSECT,
-                ResourceType.PLANT,
-                0);
-        card1.setIsBack(false);
-        card2.setIsBack(false);
-
-        handCards.add(new GuiCard(card1, anchorPointsMatrix));
-        handCards.add(new GuiCard(card2, anchorPointsMatrix));
-
-        for(int i=0; i<handCards.size(); i++) {
-            vHand.getChildren().add(handCards.get(i).getRectangle());
-            handCards.get(i).getRectangle().setTranslateX(170*i);
-        }
+//        StarterCard card1 = new StarterCard(    81,
+//                ResourceType.NONE,
+//                ResourceType.NONE,
+//                ResourceType.PLANT,
+//                ResourceType.INSECT,
+//                new ResourceType[]{ResourceType.INSECT},
+//                ResourceType.FUNGI,
+//                ResourceType.ANIMAL,
+//                ResourceType.PLANT,
+//                ResourceType.INSECT);
+//
+//        ResourceCard card2 = new ResourceCard(    4,
+//                ResourceType.NONE,
+//                ResourceType.NONE,
+//                ResourceType.PLANT,
+//                ResourceType.INSECT,
+//                ResourceType.PLANT,
+//                0);
+//        card1.setIsBack(false);
+//        card2.setIsBack(false);
+//
+//        handCards.add(new GuiCard(card1, anchorPointsMatrix));
+//        handCards.add(new GuiCard(card2, anchorPointsMatrix));
+//
+//        for(int i=0; i<handCards.size(); i++) {
+//            vHand.getChildren().add(handCards.get(i).getRectangle());
+//            handCards.get(i).getRectangle().setTranslateX(170*i);
+//        }
         return vHand;
     }
 }
