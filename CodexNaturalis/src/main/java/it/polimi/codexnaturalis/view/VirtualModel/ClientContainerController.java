@@ -8,6 +8,8 @@ import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import java.util.ArrayList;
 
 public interface ClientContainerController {
+    void setNickname(String nickname);
+    String getNickname();
     void setPlayerMap(int x, int y, Card card);
     Card[][] getPlayerMap();
     void setHand(Hand hand);

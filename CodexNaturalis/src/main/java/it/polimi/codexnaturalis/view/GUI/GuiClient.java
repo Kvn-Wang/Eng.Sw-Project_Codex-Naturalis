@@ -3,7 +3,6 @@ package it.polimi.codexnaturalis.view.GUI;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.shop.card.Card;
-import it.polimi.codexnaturalis.view.GUI.Menu;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.view.TypeOfUI;
@@ -19,8 +18,8 @@ public class GuiClient implements TypeOfUI {
     @Override
     public void connectVirtualNetwork(VirtualServer virtualNetworkCommand) {
         this.virtualNetworkCommand = virtualNetworkCommand;
-        Menu.setupMenu(this.virtualNetworkCommand);
-        javafx.application.Application.launch(Menu.class);
+        GuiGame.setupMenu(this.virtualNetworkCommand);
+        javafx.application.Application.launch(GuiGame.class);
     }
 
     @Override
@@ -29,7 +28,7 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printSelectionNicknameRequestOutcome(boolean positiveOutcome, String nickname) {
-            Menu.setNickname(positiveOutcome,nickname);
+            GuiGame.setNickname(positiveOutcome,nickname);
     }
 
     @Override
@@ -78,7 +77,7 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printHand(Hand hand) {
-
+        GuiGame.UpdateHand(hand);
     }
 
     @Override
@@ -98,6 +97,6 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void connectGameController(GameController virtualGame, ClientContainerController clientContainerController) {
-        Menu.startGame();
+        GuiGame.startGame(virtualGame, clientContainerController);
     }
 }

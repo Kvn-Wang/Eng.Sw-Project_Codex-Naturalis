@@ -1,22 +1,29 @@
 package it.polimi.codexnaturalis.view.GUI;
 
+import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
+import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.ResourceCard;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
+import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
+import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
+import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableListBase;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -27,13 +34,18 @@ import javafx.stage.Stage;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
-public class Menu extends Application {
+public class GuiGame extends Application {
 
     private static VirtualServer vnc;
-    private double orgSceneX, orgSceneY;
-    private double orgTranslateX, orgTranslateY;
+    private static GameController vgc;
+    private static ClientContainer cContainer;
+    private static Circle[][]  anchorPointsMatrix;
+    private static ArrayList<GuiCard> handCards;
+    private static Pane vHand;
+    private static Pane map;
+    private static String playerNickname;
 
      static Stage gameWindow;
      private static Scene startScene;
@@ -41,22 +53,27 @@ public class Menu extends Application {
      private static Scene lobbyListScene;
      private static Scene lobbyScene;
      private static Scene gameScene;
-/*
-     private static final BackgroundImage bgi = new BackgroundImage(
-             new Image(UtilCostantValue.pathToBackGroundImg),
-             BackgroundRepeat.NO_REPEAT,
-             BackgroundRepeat.NO_REPEAT,
-             BackgroundPosition.CENTER,
-             new BackgroundSize(
-                     100,
-                     100,
-                     true,
-                     true,
-                     true,
-                     true
-             )
-             );
- */
+
+    public static Pane getvHand() {
+        return vHand;
+    }
+
+    /*
+             private static final BackgroundImage bgi = new BackgroundImage(
+                     new Image(UtilCostantValue.pathToBackGroundImg),
+                     BackgroundRepeat.NO_REPEAT,
+                     BackgroundRepeat.NO_REPEAT,
+                     BackgroundPosition.CENTER,
+                     new BackgroundSize(
+                             100,
+                             100,
+                             true,
+                             true,
+                             true,
+                             true
+                     )
+                     );
+         */
     public static void main(String[] args) {
         launch(args); //
     }
@@ -99,18 +116,34 @@ public class Menu extends Application {
         lobbyList.addAll(lobbyInfoList);
     }
 
-    private static void updatePlayerList(ObservableList<String> playerList){
-        String[] players = new String[0];
+//    private static void playerListJoin(ObservableList<String> playerList){
+//
+//        try {
+//            players = vnc.;
+//        } catch (RemoteException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        playerList.addAll(players);
+//    }
 
-/*
-        try {
-            players = vnc.;
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
+    public static void UpdateHand(Hand hand){
+        boolean alreadyInHand;
+        for(int i=0; i<hand.getCards().size(); i++) {
+            alreadyInHand=false;
+            for(GuiCard handCard: handCards){
+                if(handCard.getCard().equals(hand.getCards().get(i))){
+                    alreadyInHand = true;
+                    break;
+                }
+            }
+            if(!alreadyInHand){
+                handCards.add(new GuiCard(hand.getCards().get(i), anchorPointsMatrix));
+                vHand.getChildren().add(handCards.getLast().getRectangle());
+                handCards.getLast().setNum(i);
+                handCards.getLast().getRectangle().setTranslateX(170*i);
+            }
         }
-*/
-
-        playerList.addAll(players);
     }
 
     private static void createLobby(){
@@ -123,8 +156,10 @@ public class Menu extends Application {
         gameWindow.setScene(lobbyScene);
     }
 
-    public static void startGame(){
+    public static void startGame(GameController gameController, ClientContainerController clientContainerController){
         Platform.runLater(() -> {
+            vgc=gameController;
+
             try {
                 gameWindow.setScene(gameScene);
             } catch (Exception e) {
@@ -135,7 +170,7 @@ public class Menu extends Application {
 
     @Override
     public void start(Stage gameStage) throws Exception {
-        Menu.gameWindow = gameStage;
+        GuiGame.gameWindow = gameStage;
         startScene = startScene();
         nickScene = nickScene();
         lobbyListScene = lobbyListScene();
@@ -193,7 +228,8 @@ public class Menu extends Application {
         });
         nickname.setOnAction(event -> {
             try {
-                vnc.setNickname(null, nickname.getText());
+                playerNickname = nickname.getText();
+                vnc.setNickname(null, playerNickname);
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
@@ -311,34 +347,92 @@ public class Menu extends Application {
 
     public Scene gameScene() {
 
-        Pane map = new Pane();
-        Scene scene = new Scene(map, 800, 600);
+        Pane game = new StackPane();
+        map = new Pane();
+        anchorPointsMatrix = getAnchorPoints(game);
+        vHand = handLayer();
+        vHand.setTranslateX(200);
 
-        Card card1 = new StarterCard(    81,
-                ResourceType.NONE,
-                ResourceType.NONE,
-                ResourceType.PLANT,
-                ResourceType.INSECT,
-                new ResourceType[]{ResourceType.INSECT},
-                ResourceType.FUNGI,
-                ResourceType.ANIMAL,
-                ResourceType.PLANT,
-                ResourceType.INSECT);
+        map.setOnDragOver(e -> {
+            if (e.getGestureSource() != map && e.getDragboard().hasString()) {
+                e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+            }
+            e.consume();
+        });
+        map.setOnDragEntered(e -> {
+            if (e.getGestureSource() != map && e.getDragboard().hasString()) {
+                map.setStyle("-fx-background-color: #ecdfb3;");
+            }
+            e.consume();
+        });
+        map.setOnDragExited(e -> {
+            map.setStyle("-fx-background-color: #ffffff;");
+            e.consume();
+        });
+        map.setOnDragDropped(e -> {
+            /* data dropped */
+            Dragboard db = e.getDragboard();
+            boolean success = false;
+            if (db.hasString()) {
+                String[] droppedStrings = db.getString().split("\\|\\|");
+                String num = db.getString();
+                System.out.println(droppedStrings[0]);
+                System.out.println(droppedStrings[1]);
+                System.out.println(num);
+                Rectangle sourceRect =  (Rectangle) e.getGestureSource();
+                System.out.println(sourceRect);
+                Rectangle newRect = new Rectangle(sourceRect.getWidth(), sourceRect.getHeight(), sourceRect.getFill());
+                double closestDistance = Double.MAX_VALUE;
+                int x=0;
+                int y=0;
+                Circle closestAnchor = null;
+                newRect.setX(e.getX() - newRect.getBoundsInLocal().getCenterX());
+                newRect.setY(e.getY() - newRect.getBoundsInLocal().getCenterY());
+                System.out.println(e.getX());
+                System.out.println(e.getY());
+                for(int i = 0; i< (UtilCostantValue.lunghezzaMaxMappa); i++){
+                    for(int j = 0; j< (UtilCostantValue.lunghezzaMaxMappa); j++) {
+                        double distance = Math.hypot(
+                                anchorPointsMatrix[i][j].getCenterX() - (e.getX()),
+                                anchorPointsMatrix[i][j].getCenterY() - (e.getY())
+                        );
 
-        Card card2 = new ResourceCard(    4,
-                ResourceType.NONE,
-                ResourceType.NONE,
-                ResourceType.PLANT,
-                ResourceType.INSECT,
-                ResourceType.PLANT,
-                0);
+                        if (distance < closestDistance) {
+                            closestDistance = distance;
+                            closestAnchor = anchorPointsMatrix[i][j];
+                            y=i;
+                            x=j;
+                        }
+                    }
+                }
 
+                double snapThreshold = 200;
+                if (closestAnchor != null && closestDistance < snapThreshold) {
+                    newRect.setTranslateX(closestAnchor.getCenterX() - newRect.getBoundsInLocal().getCenterX());
+                    newRect.setTranslateY(closestAnchor.getCenterY() - newRect.getBoundsInLocal().getCenterY());
+                    try {
+                        vgc.playerPlayCard(playerNickname, x, y, Integer.parseInt(droppedStrings[1]), Boolean.parseBoolean(droppedStrings[0]));
+                    } catch (PersonalizedException.InvalidPlacementException |
+                             PersonalizedException.InvalidPlaceCardRequirementException | RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
 
-        Circle[][]  anchorPointsMatrix = getAnchorPoints();
-        GuiCard vCard1 = new GuiCard(card1, anchorPointsMatrix);
-        GuiCard vCard2 = new GuiCard(card2, anchorPointsMatrix);
-        Rectangle draggableCard1 = vCard1.getRectangle();
-        Rectangle draggableCard2 = vCard2.getRectangle();
+                map.getChildren().add(newRect);
+                success = true;
+            }
+            /* let the source know whether the string was successfully transferred and used */
+            e.setDropCompleted(success);
+
+            e.consume();
+        });
+
+        game.getChildren().add(map);
+        game.getChildren().add(vHand);
+        vHand.setTranslateY(500);
+
+//        Rectangle draggableCard1 = vCard1.getRectangle();
+//        Rectangle draggableCard2 = vCard2.getRectangle();
 
 
         for(Circle[] rows : anchorPointsMatrix) {
@@ -346,8 +440,10 @@ public class Menu extends Application {
                 map.getChildren().add(anchor);
             }
         }
-        map.getChildren().add(draggableCard1);
-        map.getChildren().add(draggableCard2);
+//        map.getChildren().add(draggableCard1);
+//        map.getChildren().add(draggableCard2);
+
+
         map.setOnScroll(event -> {
             double deltaY = event.getDeltaY();
             double scaleFactor = (deltaY > 0) ? 1.1 : 0.9;
@@ -355,7 +451,7 @@ public class Menu extends Application {
             map.setScaleY(map.getScaleY() * scaleFactor);
         });
 
-        return scene;
+        return new Scene(game, 1000, 600);
     }
 
 //    private Circle createDraggableNode(double x, double y) {
@@ -410,13 +506,48 @@ public class Menu extends Application {
         return anchor;
     }
 
-    private Circle[][] getAnchorPoints() {
-        Circle[][] map = new Circle[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
+    private Circle[][] getAnchorPoints(Pane game) {
+        Circle[][] anchorMap = new Circle[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
         for(int y = -(UtilCostantValue.lunghezzaMaxMappa/2); y< (UtilCostantValue.lunghezzaMaxMappa/2); y++){
             for(int x = -(UtilCostantValue.lunghezzaMaxMappa/2); x< (UtilCostantValue.lunghezzaMaxMappa/2); x++){
-                map[y+UtilCostantValue.lunghezzaMaxMappa/2][x+UtilCostantValue.lunghezzaMaxMappa/2] = createAnchorPoint((x*100 * Math.cos(Math.toRadians(45)) - y*100 * Math.sin(Math.toRadians(45)))*2, x*100 * Math.sin(Math.toRadians(45)) + y*100 * Math.cos(Math.toRadians(45)));
+                anchorMap[y+UtilCostantValue.lunghezzaMaxMappa/2][x+UtilCostantValue.lunghezzaMaxMappa/2] = createAnchorPoint((x*100 * Math.cos(Math.toRadians(45)) - y*100 * Math.sin(Math.toRadians(45)))*2, x*100 * Math.sin(Math.toRadians(45)) + y*100 * Math.cos(Math.toRadians(45)));
             }
         }
-        return map;
+        return anchorMap;
+    }
+
+    private Pane handLayer(){
+        handCards = new ArrayList<GuiCard>();
+        Pane vHand= new Pane();
+
+        StarterCard card1 = new StarterCard(    81,
+                ResourceType.NONE,
+                ResourceType.NONE,
+                ResourceType.PLANT,
+                ResourceType.INSECT,
+                new ResourceType[]{ResourceType.INSECT},
+                ResourceType.FUNGI,
+                ResourceType.ANIMAL,
+                ResourceType.PLANT,
+                ResourceType.INSECT);
+
+        ResourceCard card2 = new ResourceCard(    4,
+                ResourceType.NONE,
+                ResourceType.NONE,
+                ResourceType.PLANT,
+                ResourceType.INSECT,
+                ResourceType.PLANT,
+                0);
+        card1.setIsBack(false);
+        card2.setIsBack(false);
+
+        handCards.add(new GuiCard(card1, anchorPointsMatrix));
+        handCards.add(new GuiCard(card2, anchorPointsMatrix));
+
+        for(int i=0; i<handCards.size(); i++) {
+            vHand.getChildren().add(handCards.get(i).getRectangle());
+            handCards.get(i).getRectangle().setTranslateX(170*i);
+        }
+        return vHand;
     }
 }

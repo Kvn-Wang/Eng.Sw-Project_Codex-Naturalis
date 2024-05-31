@@ -9,6 +9,7 @@ import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import java.util.ArrayList;
 
 public class ClientContainer implements ClientContainerController {
+    private String nickname;
     private ArrayList<PlayerInfo> otherPlayerList;
     private Card[][] personalGameMap;
     private Hand personalHand;
@@ -26,6 +27,11 @@ public class ClientContainer implements ClientContainerController {
                 personalGameMap[i][j] = null;
             }
         }
+    }
+
+    @Override
+    public void setNickname(String nickname) {
+        this.nickname=nickname;
     }
 
     @Override
@@ -79,4 +85,7 @@ public class ClientContainer implements ClientContainerController {
     }
 
 
+    public String getNickname() {
+        return nickname;
+    }
 }
