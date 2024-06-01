@@ -25,6 +25,11 @@ public class Hand {
     }
 
     public Card popCard(int numCard) throws PersonalizedException.InvalidNumPopCardException, PersonalizedException.InvalidPopCardException {
+        /*System.out.println("Qualcuno ha giocato la carta: " + numCard);
+        for(Card elem : cards) {
+            System.out.println(elem);
+        }*/
+
         if(0 <= cards.size() && numCard < cards.size()) {
             return cards.remove(numCard);
             }

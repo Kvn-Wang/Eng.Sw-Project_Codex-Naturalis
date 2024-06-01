@@ -34,7 +34,6 @@ public class TuiClient implements TypeOfUI {
     @Override
     public void connectGameController(GameController virtualGame, ClientContainerController clientContainerController) {
         this.virtualGame = virtualGame;
-        playGame();
     }
 
     @Override
@@ -186,7 +185,7 @@ public class TuiClient implements TypeOfUI {
         clientContainer.setPlayerMap(UtilCostantValue.lunghezzaMaxMappa/2, UtilCostantValue.lunghezzaMaxMappa/2, starterCard);
 
         try {
-            virtualGame.playerPlayCard(clientContainer.getNickname(), UtilCostantValue.lunghezzaMaxMappa/2, UtilCostantValue.lunghezzaMaxMappa/2, 1, isBack);
+            virtualGame.playerPlayCard(clientContainer.getNickname(), UtilCostantValue.lunghezzaMaxMappa/2, UtilCostantValue.lunghezzaMaxMappa/2, 0, isBack);
         } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
             throw new RuntimeException(e);
         } catch (RemoteException e) {
@@ -194,8 +193,6 @@ public class TuiClient implements TypeOfUI {
         } catch (PersonalizedException.InvalidPlacementException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
     @Override
@@ -216,11 +213,5 @@ public class TuiClient implements TypeOfUI {
     @Override
     public void notifyIsYourTurn(boolean isYourTurn) {
 
-    }
-
-    private void playGame() {
-        while(true) {
-            System.out.println();
-        }
     }
 }

@@ -49,6 +49,7 @@ public abstract class GenericClient extends UnicastRemoteObject implements GameC
 
     protected void joinPlayerToGame(GameController virtualGameController, ArrayList<PlayerInfo> listOtherPlayer) {
         System.out.print("Game Has Started!");
+
         clientContainerController.setOtherPlayer(listOtherPlayer);
 
         typeOfUI.connectGameController(virtualGameController, clientContainerController);
@@ -79,4 +80,7 @@ public abstract class GenericClient extends UnicastRemoteObject implements GameC
     protected void initializePersonalMission(Mission personalMission1, Mission personalMission2) {
         typeOfUI.printPersonalMissionReq(personalMission1, personalMission2);
     }
+
+    @Override
+    public void initializeGame() {}
 }

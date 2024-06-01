@@ -99,4 +99,5 @@ public class GuiClient implements TypeOfUI {
     public void connectGameController(GameController virtualGame, ClientContainerController clientContainerController) {
         GuiGame.startGame(virtualGame, clientContainerController);
     }
+
 }
