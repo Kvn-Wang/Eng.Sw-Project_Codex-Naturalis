@@ -6,6 +6,8 @@ import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
+import it.polimi.codexnaturalis.utils.PersonalizedException;
+import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.view.TypeOfUI;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
 
@@ -24,14 +26,14 @@ public class TuiClient implements TypeOfUI {
     }
 
     @Override
-    public void connectVirtualNetwork(VirtualServer virtualNetworkCommand) {
+    public void connectVirtualNetwork(VirtualServer virtualNetworkCommand, ClientContainerController clientContainerController) {
         this.networkCommand = virtualNetworkCommand;
+        this.clientContainer = clientContainerController;
     }
 
     @Override
     public void connectGameController(GameController virtualGame, ClientContainerController clientContainerController) {
         this.virtualGame = virtualGame;
-        this.clientContainer = clientContainerController;
         playGame();
     }
 
@@ -85,11 +87,11 @@ public class TuiClient implements TypeOfUI {
                 if(command.equals("LEAVE")) {
                     printSelectionCreateOrJoinLobbyRequest();
                 } else {
-                    networkCommand.createLobby(null, command);
+                    networkCommand.createLobby(clientContainer.getNickname(), command);
                 }
                 break;
             default:
-                networkCommand.joinLobby(null, command);
+                networkCommand.joinLobby(clientContainer.getNickname(), command);
                 break;
         }
     }
@@ -124,12 +126,12 @@ public class TuiClient implements TypeOfUI {
 
             switch(command) {
                 case "READY":
-                    networkCommand.setPlayerReady(null);
+                    networkCommand.setPlayerReady(clientContainer.getNickname());
                     flag = false;
                     break;
 
                 case "LEAVE":
-                    networkCommand.leaveLobby(null);
+                    networkCommand.leaveLobby(clientContainer.getNickname());
                     flag = false;
                     break;
 
@@ -166,10 +168,34 @@ public class TuiClient implements TypeOfUI {
 
     @Override
     public void printStarterCardReq(Card starterCard) {
+        String command;
+
         System.out.println("Here's your starter card");
         PrintCardClass.printCard(starterCard, true);
         PrintCardClass.printCard(starterCard, false);
-        System.out.println("Type FRONT or BACK to select the face of the starting card");
+
+        do {
+            System.out.println("Type FRONT or BACK to select the face of the starting card");
+            command = scan.nextLine();
+        } while(!(command.equals("FRONT") || command.equals("BACK")));
+
+        boolean isBack = command.equals("BACK");
+
+        //setta la carta per aggiornare la copia locale
+        starterCard.setIsBack(isBack);
+        clientContainer.setPlayerMap(UtilCostantValue.lunghezzaMaxMappa/2, UtilCostantValue.lunghezzaMaxMappa/2, starterCard);
+
+        try {
+            virtualGame.playerPlayCard(clientContainer.getNickname(), UtilCostantValue.lunghezzaMaxMappa/2, UtilCostantValue.lunghezzaMaxMappa/2, 1, isBack);
+        } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
+            throw new RuntimeException(e);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        } catch (PersonalizedException.InvalidPlacementException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
     @Override

@@ -10,6 +10,8 @@ import java.util.ArrayList;
 public interface ClientContainerController {
     void setNickname(String nickname);
     String getNickname();
+    void setLobbyName(String lobbyName);
+    String getLobbyName();
     void setPlayerMap(int x, int y, Card card);
     Card[][] getPlayerMap();
     void setHand(Hand hand);
@@ -19,4 +21,5 @@ public interface ClientContainerController {
     Mission [] getCommonMission();
     Mission getPersonalMission();
     void setPersonalMission(Mission personalMission);
+    void setOtherPlayer(ArrayList<PlayerInfo> listOtherPlayer);
 }

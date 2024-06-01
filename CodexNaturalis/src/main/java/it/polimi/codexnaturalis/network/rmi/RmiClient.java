@@ -25,15 +25,13 @@ import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class RmiClient extends GenericClient {
+public class RmiClient extends GenericClient implements VirtualServer {
     private final String serverName = UtilCostantValue.RMIServerName;
     private final VirtualServer server;
-    private GameController gameController;
     private Registry registry;
     // variabile di identificativo temporanea -> inutile dopo il setting del nickname
     private String ID;
     private GameController personalGameController;
-    Gson gson = new Gson();
 
     public RmiClient(TypeOfUI typeOfUI) throws RemoteException, NotBoundException, InterruptedException {
         //setup communicazione bidirezionale tra rete e oggetto grafico
@@ -107,8 +105,8 @@ public class RmiClient extends GenericClient {
     @Override
     public boolean setNickname(String UUID, String nickname) throws RemoteException {
         if(server.setNickname(this.ID, nickname)) {
-            this.playerNickname = nickname;
-            typeOfUI.printSelectionNicknameRequestOutcome(true, this.playerNickname);
+            clientContainerController.setNickname(nickname);
+            typeOfUI.printSelectionNicknameRequestOutcome(true, nickname);
         } else {
             typeOfUI.printSelectionNicknameRequestOutcome(false, nickname);
 
@@ -127,9 +125,9 @@ public class RmiClient extends GenericClient {
 
     @Override
     public boolean joinLobby(String playerNickname, String lobbyName) throws RemoteException {
-        if(server.joinLobby(this.playerNickname, lobbyName)) {
-            this.lobbyNickname = lobbyName;
-            typeOfUI.printJoinLobbyOutcome(true, this.lobbyNickname);
+        if(server.joinLobby(playerNickname, lobbyName)) {
+            clientContainerController.setLobbyName(lobbyName);
+            typeOfUI.printJoinLobbyOutcome(true, lobbyName);
         } else {
             typeOfUI.printJoinLobbyOutcome(false, lobbyName);
 
@@ -142,7 +140,7 @@ public class RmiClient extends GenericClient {
 
     @Override
     public void leaveLobby(String playerNickname) throws RemoteException {
-        server.leaveLobby(this.playerNickname);
+        server.leaveLobby(playerNickname);
         typeOfUI.printReadyOrLeaveSelectionOutcome(false);
 
         initializationPhase2();
@@ -150,9 +148,9 @@ public class RmiClient extends GenericClient {
 
     @Override
     public boolean createLobby(String playerNickname, String lobbyName) throws RemoteException {
-        if(server.createLobby(this.playerNickname, lobbyName)) {
-            this.lobbyNickname = lobbyName;
-            typeOfUI.printCreationLobbyRequestOutcome(true, this.lobbyNickname);
+        if(server.createLobby(playerNickname, lobbyName)) {
+            clientContainerController.setLobbyName(lobbyName);
+            typeOfUI.printCreationLobbyRequestOutcome(true, lobbyName);
         } else {
             typeOfUI.printCreationLobbyRequestOutcome(false, lobbyName);
             typeOfUI.printSelectionCreateOrJoinLobbyRequest();
@@ -164,7 +162,7 @@ public class RmiClient extends GenericClient {
 
     @Override
     public void setPlayerReady(String playerNickname) throws RemoteException {
-        server.setPlayerReady(this.playerNickname);
+        server.setPlayerReady(playerNickname);
         typeOfUI.printReadyOrLeaveSelectionOutcome(true);
     }
 

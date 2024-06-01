@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class ClientContainer implements ClientContainerController {
     private String nickname;
+    private String lobbyNickname;
     private ArrayList<PlayerInfo> otherPlayerList;
     private Card[][] personalGameMap;
     private Hand personalHand;
@@ -17,9 +18,7 @@ public class ClientContainer implements ClientContainerController {
     private Mission commonMission2;
     private Mission personalMission;
 
-    public ClientContainer(ArrayList<PlayerInfo> otherPlayerList) {
-        this.otherPlayerList = otherPlayerList;
-
+    public ClientContainer() {
         //inizializzazione mappa vuota
         personalGameMap = new Card[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
         for(int i = 0; i < UtilCostantValue.lunghezzaMaxMappa; i++) {
@@ -84,8 +83,23 @@ public class ClientContainer implements ClientContainerController {
         this.personalMission = personalMission;
     }
 
+    @Override
+    public void setOtherPlayer(ArrayList<PlayerInfo> listOtherPlayer) {
+        otherPlayerList = listOtherPlayer;
+    }
+
 
     public String getNickname() {
         return nickname;
+    }
+
+    @Override
+    public void setLobbyName(String lobbyName) {
+        this.lobbyNickname = lobbyName;
+    }
+
+    @Override
+    public String getLobbyName() {
+        return lobbyNickname;
     }
 }

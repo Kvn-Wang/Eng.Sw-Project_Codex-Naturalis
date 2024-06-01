@@ -9,6 +9,7 @@ import it.polimi.codexnaturalis.model.player.HandGsonAdapter;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.CardTypeAdapter;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
+import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.network.util.MessageType;
@@ -24,7 +25,7 @@ import java.net.Socket;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-public class SocketClient extends GenericClient {
+public class SocketClient extends GenericClient implements VirtualServer {
     Socket serverSocket;
     BufferedReader socketRx;
     PrintWriter socketTx;
@@ -210,11 +211,11 @@ public class SocketClient extends GenericClient {
 
         // fa partire una specie di ricorsione finchè il nick non è valido
         if(outcomeReceived == false) {
-            typeOfUI.printSelectionNicknameRequestOutcome(false, playerNickname);
+            typeOfUI.printSelectionNicknameRequestOutcome(false, nickname);
             typeOfUI.printSelectionNicknameRequest();
         } else {
-            playerNickname = nickname;
-            typeOfUI.printSelectionNicknameRequestOutcome(true, playerNickname);
+            clientContainerController.setNickname(nickname);
+            typeOfUI.printSelectionNicknameRequestOutcome(true, nickname);
         }
 
         //reset della variabile in attesa di altri ACK
@@ -240,7 +241,7 @@ public class SocketClient extends GenericClient {
 
     @Override
     public boolean joinLobby(String playerNickname, String lobbyName) throws RemoteException {
-        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_JOIN_LOBBY_TCP, this.playerNickname, lobbyName)));
+        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_JOIN_LOBBY_TCP, playerNickname, lobbyName)));
         doWait();
 
         //getArgs = (String) boolean
@@ -251,7 +252,7 @@ public class SocketClient extends GenericClient {
             typeOfUI.printJoinLobbyOutcome(false, lobbyName);
             typeOfUI.printSelectionCreateOrJoinLobbyRequest();
         } else {
-            lobbyNickname = lobbyName;
+            clientContainerController.setLobbyName(lobbyName);
             typeOfUI.printJoinLobbyOutcome(true, lobbyName);
         }
 
@@ -264,7 +265,7 @@ public class SocketClient extends GenericClient {
 
     @Override
     public void leaveLobby(String playerNickname) throws RemoteException {
-        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_LEAVE_LOBBY_TCP, this.playerNickname)));
+        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_LEAVE_LOBBY_TCP, playerNickname)));
         doWait();
 
         typeOfUI.printReadyOrLeaveSelectionOutcome(false);
@@ -277,7 +278,7 @@ public class SocketClient extends GenericClient {
 
     @Override
     public boolean createLobby(String playerNickname, String lobbyName) throws RemoteException {
-        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_CREATE_LOBBY_TCP, this.playerNickname, lobbyName)));
+        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_CREATE_LOBBY_TCP, playerNickname, lobbyName)));
         doWait();
 
         //getArgs = (String) boolean
@@ -288,7 +289,7 @@ public class SocketClient extends GenericClient {
             typeOfUI.printCreationLobbyRequestOutcome(false, lobbyName);
             typeOfUI.printSelectionCreateOrJoinLobbyRequest();
         } else {
-            lobbyNickname = lobbyName;
+            clientContainerController.setLobbyName(lobbyName);
             typeOfUI.printCreationLobbyRequestOutcome(true, lobbyName);
         }
 
@@ -301,7 +302,7 @@ public class SocketClient extends GenericClient {
 
     @Override
     public void setPlayerReady(String playerNickname) throws RemoteException {
-        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_SET_READY_LOBBY_TCP, this.playerNickname)));
+        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_SET_READY_LOBBY_TCP, playerNickname)));
         doWait();
 
         typeOfUI.printReadyOrLeaveSelectionOutcome(true);
