@@ -78,7 +78,7 @@ public class GameManager extends Observable implements GameController {
     }
 
     private GeneralShop initializeShop(ShopType typeOfShop){
-        return new GeneralShop(typeOfShop);
+        return new GeneralShop(typeOfShop, vobs);
     }
 
     //inizialize nickname and color
@@ -137,7 +137,7 @@ public class GameManager extends Observable implements GameController {
     }
 */
     private void initializeStarterCard(){
-        Shop starterShop = new Shop(ShopType.STARTER);
+        Shop starterShop = new Shop(ShopType.STARTER, vobs);
         for(Player p: players) {
             p.addHandCard(starterShop.drawTopDeckCard());
         }

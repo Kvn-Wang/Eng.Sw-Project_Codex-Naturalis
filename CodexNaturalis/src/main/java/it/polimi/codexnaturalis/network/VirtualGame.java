@@ -82,8 +82,10 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
 
     @Override
     public void playerPlayCard(String nickname, int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException, RemoteException {
-        if(nickname.equals(players.get(currentPlayerIndex).getNickname())||starterCardPlaced<players.size())
+        if(nickname.equals(players.get(currentPlayerIndex).getNickname())||starterCardPlaced<players.size()) {
+            starterCardPlaced++;
             gameController.playerPlayCard(nickname, x, y, numCard, isCardBack);
+        }
         else {
             try {
                 nickToPlayerInfo(nickname).notifyPlayer(new NetworkMessage(MessageType.NOT_YOUR_TURN));

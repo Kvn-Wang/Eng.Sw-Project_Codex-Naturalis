@@ -39,6 +39,11 @@ public enum MessageType {
     // args(0) = message.getNickname()
     // args(1) = message.getArgs()
     SCORE_UPDATE,
+    //restituisce la carta sostituita a quella pescata da mostrare all'interno dello shop
+    // args(0) = argsGenerator(carta)
+    // args(1) = "visibleCard1" o "visibleCard2" o "topDeckCard"
+    // args(2) = argsGenerator(shopType)
+    SHOP_UPDATE,
     //args = argsGenerator(playerView.getGameMap())
     SWITCH_PLAYER_VIEW,
     //args = argsGenerator(Hand)

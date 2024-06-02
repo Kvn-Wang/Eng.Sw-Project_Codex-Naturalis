@@ -125,14 +125,19 @@ public class GuiGame extends Application {
 //    }
 
     public static void addStarter(Card starter){
-        handCards.add(new GuiCard(starter, anchorPointsMatrix));
-        vHand.getChildren().add(handCards.getLast().getRectangle());
-        handCards.getLast().setNum(0);
-        handCards.getLast().getRectangle().setTranslateX(170);
-        starterBeingPlaced = true;
+        Platform.runLater(() -> {
+            handCards.add(new GuiCard(starter, anchorPointsMatrix));
+            vHand.getChildren().add(handCards.getLast().getRectangle());
+            handCards.getLast().setNum(0);
+            handCards.getLast().getRectangle().setTranslateX(170);
+            starterBeingPlaced = true;
+        });
     }
 
     public static void UpdateShop(){
+        Platform.runLater(() -> {
+
+        });
     }
 
     public static void UpdateHand(Hand hand){
@@ -158,35 +163,41 @@ public class GuiGame extends Application {
     }
 
     public static void turnNotify(){
-        Popup popup = new Popup();
-        Button closePop = new Button("ok");
-        Label nick = new Label("é il tuo turno");
-        closePop.setOnAction(event -> {
-            if (popup.isShowing()) {
-                popup.hide();
-            }
+        Platform.runLater(() -> {
+            Popup popup = new Popup();
+            Button closePop = new Button("ok");
+            Label nick = new Label("é il tuo turno");
+            closePop.setOnAction(event -> {
+                if (popup.isShowing()) {
+                    popup.hide();
+                }
+            });
+            VBox vBox = new VBox(
+                    nick,
+                    closePop
+            );
+            popup.getContent().add(vBox);
+            popup.show(gameWindow);
         });
-        VBox vBox = new VBox(
-                nick,
-                closePop
-        );
-        popup.getContent().add(vBox);
-        popup.show(gameWindow);
     }
 
     public static void commonMissionSetup(Mission mission1, Mission mission2){
-        CommonMissionBox missionAlert = new CommonMissionBox();
-        missionAlert.setMission(mission1,mission2);
-        missionAlert.display("Shared Missions", 800,700);
+        Platform.runLater(() -> {
+            CommonMissionBox missionAlert = new CommonMissionBox();
+            missionAlert.setMission(mission1, mission2);
+            missionAlert.display("Shared Missions", 800, 700);
+        });
     }
     public static void missionSelection(Mission mission1, Mission mission2){
-        MissionSelectBox missionAlert = new MissionSelectBox();
-        missionAlert.setMission(mission1,mission2);
-        try {
-            vgc.playerPersonalMissionSelect(playerNickname,Integer.valueOf(missionAlert.display("Mission selection", 800,700)));
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
+        Platform.runLater(() -> {
+            MissionSelectBox missionAlert = new MissionSelectBox();
+            missionAlert.setMission(mission1, mission2);
+            try {
+                vgc.playerPersonalMissionSelect(playerNickname, Integer.parseInt(missionAlert.display("Mission selection", 800, 700)));
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private static void createLobby(){
@@ -426,15 +437,15 @@ public class GuiGame extends Application {
 //                System.out.println(sourceRect);
                 Rectangle newRect = new Rectangle(sourceRect.getWidth(), sourceRect.getHeight(), sourceRect.getFill());
                 if(starterBeingPlaced){
+                    starterBeingPlaced=false;
                     newRect.setX(-newRect.getBoundsInLocal().getCenterX());
                     newRect.setY(-newRect.getBoundsInLocal().getCenterY());
                     try {
-                        vgc.playerPlayCard(playerNickname, 0, 0, Integer.parseInt(droppedStrings[1]), Boolean.parseBoolean(droppedStrings[0]));
+                        vgc.playerPlayCard(playerNickname, 80, 80, Integer.parseInt(droppedStrings[1]), Boolean.parseBoolean(droppedStrings[0]));
                     } catch (PersonalizedException.InvalidPlacementException |
                              PersonalizedException.InvalidPlaceCardRequirementException | RemoteException ex) {
                         throw new RuntimeException(ex);
                     }
-                    starterBeingPlaced=false;
                 }
                 else {
                     double closestDistance = Double.MAX_VALUE;
