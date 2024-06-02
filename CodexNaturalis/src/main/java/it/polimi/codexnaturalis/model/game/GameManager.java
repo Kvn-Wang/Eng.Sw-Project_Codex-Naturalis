@@ -50,7 +50,10 @@ public class GameManager extends Observable implements GameController {
         players = new Player[playerInfo.size()];
         vobs = observer;
         addObserver(observer);
-        //initializeGame ora é diviso in 3 phases
+    }
+
+    @Override
+    public void initializeGame() {
         gamePhase1();
     }
 

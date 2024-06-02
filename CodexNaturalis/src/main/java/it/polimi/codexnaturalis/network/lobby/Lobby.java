@@ -85,6 +85,10 @@ public class Lobby {
             // passo ad ogni player il virtualGameController e la lista degli altri player
             playerInfo.getClientHandler().connectToGame(gameController, copyArrayListExceptOne(listOfPlayers, playerInfo));
         }
+
+        System.out.println("Lobby '" + lobbyInfo.getLobbyName() + "': all player connected to the game!");
+
+        gameController.initializeGame();
     }
 
     private ArrayList<PlayerInfo> copyArrayListExceptOne(ArrayList<PlayerInfo> players, PlayerInfo exception) {

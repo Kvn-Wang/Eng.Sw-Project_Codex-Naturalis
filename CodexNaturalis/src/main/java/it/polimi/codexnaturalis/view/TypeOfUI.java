@@ -11,7 +11,7 @@ import java.rmi.RemoteException;
 
 public interface TypeOfUI {
     // collegare la UI alla network
-    void connectVirtualNetwork(VirtualServer virtualNetworkCommand);
+    void connectVirtualNetwork(VirtualServer virtualNetworkCommand, ClientContainerController clientContainerController);
     void connectGameController(GameController virtualGame, ClientContainerController clientContainerController);
     void printSelectionNicknameRequest() throws RemoteException;
     void printSelectionNicknameRequestOutcome(boolean positiveOutcome, String nickname);

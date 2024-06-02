@@ -33,6 +33,7 @@ public abstract class Card {
     public abstract ResourceType getBackEastResource();
     public abstract ResourceType getBackWestResource();
     public abstract ResourceType[] getBackCentralResources();
+    // se non ha condizioni la carta, si restituisce ConditionResourceType.NONE
     public abstract ConditionResourceType getCondition();
     public abstract ResourceType[] getPlaceableCardResources();
     //può essere il numero della risorsa che da punti, oppure quella della condition card che da punti per ogni condizione soddisfatta

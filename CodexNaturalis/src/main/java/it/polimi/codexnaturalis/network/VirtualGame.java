@@ -48,6 +48,11 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     }
 
     @Override
+    public void initializeGame() throws RemoteException {
+        gameController.initializeGame();
+    }
+
+    @Override
     public void disconnectPlayer(String nickname) throws RemoteException {
         gameController.disconnectPlayer(nickname);
     }

@@ -16,7 +16,7 @@ public class GuiClient implements TypeOfUI {
 
 
     @Override
-    public void connectVirtualNetwork(VirtualServer virtualNetworkCommand) {
+    public void connectVirtualNetwork(VirtualServer virtualNetworkCommand, ClientContainerController clientContainerController) {
         this.virtualNetworkCommand = virtualNetworkCommand;
         GuiGame.setupMenu(this.virtualNetworkCommand);
         javafx.application.Application.launch(GuiGame.class);
@@ -99,4 +99,5 @@ public class GuiClient implements TypeOfUI {
     public void connectGameController(GameController virtualGame, ClientContainerController clientContainerController) {
         GuiGame.startGame(virtualGame, clientContainerController);
     }
+
 }
