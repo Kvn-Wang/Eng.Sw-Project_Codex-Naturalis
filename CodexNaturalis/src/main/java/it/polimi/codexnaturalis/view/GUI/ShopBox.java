@@ -21,10 +21,10 @@ public class ShopBox extends AlertBox {
         Label request = new Label("seleziona la missione");
         Rectangle missionRect1 = new Rectangle();
         missionRect1.setStroke(null);
-        missionRect1.setFill(new ImagePattern(new Image("path" + mission1.getPngNumber() + ".png")));
+       // missionRect1.setFill(new ImagePattern(new Image("path" + mission1.getPngNumber() + ".png")));
         Rectangle missionRect2 = new Rectangle();
         missionRect2.setStroke(null);
-        missionRect2.setFill(new ImagePattern(new Image("path" + mission2.getPngNumber() + ".png")));
+      //  missionRect2.setFill(new ImagePattern(new Image("path" + mission2.getPngNumber() + ".png")));
 
 
         missionRect1.setOnMouseClicked(e -> {
@@ -45,8 +45,8 @@ public class ShopBox extends AlertBox {
     }
 
     public void setMission(Mission m1, Mission m2){
-        resourceCards.add();
-        objectiveCards
+    //    resourceCards.add();
+    //    objectiveCards
         mission2=m2;
     }
 }
