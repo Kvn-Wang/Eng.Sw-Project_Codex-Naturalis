@@ -82,12 +82,12 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printCommonMission(Mission mission1, Mission mission2) {
-        GuiGame.missionSelection(mission1,mission2);
+        GuiGame.commonMissionSetup(mission1,mission2);
     }
 
     @Override
     public void printPersonalMissionReq(Mission choice1, Mission choice2) {
-
+        GuiGame.missionSelection(choice1,choice2);
     }
 
     @Override

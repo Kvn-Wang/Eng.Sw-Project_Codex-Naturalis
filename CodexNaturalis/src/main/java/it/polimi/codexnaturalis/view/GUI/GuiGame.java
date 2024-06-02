@@ -42,6 +42,7 @@ public class GuiGame extends Application {
     private static Pane vHand;
     private static Pane map;
     private static String playerNickname;
+    private static boolean starterBeingPlaced = false;
 
      static Stage gameWindow;
      private static Scene startScene;
@@ -128,26 +129,32 @@ public class GuiGame extends Application {
         vHand.getChildren().add(handCards.getLast().getRectangle());
         handCards.getLast().setNum(0);
         handCards.getLast().getRectangle().setTranslateX(170);
+        starterBeingPlaced = true;
+    }
+
+    public static void UpdateShop(){
     }
 
     public static void UpdateHand(Hand hand){
-        System.out.println("update");
-        boolean alreadyInHand;
-        for(int i=0; i<hand.getCards().size(); i++) {
-            alreadyInHand=false;
-            for(GuiCard handCard: handCards){
-                if(handCard.getCard().equals(hand.getCards().get(i))){
-                    alreadyInHand = true;
-                    break;
+        Platform.runLater(() -> {
+            System.out.println("update");
+            boolean alreadyInHand;
+            for (int i = 0; i < hand.getCards().size(); i++) {
+                alreadyInHand = false;
+                for (GuiCard handCard : handCards) {
+                    if (handCard.getCard().equals(hand.getCards().get(i))) {
+                        alreadyInHand = true;
+                        break;
+                    }
+                }
+                if (!alreadyInHand) {
+                    handCards.add(new GuiCard(hand.getCards().get(i), anchorPointsMatrix));
+                    vHand.getChildren().add(handCards.getLast().getRectangle());
+                    handCards.getLast().setNum(i);
+                    handCards.getLast().getRectangle().setTranslateX(170 * i);
                 }
             }
-            if(!alreadyInHand){
-                handCards.add(new GuiCard(hand.getCards().get(i), anchorPointsMatrix));
-                vHand.getChildren().add(handCards.getLast().getRectangle());
-                handCards.getLast().setNum(i);
-                handCards.getLast().getRectangle().setTranslateX(170*i);
-            }
-        }
+        });
     }
 
     public static void turnNotify(){
@@ -163,10 +170,18 @@ public class GuiGame extends Application {
                 nick,
                 closePop
         );
+        popup.getContent().add(vBox);
+        popup.show(gameWindow);
     }
 
+    public static void commonMissionSetup(Mission mission1, Mission mission2){
+        CommonMissionBox missionAlert = new CommonMissionBox();
+        missionAlert.setMission(mission1,mission2);
+        missionAlert.display("Shared Missions", 800,700);
+    }
     public static void missionSelection(Mission mission1, Mission mission2){
         MissionSelectBox missionAlert = new MissionSelectBox();
+        missionAlert.setMission(mission1,mission2);
         try {
             vgc.playerPersonalMissionSelect(playerNickname,Integer.valueOf(missionAlert.display("Mission selection", 800,700)));
         } catch (RemoteException e) {
@@ -404,45 +419,58 @@ public class GuiGame extends Application {
             if (db.hasString()) {
                 String[] droppedStrings = db.getString().split("\\|\\|");
                 String num = db.getString();
-                System.out.println(droppedStrings[0]);
-                System.out.println(droppedStrings[1]);
-                System.out.println(num);
+//                System.out.println(droppedStrings[0]);
+//                System.out.println(droppedStrings[1]);
+//                System.out.println(num);
                 Rectangle sourceRect =  (Rectangle) e.getGestureSource();
-                System.out.println(sourceRect);
+//                System.out.println(sourceRect);
                 Rectangle newRect = new Rectangle(sourceRect.getWidth(), sourceRect.getHeight(), sourceRect.getFill());
-                double closestDistance = Double.MAX_VALUE;
-                int x=0;
-                int y=0;
-                Circle closestAnchor = null;
-                newRect.setX(e.getX() - newRect.getBoundsInLocal().getCenterX());
-                newRect.setY(e.getY() - newRect.getBoundsInLocal().getCenterY());
-                System.out.println(e.getX());
-                System.out.println(e.getY());
-                for(int i = 0; i< (UtilCostantValue.lunghezzaMaxMappa); i++){
-                    for(int j = 0; j< (UtilCostantValue.lunghezzaMaxMappa); j++) {
-                        double distance = Math.hypot(
-                                anchorPointsMatrix[i][j].getCenterX() - (e.getX()),
-                                anchorPointsMatrix[i][j].getCenterY() - (e.getY())
-                        );
-
-                        if (distance < closestDistance) {
-                            closestDistance = distance;
-                            closestAnchor = anchorPointsMatrix[i][j];
-                            y=i;
-                            x=j;
-                        }
-                    }
-                }
-
-                double snapThreshold = 200;
-                if (closestAnchor != null && closestDistance < snapThreshold) {
-                    newRect.setTranslateX(closestAnchor.getCenterX() - newRect.getBoundsInLocal().getCenterX());
-                    newRect.setTranslateY(closestAnchor.getCenterY() - newRect.getBoundsInLocal().getCenterY());
+                if(starterBeingPlaced){
+                    newRect.setX(-newRect.getBoundsInLocal().getCenterX());
+                    newRect.setY(-newRect.getBoundsInLocal().getCenterY());
                     try {
-                        vgc.playerPlayCard(playerNickname, x, y, Integer.parseInt(droppedStrings[1]), Boolean.parseBoolean(droppedStrings[0]));
+                        vgc.playerPlayCard(playerNickname, 0, 0, Integer.parseInt(droppedStrings[1]), Boolean.parseBoolean(droppedStrings[0]));
                     } catch (PersonalizedException.InvalidPlacementException |
                              PersonalizedException.InvalidPlaceCardRequirementException | RemoteException ex) {
                         throw new RuntimeException(ex);
+                    }
+                    starterBeingPlaced=false;
+                }
+                else {
+                    double closestDistance = Double.MAX_VALUE;
+                    int x = 0;
+                    int y = 0;
+                    Circle closestAnchor = null;
+                    newRect.setX(e.getX() - newRect.getBoundsInLocal().getCenterX());
+                    newRect.setY(e.getY() - newRect.getBoundsInLocal().getCenterY());
+                    System.out.println(e.getX());
+                    System.out.println(e.getY());
+                    for (int i = 0; i < (UtilCostantValue.lunghezzaMaxMappa); i++) {
+                        for (int j = 0; j < (UtilCostantValue.lunghezzaMaxMappa); j++) {
+                            double distance = Math.hypot(
+                                    anchorPointsMatrix[i][j].getCenterX() - (e.getX()),
+                                    anchorPointsMatrix[i][j].getCenterY() - (e.getY())
+                            );
+
+                            if (distance < closestDistance) {
+                                closestDistance = distance;
+                                closestAnchor = anchorPointsMatrix[i][j];
+                                y = i;
+                                x = j;
+                            }
+                        }
+                    }
+
+                    double snapThreshold = 200;
+                    if (closestAnchor != null && closestDistance < snapThreshold) {
+                        newRect.setTranslateX(closestAnchor.getCenterX() - newRect.getBoundsInLocal().getCenterX());
+                        newRect.setTranslateY(closestAnchor.getCenterY() - newRect.getBoundsInLocal().getCenterY());
+                        try {
+                            vgc.playerPlayCard(playerNickname, x, y, Integer.parseInt(droppedStrings[1]), Boolean.parseBoolean(droppedStrings[0]));
+                        } catch (PersonalizedException.InvalidPlacementException |
+                                 PersonalizedException.InvalidPlaceCardRequirementException | RemoteException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                 }
 
