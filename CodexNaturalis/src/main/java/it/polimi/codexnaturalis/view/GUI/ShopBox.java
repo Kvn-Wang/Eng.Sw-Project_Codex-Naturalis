@@ -47,7 +47,7 @@ public class ShopBox extends AlertBox {
     public void setMission(Mission m1, Mission m2){
     //    resourceCards.add();
     //    objectiveCards
-        mission2=m2;
+    //    mission2=m2;
     }
 }
 
