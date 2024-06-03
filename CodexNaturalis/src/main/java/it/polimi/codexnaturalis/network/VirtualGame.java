@@ -125,6 +125,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
         switch(message.getMessageType()) {
             //messaggi per playerSpecifici con argomenti illimitati
             case COM_ACK_TCP, CORRECT_PLACEMENT, STARTER_CARD_DRAW:
+                System.out.println("Messaggio per "+message.getNickname()+" di tipo:"+message.getMessageType());
                 try {
                     nickToPlayerInfo(message.getNickname()).getClientHandler().showMessage(message);
                 } catch (RemoteException e) {

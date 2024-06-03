@@ -66,6 +66,20 @@ public class RmiClient extends GenericClient implements VirtualServer {
             case SWITCH_PLAYER_VIEW:
                 break;
 
+            case STARTER_CARD_DRAW:
+                Gson cardTranslator = new GsonBuilder()
+                        .registerTypeAdapter(Card.class, new CardTypeAdapter())
+                        .create();
+
+                System.out.println("received starter card: "+ message.getArgs().get(0));
+                Card supp = cardTranslator.fromJson(message.getArgs().get(0), Card.class);
+
+                playStarterCard(supp);
+                break;
+
+            case SHOP_UPDATE:
+                break;
+
             case CORRECT_DRAW_CARD:
                 Gson handTranslator = new GsonBuilder()
                         .registerTypeAdapter(Card.class, new CardTypeAdapter())
@@ -75,7 +89,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 System.out.println("received card: "+ message.getArgs().get(0));
                 Hand hand = handTranslator.fromJson(message.getArgs().get(0), Hand.class);
 
-                playStarterCard(hand);
+                //playStarterCard(hand);
                 break;
 
             case CORRECT_PLACEMENT:

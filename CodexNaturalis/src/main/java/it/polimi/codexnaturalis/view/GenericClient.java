@@ -3,6 +3,7 @@ package it.polimi.codexnaturalis.view;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Hand;
+import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
@@ -48,7 +49,7 @@ public abstract class GenericClient extends UnicastRemoteObject implements GameC
     }
 
     protected void joinPlayerToGame(GameController virtualGameController, ArrayList<PlayerInfo> listOtherPlayer) {
-        System.out.print("Game Has Started!");
+        System.out.println("Game Has Started!");
 
         clientContainerController.setOtherPlayer(listOtherPlayer);
 
@@ -56,14 +57,8 @@ public abstract class GenericClient extends UnicastRemoteObject implements GameC
     }
 
     //la starterCard deve essere nella prima carta della mano (non la memorizziamo nel container)
-    protected void playStarterCard(Hand hand) {
-        try {
-            typeOfUI.printStarterCardReq(hand.popCard(0));
-        } catch (PersonalizedException.InvalidPopCardException e) {
-            throw new RuntimeException(e);
-        } catch (PersonalizedException.InvalidNumPopCardException e) {
-            throw new RuntimeException(e);
-        }
+    protected void playStarterCard(Card starterCard) {
+        typeOfUI.printStarterCardReq(starterCard);
     }
 
     //ricevo una mano di 2 carte risorsa e 1 carta oro

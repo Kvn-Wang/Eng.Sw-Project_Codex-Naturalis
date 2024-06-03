@@ -63,19 +63,19 @@ public class SocketClient extends GenericClient implements VirtualServer {
     }
 
     private void runRxClient() throws IOException {
-        NetworkMessage messageRX;
+        NetworkMessage message;
         String jsonRX;
 
         // Read message type
         while ((jsonRX = socketRx.readLine()) != null) {
-            messageRX = deSerializeMesssage(jsonRX);
+            message = deSerializeMesssage(jsonRX);
 
-            argsRX = messageRX.getArgs();
+            argsRX = message.getArgs();
             //risveglia il thread in wait per la risposta del server
             doNotify();
 
             // Read message and perform action
-            switch (messageRX.getMessageType()) {
+            switch (message.getMessageType()) {
                 case COM_ACK_TCP:
                     ackArrived = true;
                     break;
@@ -90,7 +90,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
                     break;
 
                 case COM_LOBBY:
-                    typeOfUI.notifyLobbyStatus(messageRX.getNickname(), argsRX.get(0));
+                    typeOfUI.notifyLobbyStatus(message.getNickname(), argsRX.get(0));
                     break;
 
                 case STATUS_PLAYER_CHANGE:
@@ -108,6 +108,20 @@ public class SocketClient extends GenericClient implements VirtualServer {
                 case SWITCH_PLAYER_VIEW:
                     break;
 
+                case STARTER_CARD_DRAW:
+                    Gson cardTranslator = new GsonBuilder()
+                            .registerTypeAdapter(Card.class, new CardTypeAdapter())
+                            .create();
+
+                    System.out.println("received starter card: "+ message.getArgs().get(0));
+                    Card supp = cardTranslator.fromJson(message.getArgs().get(0), Card.class);
+
+                    playStarterCard(supp);
+                    break;
+
+                case SHOP_UPDATE:
+                    break;
+
                 case CORRECT_DRAW_CARD:
                     Gson handTranslator = new GsonBuilder()
                             .registerTypeAdapter(Card.class, new CardTypeAdapter())
@@ -117,7 +131,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
                     System.out.println("received card: "+ argsRX.get(0));
                     Hand hand = handTranslator.fromJson(argsRX.get(0), Hand.class);
 
-                    playStarterCard(hand);
+                    //playStarterCard(hand);
                     break;
 
                 case CORRECT_PLACEMENT:
@@ -129,7 +143,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
 
                 default:
                     // sono messaggi di notifiche
-                    System.out.println(messageRX.getArgs().get(0));
+                    System.out.println(message.getArgs().get(0));
                     break;
             }
         }

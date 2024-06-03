@@ -3,6 +3,7 @@ package it.polimi.codexnaturalis.model.game;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.chat.ChatManager;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
+import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.network.util.networkMessage.MessageType;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
@@ -137,14 +138,16 @@ public class GameManager extends Observable implements GameController {
 */
     private void initializeStarterCard(){
         Shop starterShop = new Shop(ShopType.STARTER, vobs);
+        Card supp;
 
         System.out.println("Starter cards being placed for " + players.length + " players");
         for(Player p: players) {
-            p.addHandCard(starterShop.drawTopDeckCard());
+            //p.addHandCard(
+            supp = starterShop.drawTopDeckCard();
 
             //manda la starterCard al playerSpecifico
             try {
-                notifyObserver(new NetworkMessage(p.getNickname(), MessageType.STARTER_CARD_DRAW, argsGenerator(p.getHand().getCard(0))));
+                notifyObserver(new NetworkMessage(p.getNickname(), MessageType.STARTER_CARD_DRAW, argsGenerator(supp)));
             } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
                 throw new RuntimeException(e);
             }

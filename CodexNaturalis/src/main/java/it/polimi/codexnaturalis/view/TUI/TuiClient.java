@@ -113,6 +113,7 @@ public class TuiClient implements TypeOfUI {
         }
     }
 
+    // una volta joinata la lobby, puoi entrare o uscire
     @Override
     public void printReadyOrLeaveSelection() throws RemoteException {
         String command;
