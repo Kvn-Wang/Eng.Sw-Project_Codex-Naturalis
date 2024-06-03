@@ -4,8 +4,8 @@ import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.shop.card.Card;
-import it.polimi.codexnaturalis.network.util.MessageType;
-import it.polimi.codexnaturalis.network.util.NetworkMessage;
+import it.polimi.codexnaturalis.network.util.networkMessage.MessageType;
+import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.observer.Observable;
 import it.polimi.codexnaturalis.utils.observer.Observer;
@@ -46,6 +46,10 @@ public class Player extends Observable implements PlayerInterface {
 
     public String getNickname() {
         return nickname;
+    }
+
+    public Hand getHand() {
+        return hand;
     }
 
     @Override

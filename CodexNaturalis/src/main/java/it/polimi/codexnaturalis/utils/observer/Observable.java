@@ -1,7 +1,7 @@
 package it.polimi.codexnaturalis.utils.observer;
 
 import com.google.gson.Gson;
-import it.polimi.codexnaturalis.network.util.NetworkMessage;
+import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 
 import java.util.ArrayList;

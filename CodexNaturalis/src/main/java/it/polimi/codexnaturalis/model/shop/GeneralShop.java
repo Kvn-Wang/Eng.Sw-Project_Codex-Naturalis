@@ -2,12 +2,10 @@ package it.polimi.codexnaturalis.model.shop;
 
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.shop.card.Card;
-import it.polimi.codexnaturalis.network.util.MessageType;
-import it.polimi.codexnaturalis.network.util.NetworkMessage;
+import it.polimi.codexnaturalis.network.util.networkMessage.MessageType;
+import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.observer.Observer;
-
-import java.io.Serializable;
 
 public class GeneralShop extends Shop {
     private Card visibleCard1;

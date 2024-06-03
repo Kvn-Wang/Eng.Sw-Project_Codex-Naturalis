@@ -1,4 +1,4 @@
-package it.polimi.codexnaturalis.network.util;
+package it.polimi.codexnaturalis.network.util.networkMessage;
 
 import java.io.Serializable;
 import java.util.ArrayList;

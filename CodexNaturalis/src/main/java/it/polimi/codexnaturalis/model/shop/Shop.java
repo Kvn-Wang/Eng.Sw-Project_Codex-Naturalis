@@ -1,5 +1,4 @@
 package it.polimi.codexnaturalis.model.shop;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -11,14 +10,13 @@ import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.shop.card.ObjectiveCard;
 import it.polimi.codexnaturalis.model.shop.card.ResourceCard;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
-import it.polimi.codexnaturalis.network.util.MessageType;
-import it.polimi.codexnaturalis.network.util.NetworkMessage;
+import it.polimi.codexnaturalis.network.util.networkMessage.MessageType;
+import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.utils.observer.Observable;
 import it.polimi.codexnaturalis.utils.observer.Observer;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -137,10 +135,15 @@ public class Shop extends Observable {
     // dopo aver "pescato" la carta in cima al deck, lo rimpiazza con una carta nuova
     public Card drawTopDeckCard(){
         Card supp = topDeckCard;
+
+        //rimpiazzamento carta
         if(!cardDeck.isEmpty()) {
             topDeckCard = cardDeck.remove(0);
             try {
-                notifyObserver(new NetworkMessage(MessageType.SHOP_UPDATE, argsGenerator(topDeckCard), "topDeckCard", argsGenerator(shopType)));
+                if(!(shopType == ShopType.STARTER)) {
+                    //broadcast a tutti i player sul nuovo top deck card
+                    notifyObserver(new NetworkMessage(MessageType.SHOP_UPDATE, argsGenerator(topDeckCard), "topDeckCard", argsGenerator(shopType)));
+                }
             } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
                 throw new RuntimeException(e);
             }

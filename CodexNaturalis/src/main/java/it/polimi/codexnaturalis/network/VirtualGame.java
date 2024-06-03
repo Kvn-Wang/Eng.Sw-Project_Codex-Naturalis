@@ -3,8 +3,8 @@ package it.polimi.codexnaturalis.network;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.game.GameManager;
-import it.polimi.codexnaturalis.network.util.MessageType;
-import it.polimi.codexnaturalis.network.util.NetworkMessage;
+import it.polimi.codexnaturalis.network.util.networkMessage.MessageType;
+import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.observer.Observer;
@@ -105,6 +105,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
         gameController.switchPlayer(reqPlayer, target);
     }
 
+    //traduzione nick -> playerInfo
     private PlayerInfo nickToPlayerInfo(String nickname){
         for(PlayerInfo p: players){
             if(nickname.equals(p.getNickname()))
@@ -113,16 +114,17 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
         System.err.println("player non trovato");
         return null;
     }
+
     @Override
     public void endGame() throws RemoteException {
         gameController.endGame();
     }
 
-    //TODO come gestire i messaggi al client
     @Override
     public void update(NetworkMessage message) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
         switch(message.getMessageType()) {
-            case COM_ACK_TCP, CORRECT_PLACEMENT:
+            //messaggi per playerSpecifici con argomenti illimitati
+            case COM_ACK_TCP, CORRECT_PLACEMENT, STARTER_CARD_DRAW:
                 try {
                     nickToPlayerInfo(message.getNickname()).getClientHandler().showMessage(message);
                 } catch (RemoteException e) {
@@ -147,10 +149,13 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
                 getNextPlayer();
                 break;
 
-            case SCORE_UPDATE, STATUS_PLAYER_CHANGE:
+            //messaggio di broadCast con un argomento
+            case SCORE_UPDATE, STATUS_PLAYER_CHANGE, SHOP_UPDATE:
+                System.out.println("Messaggio broadcast: "+message.getMessageType());
                 for(PlayerInfo p: players){
                     try {
-                        p.getClientHandler().showMessage(new NetworkMessage(message.getMessageType(), message.getNickname(), message.getArgs().get(0)));
+                        p.getClientHandler().showMessage(message);
+                        //p.getClientHandler().showMessage(new NetworkMessage(message.getMessageType(), message.getNickname(), message.getArgs().get(0)));
                     } catch (RemoteException e) {
                         throw new RuntimeException(e);
                     }

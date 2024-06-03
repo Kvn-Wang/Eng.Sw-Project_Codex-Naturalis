@@ -1,4 +1,4 @@
-package it.polimi.codexnaturalis.network.util;
+package it.polimi.codexnaturalis.network.util.networkMessage;
 
 //If before the enum the args are not specified, it's not expected additional argument for the network message
 public enum MessageType {
@@ -39,6 +39,8 @@ public enum MessageType {
     // args(0) = message.getNickname()
     // args(1) = message.getArgs()
     SCORE_UPDATE,
+    // args(0): starterCard
+    STARTER_CARD_DRAW,
     //restituisce la carta sostituita a quella pescata da mostrare all'interno dello shop
     // args(0) = argsGenerator(carta)
     // args(1) = "visibleCard1" o "visibleCard2" o "topDeckCard"
@@ -48,6 +50,6 @@ public enum MessageType {
     SWITCH_PLAYER_VIEW,
     //args = argsGenerator(Hand)
     CORRECT_DRAW_CARD,
-    //args = argsGenerator(getScoreResource()
+    //args = argsGenerator(getScoreResource())
     CORRECT_PLACEMENT
 }

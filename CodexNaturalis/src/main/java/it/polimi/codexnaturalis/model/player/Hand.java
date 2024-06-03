@@ -16,6 +16,10 @@ public class Hand {
         return cards;
     }
 
+    public Card getCard(int numCard) {
+        return cards.get(numCard);
+    }
+
     public void addCard(Card drawnCard) throws PersonalizedException.InvalidAddCardException {
         if(cards.size() <= 3) {
             cards.add(drawnCard);

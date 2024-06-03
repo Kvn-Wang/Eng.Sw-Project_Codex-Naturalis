@@ -2,8 +2,8 @@ package it.polimi.codexnaturalis.network.util;
 
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
+import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 
