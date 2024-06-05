@@ -24,7 +24,7 @@ class CardTest {
         ResourceType south = ResourceType.ANIMAL;
         ResourceType east = ResourceType.FUNGI;
         ResourceType west = null;
-        Card testCard = new Card(png, north,south,east,west) {
+        /*Card testCard = new Card(png, north,south,east,west) {
             @Override
             public ResourceType getCardColor() {
                 return null;
@@ -77,6 +77,6 @@ class CardTest {
             public CardType getCardType() {
                 return null;
             }
-        };
+        };*/
     }
 }

@@ -9,6 +9,8 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
+import java.net.URL;
+
 public class GuiCard {
     private double orgTranslateX;
     private double orgTranslateY;
@@ -22,8 +24,10 @@ public class GuiCard {
     public GuiCard(Card card, Circle[][] matrix) {
         double x=170;
         double y=100;
+        String name = "81";
+        ClassLoader classLoader = getClass().getClassLoader();
         System.out.println();
-        //cardImg =new Image("src/main/resources/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+card.getPng()+".png");
+        cardImg = new Image("it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+card.getPng()+".png");
 
         switch (card.getCardColor()){
             case ResourceType.FUNGI:

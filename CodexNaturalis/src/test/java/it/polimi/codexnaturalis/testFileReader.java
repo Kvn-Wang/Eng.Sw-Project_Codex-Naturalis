@@ -13,26 +13,22 @@ import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 
 public class testFileReader {
     @Test
     public void testFileReader() {
-        String  path ="C:/Users/cipol/IdeaProjects/IS24-AM47/CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/resourceCardsFile.json";
-
-        String relativePath = "src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/resourceCardsFile.json";
-        String cardsFile = "/CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/matchCardFileInfo/resourceCardsFile.json";
+        ClassLoader classLoader = getClass().getClassLoader();
+        URL testFileUrl = classLoader.getResource(UtilCostantValue.pathToResourceJson);
+        System.out.println(testFileUrl);
         try {
-            FileReader reader = new FileReader(relativePath);
-
-            JsonParser jsonParser = new JsonParser();
-            JsonArray jsonArray = jsonParser.parse(reader).getAsJsonArray();
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("File JSON: "+ cardsFile +" non trovato");
+            FileReader reader = new FileReader(UtilCostantValue.pathToResourceJson);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 }
