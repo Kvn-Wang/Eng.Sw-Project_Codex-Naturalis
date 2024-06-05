@@ -16,6 +16,10 @@ public class Hand {
         return cards;
     }
 
+    public Card getCard(int numCard) {
+        return cards.get(numCard);
+    }
+
     public void addCard(Card drawnCard) throws PersonalizedException.InvalidAddCardException {
         if(cards.size() <= 3) {
             cards.add(drawnCard);
@@ -25,6 +29,11 @@ public class Hand {
     }
 
     public Card popCard(int numCard) throws PersonalizedException.InvalidNumPopCardException, PersonalizedException.InvalidPopCardException {
+        /*System.out.println("Qualcuno ha giocato la carta: " + numCard);
+        for(Card elem : cards) {
+            System.out.println(elem);
+        }*/
+
         if(0 <= cards.size() && numCard < cards.size()) {
             return cards.remove(numCard);
             }
@@ -32,5 +41,4 @@ public class Hand {
             throw new PersonalizedException.InvalidPopCardException();
         }
     }
-
 }

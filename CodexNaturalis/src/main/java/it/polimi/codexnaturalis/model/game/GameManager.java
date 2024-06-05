@@ -2,16 +2,16 @@ package it.polimi.codexnaturalis.model.game;
 
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.chat.ChatManager;
-import it.polimi.codexnaturalis.model.chat.ChatMessage;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
-import it.polimi.codexnaturalis.network.util.MessageType;
+import it.polimi.codexnaturalis.model.shop.card.Card;
+import it.polimi.codexnaturalis.network.util.networkMessage.MessageType;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.mission.MissionSelector;
 import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.shop.GeneralShop;
 import it.polimi.codexnaturalis.model.shop.Shop;
-import it.polimi.codexnaturalis.network.util.NetworkMessage;
+import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.utils.observer.Observable;
@@ -50,19 +50,22 @@ public class GameManager extends Observable implements GameController {
         players = new Player[playerInfo.size()];
         vobs = observer;
         addObserver(observer);
-        //initializeGame ora é diviso in 3 phases
+    }
+
+    @Override
+    public void initializeGame() {
         gamePhase1();
     }
 
     private void gamePhase1(){
         initializeScoreboard();
-        resourceShop = initializeShop(ShopType.RESOURCE);
-        objectiveShop = initializeShop(ShopType.OBJECTIVE);
         initializePlayer();
         initializeStarterCard();
     }
 
     private void gamePhase2(){
+        resourceShop = initializeShop(ShopType.RESOURCE);
+        objectiveShop = initializeShop(ShopType.OBJECTIVE);
         initializePlayerHand();
         initializeMission();
     }
@@ -75,7 +78,7 @@ public class GameManager extends Observable implements GameController {
     }
 
     private GeneralShop initializeShop(ShopType typeOfShop){
-        return new GeneralShop(typeOfShop);
+        return new GeneralShop(typeOfShop, vobs);
     }
 
     //inizialize nickname and color
@@ -134,11 +137,21 @@ public class GameManager extends Observable implements GameController {
     }
 */
     private void initializeStarterCard(){
-        Shop starterShop = new Shop(ShopType.STARTER);
+        Shop starterShop = new Shop(ShopType.STARTER, vobs);
+        Card supp;
+
+        System.out.println("Starter cards being placed for " + players.length + " players");
         for(Player p: players) {
-            p.addHandCard(starterShop.drawTopDeckCard());
+            //p.addHandCard(
+            supp = starterShop.drawTopDeckCard();
+
+            //manda la starterCard al playerSpecifico
+            try {
+                notifyObserver(new NetworkMessage(p.getNickname(), MessageType.STARTER_CARD_DRAW, argsGenerator(supp)));
+            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
+                throw new RuntimeException(e);
+            }
         }
-        System.out.println("Starter cards being placed");
     }
 
     private void initializePlayerHand(){

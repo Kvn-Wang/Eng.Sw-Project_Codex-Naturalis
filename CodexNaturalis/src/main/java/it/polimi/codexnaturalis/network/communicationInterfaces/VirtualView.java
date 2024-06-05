@@ -1,7 +1,7 @@
 package it.polimi.codexnaturalis.network.communicationInterfaces;
 
 import it.polimi.codexnaturalis.controller.GameController;
-import it.polimi.codexnaturalis.network.util.NetworkMessage;
+import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
 
 import java.rmi.Remote;

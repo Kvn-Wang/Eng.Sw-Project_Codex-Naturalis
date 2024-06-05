@@ -8,7 +8,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface GameController extends Remote {
-    //void initializeGame();
+    void initializeGame() throws RemoteException;;
     //void setPlayerColor(String nickname, String color);
     void disconnectPlayer(String nickname) throws RemoteException;//vedi issues
     void reconnectPlayer(String nickname) throws RemoteException;

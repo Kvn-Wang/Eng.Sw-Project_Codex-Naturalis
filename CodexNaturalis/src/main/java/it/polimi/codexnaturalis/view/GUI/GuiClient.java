@@ -3,7 +3,6 @@ package it.polimi.codexnaturalis.view.GUI;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.shop.card.Card;
-import it.polimi.codexnaturalis.view.GUI.Menu;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.view.TypeOfUI;
@@ -17,10 +16,10 @@ public class GuiClient implements TypeOfUI {
 
 
     @Override
-    public void connectVirtualNetwork(VirtualServer virtualNetworkCommand) {
+    public void connectVirtualNetwork(VirtualServer virtualNetworkCommand, ClientContainerController clientContainerController) {
         this.virtualNetworkCommand = virtualNetworkCommand;
-        Menu.setupMenu(this.virtualNetworkCommand);
-        javafx.application.Application.launch(Menu.class);
+        GuiGame.setupMenu(this.virtualNetworkCommand);
+        javafx.application.Application.launch(GuiGame.class);
     }
 
     @Override
@@ -29,7 +28,7 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printSelectionNicknameRequestOutcome(boolean positiveOutcome, String nickname) {
-            Menu.setNickname(positiveOutcome,nickname);
+            GuiGame.setNickname(positiveOutcome,nickname);
     }
 
     @Override
@@ -73,31 +72,34 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printStarterCardReq(Card starterCard) {
-
+        GuiGame.addStarter(starterCard);
     }
 
     @Override
     public void printHand(Hand hand) {
-
+        GuiGame.UpdateHand(hand);
     }
 
     @Override
     public void printCommonMission(Mission mission1, Mission mission2) {
-
+        System.out.println("Common Mission");
+        GuiGame.commonMissionSetup(mission1,mission2);
     }
 
     @Override
     public void printPersonalMissionReq(Mission choice1, Mission choice2) {
-
+        System.out.println("Mission Selection");
+        GuiGame.missionSelection(choice1,choice2);
     }
 
     @Override
     public void notifyIsYourTurn(boolean isYourTurn) {
-
+        GuiGame.turnNotify();
     }
 
     @Override
     public void connectGameController(GameController virtualGame, ClientContainerController clientContainerController) {
-        Menu.startGame();
+        GuiGame.startGame(virtualGame, clientContainerController);
     }
+
 }

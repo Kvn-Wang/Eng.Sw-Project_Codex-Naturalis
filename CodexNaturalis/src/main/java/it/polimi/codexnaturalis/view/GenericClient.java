@@ -3,6 +3,7 @@ package it.polimi.codexnaturalis.view;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Hand;
+import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
@@ -14,9 +15,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-public abstract class GenericClient extends UnicastRemoteObject implements GameController, VirtualServer, VirtualView {
-    protected String playerNickname;
-    protected String lobbyNickname;
+public abstract class GenericClient extends UnicastRemoteObject implements GameController, VirtualView {
     protected TypeOfUI typeOfUI;
     protected ClientContainerController clientContainerController;
 
@@ -25,6 +24,8 @@ public abstract class GenericClient extends UnicastRemoteObject implements GameC
     }
 
     protected void initializeClient(VirtualServer virtualServer) throws RemoteException {
+        clientContainerController = new ClientContainer();
+
         initializationPhase1(virtualServer);
         initializationPhase2();
     }
@@ -32,7 +33,7 @@ public abstract class GenericClient extends UnicastRemoteObject implements GameC
     //chiamata che garantisce il setup del nickname univoco
     protected void initializationPhase1(VirtualServer virtualServer) throws RemoteException {
         // aggiungo alla UI il potere di comunicare con l'esterno
-        typeOfUI.connectVirtualNetwork(virtualServer);
+        typeOfUI.connectVirtualNetwork(virtualServer, clientContainerController);
 
         // per com'è stato scritto il codice, dopo questa riga avremo un nickname sicuramente settato correttamente
         // stessa cosa vale per le righe successive
@@ -48,21 +49,16 @@ public abstract class GenericClient extends UnicastRemoteObject implements GameC
     }
 
     protected void joinPlayerToGame(GameController virtualGameController, ArrayList<PlayerInfo> listOtherPlayer) {
-        System.out.print("Game Has Started!");
-        clientContainerController = new ClientContainer(listOtherPlayer);
+        System.out.println("Game Has Started!");
+
+        clientContainerController.setOtherPlayer(listOtherPlayer);
 
         typeOfUI.connectGameController(virtualGameController, clientContainerController);
     }
 
     //la starterCard deve essere nella prima carta della mano (non la memorizziamo nel container)
-    protected void playStarterCard(Hand hand) {
-        try {
-            typeOfUI.printStarterCardReq(hand.popCard(0));
-        } catch (PersonalizedException.InvalidPopCardException e) {
-            throw new RuntimeException(e);
-        } catch (PersonalizedException.InvalidNumPopCardException e) {
-            throw new RuntimeException(e);
-        }
+    protected void playStarterCard(Card starterCard) {
+        typeOfUI.printStarterCardReq(starterCard);
     }
 
     //ricevo una mano di 2 carte risorsa e 1 carta oro
@@ -79,4 +75,7 @@ public abstract class GenericClient extends UnicastRemoteObject implements GameC
     protected void initializePersonalMission(Mission personalMission1, Mission personalMission2) {
         typeOfUI.printPersonalMissionReq(personalMission1, personalMission2);
     }
+
+    @Override
+    public void initializeGame() {}
 }

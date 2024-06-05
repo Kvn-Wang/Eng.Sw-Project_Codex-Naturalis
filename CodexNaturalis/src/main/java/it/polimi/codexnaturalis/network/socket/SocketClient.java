@@ -1,15 +1,18 @@
 package it.polimi.codexnaturalis.network.socket;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.player.Hand;
+import it.polimi.codexnaturalis.model.player.HandGsonAdapter;
 import it.polimi.codexnaturalis.model.shop.card.Card;
-import it.polimi.codexnaturalis.model.shop.card.StarterCard;
+import it.polimi.codexnaturalis.model.shop.card.CardTypeAdapter;
+import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
-import it.polimi.codexnaturalis.network.util.MessageType;
-import it.polimi.codexnaturalis.network.util.NetworkMessage;
+import it.polimi.codexnaturalis.network.util.networkMessage.MessageType;
+import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
@@ -21,7 +24,7 @@ import java.net.Socket;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-public class SocketClient extends GenericClient {
+public class SocketClient extends GenericClient implements VirtualServer {
     Socket serverSocket;
     BufferedReader socketRx;
     PrintWriter socketTx;
@@ -60,19 +63,19 @@ public class SocketClient extends GenericClient {
     }
 
     private void runRxClient() throws IOException {
-        NetworkMessage messageRX;
+        NetworkMessage message;
         String jsonRX;
 
         // Read message type
         while ((jsonRX = socketRx.readLine()) != null) {
-            messageRX = deSerializeMesssage(jsonRX);
+            message = deSerializeMesssage(jsonRX);
 
-            argsRX = messageRX.getArgs();
+            argsRX = message.getArgs();
             //risveglia il thread in wait per la risposta del server
             doNotify();
 
             // Read message and perform action
-            switch (messageRX.getMessageType()) {
+            switch (message.getMessageType()) {
                 case COM_ACK_TCP:
                     ackArrived = true;
                     break;
@@ -87,7 +90,7 @@ public class SocketClient extends GenericClient {
                     break;
 
                 case COM_LOBBY:
-                    typeOfUI.notifyLobbyStatus(messageRX.getNickname(), argsRX.get(0));
+                    typeOfUI.notifyLobbyStatus(message.getNickname(), argsRX.get(0));
                     break;
 
                 case STATUS_PLAYER_CHANGE:
@@ -105,11 +108,30 @@ public class SocketClient extends GenericClient {
                 case SWITCH_PLAYER_VIEW:
                     break;
 
-                case CORRECT_DRAW_CARD:
-                    System.out.println("received card: "+ argsRX.get(0));
-                    Hand hand = gson.fromJson(argsRX.get(0), Hand.class);
+                case STARTER_CARD_DRAW:
+                    Gson cardTranslator = new GsonBuilder()
+                            .registerTypeAdapter(Card.class, new CardTypeAdapter())
+                            .create();
 
-                    playStarterCard(hand);
+                    System.out.println("received starter card: "+ message.getArgs().get(0));
+                    Card supp = cardTranslator.fromJson(message.getArgs().get(0), Card.class);
+
+                    playStarterCard(supp);
+                    break;
+
+                case SHOP_UPDATE:
+                    break;
+
+                case CORRECT_DRAW_CARD:
+                    Gson handTranslator = new GsonBuilder()
+                            .registerTypeAdapter(Card.class, new CardTypeAdapter())
+                            .registerTypeAdapter(Hand.class, new HandGsonAdapter())
+                            .create();
+
+                    System.out.println("received card: "+ argsRX.get(0));
+                    Hand hand = handTranslator.fromJson(argsRX.get(0), Hand.class);
+
+                    //playStarterCard(hand);
                     break;
 
                 case CORRECT_PLACEMENT:
@@ -121,7 +143,7 @@ public class SocketClient extends GenericClient {
 
                 default:
                     // sono messaggi di notifiche
-                    System.out.println(messageRX.getArgs().get(0));
+                    System.out.println(message.getArgs().get(0));
                     break;
             }
         }
@@ -202,11 +224,11 @@ public class SocketClient extends GenericClient {
 
         // fa partire una specie di ricorsione finchè il nick non è valido
         if(outcomeReceived == false) {
-            typeOfUI.printSelectionNicknameRequestOutcome(false, playerNickname);
+            typeOfUI.printSelectionNicknameRequestOutcome(false, nickname);
             typeOfUI.printSelectionNicknameRequest();
         } else {
-            playerNickname = nickname;
-            typeOfUI.printSelectionNicknameRequestOutcome(true, playerNickname);
+            clientContainerController.setNickname(nickname);
+            typeOfUI.printSelectionNicknameRequestOutcome(true, nickname);
         }
 
         //reset della variabile in attesa di altri ACK
@@ -232,7 +254,7 @@ public class SocketClient extends GenericClient {
 
     @Override
     public boolean joinLobby(String playerNickname, String lobbyName) throws RemoteException {
-        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_JOIN_LOBBY_TCP, this.playerNickname, lobbyName)));
+        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_JOIN_LOBBY_TCP, playerNickname, lobbyName)));
         doWait();
 
         //getArgs = (String) boolean
@@ -243,7 +265,7 @@ public class SocketClient extends GenericClient {
             typeOfUI.printJoinLobbyOutcome(false, lobbyName);
             typeOfUI.printSelectionCreateOrJoinLobbyRequest();
         } else {
-            lobbyNickname = lobbyName;
+            clientContainerController.setLobbyName(lobbyName);
             typeOfUI.printJoinLobbyOutcome(true, lobbyName);
         }
 
@@ -256,7 +278,7 @@ public class SocketClient extends GenericClient {
 
     @Override
     public void leaveLobby(String playerNickname) throws RemoteException {
-        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_LEAVE_LOBBY_TCP, this.playerNickname)));
+        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_LEAVE_LOBBY_TCP, playerNickname)));
         doWait();
 
         typeOfUI.printReadyOrLeaveSelectionOutcome(false);
@@ -269,7 +291,7 @@ public class SocketClient extends GenericClient {
 
     @Override
     public boolean createLobby(String playerNickname, String lobbyName) throws RemoteException {
-        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_CREATE_LOBBY_TCP, this.playerNickname, lobbyName)));
+        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_CREATE_LOBBY_TCP, playerNickname, lobbyName)));
         doWait();
 
         //getArgs = (String) boolean
@@ -280,7 +302,7 @@ public class SocketClient extends GenericClient {
             typeOfUI.printCreationLobbyRequestOutcome(false, lobbyName);
             typeOfUI.printSelectionCreateOrJoinLobbyRequest();
         } else {
-            lobbyNickname = lobbyName;
+            clientContainerController.setLobbyName(lobbyName);
             typeOfUI.printCreationLobbyRequestOutcome(true, lobbyName);
         }
 
@@ -293,7 +315,7 @@ public class SocketClient extends GenericClient {
 
     @Override
     public void setPlayerReady(String playerNickname) throws RemoteException {
-        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_SET_READY_LOBBY_TCP, this.playerNickname)));
+        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_SET_READY_LOBBY_TCP, playerNickname)));
         doWait();
 
         typeOfUI.printReadyOrLeaveSelectionOutcome(true);

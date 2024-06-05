@@ -1,14 +1,16 @@
 package it.polimi.codexnaturalis.network.rmi;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.player.Hand;
+import it.polimi.codexnaturalis.model.player.HandGsonAdapter;
 import it.polimi.codexnaturalis.model.shop.card.Card;
-import it.polimi.codexnaturalis.model.shop.card.StarterCard;
+import it.polimi.codexnaturalis.model.shop.card.CardTypeAdapter;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
-import it.polimi.codexnaturalis.network.util.NetworkMessage;
+import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
@@ -22,15 +24,13 @@ import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class RmiClient extends GenericClient {
+public class RmiClient extends GenericClient implements VirtualServer {
     private final String serverName = UtilCostantValue.RMIServerName;
     private final VirtualServer server;
-    private GameController gameController;
     private Registry registry;
     // variabile di identificativo temporanea -> inutile dopo il setting del nickname
     private String ID;
     private GameController personalGameController;
-    Gson gson = new Gson();
 
     public RmiClient(TypeOfUI typeOfUI) throws RemoteException, NotBoundException, InterruptedException {
         //setup communicazione bidirezionale tra rete e oggetto grafico
@@ -66,11 +66,30 @@ public class RmiClient extends GenericClient {
             case SWITCH_PLAYER_VIEW:
                 break;
 
-            case CORRECT_DRAW_CARD:
-                System.out.println("received card: "+ message.getArgs().get(0));
-                Hand hand = gson.fromJson(message.getArgs().get(0), Hand.class);
+            case STARTER_CARD_DRAW:
+                Gson cardTranslator = new GsonBuilder()
+                        .registerTypeAdapter(Card.class, new CardTypeAdapter())
+                        .create();
 
-                playStarterCard(hand);
+                System.out.println("received starter card: "+ message.getArgs().get(0));
+                Card supp = cardTranslator.fromJson(message.getArgs().get(0), Card.class);
+
+                playStarterCard(supp);
+                break;
+
+            case SHOP_UPDATE:
+                break;
+
+            case CORRECT_DRAW_CARD:
+                Gson handTranslator = new GsonBuilder()
+                        .registerTypeAdapter(Card.class, new CardTypeAdapter())
+                        .registerTypeAdapter(Hand.class, new HandGsonAdapter())
+                        .create();
+
+                System.out.println("received card: "+ message.getArgs().get(0));
+                Hand hand = handTranslator.fromJson(message.getArgs().get(0), Hand.class);
+
+                //playStarterCard(hand);
                 break;
 
             case CORRECT_PLACEMENT:
@@ -99,8 +118,8 @@ public class RmiClient extends GenericClient {
     @Override
     public boolean setNickname(String UUID, String nickname) throws RemoteException {
         if(server.setNickname(this.ID, nickname)) {
-            this.playerNickname = nickname;
-            typeOfUI.printSelectionNicknameRequestOutcome(true, this.playerNickname);
+            clientContainerController.setNickname(nickname);
+            typeOfUI.printSelectionNicknameRequestOutcome(true, nickname);
         } else {
             typeOfUI.printSelectionNicknameRequestOutcome(false, nickname);
 
@@ -119,9 +138,9 @@ public class RmiClient extends GenericClient {
 
     @Override
     public boolean joinLobby(String playerNickname, String lobbyName) throws RemoteException {
-        if(server.joinLobby(this.playerNickname, lobbyName)) {
-            this.lobbyNickname = lobbyName;
-            typeOfUI.printJoinLobbyOutcome(true, this.lobbyNickname);
+        if(server.joinLobby(playerNickname, lobbyName)) {
+            clientContainerController.setLobbyName(lobbyName);
+            typeOfUI.printJoinLobbyOutcome(true, lobbyName);
         } else {
             typeOfUI.printJoinLobbyOutcome(false, lobbyName);
 
@@ -134,7 +153,7 @@ public class RmiClient extends GenericClient {
 
     @Override
     public void leaveLobby(String playerNickname) throws RemoteException {
-        server.leaveLobby(this.playerNickname);
+        server.leaveLobby(playerNickname);
         typeOfUI.printReadyOrLeaveSelectionOutcome(false);
 
         initializationPhase2();
@@ -142,9 +161,9 @@ public class RmiClient extends GenericClient {
 
     @Override
     public boolean createLobby(String playerNickname, String lobbyName) throws RemoteException {
-        if(server.createLobby(this.playerNickname, lobbyName)) {
-            this.lobbyNickname = lobbyName;
-            typeOfUI.printCreationLobbyRequestOutcome(true, this.lobbyNickname);
+        if(server.createLobby(playerNickname, lobbyName)) {
+            clientContainerController.setLobbyName(lobbyName);
+            typeOfUI.printCreationLobbyRequestOutcome(true, lobbyName);
         } else {
             typeOfUI.printCreationLobbyRequestOutcome(false, lobbyName);
             typeOfUI.printSelectionCreateOrJoinLobbyRequest();
@@ -156,7 +175,7 @@ public class RmiClient extends GenericClient {
 
     @Override
     public void setPlayerReady(String playerNickname) throws RemoteException {
-        server.setPlayerReady(this.playerNickname);
+        server.setPlayerReady(playerNickname);
         typeOfUI.printReadyOrLeaveSelectionOutcome(true);
     }
 
