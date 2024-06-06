@@ -236,10 +236,6 @@ public class Player extends Observable implements PlayerInterface {
         addObserver(observer);
     }
 
-    public Hand getHand() {
-        return hand;
-    }
-
     public int getPersonalScoreBoardScore() {
         return personalScoreBoardScore;
     }

@@ -9,11 +9,17 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+
 public class GuiCard {
     private Rectangle vCard;
     private Card card;
     private int num;
-    private Image cardImg;
+    private BufferedImage cardImg;
     public Rectangle getRectangle() {
         return vCard;
     }
@@ -29,9 +35,12 @@ public class GuiCard {
     public GuiCard(Card card, Circle[][] matrix) {
         double x=170;
         double y=100;
-        System.out.println();
-        //cardImg =new Image("/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+card.getPng()+".png");
-
+        cardImg = null;
+        try {
+            cardImg = ImageIO.read(new File("1.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         switch (card.getCardColor()){
             case ResourceType.FUNGI:
                 vCard = new Rectangle(x, y, Color.ORANGE);

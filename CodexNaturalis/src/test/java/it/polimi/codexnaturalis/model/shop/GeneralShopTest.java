@@ -2,6 +2,9 @@ package it.polimi.codexnaturalis.model.shop;
 
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.shop.card.Card;
+import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
+import it.polimi.codexnaturalis.utils.PersonalizedException;
+import it.polimi.codexnaturalis.utils.observer.Observer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -11,14 +14,20 @@ import static org.junit.jupiter.api.Assertions.*;
 class GeneralShopTest {
     GeneralShop testGeneralShop;
     ShopType[] shopList = {ShopType.STARTER, ShopType.OBJECTIVE, ShopType.RESOURCE};
+    Observer observer = new Observer() {
+        @Override
+        public void update(NetworkMessage message) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
+
+        }
+    };
 
     @Test
     public void testGeneralShop() {
-        testGeneralShop = new GeneralShop(ShopType.RESOURCE);
+        testGeneralShop = new GeneralShop(ShopType.RESOURCE, observer);
         assertEquals(testGeneralShop.shopType, ShopType.RESOURCE);
-        testGeneralShop = new GeneralShop(ShopType.STARTER);
+        testGeneralShop = new GeneralShop(ShopType.STARTER, observer);
         assertEquals(testGeneralShop.shopType, ShopType.STARTER);
-        testGeneralShop = new GeneralShop(ShopType.OBJECTIVE);
+        testGeneralShop = new GeneralShop(ShopType.OBJECTIVE, observer);
         assertEquals(testGeneralShop.shopType, ShopType.OBJECTIVE);
     }
 
@@ -27,7 +36,12 @@ class GeneralShopTest {
         Card testCard;
         for (int i = 1; i < 3; i++) {
             for (ShopType testShop : shopList) {
-                testGeneralShop = new GeneralShop(testShop);
+                testGeneralShop = new GeneralShop(testShop, new Observer() {
+                    @Override
+                    public void update(NetworkMessage message) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
+
+                    }
+                });
                 testCard = testGeneralShop.drawFromShopPlayer(i);
                 System.out.println(": " +testCard.getPng());
             }
@@ -40,7 +54,12 @@ class GeneralShopTest {
     @Test
     public void testCheckEmptyShop(){
         for (ShopType testShop : shopList) {
-            testGeneralShop = new GeneralShop(testShop);
+            testGeneralShop = new GeneralShop(testShop, new Observer() {
+                @Override
+                public void update(NetworkMessage message) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
+
+                }
+            });
             assertEquals(false , testGeneralShop.checkEmptyShop());
             Card testCard = testGeneralShop.drawFromShopPlayer(1);
             while(testCard!=null){
