@@ -37,11 +37,7 @@ public class testFileReader {
 
     @Test
     public void test(){
-        BufferedImage img = null;
-        try {
-            img = ImageIO.read(new File("1.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        int num = 3;
+        System.out.println("CODEX_cards_gold_front/"+num+".png");
     }
 }

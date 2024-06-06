@@ -36,8 +36,9 @@ public class GuiCard {
         double x=170;
         double y=100;
         cardImg = null;
+        String imageName = "/resources/CODEX_cards_gold_front/"+ num + ".png";
         try {
-            cardImg = ImageIO.read(new File("1.png"));
+            cardImg = ImageIO.read(Card..getResource(imageName));
         } catch (IOException e) {
             e.printStackTrace();
         }
