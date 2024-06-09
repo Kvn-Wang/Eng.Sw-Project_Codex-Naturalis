@@ -89,7 +89,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
                     connectToGame(this, arg0);
                     break;
 
-                case COM_LOBBY:
+                case COM_LOBBY_STATUS_NOTIFY:
                     typeOfUI.notifyLobbyStatus(message.getNickname(), argsRX.get(0));
                     break;
 
@@ -108,7 +108,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
                 case SWITCH_PLAYER_VIEW:
                     break;
 
-                case STARTER_CARD_DRAW:
+                case GAME_SETUP_STARTER_CARD:
                     Gson cardTranslator = new GsonBuilder()
                             .registerTypeAdapter(Card.class, new CardTypeAdapter())
                             .create();

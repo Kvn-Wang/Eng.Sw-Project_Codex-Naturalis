@@ -105,7 +105,7 @@ public class Lobby {
 
     private void broadCastNotify(String player, String command) throws RemoteException {
         for(PlayerInfo elem : listOfPlayers) {
-            elem.notifyPlayer(new NetworkMessage(player, MessageType.COM_LOBBY, command));
+            elem.notifyPlayer(new NetworkMessage(player, MessageType.COM_LOBBY_STATUS_NOTIFY, command));
         }
     }
 

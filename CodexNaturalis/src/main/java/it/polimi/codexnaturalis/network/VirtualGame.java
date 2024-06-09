@@ -124,7 +124,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     public void update(NetworkMessage message) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
         switch(message.getMessageType()) {
             //messaggi per playerSpecifici con argomenti illimitati
-            case COM_ACK_TCP, CORRECT_PLACEMENT, STARTER_CARD_DRAW:
+            case COM_ACK_TCP, CORRECT_PLACEMENT, GAME_SETUP_STARTER_CARD:
                 System.out.println("Messaggio per "+message.getNickname()+" di tipo:"+message.getMessageType());
                 try {
                     nickToPlayerInfo(message.getNickname()).getClientHandler().showMessage(message);

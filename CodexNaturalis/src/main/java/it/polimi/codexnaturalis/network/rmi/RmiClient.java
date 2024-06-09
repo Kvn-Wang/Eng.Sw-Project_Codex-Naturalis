@@ -66,7 +66,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
             case SWITCH_PLAYER_VIEW:
                 break;
 
-            case STARTER_CARD_DRAW:
+            case GAME_SETUP_STARTER_CARD:
                 Gson cardTranslator = new GsonBuilder()
                         .registerTypeAdapter(Card.class, new CardTypeAdapter())
                         .create();
@@ -95,7 +95,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
             case CORRECT_PLACEMENT:
                 break;
 
-            case COM_LOBBY:
+            case COM_LOBBY_STATUS_NOTIFY:
                 typeOfUI.notifyLobbyStatus(message.getNickname(), message.getArgs().get(0));
                 break;
 

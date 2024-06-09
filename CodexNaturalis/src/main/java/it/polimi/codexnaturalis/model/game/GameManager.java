@@ -147,7 +147,7 @@ public class GameManager extends Observable implements GameController {
 
             //manda la starterCard al playerSpecifico
             try {
-                notifyObserver(new NetworkMessage(p.getNickname(), MessageType.STARTER_CARD_DRAW, argsGenerator(supp)));
+                notifyObserver(new NetworkMessage(p.getNickname(), MessageType.GAME_SETUP_STARTER_CARD, argsGenerator(supp)));
             } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
                 throw new RuntimeException(e);
             }
