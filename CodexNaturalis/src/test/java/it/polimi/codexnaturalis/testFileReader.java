@@ -12,7 +12,7 @@ import it.polimi.codexnaturalis.model.shop.card.ResourceCard;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import org.junit.jupiter.api.Test;
-
+import static org.junit.jupiter.api.Assertions.*;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -36,8 +36,22 @@ public class testFileReader {
     ObjectiveCard thirdTestCard = new ObjectiveCard(41, null, ResourceType.QUILL, ResourceType.NONE, ResourceType.NONE, ResourceType.FUNGI, ConditionResourceType.QUILL, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
 
     @Test
-    public void test(){
+    public void test() throws IOException {
         int num = 3;
-        System.out.println("CODEX_cards_gold_front/"+num+".png");
+        /*try {
+            URL name = getClass().getResource("/it/polimi/codexnaturalis/graphics/Pawn_Black.png");
+            //BufferedImage image = ImageIO.read(getClass().getResource(".CodexNaturalis/src/main/resources/it/polimi/codexnaturalis/graphics/Pawn_Black.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }*/
+        URL name = getClass().getResource("/it/polimi/codexnaturalis/graphics/Pawn_Black.png");
+        BufferedImage image = ImageIO.read(name);
+        System.out.println(name);
+        String imageName = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/3.png";
+        String imageName2 = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/" + num + ".png";
+        assertEquals(true , imageName.equals(imageName2));
+        URL name2 = getClass().getResource(imageName2);
+        BufferedImage image4 = ImageIO.read(name2);
     }
+
 }

@@ -35,12 +35,17 @@ public class GuiCard {
     public GuiCard(Card card, Circle[][] matrix) {
         double x=170;
         double y=100;
-        cardImg = null;
-        String imageName = "/resources/CODEX_cards_gold_front/"+ num + ".png";
+        num = card.getPng();
+        String numString = String.valueOf(num);
+        String imageName = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+ numString +".png";
+        String url = imageName;
+        URL name = getClass().getResource(url);
+
+        URL imageURL = getClass().getResource(imageName);
         try {
-            cardImg = ImageIO.read(Card..getResource(imageName));
+            cardImg = ImageIO.read(imageURL);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         switch (card.getCardColor()){
             case ResourceType.FUNGI:
