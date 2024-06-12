@@ -18,14 +18,18 @@ public enum MessageType {
 
     // args(0) = list<PlayerInfo>  (aggiornamento appena un player entra in lobby)
     COM_JOIN_LOBBY_OTHER_PLAYER_INFO_TCP,
-    //nickname = joinedPlayerNick
-    //args(0) = action that the player has done
+
+    //args(0) = joinedPlayerNick
+    //args(1) = action that the player has done
     // (JOIN, LEFT, READY, COLOR(+ args(1) = color), WAIT (quando un player è da solo in lobby e mette ready))
     COM_LOBBY_STATUS_NOTIFY,
 
-    // args(0): playerNick
-    // args(1): color
+    /**
+     * args(0): playerNick
+     * args(1): color
+     */
     COM_SET_PLAYER_COLOR,
+
     //args(0) = playerNickname
     COM_SET_READY_LOBBY_TCP,
 
@@ -44,10 +48,10 @@ public enum MessageType {
 
     /* ---- ENUMS FOR THE GAME PHASE: SETUP ---- */
     // args(0): 1 starterCard
-    GAME_SETUP_STARTER_CARD,
+    GAME_SETUP_GIVE_STARTER_CARD_,
 
-    // args(0): nick
-    // args(1): isPlayedStarterCardUp
+    // nickname = PlayerNick
+    // args(0): isPlayedStarterCardUp
     GAME_SETUP_STARTER_CARD_PLAY,
 
     /**
@@ -67,7 +71,7 @@ public enum MessageType {
 
     /**
      *  args(0): playerNick
-     *  args(1): PersonalMissionSelected
+     *  args(1): PersonalMissionSelected (Mission)
      */
     GAME_SETUP_CHOOSE_PERSONAL_MISSION,
 

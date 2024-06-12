@@ -18,8 +18,15 @@ public interface TypeOfUI {
     void printSelectionCreateOrJoinLobbyRequest() throws RemoteException;
     void printJoinLobbyOutcome(boolean positiveOutcome, String lobbyName) throws RemoteException;
     void printCreationLobbyRequestOutcome(boolean outcomePositive, String lobbyName);
-    void printReadyOrLeaveSelection() throws RemoteException;
-    void printReadyOrLeaveSelectionOutcome(boolean isReady);
+
+    /**
+     * TODO: a player when it enters a lobby, should be given 2 choices: select a Color (volendo possiamo che se seleziona un colore
+     * automatiamente sta settando ready) or LEAVE
+     * @throws RemoteException
+     */
+    void lobbyActionReq() throws RemoteException;
+    void lobbyActionOutcome(boolean isReady);
+
     void notifyLobbyStatus(String otherPlayerNickname, String status);
     // la starter card sarà in posizione 0 nella hand
     void printStarterCardReq(Card starterCard);

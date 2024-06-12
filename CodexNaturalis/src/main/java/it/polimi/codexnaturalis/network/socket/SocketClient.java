@@ -4,10 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.model.enumeration.ColorType;
+import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.player.HandGsonAdapter;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.CardTypeAdapter;
+import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
@@ -108,7 +111,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
                 case SWITCH_PLAYER_VIEW:
                     break;
 
-                case GAME_SETUP_STARTER_CARD:
+                case GAME_SETUP_GIVE_STARTER_CARD_:
                     Gson cardTranslator = new GsonBuilder()
                             .registerTypeAdapter(Card.class, new CardTypeAdapter())
                             .create();
@@ -253,7 +256,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
     }
 
     @Override
-    public boolean joinLobby(String playerNickname, String lobbyName) throws RemoteException {
+    public ArrayList<PlayerInfo> joinLobby(String playerNickname, String lobbyName) throws RemoteException {
         socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_JOIN_LOBBY_TCP, playerNickname, lobbyName)));
         doWait();
 
@@ -273,7 +276,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
         outcomeReceived = false;
 
         //return inutile
-        return false;
+        return null;
     }
 
     @Override
@@ -281,7 +284,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
         socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_LEAVE_LOBBY_TCP, playerNickname)));
         doWait();
 
-        typeOfUI.printReadyOrLeaveSelectionOutcome(false);
+        typeOfUI.lobbyActionOutcome(false);
 
         //reset della variabile in attesa di altri ACK
         outcomeReceived = false;
@@ -314,14 +317,29 @@ public class SocketClient extends GenericClient implements VirtualServer {
     }
 
     @Override
+    public boolean setPlayerColor(String nickname, ColorType colorChosen) {
+        return false;
+    }
+
+    @Override
     public void setPlayerReady(String playerNickname) throws RemoteException {
         socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_SET_READY_LOBBY_TCP, playerNickname)));
         doWait();
 
-        typeOfUI.printReadyOrLeaveSelectionOutcome(true);
+        typeOfUI.lobbyActionOutcome(true);
 
         //reset della variabile in attesa di altri ACK
         outcomeReceived = false;
+    }
+
+    @Override
+    public void playStarterCard(String playerNick, StarterCard starterCard) {
+
+    }
+
+    @Override
+    public void playerPersonalMissionSelect(String nickname, Mission mission) throws RemoteException {
+
     }
 
     @Override
@@ -336,11 +354,6 @@ public class SocketClient extends GenericClient implements VirtualServer {
 
     @Override
     public void playerDraw(String nickname, int Numcard, String type) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage, RemoteException {
-
-    }
-
-    @Override
-    public void playerPersonalMissionSelect(String nickname, int numMission) throws RemoteException {
 
     }
 

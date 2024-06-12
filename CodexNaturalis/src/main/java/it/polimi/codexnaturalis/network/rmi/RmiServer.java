@@ -1,9 +1,11 @@
 package it.polimi.codexnaturalis.network.rmi;
 
+import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.lobby.Lobby;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
+import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.network.util.ServerContainer;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
@@ -54,12 +56,8 @@ public class RmiServer extends Thread implements VirtualServer {
     }
 
     @Override
-    public boolean joinLobby(String playerNickname, String lobbyName) throws RemoteException {
-        if(serverContainer.joinPlayerToLobby(playerNickname, lobbyName)) {
-            return true;
-        } else {
-            return false;
-        }
+    public ArrayList<PlayerInfo> joinLobby(String playerNickname, String lobbyName) throws RemoteException {
+        return serverContainer.joinPlayerToLobby(playerNickname, lobbyName);
     }
 
     @Override
@@ -79,6 +77,11 @@ public class RmiServer extends Thread implements VirtualServer {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public boolean setPlayerColor(String nickname, ColorType colorChosen) {
+        return false;
     }
 
     @Override

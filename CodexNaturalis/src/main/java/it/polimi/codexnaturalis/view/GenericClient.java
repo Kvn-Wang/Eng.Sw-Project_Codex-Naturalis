@@ -7,7 +7,6 @@ import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
-import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
 
@@ -45,7 +44,7 @@ public abstract class GenericClient extends UnicastRemoteObject implements GameC
         //setup lobbyName unico
         typeOfUI.printSelectionCreateOrJoinLobbyRequest();
 
-        typeOfUI.printReadyOrLeaveSelection();
+        typeOfUI.lobbyActionReq();
     }
 
     protected void joinPlayerToGame(GameController virtualGameController, ArrayList<PlayerInfo> listOtherPlayer) {

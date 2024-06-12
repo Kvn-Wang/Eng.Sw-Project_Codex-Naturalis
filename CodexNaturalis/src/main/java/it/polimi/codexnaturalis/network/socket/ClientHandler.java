@@ -3,6 +3,7 @@ package it.polimi.codexnaturalis.network.socket;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.Lobby;
 import it.polimi.codexnaturalis.network.util.networkMessage.MessageType;
@@ -85,7 +86,7 @@ public class ClientHandler implements VirtualView, VirtualServer {
                     argsRX0 = messageRX.getArgs().get(0);
                     argsRX1 = messageRX.getArgs().get(1);
 
-                    if(joinLobby(argsRX0, argsRX1)) {
+                    if(joinLobby(argsRX0, argsRX1) != null) {
                         messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(true));
                     } else {
                         messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(false));
@@ -175,12 +176,8 @@ public class ClientHandler implements VirtualView, VirtualServer {
     }
 
     @Override
-    public boolean joinLobby(String playerNickname, String lobbyName) throws RemoteException {
-        if(serverContainer.joinPlayerToLobby(playerNickname, lobbyName)) {
-            return true;
-        } else {
-            return false;
-        }
+    public ArrayList<PlayerInfo> joinLobby(String playerNickname, String lobbyName) throws RemoteException {
+        return serverContainer.joinPlayerToLobby(playerNickname, lobbyName);
     }
 
     @Override
@@ -199,6 +196,11 @@ public class ClientHandler implements VirtualView, VirtualServer {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public boolean setPlayerColor(String nickname, ColorType colorChosen) {
+        return false;
     }
 
     @Override

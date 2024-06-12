@@ -115,7 +115,7 @@ public class TuiClient implements TypeOfUI {
 
     // una volta joinata la lobby, puoi entrare o uscire
     @Override
-    public void printReadyOrLeaveSelection() throws RemoteException {
+    public void lobbyActionReq() throws RemoteException {
         String command;
         boolean flag;
 
@@ -143,7 +143,7 @@ public class TuiClient implements TypeOfUI {
     }
 
     @Override
-    public void printReadyOrLeaveSelectionOutcome(boolean isReady) {
+    public void lobbyActionOutcome(boolean isReady) {
         if(isReady) {
             //System.out.println("You set yourself ready!");
         } else {

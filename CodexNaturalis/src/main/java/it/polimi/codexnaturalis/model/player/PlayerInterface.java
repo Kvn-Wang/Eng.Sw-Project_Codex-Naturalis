@@ -12,8 +12,7 @@ public interface PlayerInterface {
     void addMissionScore(int Value);
     boolean isPlayerAlive();
     void setStatus(boolean status);//setta il player alive o dead
-    void setPersonalMissions(Mission mission1,Mission mission2);
-    void setPersonalMissionFinal(int selection);
+    void setPersonalMissionFinal(Mission personalMission);
     void switchPlayerView(Player target);
     int getPersonalScore();
     int getPersonalMissionTotalScore();

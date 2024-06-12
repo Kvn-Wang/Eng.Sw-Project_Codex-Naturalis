@@ -16,8 +16,6 @@ public class Player extends Observable implements PlayerInterface {
     private int personalMissionTotalScore;
     private ColorType pawnColor;
     private boolean alive;
-    private Mission personalMission1;
-    private Mission personalMission2;
     private Mission selectedPersonalMission;
     private Player playerView;
     private PlayerScoreResource scoreResource;
@@ -112,22 +110,13 @@ public class Player extends Observable implements PlayerInterface {
         return alive;
     }
 
-    @Override
-    public void setPersonalMissions(Mission mission1, Mission mission2) {
-        personalMission1 = mission1;
-        personalMission2 = mission2;
-    }
-
     //selection = 1 -> mission1, selection = 2 -> mission2
     @Override
-    public void setPersonalMissionFinal(int selection) {
-        if(selection == 1||selection ==2) {
-            switch(selection){
-                case 1:
-                    selectedPersonalMission = personalMission1;
-                case 2:
-                    selectedPersonalMission = personalMission2;
-            }
+    public void setPersonalMissionFinal(Mission personalMission) {
+        selectedPersonalMission = personalMission;
+
+        /*if(selection == 1||selection ==2) {
+            selectedPersonalMission = personalMission;
             try {
                 notifyObserver(new NetworkMessage(nickname, MessageType.COM_ACK_TCP, "true"));
             } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
@@ -140,7 +129,7 @@ public class Player extends Observable implements PlayerInterface {
             } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
                 throw new RuntimeException(e);
             }
-        }
+        }*/
     }
 
     @Override
@@ -208,8 +197,6 @@ public class Player extends Observable implements PlayerInterface {
         pawnColor = color;
         personalScoreBoardScore = 0;
         personalMissionTotalScore = 0;
-        personalMission1 = null;
-        personalMission2 = null;
         selectedPersonalMission = null;
         playerView = this;
         scoreResource = new PlayerScoreResource();
@@ -224,8 +211,6 @@ public class Player extends Observable implements PlayerInterface {
         pawnColor = color;
         personalScoreBoardScore = 0;
         personalMissionTotalScore = 0;
-        personalMission1 = null;
-        personalMission2 = null;
         selectedPersonalMission = null;
         playerView = this;
         scoreResource = new PlayerScoreResource();

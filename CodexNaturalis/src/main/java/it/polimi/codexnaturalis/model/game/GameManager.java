@@ -4,6 +4,7 @@ import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.chat.ChatManager;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.shop.card.Card;
+import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.util.networkMessage.MessageType;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
@@ -17,6 +18,7 @@ import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.utils.observer.Observable;
 import it.polimi.codexnaturalis.utils.observer.Observer;
 
+import java.rmi.RemoteException;
 import java.util.*;
 
 
@@ -55,6 +57,11 @@ public class GameManager extends Observable implements GameController {
     @Override
     public void initializeGame() {
         gamePhase1();
+    }
+
+    @Override
+    public void playStarterCard(String playerNick, StarterCard starterCard) {
+
     }
 
     private void gamePhase1(){
@@ -147,7 +154,7 @@ public class GameManager extends Observable implements GameController {
 
             //manda la starterCard al playerSpecifico
             try {
-                notifyObserver(new NetworkMessage(p.getNickname(), MessageType.GAME_SETUP_STARTER_CARD, argsGenerator(supp)));
+                notifyObserver(new NetworkMessage(p.getNickname(), MessageType.GAME_SETUP_GIVE_STARTER_CARD_, argsGenerator(supp)));
             } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
                 throw new RuntimeException(e);
             }
@@ -167,7 +174,12 @@ public class GameManager extends Observable implements GameController {
         sharedMission1 = missionSelector.drawFromFile();
         sharedMission2 = missionSelector.drawFromFile();
         for(Player p: players){
-            p.setPersonalMissions(missionSelector.drawFromFile(), missionSelector.drawFromFile());
+            try {
+                notifyObserver(new NetworkMessage(MessageType.GAME_SETUP_SEND_PERSONAL_MISSION,
+                        p.getNickname(), argsGenerator(missionSelector.drawFromFile()), argsGenerator(missionSelector.drawFromFile())));
+            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
+                throw new RuntimeException(e);
+            }
         }
         System.out.print("\nMissions being selected\n");
     }
@@ -229,9 +241,9 @@ public class GameManager extends Observable implements GameController {
     }
 
     @Override
-    public void playerPersonalMissionSelect(String nickname, int numMission) {
+    public void playerPersonalMissionSelect(String nickname, Mission mission) {
         Player p = nickToPlayer(nickname);
-        p.setPersonalMissionFinal(numMission);
+        p.setPersonalMissionFinal(mission);
         System.out.printf("%s Selected his mission\n", nickname);
         int numPlayerReady = 0;
         for(Player player: players){

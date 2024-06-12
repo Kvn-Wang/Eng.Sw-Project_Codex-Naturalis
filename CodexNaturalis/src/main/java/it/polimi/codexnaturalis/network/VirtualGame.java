@@ -3,6 +3,8 @@ package it.polimi.codexnaturalis.network;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.game.GameManager;
+import it.polimi.codexnaturalis.model.mission.Mission;
+import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.util.networkMessage.MessageType;
 import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
@@ -53,6 +55,16 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     }
 
     @Override
+    public void playStarterCard(String playerNick, StarterCard starterCard) {
+
+    }
+
+    @Override
+    public void playerPersonalMissionSelect(String nickname, Mission mission) throws RemoteException {
+        gameController.playerPersonalMissionSelect(nickname, mission);
+    }
+
+    @Override
     public void disconnectPlayer(String nickname) throws RemoteException {
         gameController.disconnectPlayer(nickname);
     }
@@ -73,11 +85,6 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
                 throw new RuntimeException(e);
             }
         }
-    }
-
-    @Override
-    public void playerPersonalMissionSelect(String nickname, int numMission) throws RemoteException {
-            gameController.playerPersonalMissionSelect(nickname, numMission);
     }
 
     @Override
@@ -124,7 +131,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     public void update(NetworkMessage message) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
         switch(message.getMessageType()) {
             //messaggi per playerSpecifici con argomenti illimitati
-            case COM_ACK_TCP, CORRECT_PLACEMENT, GAME_SETUP_STARTER_CARD:
+            case COM_ACK_TCP, CORRECT_PLACEMENT, GAME_SETUP_GIVE_STARTER_CARD_:
                 System.out.println("Messaggio per "+message.getNickname()+" di tipo:"+message.getMessageType());
                 try {
                     nickToPlayerInfo(message.getNickname()).getClientHandler().showMessage(message);

@@ -192,11 +192,11 @@ public class GuiGame extends Application {
         Platform.runLater(() -> {
             MissionSelectBox missionAlert = new MissionSelectBox();
             missionAlert.setMission(mission1, mission2);
-            try {
+            /*try {
                 vgc.playerPersonalMissionSelect(playerNickname, Integer.parseInt(missionAlert.display("Mission selection", 800, 700)));
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
-            }
+            }*/
         });
     }
 

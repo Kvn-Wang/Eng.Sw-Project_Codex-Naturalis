@@ -3,10 +3,13 @@ package it.polimi.codexnaturalis.network.rmi;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.model.enumeration.ColorType;
+import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.player.HandGsonAdapter;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.CardTypeAdapter;
+import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
@@ -23,6 +26,9 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class RmiClient extends GenericClient implements VirtualServer {
     private final String serverName = UtilCostantValue.RMIServerName;
@@ -31,10 +37,13 @@ public class RmiClient extends GenericClient implements VirtualServer {
     // variabile di identificativo temporanea -> inutile dopo il setting del nickname
     private String ID;
     private GameController personalGameController;
+    private ExecutorService executorService;
 
     public RmiClient(TypeOfUI typeOfUI) throws RemoteException, NotBoundException, InterruptedException {
         //setup communicazione bidirezionale tra rete e oggetto grafico
         super(typeOfUI);
+
+        executorService = Executors.newSingleThreadExecutor();
 
         registry = LocateRegistry.getRegistry(UtilCostantValue.ipAddressSocketServer, UtilCostantValue.portRmiServer);
         this.server = (VirtualServer) registry.lookup(serverName);
@@ -66,7 +75,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
             case SWITCH_PLAYER_VIEW:
                 break;
 
-            case GAME_SETUP_STARTER_CARD:
+            case GAME_SETUP_GIVE_STARTER_CARD_:
                 Gson cardTranslator = new GsonBuilder()
                         .registerTypeAdapter(Card.class, new CardTypeAdapter())
                         .create();
@@ -137,8 +146,8 @@ public class RmiClient extends GenericClient implements VirtualServer {
     }
 
     @Override
-    public boolean joinLobby(String playerNickname, String lobbyName) throws RemoteException {
-        if(server.joinLobby(playerNickname, lobbyName)) {
+    public ArrayList<PlayerInfo> joinLobby(String playerNickname, String lobbyName) throws RemoteException {
+        if(server.joinLobby(playerNickname, lobbyName) != null) {
             clientContainerController.setLobbyName(lobbyName);
             typeOfUI.printJoinLobbyOutcome(true, lobbyName);
         } else {
@@ -148,13 +157,13 @@ public class RmiClient extends GenericClient implements VirtualServer {
             typeOfUI.printSelectionCreateOrJoinLobbyRequest();
         }
 
-        return false;
+        return null;
     }
 
     @Override
     public void leaveLobby(String playerNickname) throws RemoteException {
         server.leaveLobby(playerNickname);
-        typeOfUI.printReadyOrLeaveSelectionOutcome(false);
+        typeOfUI.lobbyActionOutcome(false);
 
         initializationPhase2();
     }
@@ -174,9 +183,24 @@ public class RmiClient extends GenericClient implements VirtualServer {
     }
 
     @Override
+    public boolean setPlayerColor(String nickname, ColorType colorChosen) {
+        return false;
+    }
+
+    @Override
     public void setPlayerReady(String playerNickname) throws RemoteException {
         server.setPlayerReady(playerNickname);
-        typeOfUI.printReadyOrLeaveSelectionOutcome(true);
+        typeOfUI.lobbyActionOutcome(true);
+    }
+
+    @Override
+    public void playStarterCard(String playerNick, StarterCard starterCard) {
+
+    }
+
+    @Override
+    public void playerPersonalMissionSelect(String nickname, Mission mission) throws RemoteException {
+        personalGameController.playerPersonalMissionSelect(nickname, mission);
     }
 
     @Override
@@ -192,11 +216,6 @@ public class RmiClient extends GenericClient implements VirtualServer {
     @Override
     public void playerDraw(String nickname, int Numcard, String type) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage, RemoteException {
         personalGameController.playerDraw(nickname, Numcard, type);
-    }
-
-    @Override
-    public void playerPersonalMissionSelect(String nickname, int numMission) throws RemoteException {
-        personalGameController.playerPersonalMissionSelect(nickname, numMission);
     }
 
     @Override
@@ -217,5 +236,27 @@ public class RmiClient extends GenericClient implements VirtualServer {
     @Override
     public void endGame() throws RemoteException {
         personalGameController.endGame();
+    }
+
+    private void runAsync(Runnable run) {
+        Future<?> future = executorService.submit(() -> {
+            try {
+                // Simula un'operazione lunga
+                Thread.sleep(2000);
+                String result = "Result from RMI";
+                System.out.println("ciao");
+            } catch (Exception e) {
+                System.err.println("err");
+            }
+        });
+
+        while (!future.isDone()) {
+            try {
+                System.out.println("Loading...");
+                Thread.sleep(1000); // Simula l'input dell'utente ogni secondo
+            } catch (Exception e) {
+                System.err.println("err");
+            }
+        }
     }
 }

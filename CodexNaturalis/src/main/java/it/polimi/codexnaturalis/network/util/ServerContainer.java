@@ -57,8 +57,15 @@ public class ServerContainer {
     }
 
 
-    //add the setted player (with a functioning handler) to the arraylist of lobby
-    public boolean joinPlayerToLobby(String playerNickname, String lobbyName) throws RemoteException {
+    /**
+     *
+     * @param playerNickname
+     * @param lobbyName
+     * @return an arrayList != null if the join is successful, contains all the player that has joined the lobby
+     *          including the caller
+     * @throws RemoteException
+     */
+    public ArrayList<PlayerInfo> joinPlayerToLobby(String playerNickname, String lobbyName) throws RemoteException {
         PlayerInfo player;
         Lobby lobby;
 
@@ -67,12 +74,12 @@ public class ServerContainer {
 
         // if lobby has not been found
         if(lobby == null) {
-            return false;
+            return null;
         } else {
             if(lobby.connectPlayer(player)) {
-                return true;
+                return lobby.getListOfPlayers();
             } else {
-                return false;
+                return null;
             }
         }
     }

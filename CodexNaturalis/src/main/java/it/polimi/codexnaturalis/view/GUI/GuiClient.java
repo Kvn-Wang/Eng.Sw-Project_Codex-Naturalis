@@ -46,12 +46,12 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
-    public void printReadyOrLeaveSelection() {
+    public void lobbyActionReq() {
 
     }
 
     @Override
-    public void printReadyOrLeaveSelectionOutcome(boolean isReady) {
+    public void lobbyActionOutcome(boolean isReady) {
 
     }
 
