@@ -5,10 +5,12 @@ import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
+import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.view.TypeOfUI;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 public class GuiClient implements TypeOfUI {
     private VirtualServer virtualNetworkCommand;
@@ -38,6 +40,11 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printJoinLobbyOutcome(boolean positiveOutcome, String lobbyName) throws RemoteException {
+    }
+
+    @Override
+    public void printLobbyStatus(ArrayList<PlayerInfo> lobbyPlayers) throws RemoteException {
+
     }
 
     @Override

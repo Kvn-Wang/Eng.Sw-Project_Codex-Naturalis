@@ -6,6 +6,7 @@ import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
+import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.view.TypeOfUI;
@@ -102,6 +103,11 @@ public class TuiClient implements TypeOfUI {
         } else {
             System.out.println("you failed to join the lobby");
         }
+    }
+
+    @Override
+    public void printLobbyStatus(ArrayList<PlayerInfo> lobbyPlayers) throws RemoteException {
+        
     }
 
     @Override
