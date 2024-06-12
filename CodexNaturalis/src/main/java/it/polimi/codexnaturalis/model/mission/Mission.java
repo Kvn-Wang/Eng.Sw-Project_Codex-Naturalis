@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.model.mission;
 
+import it.polimi.codexnaturalis.model.enumeration.MissionType;
 import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
@@ -40,4 +41,6 @@ public abstract class Mission {
     public int getPointPerCondition() {
         return pointPerCondition;
     }
+
+    public abstract MissionType getMissionType();
 }

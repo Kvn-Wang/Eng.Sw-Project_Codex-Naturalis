@@ -21,20 +21,20 @@ public class PrintCardClass {
         String[] conditionPlaceableCardResource;
 
         if (isFront) {
-            nw = convertResourceType(card.getFrontNorthResource());
-            ne = convertResourceType(card.getFrontEastResource());
-            sw = convertResourceType(card.getFrontSouthResource());
-            se = convertResourceType(card.getFrontWestResource());
-            c = convertMultipleResourceType(new ResourceType[]{ResourceType.NONE});
+            nw = PrintSymbols.convertResourceType(card.getFrontNorthResource());
+            ne = PrintSymbols.convertResourceType(card.getFrontEastResource());
+            se = PrintSymbols.convertResourceType(card.getFrontSouthResource());
+            sw = PrintSymbols.convertResourceType(card.getFrontWestResource());
+            c = PrintSymbols.convertMultipleResourceType(new ResourceType[]{ResourceType.NONE});
             punti = card.getFrontalNumber();
-            conditionResource = convertConditionType(card.getCondition());
-            conditionPlaceableCardResource = convertMultipleResourceType(card.getPlaceableCardResources());
+            conditionResource = PrintSymbols.convertConditionType(card.getCondition());
+            conditionPlaceableCardResource = PrintSymbols.convertMultipleResourceType(card.getPlaceableCardResources());
         } else {
-            nw = convertResourceType(card.getBackNorthResource());
-            ne = convertResourceType(card.getBackEastResource());
-            sw = convertResourceType(card.getBackSouthResource());
-            se = convertResourceType(card.getBackWestResource());
-            c = convertMultipleResourceType(card.getBackCentralResources());
+            nw = PrintSymbols.convertResourceType(card.getBackNorthResource());
+            ne = PrintSymbols.convertResourceType(card.getBackEastResource());
+            se = PrintSymbols.convertResourceType(card.getBackSouthResource());
+            sw = PrintSymbols.convertResourceType(card.getBackWestResource());
+            c = PrintSymbols.convertMultipleResourceType(card.getBackCentralResources());
             punti = 0;
             conditionResource = "";
             conditionPlaceableCardResource = null;
@@ -45,85 +45,23 @@ public class PrintCardClass {
         sw = formatCorner(5, sw);
         se = formatCorner(5, se);
 
-        System.out.println("╔═══════╗");
+        System.out.println("╔════╦═════╦════╗");
         if (punti == 0 && conditionResource.equals("")) {
-            System.out.println(nw + "   " + ne);
+            System.out.println(nw + "     " + ne);
         } else if (punti != 0 && conditionResource.equals("")) {
             System.out.println(nw + " " + punti + " " + ne);
         } else {
             System.out.println(nw + " " + punti + " | " + conditionResource + " " + ne);
         }
-        System.out.println("╠═╩═════╩═╣");
-        System.out.println("║  " + (c.length > 1 ? c[1] : " ") + "  ║");
-        System.out.println("║  " + (c.length > 0 ? c[0] : " ") + "  ║");
-        System.out.println("║  " + (c.length > 2 ? c[2] : " ") + "  ║");
-        System.out.println("╠═╦═════╦═╣");
+        System.out.println("╠════╩═════╩════╣");
+        System.out.println("║  " + (c.length > 1 ? c[1] : " ") + "            ║");
+        System.out.println("║  " + (c.length > 0 ? c[0] : "") + "            ║");
+        System.out.println("║  " + (c.length > 2 ? c[2] : " ") + "            ║");
+        System.out.println("╠════╦═════╦════╣");
         String conditionResourcesStr = conditionPlaceableCardResource != null ? String.join(", ", conditionPlaceableCardResource) : "";
-        System.out.println(sw + " " + conditionResourcesStr + " " + se);
-        System.out.println("╚═╩═════╩═╝");
-    }
-
-    private static String[] convertMultipleResourceType(ResourceType[] resourceType) {
-        int len = resourceType.length;
-        String[] c = new String[len];
-        for (int i = 0; i < len; i++) {
-            c[i] = convertResourceType(resourceType[i]);
-        }
-        return c;
-    }
-
-    private static String convertResourceType(ResourceType resourceType) {
-        switch (resourceType) {
-            case UNASSIGNABLE -> {
-                return "X";
-            }
-            case NONE -> {
-                return " ";
-            }
-            case PLANT -> {
-                return "\uD83C\uDF43";
-            }
-            case ANIMAL -> {
-                return "\uD83D\uDC3E";
-            }
-            case FUNGI -> {
-                return "\uD83C\uDF44";
-            }
-            case INSECT -> {
-                return "\uD83D\uDC1E";
-            }
-            case QUILL -> {
-                return "✒";
-            }
-            case INKWELL -> {
-                return "⚱";
-            }
-            case MANUSCRIPT -> {
-                return "\uD83D\uDCDC";
-            }
-        }
-        return null;
-    }
-
-    private static String convertConditionType(ConditionResourceType conditionResourceType) {
-        switch (conditionResourceType) {
-            case NONE -> {
-                return "";
-            }
-            case INKWELL -> {
-                return "⚱";
-            }
-            case MANUSCRIPT -> {
-                return "\uD83D\uDCDC";
-            }
-            case QUILL -> {
-                return "✒";
-            }
-            case OCCUPIEDSPACE -> {
-                return "\u2588";
-            }
-        }
-        return null;
+        System.out.println(sw + "    " + se);
+        System.out.println("╚════╩═════╩════╝");
+        System.out.println("necessary Condition: " + conditionResourcesStr);
     }
 
     private static int getVisualLength(String str) {

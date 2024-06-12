@@ -1,6 +1,7 @@
 package it.polimi.codexnaturalis.model.mission;
 
 import it.polimi.codexnaturalis.model.enumeration.CardCorner;
+import it.polimi.codexnaturalis.model.enumeration.MissionType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.shop.card.Card;
@@ -108,5 +109,9 @@ public class BendMission extends Mission  {
 
     public ResourceType getDecorationResource() {
         return decorationResource;
+    }
+
+    public MissionType getMissionType() {
+        return MissionType.BEND;
     }
 }
