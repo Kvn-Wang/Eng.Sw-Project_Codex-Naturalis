@@ -18,7 +18,6 @@ import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.utils.observer.Observable;
 import it.polimi.codexnaturalis.utils.observer.Observer;
 
-import java.rmi.RemoteException;
 import java.util.*;
 
 
@@ -38,20 +37,16 @@ public class GameManager extends Observable implements GameController {
     private int starterCards;
     private int remainingRounds=1;
     private Observer vobs;
+    MissionSelector missionSelector;
 
     public GameManager(Map<String, ColorType> playerInfo) {
         //PER I TEST
         this.playerInfo = playerInfo;
         players = new Player[playerInfo.size()];
+        missionSelector = new MissionSelector();
+
         //initializeGame ora é diviso in 3 phases
         gamePhase1();
-    }
-
-    public GameManager(Map<String, ColorType> playerInfo, Observer observer) {
-        this.playerInfo = playerInfo;
-        players = new Player[playerInfo.size()];
-        vobs = observer;
-        addObserver(observer);
     }
 
     @Override
@@ -61,7 +56,8 @@ public class GameManager extends Observable implements GameController {
 
     @Override
     public void playStarterCard(String playerNick, StarterCard starterCard) {
-
+        //nickToPlayer(playerNick).placeCard(UtilCostantValue.lunghezzaMaxMappa/2, UtilCostantValue.lunghezzaMaxMappa/2,
+        //        starterCards);
     }
 
     private void gamePhase1(){
@@ -73,11 +69,22 @@ public class GameManager extends Observable implements GameController {
     private void gamePhase2(){
         resourceShop = initializeShop(ShopType.RESOURCE);
         objectiveShop = initializeShop(ShopType.OBJECTIVE);
+
         initializePlayerHand();
-        initializeMission();
+        initializeCommonMission();
+        setupPlayerContents();
+
+        initializePlayerPersonalMission();
     }
     private void gamePhase3(){
         initializeStartingPlayer();
+    }
+
+    public GameManager(Map<String, ColorType> playerInfo, Observer observer) {
+        this.playerInfo = playerInfo;
+        players = new Player[playerInfo.size()];
+        vobs = observer;
+        addObserver(observer);
     }
 
     private void initializeScoreboard(){
@@ -99,62 +106,15 @@ public class GameManager extends Observable implements GameController {
         }
     }
 
-    /*public void initializePlayerColor(){
-        for(Player elem : players) {
-            elem.setPawnColor();
-        }
-    }*/
-
-/*    @Override
-    public void setPlayerColor(String nickname, String color) {
-        boolean colorAlreadyChosen=false;
-        int chosenColorNum = 0;
-
-        for(Player p: players){
-            if(p.getPawnColor().equals(color))
-                colorAlreadyChosen=true;
-            if(p.getPawnColor()!=null)
-                chosenColorNum++;
-        }
-        if(colorAlreadyChosen)
-            //TODO: specifica observer
-            notifyObserver(new NetworkMessage(nickname, MessageType.COLOR_ALREADY_CHOSEN));
-        else{
-            if(color.equals(ColorType.RED)) {
-                nickToPlayer(nickname).setPawnImg(UtilCostantValue.pathToRedPawnImg);
-                nickToPlayer(nickname).setPawnColor(ColorType.RED);
-            } else if(color.equals(ColorType.YELLOW)) {
-                nickToPlayer(nickname).setPawnImg(UtilCostantValue.pathToYellowPawnImg);
-                nickToPlayer(nickname).setPawnColor(ColorType.YELLOW);
-            } else if(color.equals(ColorType.GREEN)) {
-                nickToPlayer(nickname).setPawnImg(UtilCostantValue.pathToGreenPawnImg);
-                nickToPlayer(nickname).setPawnColor(ColorType.GREEN);
-            } else if(color.equals(ColorType.BLUE)) {
-                nickToPlayer(nickname).setPawnImg(UtilCostantValue.pathToBluePawnImg);
-                nickToPlayer(nickname).setPawnColor(ColorType.BLUE);
-            } else {
-                System.err.println("Errore: colore richiesto inesistente!");
-            }
-            //TODO: specifica observer
-            notifyObserver(new NetworkMessage(nickname, MessageType.CORRECT_CHOSEN_COLOR));
-            //serve a capire se tutti i player hanno scelto un colore
-            if(chosenColorNum == players.length)
-                gamePhase3();
-        }
-    }
-*/
     private void initializeStarterCard(){
         Shop starterShop = new Shop(ShopType.STARTER, vobs);
-        Card supp;
 
         System.out.println("Starter cards being placed for " + players.length + " players");
         for(Player p: players) {
-            //p.addHandCard(
-            supp = starterShop.drawTopDeckCard();
-
             //manda la starterCard al playerSpecifico
             try {
-                notifyObserver(new NetworkMessage(p.getNickname(), MessageType.GAME_SETUP_GIVE_STARTER_CARD_, argsGenerator(supp)));
+                notifyObserverSingle(new NetworkMessage(p.getNickname(), MessageType.GAME_SETUP_GIVE_STARTER_CARD_,
+                        argsGenerator(starterShop.drawTopDeckCard())));
             } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
                 throw new RuntimeException(e);
             }
@@ -169,13 +129,31 @@ public class GameManager extends Observable implements GameController {
         }
     }
 
-    private void initializeMission(){
-        MissionSelector missionSelector = new MissionSelector();
+    private void initializeCommonMission() {
         sharedMission1 = missionSelector.drawFromFile();
         sharedMission2 = missionSelector.drawFromFile();
+    }
+
+    /**
+     * sends to all player, all their necessary resources for their setup, hand, common missions and all visible shop cards
+     */
+    private void setupPlayerContents(){
         for(Player p: players){
             try {
-                notifyObserver(new NetworkMessage(MessageType.GAME_SETUP_SEND_PERSONAL_MISSION,
+                notifyObserverSingle(new NetworkMessage(p.getNickname(), MessageType.GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP,
+                        p.getNickname(), argsGenerator(p.getHand()), argsGenerator(sharedMission1),
+                        argsGenerator(sharedMission2), argsGenerator(resourceShop.getVisibleShopCard()),
+                        argsGenerator(objectiveShop.getVisibleShopCard())));
+            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void initializePlayerPersonalMission() {
+        for(Player p: players){
+            try {
+                notifyObserverSingle(new NetworkMessage(MessageType.GAME_SETUP_SEND_PERSONAL_MISSION,
                         p.getNickname(), argsGenerator(missionSelector.drawFromFile()), argsGenerator(missionSelector.drawFromFile())));
             } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
                 throw new RuntimeException(e);
@@ -236,7 +214,7 @@ public class GameManager extends Observable implements GameController {
         }
         else{
             System.out.println("wrong type shop");
-            notifyObserver(new NetworkMessage(nickname, MessageType.WRONG_TYPE_SHOP));
+            notifyObserverSingle(new NetworkMessage(nickname, MessageType.WRONG_TYPE_SHOP));
         }
     }
 

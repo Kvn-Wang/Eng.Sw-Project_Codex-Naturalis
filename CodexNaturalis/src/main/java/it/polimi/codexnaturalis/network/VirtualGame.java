@@ -131,7 +131,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     public void update(NetworkMessage message) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
         switch(message.getMessageType()) {
             //messaggi per playerSpecifici con argomenti illimitati
-            case COM_ACK_TCP, CORRECT_PLACEMENT, GAME_SETUP_GIVE_STARTER_CARD_:
+            case COM_ACK_TCP, CORRECT_PLACEMENT, GAME_SETUP_GIVE_STARTER_CARD_, GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP:
                 System.out.println("Messaggio per "+message.getNickname()+" di tipo:"+message.getMessageType());
                 try {
                     nickToPlayerInfo(message.getNickname()).getClientHandler().showMessage(message);
@@ -157,7 +157,6 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
                 getNextPlayer();
                 break;
 
-            //messaggio di broadCast con un argomento
             case SCORE_UPDATE, STATUS_PLAYER_CHANGE, SHOP_UPDATE:
                 System.out.println("Messaggio broadcast: "+message.getMessageType());
                 for(PlayerInfo p: players){

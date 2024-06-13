@@ -17,7 +17,7 @@ public class Observable {
         observers.remove(obs);
     }
 
-    public void notifyObserver(NetworkMessage message) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
+    public void notifyObserverSingle(NetworkMessage message) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
         for(Observer element : observers) {
             element.update(message);
         }

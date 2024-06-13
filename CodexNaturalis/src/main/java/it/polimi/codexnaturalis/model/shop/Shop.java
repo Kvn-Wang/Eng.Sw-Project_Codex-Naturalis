@@ -142,7 +142,7 @@ public class Shop extends Observable {
             try {
                 if(!(shopType == ShopType.STARTER)) {
                     //broadcast a tutti i player sul nuovo top deck card
-                    notifyObserver(new NetworkMessage(MessageType.SHOP_UPDATE, argsGenerator(topDeckCard), "topDeckCard", argsGenerator(shopType)));
+                    notifyObserverSingle(new NetworkMessage(MessageType.SHOP_UPDATE, argsGenerator(topDeckCard), "topDeckCard", argsGenerator(shopType)));
                 }
             } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
                 throw new RuntimeException(e);

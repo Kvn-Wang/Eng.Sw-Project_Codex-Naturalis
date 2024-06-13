@@ -35,7 +35,7 @@ public class Player extends Observable implements PlayerInterface {
     public void addHandCard(Card drawnCard) {
         try {
             hand.addCard(drawnCard);
-            notifyObserver(new NetworkMessage(nickname, MessageType.CORRECT_DRAW_CARD, this.argsGenerator(hand)));
+            notifyObserverSingle(new NetworkMessage(nickname, MessageType.CORRECT_DRAW_CARD, this.argsGenerator(hand)));
         } catch (PersonalizedException.InvalidAddCardException |
                  PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
             throw new RuntimeException(e);
@@ -71,12 +71,12 @@ public class Player extends Observable implements PlayerInterface {
             placeResult = gameMap.placeCard(x, y, playedCard, isCardBack);
             personalScoreBoardScore+=placeResult;
             try {
-                notifyObserver(new NetworkMessage(nickname, MessageType.CORRECT_PLACEMENT, argsGenerator(getScoreResource())));
+                notifyObserverSingle(new NetworkMessage(nickname, MessageType.CORRECT_PLACEMENT, argsGenerator(getScoreResource())));
             } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
                 throw new RuntimeException(e);
             }
             try {
-                notifyObserver(new NetworkMessage(nickname, MessageType.SCORE_UPDATE, argsGenerator(personalScoreBoardScore)));
+                notifyObserverSingle(new NetworkMessage(nickname, MessageType.SCORE_UPDATE, argsGenerator(personalScoreBoardScore)));
             } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
                 throw new RuntimeException(e);
             }
@@ -136,7 +136,7 @@ public class Player extends Observable implements PlayerInterface {
     public void switchPlayerView(Player target) {
         playerView=target;
         try {
-            notifyObserver(new NetworkMessage(nickname, MessageType.SWITCH_PLAYER_VIEW, argsGenerator(playerView.getGameMap())));
+            notifyObserverSingle(new NetworkMessage(nickname, MessageType.SWITCH_PLAYER_VIEW, argsGenerator(playerView.getGameMap())));
         } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
             throw new RuntimeException(e);
         }
@@ -170,7 +170,7 @@ public class Player extends Observable implements PlayerInterface {
     public void setStatus(boolean status){
         alive = status;
         try {
-            notifyObserver(new NetworkMessage(nickname, MessageType.STATUS_PLAYER_CHANGE, Boolean.toString(status)));
+            notifyObserverSingle(new NetworkMessage(nickname, MessageType.STATUS_PLAYER_CHANGE, Boolean.toString(status)));
         } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
             throw new RuntimeException(e);
         }

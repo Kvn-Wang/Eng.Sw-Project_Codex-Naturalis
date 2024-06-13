@@ -7,6 +7,8 @@ import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.observer.Observer;
 
+import java.util.ArrayList;
+
 public class GeneralShop extends Shop {
     private Card visibleCard1;
     private Card visibleCard2;
@@ -26,7 +28,7 @@ public class GeneralShop extends Shop {
                 supp = visibleCard1;
                 visibleCard1 = drawTopDeckCard();
                 try {
-                    notifyObserver(new NetworkMessage(MessageType.SHOP_UPDATE, argsGenerator(visibleCard1), "visibleCard1", argsGenerator(shopType)));
+                    notifyObserverSingle(new NetworkMessage(MessageType.SHOP_UPDATE, argsGenerator(visibleCard1), "visibleCard1", argsGenerator(shopType)));
                 } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
                     throw new RuntimeException(e);
                 }
@@ -35,7 +37,7 @@ public class GeneralShop extends Shop {
                 supp = visibleCard2;
                 visibleCard2 = drawTopDeckCard();
                 try {
-                    notifyObserver(new NetworkMessage(MessageType.SHOP_UPDATE, argsGenerator(visibleCard2), "visibleCard2", argsGenerator(shopType)));
+                    notifyObserverSingle(new NetworkMessage(MessageType.SHOP_UPDATE, argsGenerator(visibleCard2), "visibleCard2", argsGenerator(shopType)));
                 } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
                     throw new RuntimeException(e);
                 }
@@ -50,5 +52,14 @@ public class GeneralShop extends Shop {
         }
         else
             return false;
+    }
+
+    public ArrayList<Card> getVisibleShopCard() {
+        ArrayList<Card> visibleShopCards = new ArrayList<>();
+
+        visibleShopCards.add(visibleCard1);
+        visibleShopCards.add(visibleCard2);
+
+        return visibleShopCards;
     }
 }

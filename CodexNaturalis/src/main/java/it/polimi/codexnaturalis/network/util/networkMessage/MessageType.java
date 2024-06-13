@@ -51,15 +51,15 @@ public enum MessageType {
     GAME_SETUP_GIVE_STARTER_CARD_,
 
     // nickname = PlayerNick
-    // args(0): isPlayedStarterCardUp
+    // args(0): StarterCard (after setting isCardUp)
     GAME_SETUP_STARTER_CARD_PLAY,
 
     /**
      * args(0): hand (with 2 resourceCard and 1 obj)
-     * args(1): First Mission
-     * args(2): Second Mission
-     * args(3): 2 resourceCard (Arraylist)
-     * args(4): 2 objectiveCard (Arraylist)
+     * args(1): First Common Mission
+     * args(2): Second Common Mission
+     * args(3): 2 resourceCard of shop (Arraylist)
+     * args(4): 2 objectiveCard of shop (Arraylist)
      */
     GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP,
 
