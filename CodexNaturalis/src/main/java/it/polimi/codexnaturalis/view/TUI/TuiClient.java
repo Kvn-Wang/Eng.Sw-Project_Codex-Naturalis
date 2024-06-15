@@ -27,6 +27,33 @@ public class TuiClient implements TypeOfUI {
         scan = new Scanner(System.in);
     }
 
+    public void initializeClient(VirtualServer virtualServer, ClientContainerController clientContainerController) throws RemoteException {
+        initializationPhase1(virtualServer, clientContainerController);
+        initializationPhase2();
+    }
+
+    //chiamata che garantisce il setup del nickname univoco
+    protected void initializationPhase1(VirtualServer virtualServer, ClientContainerController clientContainerController) throws RemoteException {
+        // aggiungo alla UI il potere di comunicare con l'esterno
+        connectVirtualNetwork(virtualServer, clientContainerController);
+
+        // per com'è stato scritto il codice, dopo questa riga avremo un nickname sicuramente settato correttamente
+        // stessa cosa vale per le righe successive
+        printSelectionNicknameRequest();
+    }
+
+    //chiamata che garantisce alla fine l'avvio del gioco o ritorno alla fase di selezione lobby
+    protected void initializationPhase2() {
+        try {
+            //setup lobbyName unico
+            printSelectionCreateOrJoinLobbyRequest();
+
+            lobbyActionReq();
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void connectVirtualNetwork(VirtualServer virtualNetworkCommand, ClientContainerController clientContainerController) {
         this.networkCommand = virtualNetworkCommand;
@@ -38,7 +65,6 @@ public class TuiClient implements TypeOfUI {
         this.virtualGame = virtualGame;
     }
 
-    @Override
     public void printSelectionNicknameRequest() throws RemoteException {
         String nickname;
 
@@ -54,6 +80,11 @@ public class TuiClient implements TypeOfUI {
             System.out.println("Benvenuto: "+ nickname);
         } else {
             System.out.println("Nickname già preso, si prega di selezionare un altro.");
+            try {
+                printSelectionNicknameRequest();
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -71,7 +102,6 @@ public class TuiClient implements TypeOfUI {
         }
     }
 
-    @Override
     public void printSelectionCreateOrJoinLobbyRequest() throws RemoteException {
         String command;
 
@@ -103,6 +133,7 @@ public class TuiClient implements TypeOfUI {
             System.out.println("you've joined the lobby: "+lobbyName);
         } else {
             System.out.println("you failed to join the lobby");
+            printSelectionCreateOrJoinLobbyRequest();
         }
     }
 
@@ -117,11 +148,15 @@ public class TuiClient implements TypeOfUI {
             System.out.println("You successfully created the lobby: "+ lobbyName);
         } else {
             System.out.println("Creation lobby failed, "+lobbyName+" name has already been taken!");
+            try {
+                printSelectionCreateOrJoinLobbyRequest();
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     // una volta joinata la lobby, puoi entrare o uscire
-    @Override
     public void lobbyActionReq() throws RemoteException {
         String command;
         boolean flag;
@@ -152,9 +187,10 @@ public class TuiClient implements TypeOfUI {
     @Override
     public void lobbyActionOutcome(boolean isReady) {
         if(isReady) {
-            //System.out.println("You set yourself ready!");
+            System.out.println("You set yourself ready!");
         } else {
             System.out.println("You've left the lobby!");
+            initializationPhase2();
         }
     }
 
@@ -173,7 +209,6 @@ public class TuiClient implements TypeOfUI {
         }
     }
 
-    @Override
     public void printStarterCardReq(Card starterCard) {
         String command;
 
@@ -217,12 +252,17 @@ public class TuiClient implements TypeOfUI {
     }
 
     @Override
-    public void printCommonMission(Mission mission1, Mission mission2) {
+    public void giveStarterCard(StarterCard starterCard) {
+        printStarterCardReq(starterCard);
+    }
+
+    @Override
+    public void giveCommonMission(Mission mission1, Mission mission2) {
         System.out.println("Mission 1: ");
     }
 
     @Override
-    public void printPersonalMissionReq(Mission choice1, Mission choice2) {
+    public void givePersonalMission(Mission choice1, Mission choice2) {
 
     }
 

@@ -1,6 +1,7 @@
 package it.polimi.codexnaturalis.main;
 
 import it.polimi.codexnaturalis.network.rmi.RmiClient;
+import it.polimi.codexnaturalis.network.rmi.RmiServer;
 import it.polimi.codexnaturalis.network.socket.SocketClient;
 import it.polimi.codexnaturalis.view.GUI.GuiClient;
 import it.polimi.codexnaturalis.view.TUI.TuiClient;
@@ -37,15 +38,23 @@ public class ClientMain {
 
         if(typeOfconnectionClient == 1) {
             if(typeOfUserView == 1) {
-                new SocketClient(new GuiClient());
+                GuiClient guiClient = new GuiClient();
+                SocketClient socketClient = new SocketClient(guiClient);
+                guiClient.initializeClient(socketClient, socketClient.getClientContainerController());
             } else {
-                new SocketClient(new TuiClient());
+                TuiClient tuiClient = new TuiClient();
+                SocketClient socketClient = new SocketClient(new TuiClient());
+                tuiClient.initializeClient(socketClient, socketClient.getClientContainerController());
             }
         } else {
             if(typeOfUserView == 1) {
-                new RmiClient(new GuiClient());
+                GuiClient guiClient = new GuiClient();
+                RmiClient rmiClient = new RmiClient(guiClient);
+                guiClient.initializeClient(rmiClient, rmiClient.getClientContainerController());
             } else {
-                new RmiClient(new TuiClient());
+                TuiClient tuiClient = new TuiClient();
+                RmiClient rmiClient = new RmiClient(tuiClient);
+                tuiClient.initializeClient(rmiClient, rmiClient.getClientContainerController());
             }
         }
     }

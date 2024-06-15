@@ -53,8 +53,6 @@ public class RmiClient extends GenericClient implements VirtualServer {
         // scambio dell'oggetto per comunicare col server
         ID = UUID.randomUUID().toString();
         server.connectRMI(this, ID);
-
-        initializeClient(this);
     }
 
     @Override
@@ -83,7 +81,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 System.out.println("received starter card: "+ message.getArgs().get(0));
                 Card supp = cardTranslator.fromJson(message.getArgs().get(0), Card.class);
 
-                playStarterCard(supp);
+                typeOfUI.giveStarterCard((StarterCard) supp);
                 break;
 
             case SHOP_UPDATE:
@@ -131,9 +129,6 @@ public class RmiClient extends GenericClient implements VirtualServer {
             typeOfUI.printSelectionNicknameRequestOutcome(true, nickname);
         } else {
             typeOfUI.printSelectionNicknameRequestOutcome(false, nickname);
-
-            //emula un loop infinito finchè non sceglie un nickname corretto
-            typeOfUI.printSelectionNicknameRequest();
         }
 
         //è un ritorno fittizzio, non è utilizzato da nessuno
@@ -152,9 +147,6 @@ public class RmiClient extends GenericClient implements VirtualServer {
             typeOfUI.printJoinLobbyOutcome(true, lobbyName);
         } else {
             typeOfUI.printJoinLobbyOutcome(false, lobbyName);
-
-            //start loop
-            typeOfUI.printSelectionCreateOrJoinLobbyRequest();
         }
 
         return null;
@@ -164,8 +156,6 @@ public class RmiClient extends GenericClient implements VirtualServer {
     public void leaveLobby(String playerNickname) throws RemoteException {
         server.leaveLobby(playerNickname);
         typeOfUI.lobbyActionOutcome(false);
-
-        initializationPhase2();
     }
 
     @Override
@@ -175,7 +165,6 @@ public class RmiClient extends GenericClient implements VirtualServer {
             typeOfUI.printCreationLobbyRequestOutcome(true, lobbyName);
         } else {
             typeOfUI.printCreationLobbyRequestOutcome(false, lobbyName);
-            typeOfUI.printSelectionCreateOrJoinLobbyRequest();
         }
 
         //ritorno fittizzio

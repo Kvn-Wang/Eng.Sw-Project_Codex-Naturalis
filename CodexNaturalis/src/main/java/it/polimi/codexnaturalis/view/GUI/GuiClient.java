@@ -4,9 +4,11 @@ import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.view.TypeOfUI;
+import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
 
 import java.rmi.RemoteException;
@@ -16,6 +18,15 @@ public class GuiClient implements TypeOfUI {
     private VirtualServer virtualNetworkCommand;
     private GameController virtualGame;
 
+    public void initializeClient(VirtualServer virtualServer, ClientContainerController clientContainerController) throws RemoteException {
+        initializationPhase1(virtualServer, clientContainerController);
+    }
+
+    //chiamata che garantisce il setup del nickname univoco
+    protected void initializationPhase1(VirtualServer virtualServer, ClientContainerController clientContainerController)  {
+        // aggiungo alla UI il potere di comunicare con l'esterno
+        connectVirtualNetwork(virtualServer, clientContainerController);
+    }
 
     @Override
     public void connectVirtualNetwork(VirtualServer virtualNetworkCommand, ClientContainerController clientContainerController) {
@@ -25,17 +36,8 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
-    public void printSelectionNicknameRequest() {
-    }
-
-    @Override
     public void printSelectionNicknameRequestOutcome(boolean positiveOutcome, String nickname) {
             GuiGame.setNickname(positiveOutcome,nickname);
-    }
-
-    @Override
-    public void printSelectionCreateOrJoinLobbyRequest() {
-
     }
 
     @Override
@@ -49,11 +51,6 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printCreationLobbyRequestOutcome(boolean outcomePositive, String lobbyName) {
-
-    }
-
-    @Override
-    public void lobbyActionReq() {
 
     }
 
@@ -78,7 +75,7 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
-    public void printStarterCardReq(Card starterCard) {
+    public void giveStarterCard(StarterCard starterCard) {
         GuiGame.addStarter(starterCard);
     }
 
@@ -88,13 +85,13 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
-    public void printCommonMission(Mission mission1, Mission mission2) {
+    public void giveCommonMission(Mission mission1, Mission mission2) {
         System.out.println("Common Mission");
         GuiGame.commonMissionSetup(mission1,mission2);
     }
 
     @Override
-    public void printPersonalMissionReq(Mission choice1, Mission choice2) {
+    public void givePersonalMission(Mission choice1, Mission choice2) {
         System.out.println("Mission Selection");
         GuiGame.missionSelection(choice1,choice2);
     }
