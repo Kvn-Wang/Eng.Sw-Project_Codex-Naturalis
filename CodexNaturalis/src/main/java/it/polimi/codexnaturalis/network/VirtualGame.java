@@ -4,6 +4,7 @@ import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.game.GameManager;
 import it.polimi.codexnaturalis.model.mission.Mission;
+import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.util.networkMessage.MessageType;
 import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
@@ -88,10 +89,10 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     }
 
     @Override
-    public void playerPlayCard(String nickname, int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException, RemoteException {
+    public void playerPlayCard(String nickname, int x, int y, Card playedCard) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException, RemoteException {
         if(nickname.equals(players.get(currentPlayerIndex).getNickname())||starterCardPlaced<players.size()) {
             starterCardPlaced++;
-            gameController.playerPlayCard(nickname, x, y, numCard, isCardBack);
+            gameController.playerPlayCard(nickname, x, y, playedCard);
         }
         else {
             try {

@@ -4,6 +4,7 @@ import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.shop.card.Card;
+import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
@@ -192,12 +193,8 @@ public class TuiClient implements TypeOfUI {
         clientContainer.setPlayerMap(UtilCostantValue.lunghezzaMaxMappa/2, UtilCostantValue.lunghezzaMaxMappa/2, starterCard);
 
         try {
-            virtualGame.playerPlayCard(clientContainer.getNickname(), UtilCostantValue.lunghezzaMaxMappa/2, UtilCostantValue.lunghezzaMaxMappa/2, 0, isBack);
-        } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
-            throw new RuntimeException(e);
+            virtualGame.playStarterCard(clientContainer.getNickname(), (StarterCard) starterCard);
         } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        } catch (PersonalizedException.InvalidPlacementException e) {
             throw new RuntimeException(e);
         }
     }

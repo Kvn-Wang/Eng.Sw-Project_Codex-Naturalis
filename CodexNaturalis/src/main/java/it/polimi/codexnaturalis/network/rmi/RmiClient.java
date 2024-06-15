@@ -219,8 +219,8 @@ public class RmiClient extends GenericClient implements VirtualServer {
     }
 
     @Override
-    public void playerPlayCard(String nickname, int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException, RemoteException {
-        personalGameController.playerPlayCard(nickname, x, y, numCard, isCardBack);
+    public void playerPlayCard(String nickname, int x, int y, Card playedCard) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException, RemoteException {
+        personalGameController.playerPlayCard(nickname, x, y, playedCard);
     }
 
     @Override

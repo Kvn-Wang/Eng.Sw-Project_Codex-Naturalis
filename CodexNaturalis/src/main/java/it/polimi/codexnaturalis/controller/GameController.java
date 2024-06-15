@@ -2,6 +2,7 @@ package it.polimi.codexnaturalis.controller;
 
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.mission.Mission;
+import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 
@@ -20,7 +21,7 @@ public interface GameController extends Remote {
     void disconnectPlayer(String nickname) throws RemoteException;//vedi issues
     void reconnectPlayer(String nickname) throws RemoteException;
     void playerDraw(String nickname, int Numcard, String type) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage, RemoteException;// vedi issues
-    void playerPlayCard(String nickname, int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException, RemoteException;
+    void playerPlayCard(String nickname, int x, int y, Card playedCard) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException, RemoteException;
     void typeMessage(String receiver, String sender, String msg) throws RemoteException;// vedi issues
     void switchPlayer(String reqPlayer, String target) throws RemoteException;
     void endGame() throws RemoteException;

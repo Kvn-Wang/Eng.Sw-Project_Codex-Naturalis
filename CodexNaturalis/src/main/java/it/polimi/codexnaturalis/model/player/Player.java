@@ -56,19 +56,19 @@ public class Player extends Observable implements PlayerInterface {
     }
 
     @Override
-    public void placeCard(int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
-        Card playedCard;
+    public void placeCard(int x, int y, Card playedCard) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
+        //Card playedCard;
         int placeResult = 0;
 
-        try {
+        /*try {
             playedCard = hand.popCard(numCard);
         } catch (PersonalizedException.InvalidNumPopCardException e) {
             throw new RuntimeException(e);
         } catch (PersonalizedException.InvalidPopCardException e) {
             throw new RuntimeException(e);
-        }
+        }*/
         try {
-            placeResult = gameMap.placeCard(x, y, playedCard, isCardBack);
+            placeResult = gameMap.placeCard(x, y, playedCard);
             personalScoreBoardScore+=placeResult;
             try {
                 notifyObserverSingle(new NetworkMessage(nickname, MessageType.CORRECT_PLACEMENT, argsGenerator(getScoreResource())));

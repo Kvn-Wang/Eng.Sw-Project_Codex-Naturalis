@@ -440,12 +440,12 @@ public class GuiGame extends Application {
                     starterBeingPlaced=false;
                     newRect.setX(-newRect.getBoundsInLocal().getCenterX());
                     newRect.setY(-newRect.getBoundsInLocal().getCenterY());
-                    try {
+                    /*try {
                         vgc.playerPlayCard(playerNickname, 80, 80, Integer.parseInt(droppedStrings[1]), Boolean.parseBoolean(droppedStrings[0]));
                     } catch (PersonalizedException.InvalidPlacementException |
                              PersonalizedException.InvalidPlaceCardRequirementException | RemoteException ex) {
                         throw new RuntimeException(ex);
-                    }
+                    }*/
                 }
                 else {
                     double closestDistance = Double.MAX_VALUE;
@@ -476,12 +476,12 @@ public class GuiGame extends Application {
                     if (closestAnchor != null && closestDistance < snapThreshold) {
                         newRect.setTranslateX(closestAnchor.getCenterX() - newRect.getBoundsInLocal().getCenterX());
                         newRect.setTranslateY(closestAnchor.getCenterY() - newRect.getBoundsInLocal().getCenterY());
-                        try {
+                        /*try {
                             vgc.playerPlayCard(playerNickname, x, y, Integer.parseInt(droppedStrings[1]), Boolean.parseBoolean(droppedStrings[0]));
                         } catch (PersonalizedException.InvalidPlacementException |
                                  PersonalizedException.InvalidPlaceCardRequirementException | RemoteException ex) {
                             throw new RuntimeException(ex);
-                        }
+                        }*/
                     }
                 }
 

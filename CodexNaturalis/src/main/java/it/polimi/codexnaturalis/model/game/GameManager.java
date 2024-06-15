@@ -56,8 +56,14 @@ public class GameManager extends Observable implements GameController {
 
     @Override
     public void playStarterCard(String playerNick, StarterCard starterCard) {
-        //nickToPlayer(playerNick).placeCard(UtilCostantValue.lunghezzaMaxMappa/2, UtilCostantValue.lunghezzaMaxMappa/2,
-        //        starterCards);
+        try {
+            nickToPlayer(playerNick).placeCard(UtilCostantValue.lunghezzaMaxMappa/2, UtilCostantValue.lunghezzaMaxMappa/2,
+                    starterCard);
+        } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
+            throw new RuntimeException(e);
+        } catch (PersonalizedException.InvalidPlacementException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void gamePhase1(){
@@ -234,11 +240,11 @@ public class GameManager extends Observable implements GameController {
     }
 
     @Override
-    public void playerPlayCard(String nickname, int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
+    public void playerPlayCard(String nickname, int x, int y, Card playedCard) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
         Player p = nickToPlayer(nickname);
         System.out.println(nickname + " ha piazzato una carta in posizione: ("+x+","+y+")");
         try {
-            p.placeCard(x, y, numCard, isCardBack);
+            p.placeCard(x, y, playedCard);
         } catch (PersonalizedException.InvalidPlacementException e) {
             throw e; // Propagate the caught exception directly
         } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {

@@ -36,7 +36,7 @@ public class GamePlayerMap {
     // = 0 come valore per indicare che la carta è stata aggiunta senza aggiunta eventuali di punti (carte obbiettivo o carte risorsa front),
     // oppure > 0 per indicare che la carta piazzata deve aggiungere punti equivalente al valore di ritorno al punteggio del player
     // la carta è piazzabile se c'è una carta valida a fianco
-    public int placeCard(int x, int y, Card card, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
+    public int placeCard(int x, int y, Card card) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
         int neightbouringCard;
         ArrayList<ResourceType> tempListOfResources;
         int pointToAdd;
@@ -45,9 +45,9 @@ public class GamePlayerMap {
             neightbouringCard = checkValidPosition(x, y);
             if(neightbouringCard > 0 || (mapArray[UtilCostantValue.lunghezzaMaxMappa/2][UtilCostantValue.lunghezzaMaxMappa/2]==null && card.getCardType() == CardType.STARTER)){
                 //funzione per controllare i requisiti per le carte obbiettivo
-                if(card.checkPlaceableCardCondition(playerScoreCard) || isCardBack) {
+                if(card.checkPlaceableCardCondition(playerScoreCard) || card.getIsBack()) {
                     //piazza la carta
-                    card.setIsBack(isCardBack);
+                    card.setIsBack(card.getIsBack());
                     mapArray[x][y] = card;
 
                     //per controllare che risorse devo aggiungere
