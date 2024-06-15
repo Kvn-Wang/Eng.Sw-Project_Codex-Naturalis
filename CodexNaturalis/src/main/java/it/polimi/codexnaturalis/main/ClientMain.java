@@ -43,7 +43,7 @@ public class ClientMain {
                 guiClient.initializeClient(socketClient, socketClient.getClientContainerController());
             } else {
                 TuiClient tuiClient = new TuiClient();
-                SocketClient socketClient = new SocketClient(new TuiClient());
+                SocketClient socketClient = new SocketClient(tuiClient);
                 tuiClient.initializeClient(socketClient, socketClient.getClientContainerController());
             }
         } else {
