@@ -251,6 +251,8 @@ public class TuiClient implements TypeOfUI {
         }
     }
 
+
+
     @Override
     public void giveStarterCard(StarterCard starterCard) {
         printStarterCardReq(starterCard);
@@ -258,12 +260,26 @@ public class TuiClient implements TypeOfUI {
 
     @Override
     public void giveCommonMission(Mission mission1, Mission mission2) {
-        System.out.println("Mission 1: ");
+        System.out.println("Common mission 1: " + mission1.getMissionType());
+        PrintMissionClass.printMission(mission1);
+        System.out.println("Common mission 2: " + mission2.getMissionType());
+        PrintMissionClass.printMission(mission2);
     }
 
     @Override
     public void givePersonalMission(Mission choice1, Mission choice2) {
+        String command;
+        System.out.println("Personal mission 1: " + choice1.getMissionType());
+        PrintMissionClass.printMission(choice1);
+        System.out.println("Personal mission 2: " + choice2.getMissionType());
+        PrintMissionClass.printMission(choice2);
+        do {
+            System.out.println("Write 1 to choose mission 1, Write 2 for mission 2");
+            command = scan.nextLine();
+        }while(!(command.equals("1") || command.equals("2")));
+        if(command.equals("1")) {
 
+        }
     }
 
     @Override

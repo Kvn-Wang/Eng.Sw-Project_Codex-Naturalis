@@ -21,20 +21,20 @@ public class PrintCardClass {
         String[] conditionPlaceableCardResource;
 
         if (isFront) {
-            nw = PrintSymbols.convertResourceType(card.getFrontNorthResource());
-            ne = PrintSymbols.convertResourceType(card.getFrontEastResource());
-            se = PrintSymbols.convertResourceType(card.getFrontSouthResource());
-            sw = PrintSymbols.convertResourceType(card.getFrontWestResource());
-            c = PrintSymbols.convertMultipleResourceType(new ResourceType[]{ResourceType.NONE});
+            nw = PrintSymbols.convertResourceType(card.getFrontNorthResource(),true);
+            ne = PrintSymbols.convertResourceType(card.getFrontEastResource(),true);
+            se = PrintSymbols.convertResourceType(card.getFrontSouthResource(),true);
+            sw = PrintSymbols.convertResourceType(card.getFrontWestResource(),true);
+            c = PrintSymbols.convertMultipleResourceType(new ResourceType[]{ResourceType.NONE},true);
             punti = card.getFrontalNumber();
-            conditionResource = PrintSymbols.convertConditionType(card.getCondition());
-            conditionPlaceableCardResource = PrintSymbols.convertMultipleResourceType(card.getPlaceableCardResources());
+            conditionResource = PrintSymbols.convertConditionType(card.getCondition(),true);
+            conditionPlaceableCardResource = PrintSymbols.convertMultipleResourceType(card.getPlaceableCardResources(), true);
         } else {
-            nw = PrintSymbols.convertResourceType(card.getBackNorthResource());
-            ne = PrintSymbols.convertResourceType(card.getBackEastResource());
-            se = PrintSymbols.convertResourceType(card.getBackSouthResource());
-            sw = PrintSymbols.convertResourceType(card.getBackWestResource());
-            c = PrintSymbols.convertMultipleResourceType(card.getBackCentralResources());
+            nw = PrintSymbols.convertResourceType(card.getBackNorthResource(),true);
+            ne = PrintSymbols.convertResourceType(card.getBackEastResource(),true);
+            se = PrintSymbols.convertResourceType(card.getBackSouthResource(),true);
+            sw = PrintSymbols.convertResourceType(card.getBackWestResource(),true);
+            c = PrintSymbols.convertMultipleResourceType(card.getBackCentralResources(),true);
             punti = 0;
             conditionResource = "";
             conditionPlaceableCardResource = null;
