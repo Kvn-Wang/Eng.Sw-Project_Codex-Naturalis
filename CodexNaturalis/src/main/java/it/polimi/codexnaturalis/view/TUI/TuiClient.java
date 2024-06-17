@@ -228,7 +228,7 @@ public class TuiClient implements TypeOfUI {
         try {
             virtualGame.playStarterCard(clientContainer.getNickname(), (StarterCard) starterCard);
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            System.err.println("errore starter card: "+ e.getMessage());
             throw new RuntimeException(e);
         }
     }

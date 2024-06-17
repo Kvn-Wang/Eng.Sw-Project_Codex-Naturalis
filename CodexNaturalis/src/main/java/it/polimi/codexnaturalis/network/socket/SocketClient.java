@@ -111,7 +111,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
                 case SWITCH_PLAYER_VIEW:
                     break;
 
-                case GAME_SETUP_GIVE_STARTER_CARD_:
+                case GAME_SETUP_GIVE_STARTER_CARD:
                     Gson cardTranslator = new GsonBuilder()
                             .registerTypeAdapter(Card.class, new CardTypeAdapter())
                             .create();

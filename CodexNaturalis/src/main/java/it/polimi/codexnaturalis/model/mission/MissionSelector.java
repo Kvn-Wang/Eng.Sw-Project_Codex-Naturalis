@@ -14,29 +14,18 @@ public class MissionSelector {
     private String missionFile;
     private ArrayList<Mission> missions;
 
-    public String getMissionFile() {
-        return missionFile;
-    }
-
-    public void setMissionFile(String missionFile) {
-        this.missionFile = missionFile;
+    public MissionSelector() {
+        System.out.println("inizializzato");
+        missions = new ArrayList<>();
+        missionFile = UtilCostantValue.pathToMissionJson;
+        initializeArrayMissions();
     }
 
     public ArrayList<Mission> getMissions() {
         return missions;
     }
 
-    public void setMissions(ArrayList<Mission> missions) {
-        this.missions = missions;
-    }
-
-    public MissionSelector() {
-        missionFile = UtilCostantValue.pathToMissionJson;
-        initializeArrayMissions();
-    }
-
     private void initializeArrayMissions() {
-        missions = new ArrayList<>();
         Mission mission;
 
         try {

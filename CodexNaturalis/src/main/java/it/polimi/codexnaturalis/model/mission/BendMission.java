@@ -14,8 +14,6 @@ public class BendMission extends Mission  {
     private ResourceType decorationResource;
     int middle = UtilCostantValue.lunghezzaMaxMappa/2;
 
-
-
     public BendMission(int pngNumber, int pointPerCondition, ResourceType pillarResource, ResourceType decorationResource, CardCorner decorationPosition) {
         super(pngNumber, pointPerCondition);
         this.decorationPosition = decorationPosition;

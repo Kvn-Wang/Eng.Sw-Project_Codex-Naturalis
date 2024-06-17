@@ -35,9 +35,8 @@ public class Player extends Observable implements PlayerInterface {
     public void addHandCard(Card drawnCard) {
         try {
             hand.addCard(drawnCard);
-            notifyObserverSingle(new NetworkMessage(nickname, MessageType.CORRECT_DRAW_CARD, this.argsGenerator(hand)));
-        } catch (PersonalizedException.InvalidAddCardException |
-                 PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
+            //notifyObserverSingle(new NetworkMessage(nickname, MessageType.CORRECT_DRAW_CARD, this.argsGenerator(hand)));
+        } catch (PersonalizedException.InvalidAddCardException e) {
             throw new RuntimeException(e);
         }
     }

@@ -17,6 +17,8 @@ public class ClientContainer {
     private Mission commonMission1;
     private Mission commonMission2;
     private Mission personalMission;
+    Card [] visibleResourceCardShop;
+    Card [] visibleObjectiveCardShop;
 
     public ClientContainer() {
         //inizializzazione mappa vuota
@@ -26,6 +28,9 @@ public class ClientContainer {
                 personalGameMap[i][j] = null;
             }
         }
+
+        visibleResourceCardShop = new Card[2];
+        visibleObjectiveCardShop = new Card[2];
     }
 
     public String getNickname() {
@@ -90,5 +95,17 @@ public class ClientContainer {
 
     public void setCommonMission2(Mission commonMission2) {
         this.commonMission2 = commonMission2;
+    }
+
+    public void initialSetupOfResources(Hand initialHand, Mission firstCommonMission, Mission secondCommonMission,
+                                        Card visibleResourceCardShop1, Card visibleResourceCardShop2,
+                                        Card visibleObjCardShop1, Card visibleObjCardShop2) {
+        personalHand = initialHand;
+        commonMission1 = firstCommonMission;
+        commonMission2 = secondCommonMission;
+        visibleResourceCardShop[0] = visibleResourceCardShop1;
+        visibleResourceCardShop[1] = visibleResourceCardShop2;
+        visibleObjectiveCardShop[0] = visibleObjCardShop1;
+        visibleObjectiveCardShop[1] = visibleObjCardShop2;
     }
 }

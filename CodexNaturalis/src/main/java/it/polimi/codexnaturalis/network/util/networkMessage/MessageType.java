@@ -48,7 +48,7 @@ public enum MessageType {
 
     /* ---- ENUMS FOR THE GAME PHASE: SETUP ---- */
     // args(0): 1 starterCard
-    GAME_SETUP_GIVE_STARTER_CARD_,
+    GAME_SETUP_GIVE_STARTER_CARD,
 
     // nickname = PlayerNick
     // args(0): StarterCard (after setting isCardUp)
@@ -58,8 +58,8 @@ public enum MessageType {
      * args(0): hand (with 2 resourceCard and 1 obj)
      * args(1): First Common Mission
      * args(2): Second Common Mission
-     * args(3): 2 resourceCard of shop (Arraylist)
-     * args(4): 2 objectiveCard of shop (Arraylist)
+     * args(3): 2 visible resourceCard of shop (Arraylist)
+     * args(4): 2 visible objectiveCard of shop (Arraylist)
      */
     GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP,
 

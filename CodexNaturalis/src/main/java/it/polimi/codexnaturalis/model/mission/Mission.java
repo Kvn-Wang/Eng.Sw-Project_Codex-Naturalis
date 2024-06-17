@@ -21,17 +21,6 @@ public abstract class Mission {
         }
     }
 
-    public void getUsedCardArray() {
-        for(int i = 0; i < (usedCardArray.length); i++) {
-            for (int j = 0; j < (usedCardArray[0].length); j++) {
-                if(usedCardArray[i][j]) {
-                    System.out.println(i + " " + j + " " + usedCardArray[i][j]);
-                }
-            }
-        }
-    }
-
-
     public abstract int ruleAlgorithmCheck(Player player);
 
     public int getPngNumber() {

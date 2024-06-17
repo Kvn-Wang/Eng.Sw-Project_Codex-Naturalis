@@ -21,11 +21,11 @@ public class Hand {
     }
 
     public void addCard(Card drawnCard) throws PersonalizedException.InvalidAddCardException {
-        if(cards.size() <= 3) {
+        /*if(cards.size() <= 3) {
             cards.add(drawnCard);
         } else {
             throw new PersonalizedException.InvalidAddCardException();
-        }
+        }*/
     }
 
     public Card popCard(int numCard) throws PersonalizedException.InvalidNumPopCardException, PersonalizedException.InvalidPopCardException {

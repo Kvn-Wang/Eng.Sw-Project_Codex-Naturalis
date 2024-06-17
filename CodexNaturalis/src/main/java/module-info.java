@@ -14,7 +14,7 @@ module it.polimi.codexnaturalis {
     exports it.polimi.codexnaturalis.model.player;
     opens it.polimi.codexnaturalis.model.player to javafx.fxml, com.google.gson;
     exports it.polimi.codexnaturalis.model.mission;
-    opens it.polimi.codexnaturalis.model.mission to javafx.fxml;
+    opens it.polimi.codexnaturalis.model.mission to javafx.fxml, com.google.gson;
     exports it.polimi.codexnaturalis.model.game;
     opens it.polimi.codexnaturalis.model.game to javafx.fxml;
     exports it.polimi.codexnaturalis.controller;

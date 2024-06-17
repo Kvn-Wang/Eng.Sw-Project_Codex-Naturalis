@@ -2,9 +2,11 @@ package it.polimi.codexnaturalis.network.rmi;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.mission.Mission;
+import it.polimi.codexnaturalis.model.mission.MissionAdapter;
 import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.player.HandGsonAdapter;
 import it.polimi.codexnaturalis.model.shop.card.Card;
@@ -38,9 +40,10 @@ public class RmiClient extends GenericClient implements VirtualServer {
     // variabile di identificativo temporanea -> inutile dopo il setting del nickname
     private String ID;
     private ExecutorService executorService;
-    Gson handTranslator = new GsonBuilder()
+    Gson gsonTranslator = new GsonBuilder()
             .registerTypeAdapter(Card.class, new CardTypeAdapter())
             .registerTypeAdapter(Hand.class, new HandGsonAdapter())
+            .registerTypeAdapter(Mission.class, new MissionAdapter())
             .create();
 
     public RmiClient(TypeOfUI typeOfUI) throws RemoteException, NotBoundException, InterruptedException {
@@ -72,22 +75,37 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 break;
 
             case GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP:
-                //receive setup hand
+                //crea un thread che fa l'operazione così che non sia il thread server a gestire il client
+                executorService.submit(() -> {
+                    try {
+                        System.out.println("init resource");
+                        //receive setup hand
+                        Hand hand = gsonTranslator.fromJson(message.getArgs().get(0), Hand.class);
+                        // 2 common mission
+                        Mission commonMission1 = gsonTranslator.fromJson(message.getArgs().get(1), Mission.class);
+                        Mission commonMission2 = gsonTranslator.fromJson(message.getArgs().get(2), Mission.class);
+                        // 2 visible resource card from shop
+                        ArrayList<Card> resourceShopCard = gsonTranslator.fromJson(message.getArgs().get(3), new TypeToken<ArrayList<Card>>() {}.getType());
+                        // 2 visible objective card from shop
+                        ArrayList<Card> objShopCard = gsonTranslator.fromJson(message.getArgs().get(4), new TypeToken<ArrayList<Card>>() {}.getType());
 
-                //common mission
+                        clientContainer.initialSetupOfResources(hand, commonMission1, commonMission2,
+                                resourceShopCard.get(0), resourceShopCard.get(1), objShopCard.get(0), objShopCard.get(1));
 
-                //
-
+                        System.out.println("finished Client setup initial resources");
+                    } catch (Exception e) {
+                        System.err.println("Err Init resources: "+e.getMessage());
+                    }
+                });
                 break;
 
-            case GAME_SETUP_GIVE_STARTER_CARD_:
+            case GAME_SETUP_GIVE_STARTER_CARD:
                 //crea un thread che fa l'operazione così che non sia il thread server a gestire la gestione della starter card
                 executorService.submit(() -> {
                     try {
-                        System.out.println("received starter card: "+ message.getArgs().get(0));
-                        Card supp = handTranslator.fromJson(message.getArgs().get(0), Card.class);
+                        Card supp = gsonTranslator.fromJson(message.getArgs().get(0), Card.class);
 
-                        typeOfUI.giveStarterCard((StarterCard) supp);;
+                        typeOfUI.giveStarterCard((StarterCard) supp);
                     } catch (Exception e) {
                         System.err.println("Err Starter card play");
                     }
@@ -99,12 +117,9 @@ public class RmiClient extends GenericClient implements VirtualServer {
 
             case CORRECT_DRAW_CARD:
                 System.out.println("received card: "+ message.getArgs().get(0));
-                Hand hand = handTranslator.fromJson(message.getArgs().get(0), Hand.class);
+                Hand hand = gsonTranslator.fromJson(message.getArgs().get(0), Hand.class);
 
                 //playStarterCard(hand);
-                break;
-
-            case CORRECT_PLACEMENT:
                 break;
 
             case COM_LOBBY_STATUS_NOTIFY:

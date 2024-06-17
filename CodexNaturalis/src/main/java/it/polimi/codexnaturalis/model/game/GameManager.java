@@ -35,19 +35,19 @@ public class GameManager extends Observable implements GameController {
     private List <Player> winners;
     private String scoreCardImg;
     private int playerThatHasPlayedStarterCard;
-    private int remainingRounds=1;
     private Observer vobs;
-    MissionSelector missionSelector;
+    private MissionSelector missionSelector;
 
-    public GameManager(Map<String, ColorType> playerInfo) {
+    public GameManager(Map<String, ColorType> playerInfo, Observer observer) {
         this.playerInfo = playerInfo;
         players = new Player[playerInfo.size()];
+
         missionSelector = new MissionSelector();
 
         playerThatHasPlayedStarterCard = 0;
 
-        //initializeGame ora é diviso in 3 phases
-        gamePhase1();
+        vobs = observer;
+        addObserver(observer);
     }
 
     @Override
@@ -88,13 +88,6 @@ public class GameManager extends Observable implements GameController {
         initializeStartingPlayer();
     }
 
-    public GameManager(Map<String, ColorType> playerInfo, Observer observer) {
-        this.playerInfo = playerInfo;
-        players = new Player[playerInfo.size()];
-        vobs = observer;
-        addObserver(observer);
-    }
-
     private void initializeScoreboard(){
         scoreCardImg = UtilCostantValue.pathToScoreCardImg;
     }
@@ -121,7 +114,7 @@ public class GameManager extends Observable implements GameController {
         for(Player p: players) {
             //manda la starterCard al playerSpecifico
             try {
-                notifyObserverSingle(new NetworkMessage(p.getNickname(), MessageType.GAME_SETUP_GIVE_STARTER_CARD_,
+                notifyObserverSingle(new NetworkMessage(p.getNickname(), MessageType.GAME_SETUP_GIVE_STARTER_CARD,
                         argsGenerator(starterShop.drawTopDeckCard(true))));
             } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
                 throw new RuntimeException(e);
@@ -146,14 +139,17 @@ public class GameManager extends Observable implements GameController {
      * sends to all player, all their necessary resources for their setup, hand, common missions and all visible shop cards
      */
     private void setupPlayerContents(){
+        System.out.println("Init player resources.");
         for(Player p: players){
             try {
                 notifyObserverSingle(new NetworkMessage(p.getNickname(), MessageType.GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP,
-                        p.getNickname(), argsGenerator(p.getHand()), argsGenerator(sharedMission1),
+                        argsGenerator(p.getHand()), argsGenerator(sharedMission1),
                         argsGenerator(sharedMission2), argsGenerator(resourceShop.getVisibleShopCard()),
                         argsGenerator(objectiveShop.getVisibleShopCard())));
             } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
                 throw new RuntimeException(e);
+            } catch(Exception e) {
+                System.err.println(e.getMessage());
             }
         }
     }

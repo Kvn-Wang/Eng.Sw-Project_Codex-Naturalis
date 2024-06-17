@@ -16,6 +16,8 @@ import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class VirtualGame extends UnicastRemoteObject implements Serializable, GameController, Observer {
     ArrayList<PlayerInfo> players;
@@ -25,6 +27,8 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     int startingPlayerIndex;
     int starterCardPlaced = 0;
     GameController gameController;
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+
     public VirtualGame(ArrayList<PlayerInfo> players) throws RemoteException {
         super();
         this.players = players;
@@ -57,7 +61,13 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
 
     @Override
     public void playStarterCard(String playerNick, StarterCard starterCard) throws RemoteException {
-        gameController.playStarterCard(playerNick, starterCard);
+        executorService.submit(() -> {
+            try {
+                gameController.playStarterCard(playerNick, starterCard);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override
@@ -90,7 +100,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
 
     @Override
     public void playerPlayCard(String nickname, int x, int y, Card playedCard) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException, RemoteException {
-        if(nickname.equals(players.get(currentPlayerIndex).getNickname())||starterCardPlaced<players.size()) {
+        if(nickname.equals(players.get(currentPlayerIndex).getNickname()) || starterCardPlaced<players.size()) {
             starterCardPlaced++;
             gameController.playerPlayCard(nickname, x, y, playedCard);
         }
@@ -132,7 +142,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     public void update(NetworkMessage message) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
         switch(message.getMessageType()) {
             //messaggi per playerSpecifici con argomenti illimitati
-            case COM_ACK_TCP, CORRECT_PLACEMENT, GAME_SETUP_GIVE_STARTER_CARD_, GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP,
+            case COM_ACK_TCP, CORRECT_PLACEMENT, GAME_SETUP_GIVE_STARTER_CARD, GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP,
                     PLACEMENT_CARD_OUTCOME:
                 System.out.println("Messaggio per "+message.getNickname()+" di tipo:"+message.getMessageType());
                 try {
