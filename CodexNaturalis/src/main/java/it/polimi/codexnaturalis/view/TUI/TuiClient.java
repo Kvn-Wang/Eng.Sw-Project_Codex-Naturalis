@@ -236,7 +236,7 @@ public class TuiClient implements TypeOfUI {
 
     @Override
     public void printHand(Hand hand) {
-        PrintHandClass.printHand(hand, clientContainer);
+        PrintHandClass.printHand(hand);
     }
 
 
@@ -266,12 +266,24 @@ public class TuiClient implements TypeOfUI {
             command = scan.nextLine();
         }while(!(command.equals("1") || command.equals("2")));
         if(command.equals("1")) {
-
+            try {
+                virtualGame.playerPersonalMissionSelect(clientContainer.getNickname(), choice1);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("you have chosen personal mission 1: " + choice1.getMissionType());
+        }else if(command.equals("2")) {
+            try {
+                virtualGame.playerPersonalMissionSelect(clientContainer.getNickname(), choice2);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("you have chosen personal mission 2: " + choice2.getMissionType());
         }
     }
 
     @Override
     public void notifyIsYourTurn(boolean isYourTurn) {
-
+        System.out.println(clientContainer.getNickname() + ",it's your turn");
     }
 }

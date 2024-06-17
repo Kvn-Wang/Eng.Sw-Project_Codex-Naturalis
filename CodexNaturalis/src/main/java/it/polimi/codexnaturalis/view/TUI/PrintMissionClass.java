@@ -54,12 +54,10 @@ public class PrintMissionClass {
                 printResourceMission(resourceMission);
                 break;
             case MissionType.BEND:
-                System.out.println("x");
                 BendMission bendMission = (BendMission) mission;
                 printBendMission(bendMission);
                 break;
             case MissionType.DIAGONAL:
-                System.out.println("y");
                 DiagonalMission diagMission = (DiagonalMission) mission;
                 printDiagonalMission(diagMission);
                 break;

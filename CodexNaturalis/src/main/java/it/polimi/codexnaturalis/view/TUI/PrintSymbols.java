@@ -34,7 +34,7 @@ public class PrintSymbols {
             }
             case ANIMAL -> {
                 if(isCard) {
-                    return "\uD83D\uDC3E";
+                    return "\uD83D\uDC3A";
                 } else{
                     return "\uD83D\uDFE6";
                 }
@@ -48,7 +48,7 @@ public class PrintSymbols {
             }
             case INSECT -> {
                 if(isCard) {
-                    return "\uD83D\uDC1E";
+                    return "\uD83D\uDC1C";
                 } else {
                     return "\uD83D\uDFEA";
                 }

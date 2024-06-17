@@ -7,18 +7,20 @@ import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
 
 public class PrintHandClass {
 
-    public  static void printHand(Hand hand, ClientContainerController clientContainer) {
+    public static void main(String[] args) {
+    }
+
+    public  static void printHand(Hand hand) {
         String Command;
         int i = 0;
-        Hand printHand = clientContainer.getHand();
-        for (Card card : printHand.getCards()) {
+        for (Card card : hand.getCards()) {
             System.out.println("card number: " + i);
             System.out.println("front:");
             PrintCardClass.printCard(card, true);
             System.out.println("back:");
             PrintCardClass.printCard(card, false);
         }
-        if (printHand.getCards().isEmpty()) {
+        if (hand.getCards().isEmpty()) {
             System.out.println("No cards in hand");
         }
     }
