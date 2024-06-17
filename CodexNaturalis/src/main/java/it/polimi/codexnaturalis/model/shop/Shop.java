@@ -133,19 +133,21 @@ public class Shop extends Observable {
     }
 
     // dopo aver "pescato" la carta in cima al deck, lo rimpiazza con una carta nuova
-    public Card drawTopDeckCard(){
+    public Card drawTopDeckCard(boolean isSetupPhase){
         Card supp = topDeckCard;
 
         //rimpiazzamento carta
         if(!cardDeck.isEmpty()) {
             topDeckCard = cardDeck.remove(0);
-            try {
-                if(!(shopType == ShopType.STARTER)) {
+
+            if(!isSetupPhase) {
+                try {
                     //broadcast a tutti i player sul nuovo top deck card
-                    notifyObserverSingle(new NetworkMessage(MessageType.SHOP_UPDATE, argsGenerator(topDeckCard), "topDeckCard", argsGenerator(shopType)));
+                    notifyObserverSingle(new NetworkMessage(MessageType.SHOP_UPDATE,
+                            argsGenerator(topDeckCard), "topDeckCard", argsGenerator(shopType)));
+                } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
-                throw new RuntimeException(e);
             }
         } else {
             topDeckCard = null;

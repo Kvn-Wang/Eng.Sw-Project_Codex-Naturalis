@@ -229,7 +229,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
         if(outcomeReceived == false) {
             typeOfUI.printSelectionNicknameRequestOutcome(false, nickname);
         } else {
-            clientContainerController.setNickname(nickname);
+            clientContainer.setNickname(nickname);
             typeOfUI.printSelectionNicknameRequestOutcome(true, nickname);
         }
 
@@ -266,7 +266,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
         if(outcomeReceived == false) {
             typeOfUI.printJoinLobbyOutcome(false, lobbyName);
         } else {
-            clientContainerController.setLobbyName(lobbyName);
+            clientContainer.setLobbyNickname(lobbyName);
             typeOfUI.printJoinLobbyOutcome(true, lobbyName);
         }
 
@@ -300,7 +300,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
         if(outcomeReceived == false) {
             typeOfUI.printCreationLobbyRequestOutcome(false, lobbyName);
         } else {
-            clientContainerController.setLobbyName(lobbyName);
+            clientContainer.setLobbyNickname(lobbyName);
             typeOfUI.printCreationLobbyRequestOutcome(true, lobbyName);
         }
 

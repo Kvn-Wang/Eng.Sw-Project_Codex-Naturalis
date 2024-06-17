@@ -33,11 +33,15 @@ import java.util.concurrent.Future;
 public class RmiClient extends GenericClient implements VirtualServer {
     private final String serverName = UtilCostantValue.RMIServerName;
     private final VirtualServer server;
+    private GameController personalGameController;
     private Registry registry;
     // variabile di identificativo temporanea -> inutile dopo il setting del nickname
     private String ID;
-    private GameController personalGameController;
     private ExecutorService executorService;
+    Gson handTranslator = new GsonBuilder()
+            .registerTypeAdapter(Card.class, new CardTypeAdapter())
+            .registerTypeAdapter(Hand.class, new HandGsonAdapter())
+            .create();
 
     public RmiClient(TypeOfUI typeOfUI) throws RemoteException, NotBoundException, InterruptedException {
         //setup communicazione bidirezionale tra rete e oggetto grafico
@@ -61,38 +65,39 @@ public class RmiClient extends GenericClient implements VirtualServer {
             case STATUS_PLAYER_CHANGE:
                 break;
 
-            case WRONG_TYPE_SHOP:
-                break;
-
             case NOT_YOUR_TURN:
                 break;
 
             case SCORE_UPDATE:
                 break;
 
-            case SWITCH_PLAYER_VIEW:
+            case GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP:
+                //receive setup hand
+
+                //common mission
+
+                //
+
                 break;
 
             case GAME_SETUP_GIVE_STARTER_CARD_:
-                Gson cardTranslator = new GsonBuilder()
-                        .registerTypeAdapter(Card.class, new CardTypeAdapter())
-                        .create();
+                //crea un thread che fa l'operazione così che non sia il thread server a gestire la gestione della starter card
+                executorService.submit(() -> {
+                    try {
+                        System.out.println("received starter card: "+ message.getArgs().get(0));
+                        Card supp = handTranslator.fromJson(message.getArgs().get(0), Card.class);
 
-                System.out.println("received starter card: "+ message.getArgs().get(0));
-                Card supp = cardTranslator.fromJson(message.getArgs().get(0), Card.class);
-
-                typeOfUI.giveStarterCard((StarterCard) supp);
+                        typeOfUI.giveStarterCard((StarterCard) supp);;
+                    } catch (Exception e) {
+                        System.err.println("Err Starter card play");
+                    }
+                });
                 break;
 
             case SHOP_UPDATE:
                 break;
 
             case CORRECT_DRAW_CARD:
-                Gson handTranslator = new GsonBuilder()
-                        .registerTypeAdapter(Card.class, new CardTypeAdapter())
-                        .registerTypeAdapter(Hand.class, new HandGsonAdapter())
-                        .create();
-
                 System.out.println("received card: "+ message.getArgs().get(0));
                 Hand hand = handTranslator.fromJson(message.getArgs().get(0), Hand.class);
 
@@ -125,7 +130,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
     @Override
     public boolean setNickname(String UUID, String nickname) throws RemoteException {
         if(server.setNickname(this.ID, nickname)) {
-            clientContainerController.setNickname(nickname);
+            clientContainer.setNickname(nickname);
             typeOfUI.printSelectionNicknameRequestOutcome(true, nickname);
         } else {
             typeOfUI.printSelectionNicknameRequestOutcome(false, nickname);
@@ -143,7 +148,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
     @Override
     public ArrayList<PlayerInfo> joinLobby(String playerNickname, String lobbyName) throws RemoteException {
         if(server.joinLobby(playerNickname, lobbyName) != null) {
-            clientContainerController.setLobbyName(lobbyName);
+            clientContainer.setLobbyNickname(lobbyName);
             typeOfUI.printJoinLobbyOutcome(true, lobbyName);
         } else {
             typeOfUI.printJoinLobbyOutcome(false, lobbyName);
@@ -161,7 +166,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
     @Override
     public boolean createLobby(String playerNickname, String lobbyName) throws RemoteException {
         if(server.createLobby(playerNickname, lobbyName)) {
-            clientContainerController.setLobbyName(lobbyName);
+            clientContainer.setLobbyNickname(lobbyName);
             typeOfUI.printCreationLobbyRequestOutcome(true, lobbyName);
         } else {
             typeOfUI.printCreationLobbyRequestOutcome(false, lobbyName);
@@ -172,8 +177,8 @@ public class RmiClient extends GenericClient implements VirtualServer {
     }
 
     @Override
-    public boolean setPlayerColor(String nickname, ColorType colorChosen) {
-        return false;
+    public boolean setPlayerColor(String nickname, ColorType colorChosen) throws RemoteException {
+        return server.setPlayerColor(nickname, colorChosen);
     }
 
     @Override
@@ -183,8 +188,8 @@ public class RmiClient extends GenericClient implements VirtualServer {
     }
 
     @Override
-    public void playStarterCard(String playerNick, StarterCard starterCard) {
-
+    public void playStarterCard(String playerNick, StarterCard starterCard) throws RemoteException {
+        personalGameController.playStarterCard(playerNick, starterCard);
     }
 
     @Override

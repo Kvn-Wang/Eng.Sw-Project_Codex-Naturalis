@@ -6,9 +6,10 @@ import it.polimi.codexnaturalis.model.enumeration.ConditionResourceType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class Card {
+public abstract class Card implements Serializable {
     protected int png;
     protected ResourceType frontNorthResource;
     protected ResourceType frontSouthResource;

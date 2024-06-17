@@ -6,15 +6,15 @@ import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
-import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
+import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public interface TypeOfUI {
     // collegare la UI alla network
-    void connectVirtualNetwork(VirtualServer virtualNetworkCommand, ClientContainerController clientContainerController);
-    void connectGameController(GameController virtualGame, ClientContainerController clientContainerController);
+    void connectVirtualNetwork(VirtualServer virtualNetworkCommand, ClientContainer clientContainer);
+    void connectGameController(GameController virtualGame, ClientContainer clientContainer);
     void printSelectionNicknameRequestOutcome(boolean positiveOutcome, String nickname);
     void printJoinLobbyOutcome(boolean positiveOutcome, String lobbyName) throws RemoteException;
     void printLobbyStatus(ArrayList<PlayerInfo> lobbyPlayers) throws RemoteException;

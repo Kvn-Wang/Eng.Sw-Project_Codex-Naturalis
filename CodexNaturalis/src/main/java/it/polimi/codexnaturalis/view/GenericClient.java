@@ -6,7 +6,6 @@ import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
-import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -14,29 +13,30 @@ import java.util.ArrayList;
 
 public abstract class GenericClient extends UnicastRemoteObject implements GameController, VirtualView {
     protected TypeOfUI typeOfUI;
-    protected ClientContainerController clientContainerController;
+    protected ClientContainer clientContainer;
 
     public GenericClient(TypeOfUI typeOfUI) throws RemoteException  {
         this.typeOfUI = typeOfUI;
-        clientContainerController = new ClientContainer();
+        clientContainer = new ClientContainer();
     }
 
     protected void joinPlayerToGame(GameController virtualGameController, ArrayList<PlayerInfo> listOtherPlayer) {
         System.out.println("Game Has Started!");
 
-        clientContainerController.setOtherPlayer(listOtherPlayer);
+        clientContainer.setOtherPlayerList(listOtherPlayer);
 
-        typeOfUI.connectGameController(virtualGameController, clientContainerController);
+        typeOfUI.connectGameController(virtualGameController, clientContainer);
     }
 
     //ricevo una mano di 2 carte risorsa e 1 carta oro
     protected void initializeInitialHand(Hand hand) {
-        clientContainerController.setHand(hand);
+        clientContainer.setPersonalHand(hand);
         typeOfUI.printHand(hand);
     }
 
     protected void initializeCommonMission(Mission mission1, Mission mission2) {
-        clientContainerController.setCommonMission(mission1, mission2);
+        clientContainer.setCommonMission1(mission1);
+        clientContainer.setCommonMission2(mission2);
         typeOfUI.giveCommonMission(mission1, mission2);
     }
 
@@ -44,8 +44,8 @@ public abstract class GenericClient extends UnicastRemoteObject implements GameC
         typeOfUI.givePersonalMission(personalMission1, personalMission2);
     }
 
-    public ClientContainerController getClientContainerController() {
-        return clientContainerController;
+    public ClientContainer getClientContainerController() {
+        return clientContainer;
     }
 
     @Override

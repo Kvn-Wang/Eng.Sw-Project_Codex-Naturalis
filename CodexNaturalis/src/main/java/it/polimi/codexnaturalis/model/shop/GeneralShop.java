@@ -15,8 +15,8 @@ public class GeneralShop extends Shop {
 
     public GeneralShop(ShopType type, Observer observer) {
         super(type, observer);
-        visibleCard1 = drawTopDeckCard();
-        visibleCard2 = drawTopDeckCard();
+        visibleCard1 = drawTopDeckCard(true);
+        visibleCard2 = drawTopDeckCard(true);
     }
 
     public Card drawFromShopPlayer(int numCard){
@@ -26,7 +26,7 @@ public class GeneralShop extends Shop {
         switch(numCard) {
             case 1:
                 supp = visibleCard1;
-                visibleCard1 = drawTopDeckCard();
+                visibleCard1 = drawTopDeckCard(false);
                 try {
                     notifyObserverSingle(new NetworkMessage(MessageType.SHOP_UPDATE, argsGenerator(visibleCard1), "visibleCard1", argsGenerator(shopType)));
                 } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
@@ -35,7 +35,7 @@ public class GeneralShop extends Shop {
                 return supp;
             case 2:
                 supp = visibleCard2;
-                visibleCard2 = drawTopDeckCard();
+                visibleCard2 = drawTopDeckCard(false);
                 try {
                     notifyObserverSingle(new NetworkMessage(MessageType.SHOP_UPDATE, argsGenerator(visibleCard2), "visibleCard2", argsGenerator(shopType)));
                 } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {

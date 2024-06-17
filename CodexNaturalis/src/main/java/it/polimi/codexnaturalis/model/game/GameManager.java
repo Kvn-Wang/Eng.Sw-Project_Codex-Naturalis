@@ -34,16 +34,17 @@ public class GameManager extends Observable implements GameController {
     private boolean isFinalTurn=false;
     private List <Player> winners;
     private String scoreCardImg;
-    private int starterCards;
+    private int playerThatHasPlayedStarterCard;
     private int remainingRounds=1;
     private Observer vobs;
     MissionSelector missionSelector;
 
     public GameManager(Map<String, ColorType> playerInfo) {
-        //PER I TEST
         this.playerInfo = playerInfo;
         players = new Player[playerInfo.size()];
         missionSelector = new MissionSelector();
+
+        playerThatHasPlayedStarterCard = 0;
 
         //initializeGame ora é diviso in 3 phases
         gamePhase1();
@@ -56,13 +57,14 @@ public class GameManager extends Observable implements GameController {
 
     @Override
     public void playStarterCard(String playerNick, StarterCard starterCard) {
-        try {
-            nickToPlayer(playerNick).placeCard(UtilCostantValue.lunghezzaMaxMappa/2, UtilCostantValue.lunghezzaMaxMappa/2,
-                    starterCard);
-        } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
-            throw new RuntimeException(e);
-        } catch (PersonalizedException.InvalidPlacementException e) {
-            throw new RuntimeException(e);
+        nickToPlayer(playerNick).placeCard(UtilCostantValue.lunghezzaMaxMappa/2,
+                UtilCostantValue.lunghezzaMaxMappa/2, starterCard);
+
+        System.out.println("Player: "+playerNick+" ha giocato la sua starter card con isBack: "+starterCard.getIsBack());
+
+        playerThatHasPlayedStarterCard++;
+        if(playerThatHasPlayedStarterCard == players.length) {
+            gamePhase2();
         }
     }
 
@@ -120,7 +122,7 @@ public class GameManager extends Observable implements GameController {
             //manda la starterCard al playerSpecifico
             try {
                 notifyObserverSingle(new NetworkMessage(p.getNickname(), MessageType.GAME_SETUP_GIVE_STARTER_CARD_,
-                        argsGenerator(starterShop.drawTopDeckCard())));
+                        argsGenerator(starterShop.drawTopDeckCard(true))));
             } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
                 throw new RuntimeException(e);
             }
@@ -129,9 +131,9 @@ public class GameManager extends Observable implements GameController {
 
     private void initializePlayerHand(){
         for(Player p: players){
-            p.addHandCard(resourceShop.drawTopDeckCard());
-            p.addHandCard(resourceShop.drawTopDeckCard());
-            p.addHandCard(objectiveShop.drawTopDeckCard());
+            p.addHandCard(resourceShop.drawTopDeckCard(true));
+            p.addHandCard(resourceShop.drawTopDeckCard(true));
+            p.addHandCard(objectiveShop.drawTopDeckCard(true));
         }
     }
 
@@ -240,23 +242,12 @@ public class GameManager extends Observable implements GameController {
     }
 
     @Override
-    public void playerPlayCard(String nickname, int x, int y, Card playedCard) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
+    public void playerPlayCard(String nickname, int x, int y, Card playedCard) {
         Player p = nickToPlayer(nickname);
         System.out.println(nickname + " ha piazzato una carta in posizione: ("+x+","+y+")");
-        try {
-            p.placeCard(x, y, playedCard);
-        } catch (PersonalizedException.InvalidPlacementException e) {
-            throw e; // Propagate the caught exception directly
-        } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
-            throw e;
-        }
-        if(starterCards < players.length) {
-            starterCards++;
-            if (starterCards == players.length)
-                gamePhase2();
-        } else {
-            endGameCheckScoreBoard();
-        }
+        p.placeCard(x, y, playedCard);
+
+        endGameCheckScoreBoard();
     }
 
     @Override

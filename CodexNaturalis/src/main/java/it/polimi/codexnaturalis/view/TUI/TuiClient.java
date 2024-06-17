@@ -11,7 +11,7 @@ import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.view.TypeOfUI;
-import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
+import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -20,22 +20,22 @@ import java.util.Scanner;
 public class TuiClient implements TypeOfUI {
     protected VirtualServer networkCommand;
     protected GameController virtualGame;
-    protected ClientContainerController clientContainer;
+    protected ClientContainer clientContainer;
     Scanner scan;
 
     public TuiClient() {
         scan = new Scanner(System.in);
     }
 
-    public void initializeClient(VirtualServer virtualServer, ClientContainerController clientContainerController) throws RemoteException {
-        initializationPhase1(virtualServer, clientContainerController);
+    public void initializeClient(VirtualServer virtualServer, ClientContainer clientContainer) throws RemoteException {
+        initializationPhase1(virtualServer, clientContainer);
         initializationPhase2();
     }
 
     //chiamata che garantisce il setup del nickname univoco
-    protected void initializationPhase1(VirtualServer virtualServer, ClientContainerController clientContainerController) throws RemoteException {
+    protected void initializationPhase1(VirtualServer virtualServer, ClientContainer clientContainer) throws RemoteException {
         // aggiungo alla UI il potere di comunicare con l'esterno
-        connectVirtualNetwork(virtualServer, clientContainerController);
+        connectVirtualNetwork(virtualServer, clientContainer);
 
         // per com'è stato scritto il codice, dopo questa riga avremo un nickname sicuramente settato correttamente
         // stessa cosa vale per le righe successive
@@ -55,13 +55,13 @@ public class TuiClient implements TypeOfUI {
     }
 
     @Override
-    public void connectVirtualNetwork(VirtualServer virtualNetworkCommand, ClientContainerController clientContainerController) {
+    public void connectVirtualNetwork(VirtualServer virtualNetworkCommand, ClientContainer clientContainer) {
         this.networkCommand = virtualNetworkCommand;
-        this.clientContainer = clientContainerController;
+        this.clientContainer = clientContainer;
     }
 
     @Override
-    public void connectGameController(GameController virtualGame, ClientContainerController clientContainerController) {
+    public void connectGameController(GameController virtualGame, ClientContainer clientContainer) {
         this.virtualGame = virtualGame;
     }
 
@@ -225,11 +225,10 @@ public class TuiClient implements TypeOfUI {
 
         //setta la carta per aggiornare la copia locale
         starterCard.setIsBack(isBack);
-        clientContainer.setPlayerMap(UtilCostantValue.lunghezzaMaxMappa/2, UtilCostantValue.lunghezzaMaxMappa/2, starterCard);
-
         try {
             virtualGame.playStarterCard(clientContainer.getNickname(), (StarterCard) starterCard);
-        } catch (RemoteException e) {
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
             throw new RuntimeException(e);
         }
     }

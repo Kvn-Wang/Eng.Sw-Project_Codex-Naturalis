@@ -3,7 +3,6 @@ package it.polimi.codexnaturalis.view.TUI;
 import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
-import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
 
 public class PrintHandClass {
 
