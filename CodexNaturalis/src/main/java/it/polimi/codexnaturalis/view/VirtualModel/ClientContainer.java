@@ -28,6 +28,8 @@ public class ClientContainer implements ClientContainerController {
         }
     }
 
+
+
     @Override
     public void setNickname(String nickname) {
         this.nickname=nickname;

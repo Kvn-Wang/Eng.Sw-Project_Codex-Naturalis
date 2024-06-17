@@ -62,7 +62,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
             }
         }).start();
 
-        initializeClient(this);
+        //initializeClient(this);
     }
 
     private void runRxClient() throws IOException {
@@ -119,7 +119,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
                     System.out.println("received starter card: "+ message.getArgs().get(0));
                     Card supp = cardTranslator.fromJson(message.getArgs().get(0), Card.class);
 
-                    playStarterCard(supp);
+                    typeOfUI.giveStarterCard((StarterCard) supp);
                     break;
 
                 case SHOP_UPDATE:
@@ -228,7 +228,6 @@ public class SocketClient extends GenericClient implements VirtualServer {
         // fa partire una specie di ricorsione finchè il nick non è valido
         if(outcomeReceived == false) {
             typeOfUI.printSelectionNicknameRequestOutcome(false, nickname);
-            typeOfUI.printSelectionNicknameRequest();
         } else {
             clientContainerController.setNickname(nickname);
             typeOfUI.printSelectionNicknameRequestOutcome(true, nickname);
@@ -266,7 +265,6 @@ public class SocketClient extends GenericClient implements VirtualServer {
         // fa partire una specie di ricorsione finchè il nick non è valido
         if(outcomeReceived == false) {
             typeOfUI.printJoinLobbyOutcome(false, lobbyName);
-            typeOfUI.printSelectionCreateOrJoinLobbyRequest();
         } else {
             clientContainerController.setLobbyName(lobbyName);
             typeOfUI.printJoinLobbyOutcome(true, lobbyName);
@@ -288,8 +286,6 @@ public class SocketClient extends GenericClient implements VirtualServer {
 
         //reset della variabile in attesa di altri ACK
         outcomeReceived = false;
-
-        initializationPhase2();
     }
 
     @Override
@@ -303,7 +299,6 @@ public class SocketClient extends GenericClient implements VirtualServer {
         // fa partire una specie di ricorsione finchè il nick non è valido
         if(outcomeReceived == false) {
             typeOfUI.printCreationLobbyRequestOutcome(false, lobbyName);
-            typeOfUI.printSelectionCreateOrJoinLobbyRequest();
         } else {
             clientContainerController.setLobbyName(lobbyName);
             typeOfUI.printCreationLobbyRequestOutcome(true, lobbyName);
@@ -358,7 +353,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
     }
 
     @Override
-    public void playerPlayCard(String nickname, int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException, RemoteException {
+    public void playerPlayCard(String nickname, int x, int y, Card playedCard) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException, RemoteException {
 
     }
 

@@ -4,6 +4,7 @@ import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.game.GameManager;
 import it.polimi.codexnaturalis.model.mission.Mission;
+import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.util.networkMessage.MessageType;
 import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
@@ -88,10 +89,10 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     }
 
     @Override
-    public void playerPlayCard(String nickname, int x, int y, int numCard, boolean isCardBack) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException, RemoteException {
+    public void playerPlayCard(String nickname, int x, int y, Card playedCard) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException, RemoteException {
         if(nickname.equals(players.get(currentPlayerIndex).getNickname())||starterCardPlaced<players.size()) {
             starterCardPlaced++;
-            gameController.playerPlayCard(nickname, x, y, numCard, isCardBack);
+            gameController.playerPlayCard(nickname, x, y, playedCard);
         }
         else {
             try {
@@ -131,7 +132,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     public void update(NetworkMessage message) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
         switch(message.getMessageType()) {
             //messaggi per playerSpecifici con argomenti illimitati
-            case COM_ACK_TCP, CORRECT_PLACEMENT, GAME_SETUP_GIVE_STARTER_CARD_:
+            case COM_ACK_TCP, CORRECT_PLACEMENT, GAME_SETUP_GIVE_STARTER_CARD_, GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP:
                 System.out.println("Messaggio per "+message.getNickname()+" di tipo:"+message.getMessageType());
                 try {
                     nickToPlayerInfo(message.getNickname()).getClientHandler().showMessage(message);
@@ -157,7 +158,6 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
                 getNextPlayer();
                 break;
 
-            //messaggio di broadCast con un argomento
             case SCORE_UPDATE, STATUS_PLAYER_CHANGE, SHOP_UPDATE:
                 System.out.println("Messaggio broadcast: "+message.getMessageType());
                 for(PlayerInfo p: players){
