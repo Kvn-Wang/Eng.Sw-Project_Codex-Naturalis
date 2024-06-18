@@ -25,7 +25,7 @@ public abstract class GenericClient extends UnicastRemoteObject implements GameC
 
         clientContainer.setOtherPlayerList(listOtherPlayer);
 
-        typeOfUI.connectGameController(virtualGameController, clientContainer);
+        typeOfUI.connectGameController(virtualGameController);
     }
 
     //ricevo una mano di 2 carte risorsa e 1 carta oro

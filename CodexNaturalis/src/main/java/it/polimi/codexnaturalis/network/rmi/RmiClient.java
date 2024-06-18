@@ -74,11 +74,23 @@ public class RmiClient extends GenericClient implements VirtualServer {
             case SCORE_UPDATE:
                 break;
 
+            case GAME_SETUP_GIVE_STARTER_CARD:
+                //crea un thread che fa l'operazione così che non sia il thread server a gestire la gestione della starter card
+                executorService.submit(() -> {
+                    try {
+                        Card supp = gsonTranslator.fromJson(message.getArgs().get(0), Card.class);
+
+                        typeOfUI.giveStarterCard((StarterCard) supp);
+                    } catch (Exception e) {
+                        System.err.println("Err Starter card play");
+                    }
+                });
+                break;
+
             case GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP:
                 //crea un thread che fa l'operazione così che non sia il thread server a gestire il client
                 executorService.submit(() -> {
                     try {
-                        System.out.println("init resource");
                         //receive setup hand
                         Hand hand = gsonTranslator.fromJson(message.getArgs().get(0), Hand.class);
                         // 2 common mission
@@ -99,16 +111,28 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 });
                 break;
 
-            case GAME_SETUP_GIVE_STARTER_CARD:
-                //crea un thread che fa l'operazione così che non sia il thread server a gestire la gestione della starter card
+            case GAME_SETUP_SEND_PERSONAL_MISSION:
+                //crea un thread che fa l'operazione così che non sia il thread server a gestire il client
                 executorService.submit(() -> {
                     try {
-                        Card supp = gsonTranslator.fromJson(message.getArgs().get(0), Card.class);
+                        //receive personal mission
+                        Mission personalMission1 = gsonTranslator.fromJson(message.getArgs().get(0), Mission.class);
+                        Mission personalMission2 = gsonTranslator.fromJson(message.getArgs().get(1), Mission.class);
 
-                        typeOfUI.giveStarterCard((StarterCard) supp);
+                        typeOfUI.givePersonalMission(personalMission1, personalMission2);
+
+                        System.out.println("finished Client setup Personal");
                     } catch (Exception e) {
-                        System.err.println("Err Starter card play");
+                        e.printStackTrace();
                     }
+                });
+                break;
+
+            case GAME_SETUP_NOTIFY_TURN:
+                //crea un thread che fa l'operazione così che non sia il thread server a gestire il client
+                executorService.submit(() -> {
+                    typeOfUI.notifyIsYourTurn(Boolean.parseBoolean(message.getArgs().get(0)));
+                    typeOfUI.startGamePhase();
                 });
                 break;
 

@@ -5,6 +5,7 @@ import it.polimi.codexnaturalis.model.chat.ChatManager;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
+import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.network.util.networkMessage.MessageType;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
@@ -26,25 +27,26 @@ public class GameManager extends Observable implements GameController {
     private Mission sharedMission2;
     private GeneralShop resourceShop;
     private GeneralShop objectiveShop;
-    private String pathToFile;
-    private Map<String, ColorType> playerInfo;
+    private ArrayList<PlayerInfo> networkPlayer;
     private Player[] players;
     private Player playerTurn;
     private ChatManager chatManager;
-    private boolean isFinalTurn=false;
+    private boolean isFinalTurn = false;
     private List <Player> winners;
     private String scoreCardImg;
     private int playerThatHasPlayedStarterCard;
+    private int playerThatHasPlayedPersonalMission;
     private Observer vobs;
     private MissionSelector missionSelector;
 
-    public GameManager(Map<String, ColorType> playerInfo, Observer observer) {
-        this.playerInfo = playerInfo;
+    public GameManager(ArrayList<PlayerInfo> playerInfo, Observer observer) {
+        networkPlayer = playerInfo;
         players = new Player[playerInfo.size()];
 
         missionSelector = new MissionSelector();
 
         playerThatHasPlayedStarterCard = 0;
+        playerThatHasPlayedPersonalMission = 0;
 
         vobs = observer;
         addObserver(observer);
@@ -84,9 +86,6 @@ public class GameManager extends Observable implements GameController {
 
         initializePlayerPersonalMission();
     }
-    private void gamePhase3(){
-        initializeStartingPlayer();
-    }
 
     private void initializeScoreboard(){
         scoreCardImg = UtilCostantValue.pathToScoreCardImg;
@@ -99,9 +98,9 @@ public class GameManager extends Observable implements GameController {
     //inizialize nickname and color
     private void initializePlayer(){
         int i = 0;
-        for (Map.Entry<String, ColorType> entry : playerInfo.entrySet()) {
-            String nickname = entry.getKey();
-            ColorType colorPlayer = entry.getValue();
+        for (PlayerInfo playerInfo : networkPlayer) {
+            String nickname = playerInfo.getNickname();
+            ColorType colorPlayer = playerInfo.getColorChosen();
             players[i] = new Player(nickname, colorPlayer, vobs);
             i++;
         }
@@ -146,8 +145,6 @@ public class GameManager extends Observable implements GameController {
                         argsGenerator(p.getHand()), argsGenerator(sharedMission1),
                         argsGenerator(sharedMission2), argsGenerator(resourceShop.getVisibleShopCard()),
                         argsGenerator(objectiveShop.getVisibleShopCard())));
-            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
-                throw new RuntimeException(e);
             } catch(Exception e) {
                 System.err.println(e.getMessage());
             }
@@ -157,27 +154,13 @@ public class GameManager extends Observable implements GameController {
     private void initializePlayerPersonalMission() {
         for(Player p: players){
             try {
-                notifyObserverSingle(new NetworkMessage(MessageType.GAME_SETUP_SEND_PERSONAL_MISSION,
-                        p.getNickname(), argsGenerator(missionSelector.drawFromFile()), argsGenerator(missionSelector.drawFromFile())));
-            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
-                throw new RuntimeException(e);
+                notifyObserverSingle(new NetworkMessage(p.getNickname(), MessageType.GAME_SETUP_SEND_PERSONAL_MISSION,
+                        argsGenerator(missionSelector.drawFromFile()), argsGenerator(missionSelector.drawFromFile())));
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
             }
         }
         System.out.print("\nMissions being selected\n");
-    }
-
-    private void initializeStartingPlayer(){
-        //Shuffle di players e poi assegno uno a playerturn
-        //Fisher–Yates shuffle
-        Random rnd = new Random();
-        for (int i = players.length - 1; i > 0; i--) {
-            int j = rnd.nextInt(i + 1);
-            Player a = players[j];
-            players[j] = players[i];
-            players[i] = a;
-        }
-        playerTurn = players[0];
-        System.out.printf("inizia %s\n\n", players[0].getNickname());
     }
 
     private Player nickToPlayer(String nickname)/* throws PersonalizedException.InvalidNickname*/ {//TODO:throw exception da aggiungere
@@ -226,15 +209,28 @@ public class GameManager extends Observable implements GameController {
     public void playerPersonalMissionSelect(String nickname, Mission mission) {
         Player p = nickToPlayer(nickname);
         p.setPersonalMissionFinal(mission);
-        System.out.printf("%s Selected his mission\n", nickname);
-        int numPlayerReady = 0;
-        for(Player player: players){
-            if(player.getPersonalMission() != null)
-                numPlayerReady++;
-        }
+
+        System.out.println(nickname+ " Selected his mission");
+
+        playerThatHasPlayedPersonalMission++;
         //controllo se tutti i player hanno selezionato personal mission
-        if(numPlayerReady == players.length)
-            gamePhase3();
+        if(playerThatHasPlayedPersonalMission == players.length){
+            System.out.println("Init phase finished, init game phase");
+            /**
+             * since the starting player is the first one in the list, notify him that it's his turn
+             */
+            try {
+                notifyObserverSingle(new NetworkMessage(players[0].getNickname(),  MessageType.GAME_SETUP_NOTIFY_TURN,
+                        String.valueOf(true)));
+                for(int i = 1; i < players.length; i++) {
+                    notifyObserverSingle(new NetworkMessage(players[i].getNickname(),  MessageType.GAME_SETUP_NOTIFY_TURN,
+                            String.valueOf(false)));
+                }
+            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
+                throw new RuntimeException(e);
+            }
+        }
+
     }
 
     @Override

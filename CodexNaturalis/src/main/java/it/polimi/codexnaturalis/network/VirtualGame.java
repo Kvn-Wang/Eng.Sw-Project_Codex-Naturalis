@@ -20,13 +20,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class VirtualGame extends UnicastRemoteObject implements Serializable, GameController, Observer {
-    ArrayList<PlayerInfo> players;
+    /**
+     * Agreement: the starting player is the first one in the list get(0) after the list has been
+     *   shuffled in the constructor
+     */
+    private ArrayList<PlayerInfo> players;
 
     //variable used to decide who can play
-    int currentPlayerIndex;
-    int startingPlayerIndex;
-    int starterCardPlaced = 0;
-    GameController gameController;
+    private int currentPlayerIndex;
+
+    private GameController gameController;
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public VirtualGame(ArrayList<PlayerInfo> players) throws RemoteException {
@@ -35,16 +38,10 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
 
         // random order of play
         Collections.shuffle(this.players);
-        startingPlayerIndex = 0;
-        currentPlayerIndex = startingPlayerIndex;
+        currentPlayerIndex = 0;
 
         // initialize the real game controller
-        Map<String, ColorType> playerInfoNicknameColor;
-        playerInfoNicknameColor = new HashMap<>();
-        for(PlayerInfo playerInfo : this.players) {
-            playerInfoNicknameColor.put(playerInfo.getNickname(), playerInfo.getColorChosen());
-        }
-        gameController = new GameManager(playerInfoNicknameColor, this);
+        gameController = new GameManager(players, this);
     }
 
     private PlayerInfo getNextPlayer() {
@@ -72,7 +69,13 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
 
     @Override
     public void playerPersonalMissionSelect(String nickname, Mission mission) throws RemoteException {
-        gameController.playerPersonalMissionSelect(nickname, mission);
+        executorService.submit(() -> {
+            try {
+                gameController.playerPersonalMissionSelect(nickname, mission);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override
@@ -100,8 +103,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
 
     @Override
     public void playerPlayCard(String nickname, int x, int y, Card playedCard) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException, RemoteException {
-        if(nickname.equals(players.get(currentPlayerIndex).getNickname()) || starterCardPlaced<players.size()) {
-            starterCardPlaced++;
+        if(nickname.equals(players.get(currentPlayerIndex).getNickname())) {
             gameController.playerPlayCard(nickname, x, y, playedCard);
         }
         else {
@@ -143,7 +145,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
         switch(message.getMessageType()) {
             //messaggi per playerSpecifici con argomenti illimitati
             case COM_ACK_TCP, CORRECT_PLACEMENT, GAME_SETUP_GIVE_STARTER_CARD, GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP,
-                    PLACEMENT_CARD_OUTCOME:
+                    GAME_SETUP_SEND_PERSONAL_MISSION, GAME_SETUP_NOTIFY_TURN, PLACEMENT_CARD_OUTCOME:
                 System.out.println("Messaggio per "+message.getNickname()+" di tipo:"+message.getMessageType());
                 try {
                     nickToPlayerInfo(message.getNickname()).getClientHandler().showMessage(message);

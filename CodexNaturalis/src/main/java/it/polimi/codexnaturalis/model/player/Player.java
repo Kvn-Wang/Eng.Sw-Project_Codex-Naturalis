@@ -23,13 +23,18 @@ public class Player extends Observable implements PlayerInterface {
     private Hand hand;
     private String pawnImg;
 
-//    public void inizializeGamePlayerMap(boolean isBackStarterCard) {
-//        starterCard.setIsBack(isBackStarterCard);
-//        gameMap = new GamePlayerMap(scoreResource, starterCard);
-//    }
-
-    public Mission getPersonalMission(){ //ritorna la mission selezionata
-        return selectedPersonalMission;
+    public Player(String nick, ColorType color){
+        nickname = nick;
+        pawnColor = color;
+        personalScoreBoardScore = 0;
+        personalMissionTotalScore = 0;
+        selectedPersonalMission = null;
+        playerView = this;
+        scoreResource = new PlayerScoreResource();
+        gameMap = new GamePlayerMap(scoreResource);
+        hand = new Hand();
+        pawnImg = null;//TODO:mettere case con inserimento immagine
+        alive = true;
     }
 
     public void addHandCard(Card drawnCard) {
@@ -180,20 +185,6 @@ public class Player extends Observable implements PlayerInterface {
 
     public void setGameMap(GamePlayerMap gameMap) {
         this.gameMap = gameMap;
-    }
-
-    public Player(String nick, ColorType color){
-        nickname = nick;
-        pawnColor = color;
-        personalScoreBoardScore = 0;
-        personalMissionTotalScore = 0;
-        selectedPersonalMission = null;
-        playerView = this;
-        scoreResource = new PlayerScoreResource();
-        gameMap = new GamePlayerMap(scoreResource);
-        hand = new Hand();
-        pawnImg = null;//TODO:mettere case con inserimento immagine
-        alive = true;
     }
 
     public Player(String nick, ColorType color, Observer observer){

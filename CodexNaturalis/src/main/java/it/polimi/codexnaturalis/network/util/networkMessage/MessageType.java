@@ -84,12 +84,9 @@ public enum MessageType {
     /* ---- ENUMS FOR THE GAME PHASE: PLAY ---- */
 
     /**
-     * args(0): playerNick
-     * args(1): card
-     * args(2): x_pos
-     * args(3): y_pos
+     * no args
      */
-    PLAY_CARD,
+    YOUR_TURN,
 
     /**
      * no args
@@ -97,9 +94,12 @@ public enum MessageType {
     NOT_YOUR_TURN,
 
     /**
-     * no args
+     * args(0): playerNick
+     * args(1): card
+     * args(2): x_pos
+     * args(3): y_pos
      */
-    YOUR_TURN,
+    PLAY_CARD,
 
     /**
      * args(0): isValid (boolean)

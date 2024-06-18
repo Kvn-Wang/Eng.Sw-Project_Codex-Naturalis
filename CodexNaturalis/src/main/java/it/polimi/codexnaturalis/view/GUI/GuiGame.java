@@ -74,8 +74,9 @@ public class GuiGame extends Application {
     public static void main(String[] args) {
         launch(args); //
     }
-    public static void setupMenu(VirtualServer virtualNetworkCommand){
+    public static void setupMenu(VirtualServer virtualNetworkCommand, ClientContainer clientContainer){
         vnc = virtualNetworkCommand;
+        GuiGame.clientContainer = clientContainer;
     }
 
     public static void setNickname(boolean outcome, String nickname){
@@ -210,10 +211,9 @@ public class GuiGame extends Application {
         gameWindow.setScene(lobbyScene);
     }
 
-    public static void startGame(GameController gameController, ClientContainer clientContainer){
+    public static void startGame(GameController gameController){
         Platform.runLater(() -> {
             vgc=gameController;
-            GuiGame.clientContainer = clientContainer;
 
             try {
                 gameWindow.setScene(gameScene);

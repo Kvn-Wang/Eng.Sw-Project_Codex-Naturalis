@@ -7,7 +7,9 @@ import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
-public class BendMission extends Mission  {
+import java.io.Serializable;
+
+public class BendMission extends Mission implements Serializable {
     private Card[][] mapArray;
     private CardCorner decorationPosition;
     private ResourceType pillarResource;

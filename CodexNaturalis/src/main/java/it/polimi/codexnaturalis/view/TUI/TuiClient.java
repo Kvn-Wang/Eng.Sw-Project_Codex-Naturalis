@@ -61,7 +61,7 @@ public class TuiClient implements TypeOfUI {
     }
 
     @Override
-    public void connectGameController(GameController virtualGame, ClientContainer clientContainer) {
+    public void connectGameController(GameController virtualGame) {
         this.virtualGame = virtualGame;
     }
 
@@ -260,29 +260,39 @@ public class TuiClient implements TypeOfUI {
         PrintMissionClass.printMission(choice1);
         System.out.println("Personal mission 2: " + choice2.getMissionType());
         PrintMissionClass.printMission(choice2);
+
         do {
             System.out.println("Write 1 to choose mission 1, Write 2 for mission 2");
             command = scan.nextLine();
         }while(!(command.equals("1") || command.equals("2")));
-        if(command.equals("1")) {
-            try {
+
+        try {
+            if(command.equals("1")) {
+                // chiamata a server
                 virtualGame.playerPersonalMissionSelect(clientContainer.getNickname(), choice1);
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }
-            System.out.println("you have chosen personal mission 1: " + choice1.getMissionType());
-        }else if(command.equals("2")) {
-            try {
+
+                // memorizzo nella memoria del client la missione scelta
+                clientContainer.setPersonalMission(choice1);
+
+                System.out.println("you have chosen personal mission 1: " + choice1.getMissionType());
+            }else if(command.equals("2")) {
                 virtualGame.playerPersonalMissionSelect(clientContainer.getNickname(), choice2);
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
+                clientContainer.setPersonalMission(choice2);
+                System.out.println("you have chosen personal mission 2: " + choice2.getMissionType());
             }
-            System.out.println("you have chosen personal mission 2: " + choice2.getMissionType());
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public void notifyIsYourTurn(boolean isYourTurn) {
-        System.out.println(clientContainer.getNickname() + ",it's your turn");
+        System.out.println("Is my turn: "+ isYourTurn);
+    }
+
+    @Override
+    public void startGamePhase() {
+        //TODO
+        System.out.println("Menu a tendina non ancora sviluppata..... 1)gioca carta 2)visualizza mappa ecc");
     }
 }

@@ -9,6 +9,11 @@ public abstract class Mission {
     protected int pointPerCondition;
     protected boolean usedCardArray[][];
 
+    /**
+     * empty constructor, DO NOT remove, useful for unmarshaling during RMI setup exchange
+     */
+    public Mission(){}
+
     public Mission(int pngNumber, int pointPerCondition) {
         this.pngNumber = pngNumber;
         this.pointPerCondition = pointPerCondition;
