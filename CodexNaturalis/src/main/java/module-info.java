@@ -6,19 +6,19 @@ module it.polimi.codexnaturalis {
     requires java.desktop;
 
     exports it.polimi.codexnaturalis.model.shop;
-    opens it.polimi.codexnaturalis.model.shop to javafx.fxml;
+    opens it.polimi.codexnaturalis.model.shop to javafx.fxml, com.google.gson;
     exports it.polimi.codexnaturalis.model.enumeration;
-    opens it.polimi.codexnaturalis.model.enumeration to javafx.fxml;
+    opens it.polimi.codexnaturalis.model.enumeration to javafx.fxml, com.google.gson;
     exports it.polimi.codexnaturalis.model.shop.card;
     opens it.polimi.codexnaturalis.model.shop.card to javafx.fxml, com.google.gson;
     exports it.polimi.codexnaturalis.model.player;
     opens it.polimi.codexnaturalis.model.player to javafx.fxml, com.google.gson;
     exports it.polimi.codexnaturalis.model.mission;
-    opens it.polimi.codexnaturalis.model.mission to javafx.fxml;
+    opens it.polimi.codexnaturalis.model.mission to javafx.fxml, com.google.gson;
     exports it.polimi.codexnaturalis.model.game;
-    opens it.polimi.codexnaturalis.model.game to javafx.fxml;
+    opens it.polimi.codexnaturalis.model.game to javafx.fxml, com.google.gson;
     exports it.polimi.codexnaturalis.controller;
-    opens it.polimi.codexnaturalis.controller to javafx.fxml;
+    opens it.polimi.codexnaturalis.controller to javafx.fxml, com.google.gson;
     exports it.polimi.codexnaturalis.network.rmi;
     opens it.polimi.codexnaturalis.network.lobby to com.google.gson, javafx.base;
     opens it.polimi.codexnaturalis.network to com.google.gson, javafx.base;

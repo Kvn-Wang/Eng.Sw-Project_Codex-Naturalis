@@ -11,7 +11,7 @@ import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.view.TypeOfUI;
-import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
+import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -20,22 +20,22 @@ import java.util.Scanner;
 public class TuiClient implements TypeOfUI {
     protected VirtualServer networkCommand;
     protected GameController virtualGame;
-    protected ClientContainerController clientContainer;
+    protected ClientContainer clientContainer;
     Scanner scan;
 
     public TuiClient() {
         scan = new Scanner(System.in);
     }
 
-    public void initializeClient(VirtualServer virtualServer, ClientContainerController clientContainerController) throws RemoteException {
-        initializationPhase1(virtualServer, clientContainerController);
+    public void initializeClient(VirtualServer virtualServer, ClientContainer clientContainer) throws RemoteException {
+        initializationPhase1(virtualServer, clientContainer);
         initializationPhase2();
     }
 
     //chiamata che garantisce il setup del nickname univoco
-    protected void initializationPhase1(VirtualServer virtualServer, ClientContainerController clientContainerController) throws RemoteException {
+    protected void initializationPhase1(VirtualServer virtualServer, ClientContainer clientContainer) throws RemoteException {
         // aggiungo alla UI il potere di comunicare con l'esterno
-        connectVirtualNetwork(virtualServer, clientContainerController);
+        connectVirtualNetwork(virtualServer, clientContainer);
 
         // per com'è stato scritto il codice, dopo questa riga avremo un nickname sicuramente settato correttamente
         // stessa cosa vale per le righe successive
@@ -55,13 +55,13 @@ public class TuiClient implements TypeOfUI {
     }
 
     @Override
-    public void connectVirtualNetwork(VirtualServer virtualNetworkCommand, ClientContainerController clientContainerController) {
+    public void connectVirtualNetwork(VirtualServer virtualNetworkCommand, ClientContainer clientContainer) {
         this.networkCommand = virtualNetworkCommand;
-        this.clientContainer = clientContainerController;
+        this.clientContainer = clientContainer;
     }
 
     @Override
-    public void connectGameController(GameController virtualGame, ClientContainerController clientContainerController) {
+    public void connectGameController(GameController virtualGame) {
         this.virtualGame = virtualGame;
     }
 
@@ -225,11 +225,10 @@ public class TuiClient implements TypeOfUI {
 
         //setta la carta per aggiornare la copia locale
         starterCard.setIsBack(isBack);
-        clientContainer.setPlayerMap(UtilCostantValue.lunghezzaMaxMappa/2, UtilCostantValue.lunghezzaMaxMappa/2, starterCard);
-
         try {
             virtualGame.playStarterCard(clientContainer.getNickname(), (StarterCard) starterCard);
-        } catch (RemoteException e) {
+        } catch (Exception e) {
+            System.err.println("errore starter card: "+ e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -261,29 +260,39 @@ public class TuiClient implements TypeOfUI {
         PrintMissionClass.printMission(choice1);
         System.out.println("Personal mission 2: " + choice2.getMissionType());
         PrintMissionClass.printMission(choice2);
+
         do {
             System.out.println("Write 1 to choose mission 1, Write 2 for mission 2");
             command = scan.nextLine();
         }while(!(command.equals("1") || command.equals("2")));
-        if(command.equals("1")) {
-            try {
+
+        try {
+            if(command.equals("1")) {
+                // chiamata a server
                 virtualGame.playerPersonalMissionSelect(clientContainer.getNickname(), choice1);
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }
-            System.out.println("you have chosen personal mission 1: " + choice1.getMissionType());
-        }else if(command.equals("2")) {
-            try {
+
+                // memorizzo nella memoria del client la missione scelta
+                clientContainer.setPersonalMission(choice1);
+
+                System.out.println("you have chosen personal mission 1: " + choice1.getMissionType());
+            }else if(command.equals("2")) {
                 virtualGame.playerPersonalMissionSelect(clientContainer.getNickname(), choice2);
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
+                clientContainer.setPersonalMission(choice2);
+                System.out.println("you have chosen personal mission 2: " + choice2.getMissionType());
             }
-            System.out.println("you have chosen personal mission 2: " + choice2.getMissionType());
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public void notifyIsYourTurn(boolean isYourTurn) {
-        System.out.println(clientContainer.getNickname() + ",it's your turn");
+        System.out.println("Is my turn: "+ isYourTurn);
+    }
+
+    @Override
+    public void startGamePhase() {
+        //TODO
+        System.out.println("Menu a tendina non ancora sviluppata..... 1)gioca carta 2)visualizza mappa ecc");
     }
 }

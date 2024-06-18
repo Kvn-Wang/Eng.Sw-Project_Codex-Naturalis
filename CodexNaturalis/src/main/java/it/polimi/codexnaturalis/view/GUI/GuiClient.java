@@ -9,7 +9,6 @@ import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.view.TypeOfUI;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
-import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -18,20 +17,20 @@ public class GuiClient implements TypeOfUI {
     private VirtualServer virtualNetworkCommand;
     private GameController virtualGame;
 
-    public void initializeClient(VirtualServer virtualServer, ClientContainerController clientContainerController) throws RemoteException {
-        initializationPhase1(virtualServer, clientContainerController);
+    public void initializeClient(VirtualServer virtualServer, ClientContainer clientContainer) throws RemoteException {
+        initializationPhase1(virtualServer, clientContainer);
     }
 
     //chiamata che garantisce il setup del nickname univoco
-    protected void initializationPhase1(VirtualServer virtualServer, ClientContainerController clientContainerController)  {
+    protected void initializationPhase1(VirtualServer virtualServer, ClientContainer clientContainer)  {
         // aggiungo alla UI il potere di comunicare con l'esterno
-        connectVirtualNetwork(virtualServer, clientContainerController);
+        connectVirtualNetwork(virtualServer, clientContainer);
     }
 
     @Override
-    public void connectVirtualNetwork(VirtualServer virtualNetworkCommand, ClientContainerController clientContainerController) {
+    public void connectVirtualNetwork(VirtualServer virtualNetworkCommand, ClientContainer clientContainer) {
         this.virtualNetworkCommand = virtualNetworkCommand;
-        GuiGame.setupMenu(this.virtualNetworkCommand);
+        GuiGame.setupMenu(this.virtualNetworkCommand, clientContainer);
         javafx.application.Application.launch(GuiGame.class);
     }
 
@@ -102,8 +101,13 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
-    public void connectGameController(GameController virtualGame, ClientContainerController clientContainerController) {
-        GuiGame.startGame(virtualGame, clientContainerController);
+    public void startGamePhase() {
+
+    }
+
+    @Override
+    public void connectGameController(GameController virtualGame) {
+        GuiGame.startGame(virtualGame);
     }
 
 }

@@ -23,21 +23,25 @@ public class Player extends Observable implements PlayerInterface {
     private Hand hand;
     private String pawnImg;
 
-//    public void inizializeGamePlayerMap(boolean isBackStarterCard) {
-//        starterCard.setIsBack(isBackStarterCard);
-//        gameMap = new GamePlayerMap(scoreResource, starterCard);
-//    }
-
-    public Mission getPersonalMission(){ //ritorna la mission selezionata
-        return selectedPersonalMission;
+    public Player(String nick, ColorType color){
+        nickname = nick;
+        pawnColor = color;
+        personalScoreBoardScore = 0;
+        personalMissionTotalScore = 0;
+        selectedPersonalMission = null;
+        playerView = this;
+        scoreResource = new PlayerScoreResource();
+        gameMap = new GamePlayerMap(scoreResource);
+        hand = new Hand();
+        pawnImg = null;//TODO:mettere case con inserimento immagine
+        alive = true;
     }
 
     public void addHandCard(Card drawnCard) {
         try {
             hand.addCard(drawnCard);
-            notifyObserverSingle(new NetworkMessage(nickname, MessageType.CORRECT_DRAW_CARD, this.argsGenerator(hand)));
-        } catch (PersonalizedException.InvalidAddCardException |
-                 PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
+            //notifyObserverSingle(new NetworkMessage(nickname, MessageType.CORRECT_DRAW_CARD, this.argsGenerator(hand)));
+        } catch (PersonalizedException.InvalidAddCardException e) {
             throw new RuntimeException(e);
         }
     }
@@ -56,7 +60,7 @@ public class Player extends Observable implements PlayerInterface {
     }
 
     @Override
-    public void placeCard(int x, int y, Card playedCard) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
+    public void placeCard(int x, int y, Card playedCard) {
         //Card playedCard;
         int placeResult = 0;
 
@@ -70,33 +74,28 @@ public class Player extends Observable implements PlayerInterface {
         try {
             placeResult = gameMap.placeCard(x, y, playedCard);
             personalScoreBoardScore+=placeResult;
+
+            notifyObserverSingle(new NetworkMessage(nickname, MessageType.PLACEMENT_CARD_OUTCOME,
+                    String.valueOf(true), argsGenerator(scoreResource), argsGenerator(personalScoreBoardScore)));
+        } catch (PersonalizedException.InvalidPlacementException |
+                 PersonalizedException.InvalidPlaceCardRequirementException e) {
+
             try {
-                notifyObserverSingle(new NetworkMessage(nickname, MessageType.CORRECT_PLACEMENT, argsGenerator(getScoreResource())));
-            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
-                throw new RuntimeException(e);
+                notifyObserverSingle(new NetworkMessage(nickname, MessageType.PLACEMENT_CARD_OUTCOME,
+                        String.valueOf(false)));
+            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage ex) {
+                throw new RuntimeException(ex);
             }
-            try {
-                notifyObserverSingle(new NetworkMessage(nickname, MessageType.SCORE_UPDATE, argsGenerator(personalScoreBoardScore)));
-            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
-                throw new RuntimeException(e);
-            }
-        } catch (PersonalizedException.InvalidPlacementException e) {
+
             //ripiazza la carta nella mano
             try {
                 hand.addCard(playedCard);
             } catch (PersonalizedException.InvalidAddCardException ex) {
                 throw new RuntimeException(ex);
             }
-            throw e; // Propagate the caught exception directly
-        } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
-            //ripiazza la carta nella mano
-            try {
-                hand.addCard(playedCard);
-            } catch (PersonalizedException.InvalidAddCardException ex) {
-                throw new RuntimeException(ex);
-            }
-            throw e; // Propagate the caught exception directly
-            }
+        } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -180,30 +179,12 @@ public class Player extends Observable implements PlayerInterface {
         return scoreResource;
     }
 
-    public void setScoreResource(PlayerScoreResource scoreResource) {
-        this.scoreResource = scoreResource;
-    }
-
     public GamePlayerMap getGameMap() {
         return gameMap;
     }
 
     public void setGameMap(GamePlayerMap gameMap) {
         this.gameMap = gameMap;
-    }
-
-    public Player(String nick, ColorType color){
-        nickname = nick;
-        pawnColor = color;
-        personalScoreBoardScore = 0;
-        personalMissionTotalScore = 0;
-        selectedPersonalMission = null;
-        playerView = this;
-        scoreResource = new PlayerScoreResource();
-        gameMap = new GamePlayerMap(scoreResource);
-        hand = new Hand();
-        pawnImg = null;//TODO:mettere case con inserimento immagine
-        alive = true;
     }
 
     public Player(String nick, ColorType color, Observer observer){

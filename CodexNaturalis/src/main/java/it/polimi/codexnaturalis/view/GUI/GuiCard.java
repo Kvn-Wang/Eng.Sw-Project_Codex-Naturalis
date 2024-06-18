@@ -48,19 +48,19 @@ public class GuiCard {
             throw new RuntimeException(e);
         }
         switch (card.getCardColor()){
-            case ResourceType.FUNGI:
+            case FUNGI:
                 vCard = new Rectangle(x, y, Color.ORANGE);
                 break;
-            case ResourceType.ANIMAL:
+            case ANIMAL:
                 vCard = new Rectangle(x, y, Color.BLUE);
                 break;
-            case ResourceType.INSECT:
+            case INSECT:
                 vCard = new Rectangle(x, y, Color.PURPLE);
                 break;
-            case ResourceType.PLANT:
+            case PLANT:
                 vCard = new Rectangle(x, y, Color.GREEN);
                 break;
-            case ResourceType.NONE:
+            case NONE:
                 vCard = new Rectangle(x, y, Color.SNOW);
                 break;
         }

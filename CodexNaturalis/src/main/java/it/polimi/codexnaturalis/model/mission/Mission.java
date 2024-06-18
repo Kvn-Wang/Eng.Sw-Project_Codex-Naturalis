@@ -9,6 +9,11 @@ public abstract class Mission {
     protected int pointPerCondition;
     protected boolean usedCardArray[][];
 
+    /**
+     * empty constructor, DO NOT remove, useful for unmarshaling during RMI setup exchange
+     */
+    public Mission(){}
+
     public Mission(int pngNumber, int pointPerCondition) {
         this.pngNumber = pngNumber;
         this.pointPerCondition = pointPerCondition;
@@ -20,17 +25,6 @@ public abstract class Mission {
             }
         }
     }
-
-    public void getUsedCardArray() {
-        for(int i = 0; i < (usedCardArray.length); i++) {
-            for (int j = 0; j < (usedCardArray[0].length); j++) {
-                if(usedCardArray[i][j]) {
-                    System.out.println(i + " " + j + " " + usedCardArray[i][j]);
-                }
-            }
-        }
-    }
-
 
     public abstract int ruleAlgorithmCheck(Player player);
 

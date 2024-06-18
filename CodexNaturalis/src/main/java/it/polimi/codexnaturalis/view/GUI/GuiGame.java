@@ -8,7 +8,7 @@ import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
-import it.polimi.codexnaturalis.view.VirtualModel.ClientContainerController;
+import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -36,7 +36,7 @@ public class GuiGame extends Application {
 
     private static VirtualServer vnc;
     private static GameController vgc;
-    private static ClientContainerController containerController;
+    private static ClientContainer clientContainer;
     private static Circle[][]  anchorPointsMatrix;
     private static ArrayList<GuiCard> handCards;
     private static Pane vHand;
@@ -74,8 +74,9 @@ public class GuiGame extends Application {
     public static void main(String[] args) {
         launch(args); //
     }
-    public static void setupMenu(VirtualServer virtualNetworkCommand){
+    public static void setupMenu(VirtualServer virtualNetworkCommand, ClientContainer clientContainer){
         vnc = virtualNetworkCommand;
+        GuiGame.clientContainer = clientContainer;
     }
 
     public static void setNickname(boolean outcome, String nickname){
@@ -210,10 +211,9 @@ public class GuiGame extends Application {
         gameWindow.setScene(lobbyScene);
     }
 
-    public static void startGame(GameController gameController, ClientContainerController clientContainerController){
+    public static void startGame(GameController gameController){
         Platform.runLater(() -> {
             vgc=gameController;
-            containerController = clientContainerController;
 
             try {
                 gameWindow.setScene(gameScene);

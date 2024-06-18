@@ -8,7 +8,7 @@ import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 import java.util.ArrayList;
 
-public class ClientContainer implements ClientContainerController {
+public class ClientContainer {
     private String nickname;
     private String lobbyNickname;
     private ArrayList<PlayerInfo> otherPlayerList;
@@ -17,6 +17,8 @@ public class ClientContainer implements ClientContainerController {
     private Mission commonMission1;
     private Mission commonMission2;
     private Mission personalMission;
+    Card [] visibleResourceCardShop;
+    Card [] visibleObjectiveCardShop;
 
     public ClientContainer() {
         //inizializzazione mappa vuota
@@ -26,82 +28,84 @@ public class ClientContainer implements ClientContainerController {
                 personalGameMap[i][j] = null;
             }
         }
+
+        visibleResourceCardShop = new Card[2];
+        visibleObjectiveCardShop = new Card[2];
     }
-
-
-
-    @Override
-    public void setNickname(String nickname) {
-        this.nickname=nickname;
-    }
-
-    @Override
-    public void setPlayerMap(int x, int y, Card card) {
-        personalGameMap[x][y] = card;
-    }
-
-    @Override
-    public Card[][] getPlayerMap() {
-        return personalGameMap;
-    }
-
-    @Override
-    public void setHand(Hand hand) {
-        personalHand = hand;
-    }
-
-    @Override
-    public Hand getHand() {
-        return personalHand;
-    }
-
-    @Override
-    public ArrayList<PlayerInfo> getOtherPlayerInfo() {
-        return otherPlayerList;
-    }
-
-    @Override
-    public void setCommonMission(Mission mission1, Mission mission2) {
-        commonMission1 = mission1;
-        commonMission2 = mission2;
-    }
-
-    @Override
-    public Mission[] getCommonMission() {
-        Mission[] commonMissionArray = new Mission[2];
-        commonMissionArray[0] = commonMission1;
-        commonMissionArray[1] = commonMission2;
-
-        return commonMissionArray;
-    }
-
-    @Override
-    public Mission getPersonalMission() {
-        return personalMission;
-    }
-
-    @Override
-    public void setPersonalMission(Mission personalMission) {
-        this.personalMission = personalMission;
-    }
-
-    @Override
-    public void setOtherPlayer(ArrayList<PlayerInfo> listOtherPlayer) {
-        otherPlayerList = listOtherPlayer;
-    }
-
 
     public String getNickname() {
         return nickname;
     }
 
-    @Override
-    public void setLobbyName(String lobbyName) {
-        this.lobbyNickname = lobbyName;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
-    @Override
-    public String getLobbyName() {
+    public Mission getPersonalMission() {
+        return personalMission;
+    }
+
+    public void setPersonalMission(Mission personalMission) {
+        this.personalMission = personalMission;
+    }
+
+    public String getLobbyNickname() {
         return lobbyNickname;
+    }
+
+    public void setLobbyNickname(String lobbyNickname) {
+        this.lobbyNickname = lobbyNickname;
+    }
+
+    public ArrayList<PlayerInfo> getOtherPlayerList() {
+        return otherPlayerList;
+    }
+
+    public void setOtherPlayerList(ArrayList<PlayerInfo> otherPlayerList) {
+        this.otherPlayerList = otherPlayerList;
+    }
+
+    public Card[][] getPersonalGameMap() {
+        return personalGameMap;
+    }
+
+    public void setPersonalGameMap(Card[][] personalGameMap) {
+        this.personalGameMap = personalGameMap;
+    }
+
+    public Hand getPersonalHand() {
+        return personalHand;
+    }
+
+    public void setPersonalHand(Hand personalHand) {
+        this.personalHand = personalHand;
+    }
+
+    public Mission getCommonMission1() {
+        return commonMission1;
+    }
+
+    public void setCommonMission1(Mission commonMission1) {
+        this.commonMission1 = commonMission1;
+    }
+
+    public Mission getCommonMission2() {
+        return commonMission2;
+    }
+
+    public void setCommonMission2(Mission commonMission2) {
+        this.commonMission2 = commonMission2;
+    }
+
+    public void initialSetupOfResources(Hand initialHand, Mission firstCommonMission, Mission secondCommonMission,
+                                        Card visibleResourceCardShop1, Card visibleResourceCardShop2,
+                                        Card visibleObjCardShop1, Card visibleObjCardShop2) {
+        personalHand = initialHand;
+        commonMission1 = firstCommonMission;
+        commonMission2 = secondCommonMission;
+        visibleResourceCardShop[0] = visibleResourceCardShop1;
+        visibleResourceCardShop[1] = visibleResourceCardShop2;
+        visibleObjectiveCardShop[0] = visibleObjCardShop1;
+        visibleObjectiveCardShop[1] = visibleObjCardShop2;
     }
 }

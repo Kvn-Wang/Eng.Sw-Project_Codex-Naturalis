@@ -2,9 +2,11 @@ package it.polimi.codexnaturalis.network.rmi;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.mission.Mission;
+import it.polimi.codexnaturalis.model.mission.MissionAdapter;
 import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.player.HandGsonAdapter;
 import it.polimi.codexnaturalis.model.shop.card.Card;
@@ -33,11 +35,16 @@ import java.util.concurrent.Future;
 public class RmiClient extends GenericClient implements VirtualServer {
     private final String serverName = UtilCostantValue.RMIServerName;
     private final VirtualServer server;
+    private GameController personalGameController;
     private Registry registry;
     // variabile di identificativo temporanea -> inutile dopo il setting del nickname
     private String ID;
-    private GameController personalGameController;
     private ExecutorService executorService;
+    Gson gsonTranslator = new GsonBuilder()
+            .registerTypeAdapter(Card.class, new CardTypeAdapter())
+            .registerTypeAdapter(Hand.class, new HandGsonAdapter())
+            .registerTypeAdapter(Mission.class, new MissionAdapter())
+            .create();
 
     public RmiClient(TypeOfUI typeOfUI) throws RemoteException, NotBoundException, InterruptedException {
         //setup communicazione bidirezionale tra rete e oggetto grafico
@@ -61,45 +68,82 @@ public class RmiClient extends GenericClient implements VirtualServer {
             case STATUS_PLAYER_CHANGE:
                 break;
 
-            case WRONG_TYPE_SHOP:
-                break;
-
             case NOT_YOUR_TURN:
                 break;
 
             case SCORE_UPDATE:
                 break;
 
-            case SWITCH_PLAYER_VIEW:
+            case GAME_SETUP_GIVE_STARTER_CARD:
+                //crea un thread che fa l'operazione così che non sia il thread server a gestire la gestione della starter card
+                executorService.submit(() -> {
+                    try {
+                        Card supp = gsonTranslator.fromJson(message.getArgs().get(0), Card.class);
+
+                        typeOfUI.giveStarterCard((StarterCard) supp);
+                    } catch (Exception e) {
+                        System.err.println("Err Starter card play");
+                    }
+                });
                 break;
 
-            case GAME_SETUP_GIVE_STARTER_CARD_:
-                Gson cardTranslator = new GsonBuilder()
-                        .registerTypeAdapter(Card.class, new CardTypeAdapter())
-                        .create();
+            case GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP:
+                //crea un thread che fa l'operazione così che non sia il thread server a gestire il client
+                executorService.submit(() -> {
+                    try {
+                        //receive setup hand
+                        Hand hand = gsonTranslator.fromJson(message.getArgs().get(0), Hand.class);
+                        // 2 common mission
+                        Mission commonMission1 = gsonTranslator.fromJson(message.getArgs().get(1), Mission.class);
+                        Mission commonMission2 = gsonTranslator.fromJson(message.getArgs().get(2), Mission.class);
+                        // 2 visible resource card from shop
+                        ArrayList<Card> resourceShopCard = gsonTranslator.fromJson(message.getArgs().get(3), new TypeToken<ArrayList<Card>>() {}.getType());
+                        // 2 visible objective card from shop
+                        ArrayList<Card> objShopCard = gsonTranslator.fromJson(message.getArgs().get(4), new TypeToken<ArrayList<Card>>() {}.getType());
 
-                System.out.println("received starter card: "+ message.getArgs().get(0));
-                Card supp = cardTranslator.fromJson(message.getArgs().get(0), Card.class);
+                        clientContainer.initialSetupOfResources(hand, commonMission1, commonMission2,
+                                resourceShopCard.get(0), resourceShopCard.get(1), objShopCard.get(0), objShopCard.get(1));
 
-                typeOfUI.giveStarterCard((StarterCard) supp);
+                        System.out.println("finished Client setup initial resources");
+                    } catch (Exception e) {
+                        System.err.println("Err Init resources: "+e.getMessage());
+                    }
+                });
+                break;
+
+            case GAME_SETUP_SEND_PERSONAL_MISSION:
+                //crea un thread che fa l'operazione così che non sia il thread server a gestire il client
+                executorService.submit(() -> {
+                    try {
+                        //receive personal mission
+                        Mission personalMission1 = gsonTranslator.fromJson(message.getArgs().get(0), Mission.class);
+                        Mission personalMission2 = gsonTranslator.fromJson(message.getArgs().get(1), Mission.class);
+
+                        typeOfUI.givePersonalMission(personalMission1, personalMission2);
+
+                        System.out.println("finished Client setup Personal");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+                break;
+
+            case GAME_SETUP_NOTIFY_TURN:
+                //crea un thread che fa l'operazione così che non sia il thread server a gestire il client
+                executorService.submit(() -> {
+                    typeOfUI.notifyIsYourTurn(Boolean.parseBoolean(message.getArgs().get(0)));
+                    typeOfUI.startGamePhase();
+                });
                 break;
 
             case SHOP_UPDATE:
                 break;
 
             case CORRECT_DRAW_CARD:
-                Gson handTranslator = new GsonBuilder()
-                        .registerTypeAdapter(Card.class, new CardTypeAdapter())
-                        .registerTypeAdapter(Hand.class, new HandGsonAdapter())
-                        .create();
-
                 System.out.println("received card: "+ message.getArgs().get(0));
-                Hand hand = handTranslator.fromJson(message.getArgs().get(0), Hand.class);
+                Hand hand = gsonTranslator.fromJson(message.getArgs().get(0), Hand.class);
 
                 //playStarterCard(hand);
-                break;
-
-            case CORRECT_PLACEMENT:
                 break;
 
             case COM_LOBBY_STATUS_NOTIFY:
@@ -125,7 +169,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
     @Override
     public boolean setNickname(String UUID, String nickname) throws RemoteException {
         if(server.setNickname(this.ID, nickname)) {
-            clientContainerController.setNickname(nickname);
+            clientContainer.setNickname(nickname);
             typeOfUI.printSelectionNicknameRequestOutcome(true, nickname);
         } else {
             typeOfUI.printSelectionNicknameRequestOutcome(false, nickname);
@@ -143,7 +187,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
     @Override
     public ArrayList<PlayerInfo> joinLobby(String playerNickname, String lobbyName) throws RemoteException {
         if(server.joinLobby(playerNickname, lobbyName) != null) {
-            clientContainerController.setLobbyName(lobbyName);
+            clientContainer.setLobbyNickname(lobbyName);
             typeOfUI.printJoinLobbyOutcome(true, lobbyName);
         } else {
             typeOfUI.printJoinLobbyOutcome(false, lobbyName);
@@ -161,7 +205,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
     @Override
     public boolean createLobby(String playerNickname, String lobbyName) throws RemoteException {
         if(server.createLobby(playerNickname, lobbyName)) {
-            clientContainerController.setLobbyName(lobbyName);
+            clientContainer.setLobbyNickname(lobbyName);
             typeOfUI.printCreationLobbyRequestOutcome(true, lobbyName);
         } else {
             typeOfUI.printCreationLobbyRequestOutcome(false, lobbyName);
@@ -172,8 +216,8 @@ public class RmiClient extends GenericClient implements VirtualServer {
     }
 
     @Override
-    public boolean setPlayerColor(String nickname, ColorType colorChosen) {
-        return false;
+    public boolean setPlayerColor(String nickname, ColorType colorChosen) throws RemoteException {
+        return server.setPlayerColor(nickname, colorChosen);
     }
 
     @Override
@@ -183,8 +227,8 @@ public class RmiClient extends GenericClient implements VirtualServer {
     }
 
     @Override
-    public void playStarterCard(String playerNick, StarterCard starterCard) {
-
+    public void playStarterCard(String playerNick, StarterCard starterCard) throws RemoteException {
+        personalGameController.playStarterCard(playerNick, starterCard);
     }
 
     @Override

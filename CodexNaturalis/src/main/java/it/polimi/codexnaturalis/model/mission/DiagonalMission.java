@@ -5,10 +5,12 @@ import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 
-public class DiagonalMission extends Mission  {
+import java.io.Serializable;
+
+public class DiagonalMission extends Mission implements Serializable {
     private Card[][] mapArray;
-    private final boolean isLeftToRight;
-    private final ResourceType resourceType;
+    private boolean isLeftToRight;
+    private ResourceType resourceType;
 
     public DiagonalMission(int pngNumber, int pointPerCondition, boolean isLeftToRight, ResourceType typeOfResource) {
         super(pngNumber, pointPerCondition);

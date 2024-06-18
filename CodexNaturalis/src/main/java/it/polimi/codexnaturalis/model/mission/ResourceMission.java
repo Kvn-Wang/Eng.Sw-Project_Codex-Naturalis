@@ -6,10 +6,12 @@ import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 
-public class ResourceMission extends Mission {
+import java.io.Serializable;
+
+public class ResourceMission extends Mission implements Serializable {
     private PlayerScoreResource playerScoreResource;
-    private final int numberOfSymbols;
-    private final ResourceType[] typeOfResource;
+    private int numberOfSymbols;
+    private ResourceType[] typeOfResource;
 
     public ResourceMission(int pngNumber, int pointPerCondition, int numberOfSymbols, ResourceType[] typeOfResource) {
         super(pngNumber, pointPerCondition);
