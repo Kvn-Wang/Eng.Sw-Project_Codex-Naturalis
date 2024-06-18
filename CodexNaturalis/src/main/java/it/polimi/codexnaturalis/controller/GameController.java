@@ -21,8 +21,8 @@ public interface GameController extends Remote {
     /* ---- GAME PHASE: Play ---- */
     void disconnectPlayer(String nickname) throws RemoteException;//vedi issues
     void reconnectPlayer(String nickname) throws RemoteException;
-    void playerDraw(String nickname, int numcard, ShopType type) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage, RemoteException;// vedi issues
-    void playerPlayCard(String nickname, int x, int y, Card playedCard) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException, RemoteException;
+    void playerDraw(String nickname, int numcard, ShopType type) throws RemoteException;// vedi issues
+    void playerPlayCard(String nickname, int x, int y, Card playedCard) throws RemoteException;
     void typeMessage(String receiver, String sender, String msg) throws RemoteException;// vedi issues
     void switchPlayer(String reqPlayer, String target) throws RemoteException;
     void endGame() throws RemoteException;

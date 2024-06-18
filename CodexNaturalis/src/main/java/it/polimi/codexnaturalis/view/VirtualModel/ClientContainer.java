@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.view.VirtualModel;
 
+import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.shop.card.Card;
@@ -115,5 +116,25 @@ public class ClientContainer {
         this.topDeckObjCardShop = topDeckObjCardShop;
         visibleObjectiveCardShop[0] = visibleObjCardShop1;
         visibleObjectiveCardShop[1] = visibleObjCardShop2;
+    }
+
+    public void updateShopCard(Card card, ShopType type, int numCard) {
+        if(type == ShopType.RESOURCE) {
+            if(numCard == 0) {
+                topDeckResourceCardShop = card;
+            } else if(numCard == 1) {
+                visibleResourceCardShop[0] = card;
+            } else if(numCard == 2) {
+                visibleResourceCardShop[1] = card;
+            }
+        } else if(type == ShopType.OBJECTIVE) {
+            if(numCard == 0) {
+                topDeckObjCardShop = card;
+            } else if(numCard == 1) {
+                visibleObjectiveCardShop[0] = card;
+            } else if(numCard == 2) {
+                visibleObjectiveCardShop[1] = card;
+            }
+        }
     }
 }

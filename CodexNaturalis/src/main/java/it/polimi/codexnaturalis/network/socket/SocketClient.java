@@ -325,12 +325,12 @@ public class SocketClient extends GenericClient implements VirtualServer {
     }
 
     @Override
-    public void playerDraw(String nickname, int numcard, ShopType type) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage, RemoteException {
+    public void playerDraw(String nickname, int numcard, ShopType type) throws RemoteException {
 
     }
 
     @Override
-    public void playerPlayCard(String nickname, int x, int y, Card playedCard) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException, RemoteException {
+    public void playerPlayCard(String nickname, int x, int y, Card playedCard) throws RemoteException {
 
     }
 

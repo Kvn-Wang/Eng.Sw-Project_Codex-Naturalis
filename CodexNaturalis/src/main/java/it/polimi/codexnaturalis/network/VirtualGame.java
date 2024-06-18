@@ -95,7 +95,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     }
 
     @Override
-    public void playerDraw(String nickname, int numcard, ShopType type) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage, RemoteException {
+    public void playerDraw(String nickname, int numcard, ShopType type) throws RemoteException {
         if(nickname.equals(players.get(currentPlayingPlayerIndex).getNickname()))
             gameController.playerDraw(nickname, numcard, type);
         else {
@@ -108,17 +108,20 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     }
 
     @Override
-    public void playerPlayCard(String nickname, int x, int y, Card playedCard) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException, RemoteException {
-        if(nickname.equals(players.get(currentPlayingPlayerIndex).getNickname())) {
-            gameController.playerPlayCard(nickname, x, y, playedCard);
-        }
-        else {
+    public void playerPlayCard(String nickname, int x, int y, Card playedCard) {
+        executorService.submit(() -> {
             try {
-                nickToPlayerInfo(nickname).notifyPlayer(new NetworkMessage(MessageType.NOT_YOUR_TURN));
+                if(nickname.equals(players.get(currentPlayingPlayerIndex).getNickname())) {
+                    gameController.playerPlayCard(nickname, x, y, playedCard);
+                }
+                else {
+                    nickToPlayerInfo(nickname).notifyPlayer(new NetworkMessage(MessageType.NOT_YOUR_TURN));
+                }
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
-        }
+
+        });
     }
 
     @Override

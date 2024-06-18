@@ -188,7 +188,7 @@ public class GameManager extends Observable implements GameController {
     }
 
     @Override
-    public void playerDraw(String nickname, int numcard, ShopType type) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
+    public void playerDraw(String nickname, int numcard, ShopType type) {
         Player p = nickToPlayer(nickname);
         Card drawnCard = null;
 
@@ -204,7 +204,11 @@ public class GameManager extends Observable implements GameController {
             endGameCheckFinishedShop();
         }
 
-        notifyObserverSingle(new NetworkMessage(nickname, MessageType.DRAWN_CARD_DECK, argsGenerator(drawnCard)));
+        try {
+            notifyObserverSingle(new NetworkMessage(nickname, MessageType.DRAWN_CARD_DECK, argsGenerator(drawnCard)));
+        } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
