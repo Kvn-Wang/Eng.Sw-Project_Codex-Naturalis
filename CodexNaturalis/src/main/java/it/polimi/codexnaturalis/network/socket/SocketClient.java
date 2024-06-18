@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
+import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.player.HandGsonAdapter;
@@ -99,9 +100,6 @@ public class SocketClient extends GenericClient implements VirtualServer {
                 case STATUS_PLAYER_CHANGE:
                     break;
 
-                case WRONG_TYPE_SHOP:
-                    break;
-
                 case NOT_YOUR_TURN:
                     break;
 
@@ -120,21 +118,6 @@ public class SocketClient extends GenericClient implements VirtualServer {
                     Card supp = cardTranslator.fromJson(message.getArgs().get(0), Card.class);
 
                     typeOfUI.giveStarterCard((StarterCard) supp);
-                    break;
-
-                case SHOP_UPDATE:
-                    break;
-
-                case CORRECT_DRAW_CARD:
-                    Gson handTranslator = new GsonBuilder()
-                            .registerTypeAdapter(Card.class, new CardTypeAdapter())
-                            .registerTypeAdapter(Hand.class, new HandGsonAdapter())
-                            .create();
-
-                    System.out.println("received card: "+ argsRX.get(0));
-                    Hand hand = handTranslator.fromJson(argsRX.get(0), Hand.class);
-
-                    //playStarterCard(hand);
                     break;
 
                 case CORRECT_PLACEMENT:
@@ -158,9 +141,6 @@ public class SocketClient extends GenericClient implements VirtualServer {
             case STATUS_PLAYER_CHANGE:
                 break;
 
-            case WRONG_TYPE_SHOP:
-                break;
-
             case NOT_YOUR_TURN:
                 break;
 
@@ -168,9 +148,6 @@ public class SocketClient extends GenericClient implements VirtualServer {
                 break;
 
             case SWITCH_PLAYER_VIEW:
-                break;
-
-            case CORRECT_DRAW_CARD:
                 break;
 
             case CORRECT_PLACEMENT:
@@ -348,7 +325,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
     }
 
     @Override
-    public void playerDraw(String nickname, int Numcard, String type) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage, RemoteException {
+    public void playerDraw(String nickname, int numcard, ShopType type) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage, RemoteException {
 
     }
 

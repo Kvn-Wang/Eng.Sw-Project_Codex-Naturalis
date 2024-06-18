@@ -17,8 +17,10 @@ public class ClientContainer {
     private Mission commonMission1;
     private Mission commonMission2;
     private Mission personalMission;
-    Card [] visibleResourceCardShop;
-    Card [] visibleObjectiveCardShop;
+    private Card topDeckResourceCardShop;
+    private Card [] visibleResourceCardShop;
+    private Card topDeckObjCardShop;
+    private Card [] visibleObjectiveCardShop;
 
     public ClientContainer() {
         //inizializzazione mappa vuota
@@ -98,13 +100,19 @@ public class ClientContainer {
     }
 
     public void initialSetupOfResources(Hand initialHand, Mission firstCommonMission, Mission secondCommonMission,
+                                        Card topDeckResourceCardShop,
                                         Card visibleResourceCardShop1, Card visibleResourceCardShop2,
+                                        Card topDeckObjCardShop,
                                         Card visibleObjCardShop1, Card visibleObjCardShop2) {
         personalHand = initialHand;
         commonMission1 = firstCommonMission;
         commonMission2 = secondCommonMission;
+
+        this.topDeckResourceCardShop = topDeckResourceCardShop;
         visibleResourceCardShop[0] = visibleResourceCardShop1;
         visibleResourceCardShop[1] = visibleResourceCardShop2;
+
+        this.topDeckObjCardShop = topDeckObjCardShop;
         visibleObjectiveCardShop[0] = visibleObjCardShop1;
         visibleObjectiveCardShop[1] = visibleObjCardShop2;
     }

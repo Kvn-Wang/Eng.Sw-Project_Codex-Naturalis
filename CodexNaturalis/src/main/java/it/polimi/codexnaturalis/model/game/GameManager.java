@@ -114,7 +114,7 @@ public class GameManager extends Observable implements GameController {
             //manda la starterCard al playerSpecifico
             try {
                 notifyObserverSingle(new NetworkMessage(p.getNickname(), MessageType.GAME_SETUP_GIVE_STARTER_CARD,
-                        argsGenerator(starterShop.drawTopDeckCard(true))));
+                        argsGenerator(starterShop.drawTopDeckCard())));
             } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
                 throw new RuntimeException(e);
             }
@@ -123,9 +123,9 @@ public class GameManager extends Observable implements GameController {
 
     private void initializePlayerHand(){
         for(Player p: players){
-            p.addHandCard(resourceShop.drawTopDeckCard(true));
-            p.addHandCard(resourceShop.drawTopDeckCard(true));
-            p.addHandCard(objectiveShop.drawTopDeckCard(true));
+            p.addHandCard(resourceShop.drawTopDeckCard());
+            p.addHandCard(resourceShop.drawTopDeckCard());
+            p.addHandCard(objectiveShop.drawTopDeckCard());
         }
     }
 
@@ -142,9 +142,11 @@ public class GameManager extends Observable implements GameController {
         for(Player p: players){
             try {
                 notifyObserverSingle(new NetworkMessage(p.getNickname(), MessageType.GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP,
-                        argsGenerator(p.getHand()), argsGenerator(sharedMission1),
-                        argsGenerator(sharedMission2), argsGenerator(resourceShop.getVisibleShopCard()),
-                        argsGenerator(objectiveShop.getVisibleShopCard())));
+                        argsGenerator(p.getHand()), argsGenerator(sharedMission1), argsGenerator(sharedMission2),
+                        argsGenerator(resourceShop.getTopDeckCard()),
+                        argsGenerator(resourceShop.getVisibleCard1()), argsGenerator(resourceShop.getVisibleCard2()),
+                        argsGenerator(objectiveShop.getTopDeckCard()),
+                        argsGenerator(objectiveShop.getVisibleCard1()), argsGenerator(objectiveShop.getVisibleCard2())));
             } catch(Exception e) {
                 System.err.println(e.getMessage());
             }
@@ -186,23 +188,23 @@ public class GameManager extends Observable implements GameController {
     }
 
     @Override
-    public void playerDraw(String nickname, int numShopCard, String type) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
+    public void playerDraw(String nickname, int numcard, ShopType type) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
         Player p = nickToPlayer(nickname);
-        if(type.equals("RESOURCE")) {
-            p.addHandCard(resourceShop.drawFromShopPlayer(numShopCard));
+        Card drawnCard = null;
+
+        if(type == ShopType.RESOURCE) {
+            drawnCard = resourceShop.drawFromShopPlayer(numcard);
+            //p.addHandCard(resourceShop.drawFromShopPlayer(numShopCard));
             System.out.println(nickname+" drew from the Resource Shop\n");
             endGameCheckFinishedShop();
-            nextTurn();
-        } else if(type.equals("OBJECTIVE")) {
-            p.addHandCard(objectiveShop.drawFromShopPlayer(numShopCard));
+        } else if(type == ShopType.OBJECTIVE) {
+            drawnCard = objectiveShop.drawFromShopPlayer(numcard);
+            //p.addHandCard(objectiveShop.drawFromShopPlayer(numShopCard));
             System.out.printf(nickname+" drew from the Objective Shop\n");
             endGameCheckFinishedShop();
-            nextTurn();
         }
-        else{
-            System.out.println("wrong type shop");
-            notifyObserverSingle(new NetworkMessage(nickname, MessageType.WRONG_TYPE_SHOP));
-        }
+
+        notifyObserverSingle(new NetworkMessage(nickname, MessageType.DRAWN_CARD_DECK, argsGenerator(drawnCard)));
     }
 
     @Override

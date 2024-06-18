@@ -133,22 +133,15 @@ public class Shop extends Observable {
     }
 
     // dopo aver "pescato" la carta in cima al deck, lo rimpiazza con una carta nuova
-    public Card drawTopDeckCard(boolean isSetupPhase){
+    // questa funzione verrà chiamata solo da starterShop o durante la fase di setup quando si danno le carte iniziali
+    // quindi non serve notificare alcun utente
+    // le altre volte per cui viene chiamato, è da generalShop e gestisce già lui le notifiche a utente
+    public Card drawTopDeckCard(){
         Card supp = topDeckCard;
 
         //rimpiazzamento carta
         if(!cardDeck.isEmpty()) {
             topDeckCard = cardDeck.remove(0);
-
-            if(!isSetupPhase) {
-                try {
-                    //broadcast a tutti i player sul nuovo top deck card
-                    notifyObserverSingle(new NetworkMessage(MessageType.SHOP_UPDATE,
-                            argsGenerator(topDeckCard), "topDeckCard", argsGenerator(shopType)));
-                } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
-                    throw new RuntimeException(e);
-                }
-            }
         } else {
             topDeckCard = null;
         }
@@ -158,5 +151,9 @@ public class Shop extends Observable {
     // questo perchè .valueOf non può ritornare null quando ha null come argomento (comportamento desiderato), ma fa una throw
     public static ResourceType parseResourceType(String input) {
         return (input != null) ? ResourceType.valueOf(input) : null;
+    }
+
+    public Card getTopDeckCard() {
+        return topDeckCard;
     }
 }

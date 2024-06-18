@@ -15,29 +15,43 @@ public class GeneralShop extends Shop {
 
     public GeneralShop(ShopType type, Observer observer) {
         super(type, observer);
-        visibleCard1 = drawTopDeckCard(true);
-        visibleCard2 = drawTopDeckCard(true);
+        visibleCard1 = drawTopDeckCard();
+        visibleCard2 = drawTopDeckCard();
     }
 
     public Card drawFromShopPlayer(int numCard){
-        System.out.printf("\ndrawing card\n");
+        System.out.println("drawing card: "+numCard);
         Card supp;
 
         switch(numCard) {
+            case 0:
+                //ritorna il vecchio topDeckCard e "pesca" una nuova
+                supp = topDeckCard;
+                topDeckCard = drawTopDeckCard();
+                try {
+                    notifyObserverSingle(new NetworkMessage(MessageType.DRAW_CARD_UPDATE_SHOP_CARD_POOL,
+                            argsGenerator(topDeckCard), String.valueOf(shopType), String.valueOf(0)));
+                } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
+                    throw new RuntimeException(e);
+                }
+                return supp;
+
             case 1:
                 supp = visibleCard1;
-                visibleCard1 = drawTopDeckCard(false);
+                visibleCard1 = drawTopDeckCard();
                 try {
-                    notifyObserverSingle(new NetworkMessage(MessageType.SHOP_UPDATE, argsGenerator(visibleCard1), "visibleCard1", argsGenerator(shopType)));
+                    notifyObserverSingle(new NetworkMessage(MessageType.DRAW_CARD_UPDATE_SHOP_CARD_POOL,
+                            argsGenerator(visibleCard1), String.valueOf(shopType), String.valueOf(0)));
                 } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
                     throw new RuntimeException(e);
                 }
                 return supp;
             case 2:
                 supp = visibleCard2;
-                visibleCard2 = drawTopDeckCard(false);
+                visibleCard2 = drawTopDeckCard();
                 try {
-                    notifyObserverSingle(new NetworkMessage(MessageType.SHOP_UPDATE, argsGenerator(visibleCard2), "visibleCard2", argsGenerator(shopType)));
+                    notifyObserverSingle(new NetworkMessage(MessageType.DRAW_CARD_UPDATE_SHOP_CARD_POOL,
+                            argsGenerator(visibleCard2), String.valueOf(shopType), String.valueOf(0)));
                 } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
                     throw new RuntimeException(e);
                 }
@@ -54,12 +68,11 @@ public class GeneralShop extends Shop {
             return false;
     }
 
-    public ArrayList<Card> getVisibleShopCard() {
-        ArrayList<Card> visibleShopCards = new ArrayList<>();
+    public Card getVisibleCard1() {
+        return visibleCard1;
+    }
 
-        visibleShopCards.add(visibleCard1);
-        visibleShopCards.add(visibleCard2);
-
-        return visibleShopCards;
+    public Card getVisibleCard2() {
+        return visibleCard2;
     }
 }

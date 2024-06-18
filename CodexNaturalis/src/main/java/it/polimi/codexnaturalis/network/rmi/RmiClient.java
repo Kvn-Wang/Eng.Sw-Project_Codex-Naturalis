@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
+import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.mission.MissionAdapter;
 import it.polimi.codexnaturalis.model.player.Hand;
@@ -96,13 +97,19 @@ public class RmiClient extends GenericClient implements VirtualServer {
                         // 2 common mission
                         Mission commonMission1 = gsonTranslator.fromJson(message.getArgs().get(1), Mission.class);
                         Mission commonMission2 = gsonTranslator.fromJson(message.getArgs().get(2), Mission.class);
-                        // 2 visible resource card from shop
-                        ArrayList<Card> resourceShopCard = gsonTranslator.fromJson(message.getArgs().get(3), new TypeToken<ArrayList<Card>>() {}.getType());
-                        // 2 visible objective card from shop
-                        ArrayList<Card> objShopCard = gsonTranslator.fromJson(message.getArgs().get(4), new TypeToken<ArrayList<Card>>() {}.getType());
+                        // topDeckCard + 2 visible resource card from shop
+                        Card topDeckCardResource = gsonTranslator.fromJson(message.getArgs().get(3), Card.class);
+                        Card visible1CardResource = gsonTranslator.fromJson(message.getArgs().get(4), Card.class);
+                        Card visible2CardResource = gsonTranslator.fromJson(message.getArgs().get(5), Card.class);
+
+                        // topDeckCard + 2 visible objective card from shop
+                        Card topDeckCardObj = gsonTranslator.fromJson(message.getArgs().get(6), Card.class);
+                        Card visible1CardObj = gsonTranslator.fromJson(message.getArgs().get(7), Card.class);
+                        Card visible2CardObj = gsonTranslator.fromJson(message.getArgs().get(8), Card.class);
 
                         clientContainer.initialSetupOfResources(hand, commonMission1, commonMission2,
-                                resourceShopCard.get(0), resourceShopCard.get(1), objShopCard.get(0), objShopCard.get(1));
+                                topDeckCardResource, visible1CardResource, visible2CardResource,
+                                topDeckCardObj, visible1CardObj, visible2CardObj);
 
                         System.out.println("finished Client setup initial resources");
                     } catch (Exception e) {
@@ -134,16 +141,6 @@ public class RmiClient extends GenericClient implements VirtualServer {
                     typeOfUI.notifyIsYourTurn(Boolean.parseBoolean(message.getArgs().get(0)));
                     typeOfUI.startGamePhase();
                 });
-                break;
-
-            case SHOP_UPDATE:
-                break;
-
-            case CORRECT_DRAW_CARD:
-                System.out.println("received card: "+ message.getArgs().get(0));
-                Hand hand = gsonTranslator.fromJson(message.getArgs().get(0), Hand.class);
-
-                //playStarterCard(hand);
                 break;
 
             case COM_LOBBY_STATUS_NOTIFY:
@@ -247,8 +244,8 @@ public class RmiClient extends GenericClient implements VirtualServer {
     }
 
     @Override
-    public void playerDraw(String nickname, int Numcard, String type) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage, RemoteException {
-        personalGameController.playerDraw(nickname, Numcard, type);
+    public void playerDraw(String nickname, int numcard, ShopType type) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage, RemoteException {
+        personalGameController.playerDraw(nickname, numcard, type);
     }
 
     @Override
