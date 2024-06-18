@@ -23,6 +23,10 @@ public class ObjectiveCard extends Card {
         this.pointPerConditionResource = pointPerConditionResource;
         this.pointPerCondition = pointPerCondition;
         this.conditionResources = conditionResource;
+        this.isNwCovered = false;
+        this.isNeCovered = false;
+        this.isSeCovered = false;
+        this.isSwCovered = false;
     }
 
     @Override

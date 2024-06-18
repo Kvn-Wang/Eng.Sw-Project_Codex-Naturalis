@@ -11,13 +11,10 @@ public class PrintMapClass {
     public static void main(String[] args) {
         String s ="╔══════╦═══════╦══════╗";
         int f = s.length();
-        System.out.println("forees"+f);
     }
 
     public static void printMap(GamePlayerMap map){
-        String s ="╔══════╦═══════╦══════╗";
-        int f = s.length();
-        System.out.println(f);
+
     }
 
     public static int[] firstPrintableCardPos(Card[][] mapArray){

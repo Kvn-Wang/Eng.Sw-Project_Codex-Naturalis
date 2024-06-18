@@ -23,6 +23,10 @@ public class StarterCard extends Card{
         this.backSouthResource = backSouthResource;
         this.backEastResource = backEastResource;
         this.backWestResource = backWestResource;
+        this.isNwCovered = false;
+        this.isNeCovered = false;
+        this.isSeCovered = false;
+        this.isSwCovered = false;
     }
 
     @Override

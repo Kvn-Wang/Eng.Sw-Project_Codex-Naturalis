@@ -9,6 +9,10 @@ import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 import java.util.ArrayList;
 
 public abstract class Card {
+    protected boolean isNwCovered;
+    protected boolean isNeCovered;
+    protected boolean isSeCovered;
+    protected boolean isSwCovered;
     protected int png;
     protected ResourceType frontNorthResource;
     protected ResourceType frontSouthResource;
@@ -105,5 +109,37 @@ public abstract class Card {
         } else {
             return false;
         }
+    }
+
+    public boolean getIsNwCovered() {
+        return isNwCovered;
+    }
+
+    public boolean getIsNeCovered() {
+        return isNeCovered;
+    }
+
+    public boolean getIsSeCovered() {
+        return isSeCovered;
+    }
+
+    public boolean getIsSwCovered() {
+        return isSwCovered;
+    }
+
+    public void setIsNwCovered(boolean isNwCovered) {
+        isNwCovered = isNwCovered;
+    }
+
+    public void setIsNeCovered(boolean isNeCovered) {
+        isNeCovered = isNeCovered;
+    }
+
+    public void setIsSeCovered(boolean isSeCovered) {
+        isSeCovered = isSeCovered;
+    }
+
+    public void setIsSwCovered(boolean isSwCovered) {
+        isSwCovered = isSwCovered;
     }
 }

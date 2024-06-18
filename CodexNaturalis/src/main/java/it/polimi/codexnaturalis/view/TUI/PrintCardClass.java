@@ -7,6 +7,10 @@ import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 
 public class PrintCardClass {
+    boolean isNwCovered;
+    boolean isNeCovered;
+    boolean isSeCovered;
+    boolean isSwCovered;
     public static void main(String[] args) {
         StarterCard starterCard = new StarterCard(81, ResourceType.NONE, ResourceType.NONE, ResourceType.PLANT, ResourceType.INSECT, new ResourceType[]{ResourceType.INSECT, ResourceType.ANIMAL, ResourceType.FUNGI}, ResourceType.FUNGI, ResourceType.ANIMAL, ResourceType.PLANT, ResourceType.INSECT);
 

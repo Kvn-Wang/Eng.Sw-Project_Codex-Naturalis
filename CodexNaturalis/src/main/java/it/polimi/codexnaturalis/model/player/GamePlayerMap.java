@@ -169,6 +169,7 @@ public class GamePlayerMap {
             temp = mapArray[x + 1][y].getCardCorner(CardCorner.NORTH);
             if (temp != null && temp != ResourceType.NONE) {
                 coveredResource.add(temp);
+                mapArray[x + 1][y].setIsNwCovered(true);
             }
         }
 
@@ -176,6 +177,7 @@ public class GamePlayerMap {
             temp = mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH);
             if (temp != null && temp != ResourceType.NONE) {
                 coveredResource.add(temp);
+                mapArray[x - 1][y].setIsSeCovered(true);
             }
         }
 
@@ -183,6 +185,7 @@ public class GamePlayerMap {
             temp = mapArray[x][y + 1].getCardCorner(CardCorner.EAST);
             if (temp != null && temp != ResourceType.NONE) {
                 coveredResource.add(temp);
+                mapArray[x][y + 1].setIsNeCovered(true);
             }
         }
 
@@ -190,6 +193,7 @@ public class GamePlayerMap {
             temp = mapArray[x][y - 1].getCardCorner(CardCorner.WEST);
             if (temp != null && temp != ResourceType.NONE) {
                 coveredResource.add(temp);
+                mapArray[x][y-1].setIsSwCovered(true);
             }
         }
         return coveredResource;
