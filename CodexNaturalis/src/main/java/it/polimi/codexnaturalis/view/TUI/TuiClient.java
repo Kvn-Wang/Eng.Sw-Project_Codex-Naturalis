@@ -211,10 +211,11 @@ public class TuiClient implements TypeOfUI {
 
     public void printStarterCardReq(Card starterCard) {
         String command;
-
+        System.out.flush();
         System.out.println("Here's your starter card");
-        PrintCardClass.printCard(starterCard, true);
-        PrintCardClass.printCard(starterCard, false);
+        PrintCardClass TUISstarterCard = new PrintCardClass(starterCard);
+        TUISstarterCard.printCard(starterCard, true);
+        TUISstarterCard.printCard(starterCard, false);
 
         do {
             System.out.println("Type FRONT or BACK to select the face of the starting card");
@@ -231,6 +232,7 @@ public class TuiClient implements TypeOfUI {
             System.err.println("errore starter card: "+ e.getMessage());
             throw new RuntimeException(e);
         }
+        System.out.flush();
     }
 
     @Override

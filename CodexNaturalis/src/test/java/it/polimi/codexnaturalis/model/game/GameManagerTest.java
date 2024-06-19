@@ -24,10 +24,10 @@ class GameManagerTest {
     private Map<String, ColorType> playerInfo = new HashMap<>();
     @BeforeEach
     public void Setup(){
-            playerInfo.put("Maria", ColorType.RED);
-            playerInfo.put("Kevin", ColorType.GREEN);
-            playerInfo.put("Pietro", ColorType.BLUE);
-            playerInfo.put("Valerio", ColorType.YELLOW);
+        playerInfo.put("Maria", ColorType.RED);
+        playerInfo.put("Kevin", ColorType.GREEN);
+        playerInfo.put("Pietro", ColorType.BLUE);
+        playerInfo.put("Valerio", ColorType.YELLOW);
         gameManager = new GameManager(playerInfo);
     }
 

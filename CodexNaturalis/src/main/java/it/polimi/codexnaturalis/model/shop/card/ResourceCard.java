@@ -17,10 +17,6 @@ public class ResourceCard extends Card{
         super(png, frontNorthResource, frontSouthResource, frontEastResource, frontWestResource);
         this.backCentralResource = backCentralResource;
         this.frontCardPoint = frontCardPoint;
-        this.isNwCovered = false;
-        this.isNeCovered = false;
-        this.isSeCovered = false;
-        this.isSwCovered = false;
     }
 
     public int getFrontCardPoint() {
