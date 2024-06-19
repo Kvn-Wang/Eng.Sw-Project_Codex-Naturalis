@@ -98,6 +98,13 @@ public enum MessageType {
     NOT_YOUR_TURN,
 
     /**
+     * When requesting invalid action during a certain game phase,
+     * ex. play a card during draw phase.
+     * args(0) = currentGameState (enum GameState)
+     */
+    ERR_GAME_STATE_COMMAND,
+
+    /**
      * args(0): playerNick
      * args(1): card
      * args(2): x_pos

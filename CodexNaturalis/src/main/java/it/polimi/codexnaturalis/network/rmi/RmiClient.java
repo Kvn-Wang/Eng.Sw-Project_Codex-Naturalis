@@ -9,6 +9,7 @@ import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.mission.MissionAdapter;
 import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.player.HandGsonAdapter;
+import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.CardTypeAdapter;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
@@ -158,6 +159,26 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 });
                 break;
 
+            case PLACEMENT_CARD_OUTCOME:
+                boolean isValidPlacement = Boolean.parseBoolean(message.getArgs().get(0));
+
+                if(isValidPlacement) {
+                    PlayerScoreResource playerScoreResource = gsonTranslator.fromJson(message.getArgs().get(1), PlayerScoreResource.class);
+                    int updatedScoreBoardValue = Integer.parseInt(message.getArgs().get(2));
+
+                    clientContainer.updateScore(updatedScoreBoardValue, playerScoreResource);
+                    typeOfUI.outcomePlayCard(true);
+                } else {
+                    typeOfUI.outcomePlayCard(false);
+                }
+
+                break;
+
+            case UPDATE_OTHER_PLAYER_GAME_MAP:
+                break;
+
+            case ERR_GAME_STATE_COMMAND:
+                break;
 
 
             default:

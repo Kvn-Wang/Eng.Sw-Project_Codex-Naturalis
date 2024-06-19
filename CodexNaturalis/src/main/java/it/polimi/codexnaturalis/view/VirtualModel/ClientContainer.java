@@ -3,6 +3,7 @@ package it.polimi.codexnaturalis.view.VirtualModel;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Hand;
+import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
@@ -14,6 +15,9 @@ public class ClientContainer {
     private String lobbyNickname;
     private ArrayList<PlayerInfo> otherPlayerList;
     private Card[][] personalGameMap;
+    int personalScoreBoardValue;
+    PlayerScoreResource personalPlayerScoreResource;
+    private ArrayList<Card[][]> otherPlayerGameMap;
     private Hand personalHand;
     private Mission commonMission1;
     private Mission commonMission2;
@@ -136,5 +140,10 @@ public class ClientContainer {
                 visibleObjectiveCardShop[1] = card;
             }
         }
+    }
+
+    public void updateScore(int personalScoreBoardValue, PlayerScoreResource personalPlayerScoreResource) {
+        this.personalScoreBoardValue = personalScoreBoardValue;
+        this.personalPlayerScoreResource = personalPlayerScoreResource;
     }
 }

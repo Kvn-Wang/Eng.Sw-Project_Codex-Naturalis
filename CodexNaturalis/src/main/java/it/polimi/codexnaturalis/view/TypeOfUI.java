@@ -32,4 +32,6 @@ public interface TypeOfUI {
 
     /*---- PLAY ----*/
     void startGamePhase();
+    // i valori aggiornati dei score sono nel container
+    void outcomePlayCard(boolean isValidPlacement);
 }

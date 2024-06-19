@@ -60,9 +60,9 @@ public class Player extends Observable implements PlayerInterface {
     }
 
     @Override
-    public void placeCard(int x, int y, Card playedCard) {
+    public void placeCard(int x, int y, Card playedCard) throws PersonalizedException.InvalidPlaceCardRequirementException, PersonalizedException.InvalidPlacementException {
         //Card playedCard;
-        int placeResult = 0;
+        int placeResult;
 
         /*try {
             playedCard = hand.popCard(numCard);
@@ -71,30 +71,19 @@ public class Player extends Observable implements PlayerInterface {
         } catch (PersonalizedException.InvalidPopCardException e) {
             throw new RuntimeException(e);
         }*/
+
         try {
             placeResult = gameMap.placeCard(x, y, playedCard);
             personalScoreBoardScore+=placeResult;
-
-            notifyObserverSingle(new NetworkMessage(nickname, MessageType.PLACEMENT_CARD_OUTCOME,
-                    String.valueOf(true), argsGenerator(scoreResource), argsGenerator(personalScoreBoardScore)));
         } catch (PersonalizedException.InvalidPlacementException |
                  PersonalizedException.InvalidPlaceCardRequirementException e) {
-
-            try {
-                notifyObserverSingle(new NetworkMessage(nickname, MessageType.PLACEMENT_CARD_OUTCOME,
-                        String.valueOf(false)));
-            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage ex) {
-                throw new RuntimeException(ex);
-            }
-
             //ripiazza la carta nella mano
-            try {
+            /*try {
                 hand.addCard(playedCard);
             } catch (PersonalizedException.InvalidAddCardException ex) {
                 throw new RuntimeException(ex);
-            }
-        } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
-            throw new RuntimeException(e);
+            }*/
+            throw e;
         }
     }
 
@@ -105,30 +94,8 @@ public class Player extends Observable implements PlayerInterface {
     }
 
     @Override
-    public boolean isPlayerAlive() {
-        return alive;
-    }
-
-    //selection = 1 -> mission1, selection = 2 -> mission2
-    @Override
     public void setPersonalMissionFinal(Mission personalMission) {
         selectedPersonalMission = personalMission;
-
-        /*if(selection == 1||selection ==2) {
-            selectedPersonalMission = personalMission;
-            try {
-                notifyObserver(new NetworkMessage(nickname, MessageType.COM_ACK_TCP, "true"));
-            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            System.err.println("Errore Selezione Missione Player");
-            try {
-                notifyObserver(new NetworkMessage(nickname, MessageType.COM_ACK_TCP,"false"));
-            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
-                throw new RuntimeException(e);
-            }
-        }*/
     }
 
     @Override
@@ -154,11 +121,6 @@ public class Player extends Observable implements PlayerInterface {
     @Override
     public ColorType getPawnColor() {
         return pawnColor;
-    }
-
-    @Override
-    public void setPawnColor(ColorType pawnColor) {
-        this.pawnColor = pawnColor;
     }
 
     @Override
@@ -225,5 +187,4 @@ public class Player extends Observable implements PlayerInterface {
     public void addScore(int value){
         personalScoreBoardScore = personalScoreBoardScore+value;
     }
-
 }

@@ -3,6 +3,7 @@ package it.polimi.codexnaturalis.model.game;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.chat.ChatManager;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
+import it.polimi.codexnaturalis.model.enumeration.GameState;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
@@ -38,10 +39,13 @@ public class GameManager extends Observable implements GameController {
     private int playerThatHasPlayedPersonalMission;
     private Observer vobs;
     private MissionSelector missionSelector;
+    GameState gameState;
 
-    public GameManager(ArrayList<PlayerInfo> playerInfo, Observer observer) {
+    public GameManager(ArrayList<PlayerInfo> playerInfo, Observer observer, GameState gameState) {
         networkPlayer = playerInfo;
         players = new Player[playerInfo.size()];
+
+        this.gameState = gameState;
 
         missionSelector = new MissionSelector();
 
@@ -59,8 +63,13 @@ public class GameManager extends Observable implements GameController {
 
     @Override
     public void playStarterCard(String playerNick, StarterCard starterCard) {
-        nickToPlayer(playerNick).placeCard(UtilCostantValue.lunghezzaMaxMappa/2,
-                UtilCostantValue.lunghezzaMaxMappa/2, starterCard);
+        try {
+            nickToPlayer(playerNick).placeCard(UtilCostantValue.lunghezzaMaxMappa/2,
+                    UtilCostantValue.lunghezzaMaxMappa/2, starterCard);
+        } catch (PersonalizedException.InvalidPlaceCardRequirementException |
+                 PersonalizedException.InvalidPlacementException e) {
+            throw new RuntimeException(e);
+        }
 
         System.out.println("Player: "+playerNick+" ha giocato la sua starter card con isBack: "+starterCard.getIsBack());
 
@@ -243,9 +252,38 @@ public class GameManager extends Observable implements GameController {
     public void playerPlayCard(String nickname, int x, int y, Card playedCard) {
         Player p = nickToPlayer(nickname);
         System.out.println(nickname + " ha piazzato una carta in posizione: ("+x+","+y+")");
-        p.placeCard(x, y, playedCard);
 
-        endGameCheckScoreBoard();
+        try {
+            p.placeCard(x, y, playedCard);
+            /**
+             * notify the player that he succesfully placed the card
+             */
+            notifyObserverSingle(new NetworkMessage(nickname, MessageType.PLACEMENT_CARD_OUTCOME,
+                    String.valueOf(true), argsGenerator(p.getScoreResource()), String.valueOf(p.getPersonalScoreBoardScore())));
+
+            /**
+             * notify the other players that the map of the player that has played card has changed
+             */
+            for (Player otherPlayer : players) {
+                if (!otherPlayer.getNickname().equals(nickname))
+                    notifyObserverSingle(new NetworkMessage(otherPlayer.getNickname(), MessageType.UPDATE_OTHER_PLAYER_GAME_MAP,
+                            nickname, argsGenerator(playedCard), String.valueOf(x), String.valueOf(y)));
+            }
+
+            gameState = GameState.DRAW_PHASE;
+
+            endGameCheckScoreBoard();
+        } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
+            throw new RuntimeException(e);
+        } catch(PersonalizedException.InvalidPlaceCardRequirementException |
+                 PersonalizedException.InvalidPlacementException e) {
+            try {
+                notifyObserverSingle(new NetworkMessage(nickname, MessageType.PLACEMENT_CARD_OUTCOME,
+                        String.valueOf(false)));
+            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage ex) {
+                throw new RuntimeException(ex);
+            }
+        }
     }
 
     @Override

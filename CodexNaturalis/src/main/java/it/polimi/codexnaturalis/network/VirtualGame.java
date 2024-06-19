@@ -1,6 +1,7 @@
 package it.polimi.codexnaturalis.network;
 
 import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.model.enumeration.GameState;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.game.GameManager;
 import it.polimi.codexnaturalis.model.mission.Mission;
@@ -28,22 +29,29 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
 
     //variable used to decide who can play
     private int currentPlayingPlayerIndex;
-
+    /**
+     * keeps track of which playing phase is the player in
+     */
+    GameState gameState;
     private GameController gameController;
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public VirtualGame(ArrayList<PlayerInfo> players) throws RemoteException {
         super();
         this.players = players;
+        gameState = GameState.PLAY_PHASE;
 
         // random order of play
         Collections.shuffle(this.players);
         currentPlayingPlayerIndex = 0;
 
         // initialize the real game controller
-        gameController = new GameManager(players, this);
+        gameController = new GameManager(players, this, gameState);
     }
 
+    /**
+     * notify the next player that it's his turn
+     */
     private void goToNextPlayer()  {
         // Move to the next player
         currentPlayingPlayerIndex = (currentPlayingPlayerIndex + 1) % players.size();
@@ -96,15 +104,25 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
 
     @Override
     public void playerDraw(String nickname, int numcard, ShopType type) throws RemoteException {
-        if(nickname.equals(players.get(currentPlayingPlayerIndex).getNickname()))
-            gameController.playerDraw(nickname, numcard, type);
-        else {
+        executorService.submit(() -> {
             try {
-                nickToPlayerInfo(nickname).notifyPlayer(new NetworkMessage(MessageType.NOT_YOUR_TURN));
+                if (nickname.equals(players.get(currentPlayingPlayerIndex).getNickname())) {
+                    if(gameState == GameState.DRAW_PHASE) {
+                        gameController.playerDraw(nickname, numcard, type);
+
+                        //vai al prox turno
+                        goToNextPlayer();
+                        gameState = GameState.PLAY_PHASE;
+                    } else {
+                        nickToPlayerInfo(nickname).notifyPlayer(new NetworkMessage(MessageType.ERR_GAME_STATE_COMMAND, String.valueOf(gameState)));
+                    }
+                } else {
+                    nickToPlayerInfo(nickname).notifyPlayer(new NetworkMessage(MessageType.NOT_YOUR_TURN));
+                }
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
-        }
+        });
     }
 
     @Override
@@ -112,7 +130,12 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
         executorService.submit(() -> {
             try {
                 if(nickname.equals(players.get(currentPlayingPlayerIndex).getNickname())) {
-                    gameController.playerPlayCard(nickname, x, y, playedCard);
+                    if(gameState == GameState.PLAY_PHASE) {
+                        gameController.playerPlayCard(nickname, x, y, playedCard);
+                        gameState = GameState.DRAW_PHASE;
+                    } else {
+                        nickToPlayerInfo(nickname).notifyPlayer(new NetworkMessage(MessageType.ERR_GAME_STATE_COMMAND, String.valueOf(gameState)));
+                    }
                 }
                 else {
                     nickToPlayerInfo(nickname).notifyPlayer(new NetworkMessage(MessageType.NOT_YOUR_TURN));
@@ -120,7 +143,6 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
-
         });
     }
 
@@ -154,7 +176,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
         switch(message.getMessageType()) {
             //messaggi per playerSpecifici con argomenti illimitati
             case COM_ACK_TCP, CORRECT_PLACEMENT, GAME_SETUP_GIVE_STARTER_CARD, GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP,
-                    GAME_SETUP_SEND_PERSONAL_MISSION, GAME_SETUP_NOTIFY_TURN, PLACEMENT_CARD_OUTCOME:
+                    GAME_SETUP_SEND_PERSONAL_MISSION, GAME_SETUP_NOTIFY_TURN, PLACEMENT_CARD_OUTCOME, UPDATE_OTHER_PLAYER_GAME_MAP:
                 System.out.println("Messaggio per "+message.getNickname()+" di tipo:"+message.getMessageType());
                 try {
                     nickToPlayerInfo(message.getNickname()).getClientHandler().showMessage(message);
@@ -169,9 +191,6 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
                 }
-
-                //vai al prox turno
-                goToNextPlayer();
                 break;
 
             //per messaggi di broadcast con numero illimiatato di args
