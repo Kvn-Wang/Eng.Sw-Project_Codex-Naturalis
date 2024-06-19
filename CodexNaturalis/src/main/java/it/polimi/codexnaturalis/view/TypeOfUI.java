@@ -1,6 +1,7 @@
 package it.polimi.codexnaturalis.view;
 
 import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.model.enumeration.GameState;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
@@ -32,4 +33,12 @@ public interface TypeOfUI {
 
     /*---- PLAY ----*/
     void startGamePhase();
+    // i valori aggiornati dei score sono nel container
+    void outcomePlayCard(boolean isValidPlacement);
+
+    /**
+     * it happens whe you try to play a card in a drawing phase for example
+     * @param gameState
+     */
+    void printErrorCommandSentGameState(GameState currentGameState);
 }

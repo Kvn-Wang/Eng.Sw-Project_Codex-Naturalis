@@ -2,13 +2,15 @@ package it.polimi.codexnaturalis.network.rmi;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
+import it.polimi.codexnaturalis.model.enumeration.GameState;
+import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.mission.MissionAdapter;
 import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.player.HandGsonAdapter;
+import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.CardTypeAdapter;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
@@ -39,7 +41,14 @@ public class RmiClient extends GenericClient implements VirtualServer {
     private Registry registry;
     // variabile di identificativo temporanea -> inutile dopo il setting del nickname
     private String ID;
-    private ExecutorService executorService;
+    /**
+     * thread used when after ready the real main thread dies, so this executorService replace it
+     */
+    private ExecutorService executorServiceMainThread;
+    /**
+     * when the game starts, this thread will be used to send and receive updates
+     */
+    private ExecutorService serviceThread;
     Gson gsonTranslator = new GsonBuilder()
             .registerTypeAdapter(Card.class, new CardTypeAdapter())
             .registerTypeAdapter(Hand.class, new HandGsonAdapter())
@@ -50,7 +59,8 @@ public class RmiClient extends GenericClient implements VirtualServer {
         //setup communicazione bidirezionale tra rete e oggetto grafico
         super(typeOfUI);
 
-        executorService = Executors.newSingleThreadExecutor();
+        executorServiceMainThread = Executors.newSingleThreadExecutor();
+        serviceThread = Executors.newSingleThreadExecutor();
 
         registry = LocateRegistry.getRegistry(UtilCostantValue.ipAddressSocketServer, UtilCostantValue.portRmiServer);
         this.server = (VirtualServer) registry.lookup(serverName);
@@ -65,18 +75,15 @@ public class RmiClient extends GenericClient implements VirtualServer {
     @Override
     public void showMessage(NetworkMessage message) throws RemoteException {
         switch(message.getMessageType()) {
-            case STATUS_PLAYER_CHANGE:
+            // ---------  Lobby phase ----------- //
+            case COM_LOBBY_STATUS_NOTIFY:
+                typeOfUI.notifyLobbyStatus(message.getNickname(), message.getArgs().get(0));
                 break;
 
-            case NOT_YOUR_TURN:
-                break;
-
-            case SCORE_UPDATE:
-                break;
-
+            // ---------  SETUP ----------- //
             case GAME_SETUP_GIVE_STARTER_CARD:
                 //crea un thread che fa l'operazione così che non sia il thread server a gestire la gestione della starter card
-                executorService.submit(() -> {
+                executorServiceMainThread.submit(() -> {
                     try {
                         Card supp = gsonTranslator.fromJson(message.getArgs().get(0), Card.class);
 
@@ -89,20 +96,26 @@ public class RmiClient extends GenericClient implements VirtualServer {
 
             case GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP:
                 //crea un thread che fa l'operazione così che non sia il thread server a gestire il client
-                executorService.submit(() -> {
+                executorServiceMainThread.submit(() -> {
                     try {
                         //receive setup hand
                         Hand hand = gsonTranslator.fromJson(message.getArgs().get(0), Hand.class);
                         // 2 common mission
                         Mission commonMission1 = gsonTranslator.fromJson(message.getArgs().get(1), Mission.class);
                         Mission commonMission2 = gsonTranslator.fromJson(message.getArgs().get(2), Mission.class);
-                        // 2 visible resource card from shop
-                        ArrayList<Card> resourceShopCard = gsonTranslator.fromJson(message.getArgs().get(3), new TypeToken<ArrayList<Card>>() {}.getType());
-                        // 2 visible objective card from shop
-                        ArrayList<Card> objShopCard = gsonTranslator.fromJson(message.getArgs().get(4), new TypeToken<ArrayList<Card>>() {}.getType());
+                        // topDeckCard + 2 visible resource card from shop
+                        Card topDeckCardResource = gsonTranslator.fromJson(message.getArgs().get(3), Card.class);
+                        Card visible1CardResource = gsonTranslator.fromJson(message.getArgs().get(4), Card.class);
+                        Card visible2CardResource = gsonTranslator.fromJson(message.getArgs().get(5), Card.class);
+
+                        // topDeckCard + 2 visible objective card from shop
+                        Card topDeckCardObj = gsonTranslator.fromJson(message.getArgs().get(6), Card.class);
+                        Card visible1CardObj = gsonTranslator.fromJson(message.getArgs().get(7), Card.class);
+                        Card visible2CardObj = gsonTranslator.fromJson(message.getArgs().get(8), Card.class);
 
                         clientContainer.initialSetupOfResources(hand, commonMission1, commonMission2,
-                                resourceShopCard.get(0), resourceShopCard.get(1), objShopCard.get(0), objShopCard.get(1));
+                                topDeckCardResource, visible1CardResource, visible2CardResource,
+                                topDeckCardObj, visible1CardObj, visible2CardObj);
 
                         System.out.println("finished Client setup initial resources");
                     } catch (Exception e) {
@@ -113,7 +126,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
 
             case GAME_SETUP_SEND_PERSONAL_MISSION:
                 //crea un thread che fa l'operazione così che non sia il thread server a gestire il client
-                executorService.submit(() -> {
+                executorServiceMainThread.submit(() -> {
                     try {
                         //receive personal mission
                         Mission personalMission1 = gsonTranslator.fromJson(message.getArgs().get(0), Mission.class);
@@ -129,26 +142,55 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 break;
 
             case GAME_SETUP_NOTIFY_TURN:
-                //crea un thread che fa l'operazione così che non sia il thread server a gestire il client
-                executorService.submit(() -> {
+                //il thread sostituisce "ufficialmente" il thread main e sarà lui a portare avanti il gioco
+                executorServiceMainThread.submit(() -> {
                     typeOfUI.notifyIsYourTurn(Boolean.parseBoolean(message.getArgs().get(0)));
                     typeOfUI.startGamePhase();
                 });
                 break;
 
-            case SHOP_UPDATE:
+            // ---------  GAME Phase ----------- //
+            case DRAW_CARD_UPDATE_SHOP_CARD_POOL:
+                serviceThread.submit(() -> {
+                    Card cardShop = gsonTranslator.fromJson(message.getArgs().get(0), Card.class);
+                    ShopType shopType = ShopType.valueOf(message.getArgs().get(1));
+                    int numShopCardToBeUpdated = Integer.parseInt(message.getArgs().get(2));
+
+                    clientContainer.updateShopCard(cardShop, shopType, numShopCardToBeUpdated);
+                });
                 break;
 
-            case CORRECT_DRAW_CARD:
-                System.out.println("received card: "+ message.getArgs().get(0));
-                Hand hand = gsonTranslator.fromJson(message.getArgs().get(0), Hand.class);
+            case PLACEMENT_CARD_OUTCOME:
+                boolean isValidPlacement = Boolean.parseBoolean(message.getArgs().get(0));
 
-                //playStarterCard(hand);
+                if(isValidPlacement) {
+                    Card playedCard = gsonTranslator.fromJson(message.getArgs().get(1), Card.class);
+                    PlayerScoreResource playerScoreResource = gsonTranslator.fromJson(message.getArgs().get(2), PlayerScoreResource.class);
+                    int updatedScoreBoardValue = Integer.parseInt(message.getArgs().get(3));
+
+                    clientContainer.playedCard(playedCard);
+                    clientContainer.updateScore(updatedScoreBoardValue, playerScoreResource);
+                    typeOfUI.outcomePlayCard(true);
+                } else {
+                    typeOfUI.outcomePlayCard(false);
+                }
+
                 break;
 
-            case COM_LOBBY_STATUS_NOTIFY:
-                typeOfUI.notifyLobbyStatus(message.getNickname(), message.getArgs().get(0));
+            case UPDATE_OTHER_PLAYER_GAME_MAP:
+                String nickName = message.getArgs().get(0);
+                Card playedCard = gsonTranslator.fromJson(message.getArgs().get(1), Card.class);
+                int x_pos = Integer.parseInt(message.getArgs().get(2));
+                int y_pos = Integer.parseInt(message.getArgs().get(3));
+
+                clientContainer.updateOtherPlayerMap(nickName, x_pos, y_pos, playedCard);
                 break;
+
+            case ERR_GAME_STATE_COMMAND:
+                GameState currGameState = GameState.valueOf(message.getArgs().get(0));
+                typeOfUI.printErrorCommandSentGameState(currGameState);
+                break;
+
 
             default:
                 //se non è nessuno dei messaggi precedenti, vuol dire che devo mostrare il messaggio
@@ -228,6 +270,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
 
     @Override
     public void playStarterCard(String playerNick, StarterCard starterCard) throws RemoteException {
+        clientContainer.playedStarterCard(starterCard);
         personalGameController.playStarterCard(playerNick, starterCard);
     }
 
@@ -247,13 +290,25 @@ public class RmiClient extends GenericClient implements VirtualServer {
     }
 
     @Override
-    public void playerDraw(String nickname, int Numcard, String type) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage, RemoteException {
-        personalGameController.playerDraw(nickname, Numcard, type);
+    public void playerDraw(String nickname, int numcard, ShopType type) throws RemoteException {
+        serviceThread.submit(() -> {
+            try {
+                personalGameController.playerDraw(nickname, numcard, type);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override
-    public void playerPlayCard(String nickname, int x, int y, Card playedCard) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException, RemoteException {
-        personalGameController.playerPlayCard(nickname, x, y, playedCard);
+    public void playerPlayCard(String nickname, int x, int y, Card playedCard) throws RemoteException {
+        serviceThread.submit(() -> {
+            try {
+                personalGameController.playerPlayCard(nickname, x, y, playedCard);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override
@@ -272,7 +327,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
     }
 
     private void runAsync(Runnable run) {
-        Future<?> future = executorService.submit(() -> {
+        Future<?> future = executorServiceMainThread.submit(() -> {
             try {
                 // Simula un'operazione lunga
                 Thread.sleep(2000);

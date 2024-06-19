@@ -11,3 +11,7 @@ avevo in mente di pescare random una carta a caso e poi se continua ad essere di
 Convenzione: si gira le carte di 45 gradi in senso orario
 
 mandiamo ack ad ogni ordine(?)
+
+rete:
+RMI: 1 thread main + 1 client sender/receiver | server 1 executor + n sender
+Socket: 1 thread main + 1 receiver | n receiver + ...

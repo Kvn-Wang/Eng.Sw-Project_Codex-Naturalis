@@ -3,6 +3,7 @@ package it.polimi.codexnaturalis.model.game;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.chat.ChatManager;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
+import it.polimi.codexnaturalis.model.enumeration.GameState;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
@@ -38,10 +39,13 @@ public class GameManager extends Observable implements GameController {
     private int playerThatHasPlayedPersonalMission;
     private Observer vobs;
     private MissionSelector missionSelector;
+    GameState gameState;
 
-    public GameManager(ArrayList<PlayerInfo> playerInfo, Observer observer) {
+    public GameManager(ArrayList<PlayerInfo> playerInfo, Observer observer, GameState gameState) {
         networkPlayer = playerInfo;
         players = new Player[playerInfo.size()];
+
+        this.gameState = gameState;
 
         missionSelector = new MissionSelector();
 
@@ -59,8 +63,13 @@ public class GameManager extends Observable implements GameController {
 
     @Override
     public void playStarterCard(String playerNick, StarterCard starterCard) {
-        nickToPlayer(playerNick).placeCard(UtilCostantValue.lunghezzaMaxMappa/2,
-                UtilCostantValue.lunghezzaMaxMappa/2, starterCard);
+        try {
+            nickToPlayer(playerNick).placeCard(UtilCostantValue.lunghezzaMaxMappa/2,
+                    UtilCostantValue.lunghezzaMaxMappa/2, starterCard);
+        } catch (PersonalizedException.InvalidPlaceCardRequirementException |
+                 PersonalizedException.InvalidPlacementException e) {
+            throw new RuntimeException(e);
+        }
 
         System.out.println("Player: "+playerNick+" ha giocato la sua starter card con isBack: "+starterCard.getIsBack());
 
@@ -114,7 +123,7 @@ public class GameManager extends Observable implements GameController {
             //manda la starterCard al playerSpecifico
             try {
                 notifyObserverSingle(new NetworkMessage(p.getNickname(), MessageType.GAME_SETUP_GIVE_STARTER_CARD,
-                        argsGenerator(starterShop.drawTopDeckCard(true))));
+                        argsGenerator(starterShop.drawTopDeckCard())));
             } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
                 throw new RuntimeException(e);
             }
@@ -123,9 +132,9 @@ public class GameManager extends Observable implements GameController {
 
     private void initializePlayerHand(){
         for(Player p: players){
-            p.addHandCard(resourceShop.drawTopDeckCard(true));
-            p.addHandCard(resourceShop.drawTopDeckCard(true));
-            p.addHandCard(objectiveShop.drawTopDeckCard(true));
+            p.addHandCard(resourceShop.drawTopDeckCard());
+            p.addHandCard(resourceShop.drawTopDeckCard());
+            p.addHandCard(objectiveShop.drawTopDeckCard());
         }
     }
 
@@ -142,9 +151,11 @@ public class GameManager extends Observable implements GameController {
         for(Player p: players){
             try {
                 notifyObserverSingle(new NetworkMessage(p.getNickname(), MessageType.GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP,
-                        argsGenerator(p.getHand()), argsGenerator(sharedMission1),
-                        argsGenerator(sharedMission2), argsGenerator(resourceShop.getVisibleShopCard()),
-                        argsGenerator(objectiveShop.getVisibleShopCard())));
+                        argsGenerator(p.getHand()), argsGenerator(sharedMission1), argsGenerator(sharedMission2),
+                        argsGenerator(resourceShop.getTopDeckCard()),
+                        argsGenerator(resourceShop.getVisibleCard1()), argsGenerator(resourceShop.getVisibleCard2()),
+                        argsGenerator(objectiveShop.getTopDeckCard()),
+                        argsGenerator(objectiveShop.getVisibleCard1()), argsGenerator(objectiveShop.getVisibleCard2())));
             } catch(Exception e) {
                 System.err.println(e.getMessage());
             }
@@ -186,22 +197,26 @@ public class GameManager extends Observable implements GameController {
     }
 
     @Override
-    public void playerDraw(String nickname, int numShopCard, String type) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
+    public void playerDraw(String nickname, int numcard, ShopType type) {
         Player p = nickToPlayer(nickname);
-        if(type.equals("RESOURCE")) {
-            p.addHandCard(resourceShop.drawFromShopPlayer(numShopCard));
+        Card drawnCard = null;
+
+        if(type == ShopType.RESOURCE) {
+            drawnCard = resourceShop.drawFromShopPlayer(numcard);
+            //p.addHandCard(resourceShop.drawFromShopPlayer(numShopCard));
             System.out.println(nickname+" drew from the Resource Shop\n");
             endGameCheckFinishedShop();
-            nextTurn();
-        } else if(type.equals("OBJECTIVE")) {
-            p.addHandCard(objectiveShop.drawFromShopPlayer(numShopCard));
+        } else if(type == ShopType.OBJECTIVE) {
+            drawnCard = objectiveShop.drawFromShopPlayer(numcard);
+            //p.addHandCard(objectiveShop.drawFromShopPlayer(numShopCard));
             System.out.printf(nickname+" drew from the Objective Shop\n");
             endGameCheckFinishedShop();
-            nextTurn();
         }
-        else{
-            System.out.println("wrong type shop");
-            notifyObserverSingle(new NetworkMessage(nickname, MessageType.WRONG_TYPE_SHOP));
+
+        try {
+            notifyObserverSingle(new NetworkMessage(nickname, MessageType.DRAWN_CARD_DECK, argsGenerator(drawnCard)));
+        } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -237,9 +252,39 @@ public class GameManager extends Observable implements GameController {
     public void playerPlayCard(String nickname, int x, int y, Card playedCard) {
         Player p = nickToPlayer(nickname);
         System.out.println(nickname + " ha piazzato una carta in posizione: ("+x+","+y+")");
-        p.placeCard(x, y, playedCard);
 
-        endGameCheckScoreBoard();
+        try {
+            p.placeCard(x, y, playedCard);
+            /**
+             * notify the player that he succesfully placed the card
+             */
+            notifyObserverSingle(new NetworkMessage(nickname, MessageType.PLACEMENT_CARD_OUTCOME,
+                    String.valueOf(true), argsGenerator(playedCard), argsGenerator(p.getScoreResource()),
+                    String.valueOf(p.getPersonalScoreBoardScore())));
+
+            /**
+             * notify the other players that the map of the player that has played card has changed
+             */
+            for (Player otherPlayer : players) {
+                if (!otherPlayer.getNickname().equals(nickname))
+                    notifyObserverSingle(new NetworkMessage(otherPlayer.getNickname(), MessageType.UPDATE_OTHER_PLAYER_GAME_MAP,
+                            nickname, argsGenerator(playedCard), String.valueOf(x), String.valueOf(y)));
+            }
+
+            gameState = GameState.DRAW_PHASE;
+
+            endGameCheckScoreBoard();
+        } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
+            throw new RuntimeException(e);
+        } catch(PersonalizedException.InvalidPlaceCardRequirementException |
+                 PersonalizedException.InvalidPlacementException e) {
+            try {
+                notifyObserverSingle(new NetworkMessage(nickname, MessageType.PLACEMENT_CARD_OUTCOME,
+                        String.valueOf(false)));
+            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage ex) {
+                throw new RuntimeException(ex);
+            }
+        }
     }
 
     @Override

@@ -1,7 +1,9 @@
 package it.polimi.codexnaturalis.view.VirtualModel;
 
+import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Hand;
+import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
@@ -12,16 +14,21 @@ public class ClientContainer {
     private String nickname;
     private String lobbyNickname;
     private ArrayList<PlayerInfo> otherPlayerList;
+    private ArrayList<Card[][]> otherPlayerGameMap;
     private Card[][] personalGameMap;
+    int personalScoreBoardValue;
+    PlayerScoreResource personalPlayerScoreResource;
     private Hand personalHand;
     private Mission commonMission1;
     private Mission commonMission2;
     private Mission personalMission;
-    Card [] visibleResourceCardShop;
-    Card [] visibleObjectiveCardShop;
+    private Card topDeckResourceCardShop;
+    private Card [] visibleResourceCardShop;
+    private Card topDeckObjCardShop;
+    private Card [] visibleObjectiveCardShop;
 
     public ClientContainer() {
-        //inizializzazione mappa vuota
+        // inizializzazione mappa personale
         personalGameMap = new Card[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
         for(int i = 0; i < UtilCostantValue.lunghezzaMaxMappa; i++) {
             for(int j = 0; j < UtilCostantValue.lunghezzaMaxMappa; j++) {
@@ -63,6 +70,19 @@ public class ClientContainer {
 
     public void setOtherPlayerList(ArrayList<PlayerInfo> otherPlayerList) {
         this.otherPlayerList = otherPlayerList;
+
+        otherPlayerGameMap = new ArrayList<>();
+
+        //inizializzazione mappa degli altri player
+        for(int playerNum = 0; playerNum < otherPlayerList.size(); playerNum++) {
+            Card [][] supp = new Card[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
+            for(int i = 0; i < UtilCostantValue.lunghezzaMaxMappa; i++) {
+                for (int j = 0; j < UtilCostantValue.lunghezzaMaxMappa; j++) {
+                    supp[i][j] = null;
+                }
+            }
+            otherPlayerGameMap.add(supp);
+        }
     }
 
     public Card[][] getPersonalGameMap() {
@@ -98,14 +118,78 @@ public class ClientContainer {
     }
 
     public void initialSetupOfResources(Hand initialHand, Mission firstCommonMission, Mission secondCommonMission,
+                                        Card topDeckResourceCardShop,
                                         Card visibleResourceCardShop1, Card visibleResourceCardShop2,
+                                        Card topDeckObjCardShop,
                                         Card visibleObjCardShop1, Card visibleObjCardShop2) {
         personalHand = initialHand;
         commonMission1 = firstCommonMission;
         commonMission2 = secondCommonMission;
+
+        this.topDeckResourceCardShop = topDeckResourceCardShop;
         visibleResourceCardShop[0] = visibleResourceCardShop1;
         visibleResourceCardShop[1] = visibleResourceCardShop2;
+
+        this.topDeckObjCardShop = topDeckObjCardShop;
         visibleObjectiveCardShop[0] = visibleObjCardShop1;
         visibleObjectiveCardShop[1] = visibleObjCardShop2;
+    }
+
+    public void updateShopCard(Card card, ShopType type, int numCard) {
+        if(type == ShopType.RESOURCE) {
+            if(numCard == 0) {
+                topDeckResourceCardShop = card;
+            } else if(numCard == 1) {
+                visibleResourceCardShop[0] = card;
+            } else if(numCard == 2) {
+                visibleResourceCardShop[1] = card;
+            }
+        } else if(type == ShopType.OBJECTIVE) {
+            if(numCard == 0) {
+                topDeckObjCardShop = card;
+            } else if(numCard == 1) {
+                visibleObjectiveCardShop[0] = card;
+            } else if(numCard == 2) {
+                visibleObjectiveCardShop[1] = card;
+            }
+        }
+    }
+
+    public void updateScore(int personalScoreBoardValue, PlayerScoreResource personalPlayerScoreResource) {
+        this.personalScoreBoardValue = personalScoreBoardValue;
+        this.personalPlayerScoreResource = personalPlayerScoreResource;
+    }
+
+    /**
+     * pop card
+     */
+    public void playedCard(Card card) {
+        if(personalHand.popCard(card)) {
+            System.out.println(card + " successfully removed from client hand");
+        } else {
+            System.err.println(card + " not found in hand");
+        }
+    }
+
+    public void playedStarterCard(Card starterCard) {
+        personalGameMap[UtilCostantValue.lunghezzaMaxMappa/2][UtilCostantValue.lunghezzaMaxMappa/2] = starterCard;
+    }
+
+    public void updateOtherPlayerMap(String nickname, int x, int y, Card card) {
+        otherPlayerGameMap.get(convertNicknameToIntMap(nickname))[x][y] = card;
+    }
+
+    /**
+     * convert from string value to an int that correspond to which map is in its possession in the
+     * ArrayList<Card[][]> otherPlayerGameMap object
+     */
+    private int convertNicknameToIntMap(String nickname) {
+        for(int i = 0; i < otherPlayerList.size(); i++) {
+            if(nickname.equals(otherPlayerList.get(i).getNickname())) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 }

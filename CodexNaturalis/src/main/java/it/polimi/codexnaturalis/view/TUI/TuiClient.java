@@ -1,6 +1,7 @@
 package it.polimi.codexnaturalis.view.TUI;
 
 import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.model.enumeration.GameState;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.shop.card.Card;
@@ -296,5 +297,15 @@ public class TuiClient implements TypeOfUI {
     public void startGamePhase() {
         //TODO
         System.out.println("Menu a tendina non ancora sviluppata..... 1)gioca carta 2)visualizza mappa ecc");
+    }
+
+    @Override
+    public void outcomePlayCard(boolean isValidPlacement) {
+
+    }
+
+    @Override
+    public void printErrorCommandSentGameState(GameState currentGameState) {
+
     }
 }
