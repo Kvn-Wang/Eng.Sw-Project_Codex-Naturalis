@@ -114,8 +114,9 @@ public enum MessageType {
 
     /**
      * args(0): isValid (boolean)
-     * if valid -> args(1):  updated PlayerScoreResource
-     * if valid -> args(2):  int updated board player score
+     * if valid -> args(1):  card that has been placed
+     * if valid -> args(2):  updated PlayerScoreResource
+     * if valid -> args(3):  int updated board player score
      */
     PLACEMENT_CARD_OUTCOME,
 

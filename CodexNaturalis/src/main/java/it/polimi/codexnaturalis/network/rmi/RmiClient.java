@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
+import it.polimi.codexnaturalis.model.enumeration.GameState;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.mission.MissionAdapter;
@@ -163,9 +164,11 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 boolean isValidPlacement = Boolean.parseBoolean(message.getArgs().get(0));
 
                 if(isValidPlacement) {
-                    PlayerScoreResource playerScoreResource = gsonTranslator.fromJson(message.getArgs().get(1), PlayerScoreResource.class);
-                    int updatedScoreBoardValue = Integer.parseInt(message.getArgs().get(2));
+                    Card playedCard = gsonTranslator.fromJson(message.getArgs().get(1), Card.class);
+                    PlayerScoreResource playerScoreResource = gsonTranslator.fromJson(message.getArgs().get(2), PlayerScoreResource.class);
+                    int updatedScoreBoardValue = Integer.parseInt(message.getArgs().get(3));
 
+                    clientContainer.playedCard(playedCard);
                     clientContainer.updateScore(updatedScoreBoardValue, playerScoreResource);
                     typeOfUI.outcomePlayCard(true);
                 } else {
@@ -175,9 +178,17 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 break;
 
             case UPDATE_OTHER_PLAYER_GAME_MAP:
+                String nickName = message.getArgs().get(0);
+                Card playedCard = gsonTranslator.fromJson(message.getArgs().get(1), Card.class);
+                int x_pos = Integer.parseInt(message.getArgs().get(2));
+                int y_pos = Integer.parseInt(message.getArgs().get(3));
+
+                clientContainer.updateOtherPlayerMap(nickName, x_pos, y_pos, playedCard);
                 break;
 
             case ERR_GAME_STATE_COMMAND:
+                GameState currGameState = GameState.valueOf(message.getArgs().get(0));
+                typeOfUI.printErrorCommandSentGameState(currGameState);
                 break;
 
 
@@ -259,6 +270,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
 
     @Override
     public void playStarterCard(String playerNick, StarterCard starterCard) throws RemoteException {
+        clientContainer.playedStarterCard(starterCard);
         personalGameController.playStarterCard(playerNick, starterCard);
     }
 
@@ -279,12 +291,24 @@ public class RmiClient extends GenericClient implements VirtualServer {
 
     @Override
     public void playerDraw(String nickname, int numcard, ShopType type) throws RemoteException {
-        personalGameController.playerDraw(nickname, numcard, type);
+        serviceThread.submit(() -> {
+            try {
+                personalGameController.playerDraw(nickname, numcard, type);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override
     public void playerPlayCard(String nickname, int x, int y, Card playedCard) throws RemoteException {
-        personalGameController.playerPlayCard(nickname, x, y, playedCard);
+        serviceThread.submit(() -> {
+            try {
+                personalGameController.playerPlayCard(nickname, x, y, playedCard);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override

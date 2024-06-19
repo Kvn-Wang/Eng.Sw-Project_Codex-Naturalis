@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.view.GUI;
 
+import it.polimi.codexnaturalis.model.enumeration.GameState;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.shop.card.Card;
@@ -102,6 +103,16 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void startGamePhase() {
+
+    }
+
+    @Override
+    public void outcomePlayCard(boolean isValidPlacement) {
+
+    }
+
+    @Override
+    public void printErrorCommandSentGameState(GameState currentGameState) {
 
     }
 

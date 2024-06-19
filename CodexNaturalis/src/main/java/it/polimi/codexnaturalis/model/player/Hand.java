@@ -28,7 +28,7 @@ public class Hand {
         }*/
     }
 
-    public Card popCard(int numCard) throws PersonalizedException.InvalidNumPopCardException, PersonalizedException.InvalidPopCardException {
+    public Card popCard(int numCard) throws PersonalizedException.InvalidPopCardException {
         /*System.out.println("Qualcuno ha giocato la carta: " + numCard);
         for(Card elem : cards) {
             System.out.println(elem);
@@ -40,5 +40,14 @@ public class Hand {
         else {
             throw new PersonalizedException.InvalidPopCardException();
         }
+    }
+
+    public boolean popCard(Card card) {
+        /*System.out.println("Qualcuno ha giocato la carta: " + numCard);
+        for(Card elem : cards) {
+            System.out.println(elem);
+        }*/
+
+        return cards.remove(card);
     }
 }
