@@ -137,6 +137,10 @@ public class Player extends Observable implements PlayerInterface {
         }
     }
 
+    public boolean getStatus() {
+        return alive;
+    }
+
     public PlayerScoreResource getScoreResource() {
         return scoreResource;
     }

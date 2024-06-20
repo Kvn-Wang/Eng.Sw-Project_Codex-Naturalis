@@ -174,7 +174,7 @@ public class GameManager extends Observable implements GameController {
         System.out.print("\nMissions being selected\n");
     }
 
-    private Player nickToPlayer(String nickname)/* throws PersonalizedException.InvalidNickname*/ {//TODO:throw exception da aggiungere
+    protected Player nickToPlayer(String nickname)/* throws PersonalizedException.InvalidNickname*/ {//TODO:throw exception da aggiungere
             for (Player p : players) {
                 if (p.getNickname().equals(nickname))
                     return p;
@@ -395,5 +395,9 @@ public class GameManager extends Observable implements GameController {
 
     public Player getPlayerTurn() {
         return playerTurn;
+    }
+
+    public boolean getIsFinalTurn() {
+        return isFinalTurn;
     }
 }
