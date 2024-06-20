@@ -295,33 +295,56 @@ public class TuiClient implements TypeOfUI {
 
     @Override
     public void startGamePhase() {
-        String command = "";
-        while(!command.equals("HAND") && !command.equals("MAP") && command.equals("SHOP")&& !command.equals("SCOREBOARD") && !command.equals("RESOURCES") && !command.equals("MISSIONS")) {
-            System.out.println("if you want to see your Hand write HAND");
-            System.out.println("if you want to see yours or other player's Map write MAP");
-            System.out.println("if you want to see the Shop write SHOP");
-            System.out.println("if you want to see the scoreboard write SCOREBOARD");
-            System.out.println("if you want to see Your resources write RESOURCES");
-            System.out.println("if you want to see Your missions write MISSIONS");
+        String command;
+        while(true) {
+            System.out.println("1) if you want to see yours map");
+            System.out.println("2) if you want to play a card");
+            System.out.println("3) if you want to draw a card");
+            System.out.println("4) if you want to see your Hand");
+            System.out.println("5) if you want to see other player's map");
+            System.out.println("6) if you want to see the Shop");
+            System.out.println("7) if you want to see the scoreboard");
+            System.out.println("8) if you want to see Your resources");
+            System.out.println("9) if you want to see Your missions");
 
             command = scan.nextLine();
+            if(command.equals("1")) {
+                PrintMapClass.printMap(clientContainer.getPersonalGameMap());
+            }else if(command.equals("2")) {
+                PrintMapClass.printMap(clientContainer.getPersonalGameMap());
+                PrintHandClass.printHand(clientContainer.getPersonalHand());
+                System.out.println("Give me which num card in hand to play");
+                int numCard = scan.nextInt();
+
+                System.out.println("Give me x");
+                int x = scan.nextInt();
+                System.out.println("Give me y");
+                int y = scan.nextInt();
+
+                try {
+                    virtualGame.playerPlayCard(clientContainer.getNickname(), x, y,
+                            clientContainer.getPersonalHand().getCard(numCard));
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+            }else if(command.equals("3")) {
+
+            }else if(command.equals("4")) {
+                PrintHandClass.printHand(clientContainer.getPersonalHand());
+            }else if(command.equals("5")) {
+
+            }else if(command.equals("6")) {
+
+            }else if(command.equals("7")) {
+
+            }else if(command.equals("8")) {
+
+            }else if(command.equals("9")) {
+                PrintMissionClass.printMission(clientContainer.getCommonMission1());
+                PrintMissionClass.printMission(clientContainer.getCommonMission2());
+                PrintMissionClass.printMission(clientContainer.getPersonalMission());
+            }
         }
-        if(command.equals("HAND")) {
-            PrintHandClass.printHand(clientContainer.getPersonalHand());
-        }else if(command.equals("MAP")) {
-            PrintMapClass.printMap(clientContainer.getPersonalGameMap());
-        }else if(command.equals("SHOP")) {
-
-        }else if(command.equals("SCOREBOARD")) {
-
-        }else if(command.equals("RESOURCES")) {
-
-        }else if(command.equals("MISSIONS")) {
-            PrintMissionClass.printMission(clientContainer.getCommonMission1());
-            PrintMissionClass.printMission(clientContainer.getCommonMission2());
-            PrintMissionClass.printMission(clientContainer.getPersonalMission());
-        }
-
     }
 
     @Override
