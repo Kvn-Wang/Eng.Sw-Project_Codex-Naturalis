@@ -49,6 +49,10 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
         gameController = new GameManager(players, this, gameState);
     }
 
+    public GameController getGameController() {
+        return gameController;
+    }
+
     /**
      * notify the next player that it's his turn
      */
