@@ -295,8 +295,33 @@ public class TuiClient implements TypeOfUI {
 
     @Override
     public void startGamePhase() {
-        //TODO
-        System.out.println("Menu a tendina non ancora sviluppata..... 1)gioca carta 2)visualizza mappa ecc");
+        String command = "";
+        while(!command.equals("HAND") && !command.equals("MAP") && command.equals("SHOP")&& !command.equals("SCOREBOARD") && !command.equals("RESOURCES") && !command.equals("MISSIONS")) {
+            System.out.println("if you want to see your Hand write HAND");
+            System.out.println("if you want to see yours or other player's Map write MAP");
+            System.out.println("if you want to see the Shop write SHOP");
+            System.out.println("if you want to see the scoreboard write SCOREBOARD");
+            System.out.println("if you want to see Your resources write RESOURCES");
+            System.out.println("if you want to see Your missions write MISSIONS");
+
+            command = scan.nextLine();
+        }
+        if(command.equals("HAND")) {
+            PrintHandClass.printHand(clientContainer.getPersonalHand());
+        }else if(command.equals("MAP")) {
+            PrintMapClass.printMap(clientContainer.getPersonalGameMap());
+        }else if(command.equals("SHOP")) {
+
+        }else if(command.equals("SCOREBOARD")) {
+
+        }else if(command.equals("RESOURCES")) {
+
+        }else if(command.equals("MISSIONS")) {
+            PrintMissionClass.printMission(clientContainer.getCommonMission1());
+            PrintMissionClass.printMission(clientContainer.getCommonMission2());
+            PrintMissionClass.printMission(clientContainer.getPersonalMission());
+        }
+
     }
 
     @Override

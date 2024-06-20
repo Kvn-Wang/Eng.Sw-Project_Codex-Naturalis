@@ -75,29 +75,28 @@ public class PrintCardClass {
         if(card.getCardType() == CardType.STARTER){
             cardColor = "\uD83D\uDFE8"+"\u2004";
         }else{
-            cardColor = PrintSymbols.convertResourceType(card.getCardColor(), false);
+            cardColor = PrintSymbols.convertResourceType(card.getCardColor(), false) + "\u2004";
         }
 
         if(isCenterEmpty==false) {
             center = formatCenter(c, card);
-            System.out.println(center+"║");
         }else{
             center = "       ";
         }
         TUICard = new String[7];
-        nw = formatCorner(6, nw);
+        nw = formatCorner(7, nw);
         ne = formatCorner(7, ne);
-        sw = formatCorner(6, sw);
+        sw = formatCorner(7, sw);
         se = formatCorner(7, se);
-        TUICard[0] = "╔══════╦═══════╦═══════╗";
+        TUICard[0] = "╔═══════╦═══════╦═══════╗";
         TUICard[1] = nw+"       "+ne;
-        TUICard[2] = "╠══════╝       ╚═══════╣";
+        TUICard[2] = "╠═══════╝       ╚═══════╣";
         //TUICard[3] = "║       " + (c.length > 1 ? c[1] : "\u2004\u2004\u2004\u2004\u200A") +  (c.length > 0 ? c[0] : "\u2004\u2004\u2004\u2004\u200A") +   (c.length > 2 ? c[2] : "\u2004\u2004\u2004\u2004\u200A") +"\u2009"+"        ║";
-        TUICard[3] = "║       " +center+"        ║";
+        TUICard[3] = "║        " +center+"        ║";
 
-        TUICard[4] = "╠══════╦═══════╦═══════╣";
+        TUICard[4] = "╠═══════╦═══════╦═══════╣";
         TUICard[5] = sw+"  "+cardColor+"  "+se;
-        TUICard[6] = "╚══════╩═══════╩═══════╝";
+        TUICard[6] = "╚═══════╩═══════╩═══════╝";
         /*System.out.println("╔════╦═════╦════╗");
         if (punti == 0 && conditionResource.equals("")) {
             System.out.println(sw + "     " + nw);
@@ -155,6 +154,9 @@ public class PrintCardClass {
                 centre += group[i];
             }
             for (int i = 0; i < 3 - group.length; i++) {
+                centre += "\u2004\u2004\u2004\u2004\u200A";
+            }
+            if(group[0].equals("")){
                 centre += "\u2004\u2004\u2004\u2004\u200A";
             }
         }else {
