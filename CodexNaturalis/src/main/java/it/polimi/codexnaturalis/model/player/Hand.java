@@ -21,8 +21,9 @@ public class Hand {
     }
 
     public void addCard(Card drawnCard) throws PersonalizedException.InvalidAddCardException {
+        cards.add(drawnCard);
         /*if(cards.size() <= 3) {
-            cards.add(drawnCard);
+
         } else {
             throw new PersonalizedException.InvalidAddCardException();
         }*/

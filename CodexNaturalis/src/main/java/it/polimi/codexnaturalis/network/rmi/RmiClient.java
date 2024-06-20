@@ -99,19 +99,26 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 executorServiceMainThread.submit(() -> {
                     try {
                         //receive setup hand
-                        Hand hand = gsonTranslator.fromJson(message.getArgs().get(0), Hand.class);
+                        Card resourceCard1 = gsonTranslator.fromJson(message.getArgs().get(0), Card.class);
+                        Card resourceCard2 = gsonTranslator.fromJson(message.getArgs().get(1), Card.class);
+                        Card ObjCard1 = gsonTranslator.fromJson(message.getArgs().get(2), Card.class);
+                        Hand hand = new Hand();
+                        hand.addCard(resourceCard1);
+                        hand.addCard(resourceCard2);
+                        hand.addCard(ObjCard1);
+
                         // 2 common mission
-                        Mission commonMission1 = gsonTranslator.fromJson(message.getArgs().get(1), Mission.class);
-                        Mission commonMission2 = gsonTranslator.fromJson(message.getArgs().get(2), Mission.class);
+                        Mission commonMission1 = gsonTranslator.fromJson(message.getArgs().get(3), Mission.class);
+                        Mission commonMission2 = gsonTranslator.fromJson(message.getArgs().get(4), Mission.class);
                         // topDeckCard + 2 visible resource card from shop
-                        Card topDeckCardResource = gsonTranslator.fromJson(message.getArgs().get(3), Card.class);
-                        Card visible1CardResource = gsonTranslator.fromJson(message.getArgs().get(4), Card.class);
-                        Card visible2CardResource = gsonTranslator.fromJson(message.getArgs().get(5), Card.class);
+                        Card topDeckCardResource = gsonTranslator.fromJson(message.getArgs().get(5), Card.class);
+                        Card visible1CardResource = gsonTranslator.fromJson(message.getArgs().get(6), Card.class);
+                        Card visible2CardResource = gsonTranslator.fromJson(message.getArgs().get(7), Card.class);
 
                         // topDeckCard + 2 visible objective card from shop
-                        Card topDeckCardObj = gsonTranslator.fromJson(message.getArgs().get(6), Card.class);
-                        Card visible1CardObj = gsonTranslator.fromJson(message.getArgs().get(7), Card.class);
-                        Card visible2CardObj = gsonTranslator.fromJson(message.getArgs().get(8), Card.class);
+                        Card topDeckCardObj = gsonTranslator.fromJson(message.getArgs().get(8), Card.class);
+                        Card visible1CardObj = gsonTranslator.fromJson(message.getArgs().get(9), Card.class);
+                        Card visible2CardObj = gsonTranslator.fromJson(message.getArgs().get(10), Card.class);
 
                         clientContainer.initialSetupOfResources(hand, commonMission1, commonMission2,
                                 topDeckCardResource, visible1CardResource, visible2CardResource,

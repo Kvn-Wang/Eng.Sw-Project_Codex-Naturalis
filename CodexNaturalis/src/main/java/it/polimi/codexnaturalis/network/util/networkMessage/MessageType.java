@@ -55,15 +55,17 @@ public enum MessageType {
     GAME_SETUP_STARTER_CARD_PLAY,
 
     /**
-     * args(0): hand (with 2 resourceCard and 1 obj)
-     * args(1): First Common Mission
-     * args(2): Second Common Mission
-     * args(3): topDeck resourceCard of shop
-     * args(4): first visible resourceCard of shop
-     * args(5): second visible resourceCard of shop
-     * args(6): topDeck objectiveCard of shop
-     * args(7): first visible objectiveCard of shop
-     * args(8): second visible objectiveCard of shop
+     * args(0): Resource card
+     * args(1): Resource card
+     * args(2): Obj card
+     * args(3): First Common Mission
+     * args(4): Second Common Mission
+     * args(5): topDeck resourceCard of shop
+     * args(6): first visible resourceCard of shop
+     * args(7): second visible resourceCard of shop
+     * args(8): topDeck objectiveCard of shop
+     * args(9): first visible objectiveCard of shop
+     * args(10): second visible objectiveCard of shop
      */
     GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP,
 
