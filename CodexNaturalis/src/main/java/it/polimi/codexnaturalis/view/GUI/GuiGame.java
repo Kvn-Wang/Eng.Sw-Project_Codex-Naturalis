@@ -1,9 +1,15 @@
 package it.polimi.codexnaturalis.view.GUI;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.mission.Mission;
+import it.polimi.codexnaturalis.model.mission.MissionAdapter;
 import it.polimi.codexnaturalis.model.player.Hand;
+import it.polimi.codexnaturalis.model.player.HandGsonAdapter;
 import it.polimi.codexnaturalis.model.shop.card.Card;
+import it.polimi.codexnaturalis.model.shop.card.CardTypeAdapter;
+import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
@@ -191,13 +197,18 @@ public class GuiGame extends Application {
     }
     public static void missionSelection(Mission mission1, Mission mission2){
         Platform.runLater(() -> {
+            Gson gsonTranslator = new GsonBuilder()
+                    .registerTypeAdapter(Card.class, new CardTypeAdapter())
+                    .registerTypeAdapter(Hand.class, new HandGsonAdapter())
+                    .registerTypeAdapter(Mission.class, new MissionAdapter())
+                    .create();
             MissionSelectBox missionAlert = new MissionSelectBox();
             missionAlert.setMission(mission1, mission2);
-            /*try {
-                vgc.playerPersonalMissionSelect(playerNickname, Integer.parseInt(missionAlert.display("Mission selection", 800, 700)));
+            try {
+                vgc.playerPersonalMissionSelect(playerNickname, gsonTranslator.fromJson(missionAlert.display("Mission selection", 800, 700), Mission.class));
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
-            }*/
+            }
         });
     }
 
@@ -427,9 +438,13 @@ public class GuiGame extends Application {
         map.setOnDragDropped(e -> {
             Dragboard db = e.getDragboard();
             boolean success = false;
+            Gson gsonTranslator = new GsonBuilder()
+                    .registerTypeAdapter(Card.class, new CardTypeAdapter())
+                    .registerTypeAdapter(Hand.class, new HandGsonAdapter())
+                    .registerTypeAdapter(Mission.class, new MissionAdapter())
+                    .create();
             if (db.hasString()) {
-                String[] droppedStrings = db.getString().split("\\|\\|");
-                String num = db.getString();
+                String cardString = db.getString();
 //                System.out.println(droppedStrings[0]);
 //                System.out.println(droppedStrings[1]);
 //                System.out.println(num);
@@ -440,12 +455,11 @@ public class GuiGame extends Application {
                     starterBeingPlaced=false;
                     newRect.setX(-newRect.getBoundsInLocal().getCenterX());
                     newRect.setY(-newRect.getBoundsInLocal().getCenterY());
-                    /*try {
-                        vgc.playerPlayCard(playerNickname, 80, 80, Integer.parseInt(droppedStrings[1]), Boolean.parseBoolean(droppedStrings[0]));
-                    } catch (PersonalizedException.InvalidPlacementException |
-                             PersonalizedException.InvalidPlaceCardRequirementException | RemoteException ex) {
+                    try {
+                        vgc.playStarterCard(playerNickname, gsonTranslator.fromJson(cardString, StarterCard.class));
+                    } catch (RemoteException ex) {
                         throw new RuntimeException(ex);
-                    }*/
+                    }
                 }
                 else {
                     double closestDistance = Double.MAX_VALUE;

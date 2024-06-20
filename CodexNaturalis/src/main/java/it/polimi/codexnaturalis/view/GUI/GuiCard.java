@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.view.GUI;
 
+import com.google.gson.Gson;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import javafx.scene.image.Image;
@@ -9,17 +10,11 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-
 public class GuiCard {
     private Rectangle vCard;
     private Card card;
     private int num;
-    private BufferedImage cardImg;
+    private Image cardImg;
     public Rectangle getRectangle() {
         return vCard;
     }
@@ -36,17 +31,10 @@ public class GuiCard {
         double x=170;
         double y=100;
         num = card.getPng();
-        String numString = String.valueOf(num);
-        String imageName = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+ numString +".png";
-        String url = imageName;
-        URL name = getClass().getResource(url);
-
-        URL imageURL = getClass().getResource(imageName);
-        try {
-            cardImg = ImageIO.read(imageURL);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        String front = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/" + num + ".png";
+        String back = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_back/" + num + ".png";
+        ImagePattern cardFrontImg = new ImagePattern(new Image(getClass().getResourceAsStream(front)));
+        ImagePattern cardBackImg = new ImagePattern(new Image(getClass().getResourceAsStream(back)));
         switch (card.getCardColor()){
             case FUNGI:
                 vCard = new Rectangle(x, y, Color.ORANGE);
@@ -65,25 +53,29 @@ public class GuiCard {
                 break;
         }
 
-//        vCard.setStroke(null);
-//        vCard.setFill(new ImagePattern(cardImg));
+        vCard.setStroke(null);
+        vCard.setFill(cardFrontImg);
 
         vCard.setOnDragDetected(event -> {
             Dragboard db = vCard.startDragAndDrop(TransferMode.ANY);
             ClipboardContent content = new ClipboardContent();
-            if(!card.getIsBack()){
-                content.putString("false"+"||"+num);
-            }else{
-                content.putString("true"+"||"+num);
-            }
-            //content.putImage(vCardimg);
+            Gson gson = new Gson();
+                content.putString(gson.toJson(card));
+            content.putImage(cardImg);
             db.setContent(content);
             event.consume();
         });
 
         vCard.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
-                card.setIsBack(!card.getIsBack());
+                if(card.getIsBack()){
+                    vCard.setFill(cardFrontImg);
+                    card.setIsBack(false);
+                }
+                else{
+                    vCard.setFill(cardBackImg);
+                    card.setIsBack(true);
+                }
                 event.consume();
             }
         });
