@@ -39,13 +39,12 @@ public class GameManager extends Observable implements GameController {
     private int playerThatHasPlayedPersonalMission;
     private Observer vobs;
     private MissionSelector missionSelector;
-    GameState gameState;
+    //variabile che mi serve per contattare virtualGame che dentro playCard è entrato nella catch
+    public boolean errorDuringPlayingPhase;
 
-    public GameManager(ArrayList<PlayerInfo> playerInfo, Observer observer, GameState gameState) {
+    public GameManager(ArrayList<PlayerInfo> playerInfo, Observer observer) {
         networkPlayer = playerInfo;
         players = new Player[playerInfo.size()];
-
-        this.gameState = gameState;
 
         missionSelector = new MissionSelector();
 
@@ -205,12 +204,12 @@ public class GameManager extends Observable implements GameController {
         if(type == ShopType.RESOURCE) {
             drawnCard = resourceShop.drawFromShopPlayer(numcard);
             //p.addHandCard(resourceShop.drawFromShopPlayer(numShopCard));
-            System.out.println(nickname+" drew from the Resource Shop\n");
+            System.out.println(nickname+" drew from the Resource Shop");
             endGameCheckFinishedShop();
         } else if(type == ShopType.OBJECTIVE) {
             drawnCard = objectiveShop.drawFromShopPlayer(numcard);
             //p.addHandCard(objectiveShop.drawFromShopPlayer(numShopCard));
-            System.out.printf(nickname+" drew from the Objective Shop\n");
+            System.out.println(nickname+" drew from the Objective Shop");
             endGameCheckFinishedShop();
         }
 
@@ -252,7 +251,7 @@ public class GameManager extends Observable implements GameController {
     @Override
     public void playerPlayCard(String nickname, int x, int y, Card playedCard) {
         Player p = nickToPlayer(nickname);
-        System.out.println(nickname + " ha piazzato una carta in posizione: ("+x+","+y+")");
+        errorDuringPlayingPhase = false;
 
         try {
             p.placeCard(x, y, playedCard);
@@ -272,18 +271,21 @@ public class GameManager extends Observable implements GameController {
                             nickname, argsGenerator(playedCard), String.valueOf(x), String.valueOf(y)));
             }
 
-            gameState = GameState.DRAW_PHASE;
+            System.out.println("Carta giocata");
 
+            //TODO
             endGameCheckScoreBoard();
         } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
-            throw new RuntimeException(e);
+            errorDuringPlayingPhase = true;
+            e.printStackTrace();
         } catch(PersonalizedException.InvalidPlaceCardRequirementException |
                  PersonalizedException.InvalidPlacementException e) {
+            errorDuringPlayingPhase = true;
             try {
                 notifyObserverSingle(new NetworkMessage(nickname, MessageType.PLACEMENT_CARD_OUTCOME,
                         String.valueOf(false)));
             } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage ex) {
-                throw new RuntimeException(ex);
+                e.printStackTrace();
             }
         }
     }
@@ -312,8 +314,8 @@ public class GameManager extends Observable implements GameController {
     }
 
     private void endGameCheckScoreBoard(){
-        if(playerTurn.getPersonalScore() >= 20)
-            isFinalTurn = true;
+        /*if(playerTurn.getPersonalScore() >= 20)
+            isFinalTurn = true;*/
     }
 
     private void executeSharedMission(){

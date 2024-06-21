@@ -16,8 +16,11 @@ public class PrintHandClass {
             System.out.println("card number: " + i);
             System.out.println("front:");
             PrintCardClass.printCard(card, true);
+
             System.out.println("back:");
             PrintCardClass.printCard(card, false);
+
+            i++;
         }
         if (hand.getCards().isEmpty()) {
             System.out.println("No cards in hand");

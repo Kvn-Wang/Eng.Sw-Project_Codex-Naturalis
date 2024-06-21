@@ -9,6 +9,8 @@ import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
+import java.util.Arrays;
+
 // numero di spazio da spostare formula Ncarte -1 * 23 +15
 public class PrintMapClass {
 
@@ -36,7 +38,6 @@ public class PrintMapClass {
         } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
             throw new RuntimeException(e);
         }
-
         printMap(map.getMapArray());;
     }
 
@@ -46,7 +47,6 @@ public class PrintMapClass {
         int[] lastPrintableCard;
         int counter;
         String space = " ".repeat(8);
-        String[] TUICard = new String[7];
         leftMostPrintableCard= leftMostPrintableCardPos(TUIMap);
         firstPrintableCard= firstPrintableCardPos(TUIMap);
         lastPrintableCard = lastPrintableCardPos(TUIMap);
@@ -57,12 +57,10 @@ public class PrintMapClass {
         int printRow = firstPrintableCard[0];
         int printColumn = firstPrintableCard[1];
         int[] lastCardInLine;
-        while (firstPrintRow != lastRow+1 || frstPrintColumn != lastCol+1){
-            for(int i=0; i<TUICard.length; i++ ){
-                TUICard[i] = "";
-            }
+        while(firstPrintRow != lastRow || frstPrintColumn != lastCol){
+            String[] TUICard = new String[7];
             lastCardInLine = lastCardInLinePos(TUIMap, frstPrintColumn, frstPrintColumn);
-            while (printRow!=lastCardInLine[0]+1 && printColumn!=lastCardInLine[1]+1){
+            while (printRow!=lastCardInLine[0]-1 && printColumn!=lastCardInLine[1]-1){
                 if(TUIMap[printRow][printColumn] == null){
                     for(int i=0; i<TUICard.length; i++ ){
                         TUICard[i] =TUICard[i]+ space.repeat(3);
@@ -76,14 +74,30 @@ public class PrintMapClass {
                 for(int i=0; i<TUICard.length; i++ ){
                     TUICard[i] =TUICard[i]+ space;
                 }
-                printRow++;
-                printColumn++;
+                if(firstPrintRow < frstPrintColumn){
+                    int[] newFirstCard = firstCardInLinePos(TUIMap, frstPrintColumn-1, firstPrintRow);
+                    firstPrintRow =newFirstCard[0];
+                    frstPrintColumn  =newFirstCard[1];
+                }else{
+                    int[] newFirstCard = firstCardInLinePos(TUIMap, frstPrintColumn, firstPrintRow+1);
+                    firstPrintRow =newFirstCard[0];
+                    frstPrintColumn  =newFirstCard[1];
+                }
+                printRow = firstPrintRow;
+                printColumn = frstPrintColumn;
             }
             for(int i=0; i<TUICard.length; i++ ){
                 System.out.println(TUICard[i]);
             }
-            firstPrintRow++;
-            frstPrintColumn++;
+            if(firstPrintRow < frstPrintColumn){
+                int[] newFirstCard = firstCardInLinePos(TUIMap, frstPrintColumn-1, firstPrintRow);
+                firstPrintRow =newFirstCard[0];
+                frstPrintColumn  =newFirstCard[1];
+            }else{
+                int[] newFirstCard = firstCardInLinePos(TUIMap, frstPrintColumn, firstPrintRow+1);
+                firstPrintRow =newFirstCard[0];
+                frstPrintColumn  =newFirstCard[1];
+            }
             printRow = firstPrintRow;
             printColumn = frstPrintColumn;
         }
@@ -214,6 +228,25 @@ public class PrintMapClass {
             col++;
         }
         return result;
+    }
+    public static int[] firstCardInLinePos(Card[][] mapArray, int col, int row) {
+        int temp;
+            if (col > row) {
+                temp = row;
+                row = 0;
+                col = col - temp;
+            } else {
+                temp = col;
+                col = 0;
+                row = row - temp;
+            }
+            while(mapArray[row][col]==null) {
+                if (mapArray[row][col] == null) {
+                    row++;
+                    col++;
+                }
+            }
+        return new int[]{row, col};
     }
 
     public static Card[][] mapRearranger(Card[][] mapArray){

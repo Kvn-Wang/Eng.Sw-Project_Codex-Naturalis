@@ -2,6 +2,7 @@ package it.polimi.codexnaturalis.view.TUI;
 
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.GameState;
+import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.shop.card.Card;
@@ -23,6 +24,8 @@ public class TuiClient implements TypeOfUI {
     protected GameController virtualGame;
     protected ClientContainer clientContainer;
     Scanner scan;
+    public static final String ANSI_RESET = "\033[0m";
+    public static final String ANSI_BLUE = "\033[34m";
 
     public TuiClient() {
         scan = new Scanner(System.in);
@@ -289,8 +292,8 @@ public class TuiClient implements TypeOfUI {
     }
 
     @Override
-    public void notifyIsYourTurn(boolean isYourTurn) {
-        System.out.println("Is my turn: "+ isYourTurn);
+    public void notifyIsYourTurnInitPhase(boolean isYourTurn) {
+        System.out.println(ANSI_BLUE + "Is my turn: "+ isYourTurn + "" + ANSI_RESET);
     }
 
     @Override
@@ -313,8 +316,18 @@ public class TuiClient implements TypeOfUI {
             }else if(command.equals("2")) {
                 PrintMapClass.printMap(clientContainer.getPersonalGameMap());
                 PrintHandClass.printHand(clientContainer.getPersonalHand());
+
                 System.out.println("Give me which num card in hand to play");
                 int numCard = scan.nextInt();
+                Card card = clientContainer.getPersonalHand().getCard(numCard);
+
+                System.out.println("Type 0 if you want to play the card front face, 1 back face");
+                int isReversed = scan.nextInt();
+                if(isReversed == 1) {
+                    card.setIsBack(true);
+                } else {
+                    card.setIsBack(false);
+                }
 
                 System.out.println("Give me x");
                 int x = scan.nextInt();
@@ -328,7 +341,24 @@ public class TuiClient implements TypeOfUI {
                     throw new RuntimeException(e);
                 }
             }else if(command.equals("3")) {
+                ShopType shopType;
+                int numCard;
 
+                do {
+                    System.out.println("Tell me from which shop you want to draw: RESOURCE or OBJECTIVE");
+                    shopType = ShopType.valueOf(scan.nextLine());
+                } while(!(shopType.equals(ShopType.RESOURCE) || shopType.equals(ShopType.OBJECTIVE)));
+
+                do {
+                    System.out.println("Give me which card you want to draw: 0 top deck, 1 first card, 2 second card");
+                    numCard = scan.nextInt();
+                } while(!(numCard == 0 || numCard == 1 || numCard == 2));
+
+                try {
+                    virtualGame.playerDraw(clientContainer.getNickname(), numCard, shopType);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }else if(command.equals("4")) {
                 PrintHandClass.printHand(clientContainer.getPersonalHand());
             }else if(command.equals("5")) {
@@ -349,11 +379,16 @@ public class TuiClient implements TypeOfUI {
 
     @Override
     public void outcomePlayCard(boolean isValidPlacement) {
-
+        System.out.println(ANSI_BLUE + "The played card isValid: "+ isValidPlacement + ""+ ANSI_RESET);
     }
 
     @Override
     public void printErrorCommandSentGameState(GameState currentGameState) {
+        System.err.println("Action not valid, current phase of game: "+currentGameState.name());
+    }
 
+    @Override
+    public void printIsYourTurn() {
+        System.out.println(ANSI_BLUE + "Is your turn now!!!" + ANSI_RESET);
     }
 }

@@ -97,6 +97,7 @@ public class PrintCardClass {
         TUICard[4] = "╠═══════╦═══════╦═══════╣";
         TUICard[5] = sw+"  "+cardColor+"  "+se;
         TUICard[6] = "╚═══════╩═══════╩═══════╝";
+        System.out.println(conditionResource);
         /*System.out.println("╔════╦═════╦════╗");
         if (punti == 0 && conditionResource.equals("")) {
             System.out.println(sw + "     " + nw);

@@ -46,7 +46,8 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
         currentPlayingPlayerIndex = 0;
 
         // initialize the real game controller
-        gameController = new GameManager(players, this, gameState);
+        gameController = new GameManager(players, this);
+        System.out.println("Current game state: " + gameState.toString());
     }
 
     public GameController getGameController() {
@@ -110,6 +111,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     public void playerDraw(String nickname, int numcard, ShopType type) throws RemoteException {
         executorService.submit(() -> {
             try {
+                System.out.println(nickname+ " player has drawn a card: "+numcard+" from: "+type);
                 if (nickname.equals(players.get(currentPlayingPlayerIndex).getNickname())) {
                     if(gameState == GameState.DRAW_PHASE) {
                         gameController.playerDraw(nickname, numcard, type);
@@ -133,19 +135,26 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     public void playerPlayCard(String nickname, int x, int y, Card playedCard) {
         executorService.submit(() -> {
             try {
+                System.out.println("il giocatore: "+nickname+" sta cercando di posizionare una carta in ("+x+","+y+"), durante la fase di gioco: "+gameState);
                 if(nickname.equals(players.get(currentPlayingPlayerIndex).getNickname())) {
                     if(gameState == GameState.PLAY_PHASE) {
                         gameController.playerPlayCard(nickname, x, y, playedCard);
-                        gameState = GameState.DRAW_PHASE;
+                        System.out.println(((GameManager) gameController).errorDuringPlayingPhase);
+                        if(!((GameManager) gameController).errorDuringPlayingPhase == true) {
+                            gameState = GameState.DRAW_PHASE;
+                        }
+
                     } else {
+                        System.out.println("Errore giocata carta");
                         nickToPlayerInfo(nickname).notifyPlayer(new NetworkMessage(MessageType.ERR_GAME_STATE_COMMAND, String.valueOf(gameState)));
                     }
                 }
                 else {
+                    System.out.println("non è il suo turno");
                     nickToPlayerInfo(nickname).notifyPlayer(new NetworkMessage(MessageType.NOT_YOUR_TURN));
                 }
             } catch (RemoteException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
         });
     }
@@ -180,16 +189,9 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
         switch(message.getMessageType()) {
             //messaggi per playerSpecifici con argomenti illimitati
             case COM_ACK_TCP, CORRECT_PLACEMENT, GAME_SETUP_GIVE_STARTER_CARD, GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP,
-                    GAME_SETUP_SEND_PERSONAL_MISSION, GAME_SETUP_NOTIFY_TURN, PLACEMENT_CARD_OUTCOME, UPDATE_OTHER_PLAYER_GAME_MAP:
+                    GAME_SETUP_SEND_PERSONAL_MISSION, GAME_SETUP_NOTIFY_TURN, PLACEMENT_CARD_OUTCOME, UPDATE_OTHER_PLAYER_GAME_MAP,
+                    DRAWN_CARD_DECK:
                 System.out.println("Messaggio per "+message.getNickname()+" di tipo:"+message.getMessageType());
-                try {
-                    nickToPlayerInfo(message.getNickname()).getClientHandler().showMessage(message);
-                } catch (RemoteException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-
-            case DRAWN_CARD_DECK:
                 try {
                     nickToPlayerInfo(message.getNickname()).getClientHandler().showMessage(message);
                 } catch (RemoteException e) {
