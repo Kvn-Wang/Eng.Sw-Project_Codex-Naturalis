@@ -6,6 +6,7 @@ import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
+import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 import java.util.ArrayList;
@@ -164,11 +165,7 @@ public class ClientContainer {
      * pop card
      */
     public void playedCard(Card card) {
-        if(personalHand.popCard(card)) {
-            System.out.println(card + " successfully removed from client hand");
-        } else {
-            System.err.println(card + " not found in hand");
-        }
+        personalHand.popCard(card);
     }
 
     public void playedStarterCard(Card starterCard) {
@@ -191,5 +188,13 @@ public class ClientContainer {
         }
 
         return -1;
+    }
+
+    public void addCardToHand(Card card) {
+        try {
+            personalHand.addCard(card);
+        } catch(PersonalizedException.InvalidAddCardException e) {
+            e.printStackTrace();
+        }
     }
 }

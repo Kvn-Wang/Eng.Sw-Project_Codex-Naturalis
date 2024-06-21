@@ -29,7 +29,7 @@ public interface TypeOfUI {
     void giveStarterCard(StarterCard starterCard);
     void giveCommonMission(Mission mission1, Mission mission2);
     void givePersonalMission(Mission choice1, Mission choice2);
-    void notifyIsYourTurn(boolean isYourTurn);
+    void notifyIsYourTurnInitPhase(boolean isYourTurn);
 
     /*---- PLAY ----*/
     void startGamePhase();
@@ -41,4 +41,6 @@ public interface TypeOfUI {
      * @param gameState
      */
     void printErrorCommandSentGameState(GameState currentGameState);
+
+    void printIsYourTurn();
 }

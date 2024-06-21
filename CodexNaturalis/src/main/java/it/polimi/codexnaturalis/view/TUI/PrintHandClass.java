@@ -20,6 +20,7 @@ public class PrintHandClass {
             System.out.println("back:");
             PrintCardClass.printCard(card, false);
 
+            i++;
         }
         if (hand.getCards().isEmpty()) {
             System.out.println("No cards in hand");

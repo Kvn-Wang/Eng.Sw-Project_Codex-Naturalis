@@ -97,7 +97,7 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
-    public void notifyIsYourTurn(boolean isYourTurn) {
+    public void notifyIsYourTurnInitPhase(boolean isYourTurn) {
         GuiGame.turnNotify();
     }
 
@@ -113,6 +113,11 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printErrorCommandSentGameState(GameState currentGameState) {
+
+    }
+
+    @Override
+    public void printIsYourTurn() {
 
     }
 

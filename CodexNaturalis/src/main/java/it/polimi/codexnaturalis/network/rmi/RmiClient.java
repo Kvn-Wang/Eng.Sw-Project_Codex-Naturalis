@@ -19,7 +19,6 @@ import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
-import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.view.GenericClient;
 import it.polimi.codexnaturalis.view.TypeOfUI;
@@ -151,7 +150,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
             case GAME_SETUP_NOTIFY_TURN:
                 //il thread sostituisce "ufficialmente" il thread main e sarà lui a portare avanti il gioco
                 executorServiceMainThread.submit(() -> {
-                    typeOfUI.notifyIsYourTurn(Boolean.parseBoolean(message.getArgs().get(0)));
+                    typeOfUI.notifyIsYourTurnInitPhase(Boolean.parseBoolean(message.getArgs().get(0)));
                     typeOfUI.startGamePhase();
                 });
                 break;
@@ -165,6 +164,12 @@ public class RmiClient extends GenericClient implements VirtualServer {
 
                     clientContainer.updateShopCard(cardShop, shopType, numShopCardToBeUpdated);
                 });
+                break;
+
+            case DRAWN_CARD_DECK:
+                Card cardDrawn = gsonTranslator.fromJson(message.getArgs().get(0), Card.class);
+
+                clientContainer.addCardToHand(cardDrawn);
                 break;
 
             case PLACEMENT_CARD_OUTCOME:
@@ -190,6 +195,8 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 int x_pos = Integer.parseInt(message.getArgs().get(2));
                 int y_pos = Integer.parseInt(message.getArgs().get(3));
 
+                System.out.println("the player: "+nickName+" has played a card in ("+x_pos+","+y_pos+")");
+
                 clientContainer.updateOtherPlayerMap(nickName, x_pos, y_pos, playedCard);
                 break;
 
@@ -198,6 +205,9 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 typeOfUI.printErrorCommandSentGameState(currGameState);
                 break;
 
+            case YOUR_TURN:
+                typeOfUI.printIsYourTurn();
+                break;
 
             default:
                 //se non è nessuno dei messaggi precedenti, vuol dire che devo mostrare il messaggio

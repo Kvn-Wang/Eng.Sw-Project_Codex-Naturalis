@@ -8,6 +8,7 @@ import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public abstract class Card implements Serializable {
     protected int png;
@@ -106,5 +107,32 @@ public abstract class Card implements Serializable {
         } else {
             return false;
         }
+    }
+
+    /**
+     * method that specifies that when an object has equal value then it's an equal object
+     * @param o
+     * @return
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Card card = (Card) o;
+        return png == card.png &&
+                isBack == card.isBack &&
+                Objects.equals(frontNorthResource, card.frontNorthResource) &&
+                Objects.equals(frontSouthResource, card.frontSouthResource) &&
+                Objects.equals(frontEastResource, card.frontEastResource) &&
+                Objects.equals(frontWestResource, card.frontWestResource);
+    }
+
+    /**
+     * method that specifies that when an object has equal value then it's an equal object
+     * @return
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(png, frontNorthResource, frontSouthResource, frontEastResource, frontWestResource, isBack);
     }
 }
