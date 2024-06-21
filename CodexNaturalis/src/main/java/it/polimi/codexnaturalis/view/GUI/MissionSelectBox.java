@@ -18,9 +18,8 @@ public class MissionSelectBox extends AlertBox {
         Label request = new Label("seleziona la missione");
         String mission1Path = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+mission1.getPngNumber()+".png";
         String mission2Path = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+mission2.getPngNumber()+".png";
-        Rectangle missionRect1= new Rectangle(170, 100);
+        Rectangle missionRect1= new Rectangle(170, 100, new ImagePattern(new Image(getClass().getResourceAsStream(mission1Path))));
         missionRect1.setStroke(null);
-        missionRect1.setFill(new ImagePattern(new Image(getClass().getResourceAsStream(mission1Path))));
         Rectangle missionRect2= new Rectangle(170, 100, new ImagePattern(new Image(getClass().getResourceAsStream(mission2Path))));
         missionRect2.setStroke(null);
 

@@ -47,6 +47,12 @@ public class GuiGame extends Application {
     private static ArrayList<GuiCard> handCards;
     private static Pane vHand;
     private static Pane map;
+    private static double cameraX=500;
+    private static double cameraY=300;
+    private static double maxPlusX=1;
+    private static double maxPlusY=1;
+    private static double maxMinusX=-1;
+    private static double maxMinusY=-1;
     private static String playerNickname;
     private static boolean starterBeingPlaced = false;
 
@@ -192,7 +198,7 @@ public class GuiGame extends Application {
         Platform.runLater(() -> {
             CommonMissionBox missionAlert = new CommonMissionBox();
             missionAlert.setMission(mission1, mission2);
-            missionAlert.display("Shared Missions", 800, 700);
+            missionAlert.display("Shared Missions", 700, 300);
         });
     }
     public static void missionSelection(Mission mission1, Mission mission2){
@@ -412,12 +418,13 @@ public class GuiGame extends Application {
     }
 
     public Scene gameScene() {
-
         Pane game = new StackPane();
         map = new Pane();
         anchorPointsMatrix = getAnchorPoints(game);
         vHand = handLayer();
         vHand.setTranslateX(200);
+
+//        map.setMinSize(4000, 4000);
 
         map.setOnDragOver(e -> {
             if (e.getGestureSource() != map && e.getDragboard().hasString()) {
@@ -455,6 +462,7 @@ public class GuiGame extends Application {
                     starterBeingPlaced=false;
                     newRect.setX(-newRect.getBoundsInLocal().getCenterX());
                     newRect.setY(-newRect.getBoundsInLocal().getCenterY());
+                    moveCamera(-newRect.getBoundsInLocal().getCenterX(), -newRect.getBoundsInLocal().getCenterY());
                     try {
                         vgc.playStarterCard(playerNickname, gsonTranslator.fromJson(cardString, StarterCard.class));
                     } catch (RemoteException ex) {
@@ -508,6 +516,18 @@ public class GuiGame extends Application {
             e.consume();
         });
 
+//        ScrollPane scrollPane = new ScrollPane(map);
+//        scrollPane.setPannable(true); // Allows panning with mouse dragging
+//        scrollPane.setFitToWidth(true); // Ensures the map fits within the width of the ScrollPane
+//        scrollPane.setFitToHeight(true); // Ensures the map fits within the height of the ScrollPane
+
+        map.setOnScroll(event -> {
+            double deltaY = event.getDeltaY();
+            double scaleFactor = (deltaY > 0) ? 1.1 : 0.9;
+            map.setScaleX(map.getScaleX() * scaleFactor);
+            map.setScaleY(map.getScaleY() * scaleFactor);
+        });
+
         game.getChildren().add(map);
         game.getChildren().add(vHand);
         vHand.setTranslateY(500);
@@ -524,13 +544,6 @@ public class GuiGame extends Application {
 //        map.getChildren().add(draggableCard1);
 //        map.getChildren().add(draggableCard2);
 
-
-        map.setOnScroll(event -> {
-            double deltaY = event.getDeltaY();
-            double scaleFactor = (deltaY > 0) ? 1.1 : 0.9;
-            map.setScaleX(map.getScaleX() * scaleFactor);
-            map.setScaleY(map.getScaleY() * scaleFactor);
-        });
 
         return new Scene(game, 1000, 600);
     }
@@ -582,7 +595,7 @@ public class GuiGame extends Application {
 //    }
 
     private Circle createAnchorPoint(double x, double y) {
-        Circle anchor = new Circle(x, y, 10, Color.RED);
+        Circle anchor = new Circle(x, y, 10, Color.BROWN);
         anchor.setOpacity(0.5);  // Make it semi-transparent
         return anchor;
     }
@@ -595,6 +608,19 @@ public class GuiGame extends Application {
             }
         }
         return anchorMap;
+    }
+
+    private void moveCamera(double x, double y){
+        maxPlusX = Math.max(x, maxPlusX);
+        maxMinusX = Math.min(x, maxMinusX);
+        maxPlusY = Math.max(y, maxPlusY);
+        maxMinusY = Math.min(y, maxMinusY);
+        cameraX = (maxPlusX - maxMinusX)/2-cameraX;
+        cameraY = (maxPlusY - maxMinusY)/2-cameraY;
+        map.setTranslateX(-cameraX);
+        map.setTranslateY(-cameraY);
+        map.setScaleX(map.getScaleX());
+        map.setScaleY(map.getScaleY());
     }
 
     private Pane handLayer(){
