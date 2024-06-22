@@ -7,6 +7,7 @@ import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
+import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.view.TypeOfUI;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
@@ -27,6 +28,11 @@ public class GuiClient implements TypeOfUI {
     @Override
     public void printSelectionNicknameRequestOutcome(boolean positiveOutcome, String nickname) {
             GuiGame.setNickname(positiveOutcome,nickname);
+    }
+
+    @Override
+    public void giveLobbies(ArrayList<LobbyInfo> lobbies) {
+
     }
 
     @Override

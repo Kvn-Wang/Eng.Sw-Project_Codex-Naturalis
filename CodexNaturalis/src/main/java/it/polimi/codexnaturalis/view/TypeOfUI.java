@@ -6,6 +6,7 @@ import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
+import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
 
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 public interface TypeOfUI {
     void connectGameController(GameController virtualGame);
     void printSelectionNicknameRequestOutcome(boolean positiveOutcome, String nickname);
+    void giveLobbies(ArrayList<LobbyInfo> lobbies);
     void printJoinLobbyOutcome(boolean positiveOutcome, String lobbyName) throws RemoteException;
     void printLobbyStatus(ArrayList<PlayerInfo> lobbyPlayers) throws RemoteException;
     void printCreationLobbyRequestOutcome(boolean outcomePositive, String lobbyName);

@@ -5,16 +5,19 @@ public enum MessageType {
     /* ---ENUMS FOR THE COMMUNICATION PHASE--- */
     // args(0) = nickname
     COM_SET_NICKNAME_TCP,
-
-    // args(0) = outcome (boolean); useful to communicate the outcome after receiving an order that can fail (like setNickname or joiningLobby)
-    COM_ACK_TCP,
+    // args(0) = outcome (boolean)
+    COM_SET_NICKNAME_RESPONSE_TCP,
 
     //args(0) = lobbies in json (when receiving from the server)
     COM_GET_LOBBIES_TCP,
+    // args(0) = outcome (boolean)
+    COM_GET_LOBBIES_RESPONSE_TCP,
 
     //args(0) = playerName
     //args(1) = lobbyName
     COM_JOIN_LOBBY_TCP,
+    // args(0) = outcome (boolean)
+    COM_JOIN_LOBBY_TCP_OUTCOME,
 
     // args(0) = list<PlayerInfo>  (aggiornamento appena un player entra in lobby)
     COM_JOIN_LOBBY_OTHER_PLAYER_INFO_TCP,
@@ -41,6 +44,8 @@ public enum MessageType {
     //args(0) = playerNickname
     //args(1) = lobbyName
     COM_CREATE_LOBBY_TCP,
+    // args(0) = outcome (boolean)
+    COM_CREATE_LOBBY_OUTCOME_TCP,
 
     //args(0) = ArrayList<PlayerInfo> otherPlayers
     COM_CONNECT_GAME_TCP,

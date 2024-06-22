@@ -42,7 +42,7 @@ public class ClientHandler implements VirtualView, VirtualServer {
         String jsonRX;
         String argsRX0, argsRX1;
         NetworkMessage messageRX;
-        NetworkMessage messageTX;
+        NetworkMessage messageTX = null;
         Gson gson = new Gson();
 
         while ((jsonRX = input.readLine()) != null) {
@@ -54,9 +54,9 @@ public class ClientHandler implements VirtualView, VirtualServer {
                     argsRX0 = messageRX.getArgs().get(0);
 
                     if(setNickname(null, argsRX0)) {
-                        messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(true));
+                        messageTX = new NetworkMessage(MessageType.COM_SET_NICKNAME_RESPONSE_TCP, String.valueOf(true));
                     } else {
-                        messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(false));
+                        messageTX = new NetworkMessage(MessageType.COM_SET_NICKNAME_RESPONSE_TCP, String.valueOf(false));
                     }
                     break;
 
@@ -74,9 +74,9 @@ public class ClientHandler implements VirtualView, VirtualServer {
                     argsRX1 = messageRX.getArgs().get(1);
 
                     if(createLobby(argsRX0, argsRX1)) {
-                        messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(true));
+                        messageTX = new NetworkMessage(MessageType.COM_CREATE_LOBBY_OUTCOME_TCP, String.valueOf(true));
                     } else {
-                        messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(false));
+                        messageTX = new NetworkMessage(MessageType.COM_CREATE_LOBBY_OUTCOME_TCP, String.valueOf(false));
                     }
 
                     break;
@@ -87,24 +87,20 @@ public class ClientHandler implements VirtualView, VirtualServer {
                     argsRX1 = messageRX.getArgs().get(1);
 
                     if(joinLobby(argsRX0, argsRX1) != null) {
-                        messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(true));
+                        messageTX = new NetworkMessage(MessageType.COM_JOIN_LOBBY_TCP_OUTCOME, String.valueOf(true));
                     } else {
-                        messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(false));
+                        messageTX = new NetworkMessage(MessageType.COM_JOIN_LOBBY_TCP_OUTCOME, String.valueOf(false));
                     }
                     break;
 
                 case COM_SET_READY_LOBBY_TCP:
                     argsRX0 = messageRX.getArgs().get(0);
                     setPlayerReady(argsRX0);
-
-                    messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(true));
                     break;
 
                 case COM_LEAVE_LOBBY_TCP:
                     argsRX0 = messageRX.getArgs().get(0);
                     leaveLobby(argsRX0);
-
-                    messageTX = new NetworkMessage(MessageType.COM_ACK_TCP, String.valueOf(true));
                     break;
 
                 default:

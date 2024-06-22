@@ -29,15 +29,13 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class SocketClient extends GenericClient implements VirtualServer {
-    Socket serverSocket;
-    BufferedReader socketRx;
-    PrintWriter socketTx;
-    // variabili usata per la logica di invio e aspetta la risposta
-    boolean ackArrived;
-    private final Object lock = new Object();
-    boolean outcomeReceived;
-    ArrayList<String> argsRX; // TODO data Race
-    Gson gson;
+    private Socket serverSocket;
+    private BufferedReader socketRx;
+    private PrintWriter socketTx;
+    private String setupNickname;
+    private String setupLobbyName;
+    private boolean outcomeReceived;
+    private Gson gson;
 
     public SocketClient(TypeOfUI typeOfUI) throws IOException {
         super(typeOfUI);
@@ -50,10 +48,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
         serverSocket = new Socket(host, port);
 
         socketRx = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
-        //socketTx = new ServerProxySocket(new PrintWriter(serverSocket.getOutputStream(), true));
         socketTx = new PrintWriter(new OutputStreamWriter(serverSocket.getOutputStream()), true);
-
-        ackArrived = false;
 
         new Thread(() -> {
             try {
@@ -62,35 +57,71 @@ public class SocketClient extends GenericClient implements VirtualServer {
                 throw new RuntimeException(e);
             }
         }).start();
-
-        //initializeClient(this);
     }
 
     private void runRxClient() throws IOException {
         NetworkMessage message;
         String jsonRX;
+        ArrayList<String> argsRX;
 
         // Read message type
         while ((jsonRX = socketRx.readLine()) != null) {
             message = deSerializeMesssage(jsonRX);
 
             argsRX = message.getArgs();
-            //risveglia il thread in wait per la risposta del server
-            doNotify();
 
             // Read message and perform action
             switch (message.getMessageType()) {
-                case COM_ACK_TCP:
-                    ackArrived = true;
+                case COM_SET_NICKNAME_RESPONSE_TCP:
+                    //getArgs = (String) boolean
+                    outcomeReceived = Boolean.parseBoolean(argsRX.get(0));
+
+                    // fa partire una specie di ricorsione finchè il nick non è valido
+                    if(outcomeReceived == false) {
+                        typeOfUI.printSelectionNicknameRequestOutcome(false, setupNickname);
+                    } else {
+                        clientContainer.setNickname(setupNickname);
+                        typeOfUI.printSelectionNicknameRequestOutcome(true, setupNickname);
+                    }
                     break;
 
-                case COM_GET_LOBBIES_TCP:
+                case COM_GET_LOBBIES_RESPONSE_TCP:
+                    // getArgs = json of lobbiesInfo
+                    ArrayList<LobbyInfo> lobbies = gson.fromJson(argsRX.get(0), new TypeToken<ArrayList<LobbyInfo>>() {}.getType());
+
+                    typeOfUI.giveLobbies(lobbies);
                     break;
 
                 case COM_CONNECT_GAME_TCP:
                     ArrayList<PlayerInfo> arg0 = gson.fromJson(argsRX.get(0), new TypeToken<ArrayList<PlayerInfo>>() {}.getType());
 
                     connectToGame(this, arg0);
+                    break;
+
+                case COM_JOIN_LOBBY_TCP_OUTCOME:
+                    //getArgs = (String) boolean
+                    outcomeReceived = Boolean.parseBoolean(argsRX.get(0));
+
+                    // fa partire una specie di ricorsione finchè il nick non è valido
+                    if(outcomeReceived == false) {
+                        typeOfUI.printJoinLobbyOutcome(false, setupLobbyName);
+                    } else {
+                        clientContainer.setLobbyNickname(setupLobbyName);
+                        typeOfUI.printJoinLobbyOutcome(true, setupLobbyName);
+                    }
+                    break;
+
+                case COM_CREATE_LOBBY_OUTCOME_TCP:
+                    //getArgs = (String) boolean
+                    outcomeReceived = Boolean.parseBoolean(argsRX.get(0));
+
+                    // fa partire una specie di ricorsione finchè il nick non è valido
+                    if(outcomeReceived == false) {
+                        typeOfUI.printCreationLobbyRequestOutcome(false, setupLobbyName);
+                    } else {
+                        clientContainer.setLobbyNickname(setupLobbyName);
+                        typeOfUI.printCreationLobbyRequestOutcome(true, setupLobbyName);
+                    }
                     break;
 
                 case COM_LOBBY_STATUS_NOTIFY:
@@ -178,40 +209,10 @@ public class SocketClient extends GenericClient implements VirtualServer {
         return networkMessage;
     }
 
-    private void doWait() {
-        synchronized (lock) {
-            try {
-                lock.wait();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt(); // ripristina lo stato di interruzione
-            }
-        }
-    }
-
-    private void doNotify() {
-        synchronized (lock) {
-            lock.notify();
-        }
-    }
-
     @Override
     public boolean setNickname(String UUID, String nickname) throws RemoteException {
+        setupNickname = nickname;
         socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_SET_NICKNAME_TCP, nickname)));
-        doWait();
-
-        //getArgs = (String) boolean
-        outcomeReceived = Boolean.parseBoolean(argsRX.get(0));
-
-        // fa partire una specie di ricorsione finchè il nick non è valido
-        if(outcomeReceived == false) {
-            typeOfUI.printSelectionNicknameRequestOutcome(false, nickname);
-        } else {
-            clientContainer.setNickname(nickname);
-            typeOfUI.printSelectionNicknameRequestOutcome(true, nickname);
-        }
-
-        //reset della variabile in attesa di altri ACK
-        outcomeReceived = false;
 
         //return inutile
         return false;
@@ -223,32 +224,14 @@ public class SocketClient extends GenericClient implements VirtualServer {
     @Override
     public ArrayList<LobbyInfo> getAvailableLobby() throws RemoteException {
         socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_GET_LOBBIES_TCP)));
-        doWait();
 
-        // getArgs = json of lobbiesInfo
-        ArrayList<LobbyInfo> lobbies = gson.fromJson(argsRX.get(0), new TypeToken<ArrayList<LobbyInfo>>() {}.getType());
-
-        return lobbies;
+        return null;
     }
 
     @Override
     public ArrayList<PlayerInfo> joinLobby(String playerNickname, String lobbyName) throws RemoteException {
+        setupLobbyName = lobbyName;
         socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_JOIN_LOBBY_TCP, playerNickname, lobbyName)));
-        doWait();
-
-        //getArgs = (String) boolean
-        outcomeReceived = Boolean.parseBoolean(argsRX.get(0));
-
-        // fa partire una specie di ricorsione finchè il nick non è valido
-        if(outcomeReceived == false) {
-            typeOfUI.printJoinLobbyOutcome(false, lobbyName);
-        } else {
-            clientContainer.setLobbyNickname(lobbyName);
-            typeOfUI.printJoinLobbyOutcome(true, lobbyName);
-        }
-
-        //reset della variabile in attesa di altri ACK
-        outcomeReceived = false;
 
         //return inutile
         return null;
@@ -257,7 +240,6 @@ public class SocketClient extends GenericClient implements VirtualServer {
     @Override
     public void leaveLobby(String playerNickname) throws RemoteException {
         socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_LEAVE_LOBBY_TCP, playerNickname)));
-        doWait();
 
         typeOfUI.lobbyActionOutcome(false);
 
@@ -267,22 +249,8 @@ public class SocketClient extends GenericClient implements VirtualServer {
 
     @Override
     public boolean createLobby(String playerNickname, String lobbyName) throws RemoteException {
+        setupLobbyName = lobbyName;
         socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_CREATE_LOBBY_TCP, playerNickname, lobbyName)));
-        doWait();
-
-        //getArgs = (String) boolean
-        outcomeReceived = Boolean.parseBoolean(argsRX.get(0));
-
-        // fa partire una specie di ricorsione finchè il nick non è valido
-        if(outcomeReceived == false) {
-            typeOfUI.printCreationLobbyRequestOutcome(false, lobbyName);
-        } else {
-            clientContainer.setLobbyNickname(lobbyName);
-            typeOfUI.printCreationLobbyRequestOutcome(true, lobbyName);
-        }
-
-        //reset della variabile in attesa di altri ACK
-        outcomeReceived = false;
 
         //return inutile
         return false;
@@ -296,12 +264,8 @@ public class SocketClient extends GenericClient implements VirtualServer {
     @Override
     public void setPlayerReady(String playerNickname) throws RemoteException {
         socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_SET_READY_LOBBY_TCP, playerNickname)));
-        doWait();
 
         typeOfUI.lobbyActionOutcome(true);
-
-        //reset della variabile in attesa di altri ACK
-        outcomeReceived = false;
     }
 
     @Override

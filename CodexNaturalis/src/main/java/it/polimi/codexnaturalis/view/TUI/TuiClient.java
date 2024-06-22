@@ -15,13 +15,15 @@ import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class TuiClient implements TypeOfUI {
     protected VirtualServer networkCommand;
     protected GameController virtualGame;
     protected ClientContainer clientContainer;
-    Scanner scan;
+    private Scanner scan;
+    private final Object lock = new Object();
     private static final String ANSI_RESET = "\033[0m";
     private static final String ANSI_BLUE = "\033[34m";
     private static final String ANSI_RED = "\u001B[31m";
@@ -69,10 +71,8 @@ public class TuiClient implements TypeOfUI {
         }
     }
 
-    private void printLobby() throws RemoteException {
-        ArrayList<LobbyInfo> lobbies;
-
-        lobbies = networkCommand.getAvailableLobby();
+    @Override
+    public void giveLobbies(ArrayList<LobbyInfo> lobbies) {
         System.out.println("Lobby list:");
         if(lobbies != null) {
             for (LobbyInfo elem : lobbies) {
@@ -81,13 +81,16 @@ public class TuiClient implements TypeOfUI {
         } else {
             System.out.println("  - No lobby Available");
         }
+
+        doNotify();
     }
 
     public void printSelectionCreateOrJoinLobbyRequest() throws RemoteException {
+        networkCommand.getAvailableLobby();
+        //aspetta che gli arrivino le lobby dal server e che li stampi
+        doWait();
+
         String command;
-
-        printLobby();
-
         System.out.println("Write the name of an existing lobby to join it or write 'CREATE' to create a new lobby");
         command = scan.nextLine();
 
@@ -386,6 +389,22 @@ public class TuiClient implements TypeOfUI {
 
         for(String winner : winnersNickname) {
             System.out.println(ANSI_BLUE + "  -  " + winner + "" + ANSI_RESET);
+        }
+    }
+
+    private void doWait() {
+        synchronized (lock) {
+            try {
+                lock.wait(); // Puts the current thread in wait state
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void doNotify() {
+        synchronized (lock) {
+            lock.notify(); // Wakes up one waiting thread
         }
     }
 }
