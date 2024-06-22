@@ -40,6 +40,7 @@ public class GamePlayerMap {
         int neightbouringCard;
         ArrayList<ResourceType> tempListOfResources;
         int pointToAdd;
+
         if(checkValidityXY(x, y)) {
             //controlla le carte adiacenti per eventuali impossibilità per piazzare la carta
             neightbouringCard = checkValidPosition(x, y);
@@ -58,7 +59,7 @@ public class GamePlayerMap {
 
                     //controllo di quali risorse vengono coperte dopo aver piazzato la carta
                     tempListOfResources = checkResourceCovered(x, y);
-                    if(tempListOfResources!=null) {
+                    if(tempListOfResources != null) {
                         for (ResourceType element : tempListOfResources) {
                             playerScoreCard.substractScore(element);
                         }

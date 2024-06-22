@@ -15,9 +15,7 @@ public class Player extends Observable implements PlayerInterface {
     private int personalScoreBoardScore;
     private int personalMissionTotalScore;
     private ColorType pawnColor;
-    private boolean alive;
     private Mission selectedPersonalMission;
-    private Player playerView;
     private PlayerScoreResource scoreResource;
     private GamePlayerMap gameMap;
     private Hand hand;
@@ -29,12 +27,23 @@ public class Player extends Observable implements PlayerInterface {
         personalScoreBoardScore = 0;
         personalMissionTotalScore = 0;
         selectedPersonalMission = null;
-        playerView = this;
         scoreResource = new PlayerScoreResource();
         gameMap = new GamePlayerMap(scoreResource);
         hand = new Hand();
         pawnImg = null;//TODO:mettere case con inserimento immagine
-        alive = true;
+    }
+
+    public Player(String nick, ColorType color, Observer observer){
+        nickname = nick;
+        pawnColor = color;
+        personalScoreBoardScore = 0;
+        personalMissionTotalScore = 0;
+        selectedPersonalMission = null;
+        scoreResource = new PlayerScoreResource();
+        gameMap = new GamePlayerMap(scoreResource);
+        hand = new Hand();
+        pawnImg = null;//TODO:mettere case con inserimento immagine
+        addObserver(observer);
     }
 
     public void addHandCard(Card drawnCard) {
@@ -61,28 +70,13 @@ public class Player extends Observable implements PlayerInterface {
 
     @Override
     public void placeCard(int x, int y, Card playedCard) throws PersonalizedException.InvalidPlaceCardRequirementException, PersonalizedException.InvalidPlacementException {
-        //Card playedCard;
         int placeResult;
-
-        /*try {
-            playedCard = hand.popCard(numCard);
-        } catch (PersonalizedException.InvalidNumPopCardException e) {
-            throw new RuntimeException(e);
-        } catch (PersonalizedException.InvalidPopCardException e) {
-            throw new RuntimeException(e);
-        }*/
 
         try {
             placeResult = gameMap.placeCard(x, y, playedCard);
             personalScoreBoardScore+=placeResult;
         } catch (PersonalizedException.InvalidPlacementException |
                  PersonalizedException.InvalidPlaceCardRequirementException e) {
-            //ripiazza la carta nella mano
-            /*try {
-                hand.addCard(playedCard);
-            } catch (PersonalizedException.InvalidAddCardException ex) {
-                throw new RuntimeException(ex);
-            }*/
             throw e;
         }
     }
@@ -117,16 +111,6 @@ public class Player extends Observable implements PlayerInterface {
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
-    @Override
-    public void setStatus(boolean status){
-        alive = status;
-
-        notifyObserverSingle(new NetworkMessage(nickname, MessageType.STATUS_PLAYER_CHANGE, Boolean.toString(status)));
-    }
-
-    public boolean getStatus() {
-        return alive;
-    }
 
     public PlayerScoreResource getScoreResource() {
         return scoreResource;
@@ -136,43 +120,8 @@ public class Player extends Observable implements PlayerInterface {
         return gameMap;
     }
 
-    public void setGameMap(GamePlayerMap gameMap) {
-        this.gameMap = gameMap;
-    }
-
-    public Player(String nick, ColorType color, Observer observer){
-        nickname = nick;
-        pawnColor = color;
-        personalScoreBoardScore = 0;
-        personalMissionTotalScore = 0;
-        selectedPersonalMission = null;
-        playerView = this;
-        scoreResource = new PlayerScoreResource();
-        gameMap = new GamePlayerMap(scoreResource);
-        hand = new Hand();
-        pawnImg = null;//TODO:mettere case con inserimento immagine
-        alive = true;
-        addObserver(observer);
-    }
-
     public int getPersonalScoreBoardScore() {
         return personalScoreBoardScore;
-    }
-
-    public String getPawnImg() {
-        return pawnImg;
-    }
-
-    public void setPawnImg(String pawnImg) {
-        this.pawnImg = pawnImg;
-    }
-
-    protected void updateReducedPlayerScore(ResourceType type){
-        scoreResource.substractScore(type);
-    }
-
-    protected void updateAddPlayerScore(ResourceType type){
-        scoreResource.addScore(type);
     }
 
     public void addScore(int value){

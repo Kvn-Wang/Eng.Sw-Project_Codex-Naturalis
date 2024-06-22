@@ -113,16 +113,6 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     }
 
     @Override
-    public void disconnectPlayer(String nickname) throws RemoteException {
-        gameController.disconnectPlayer(nickname);
-    }
-
-    @Override
-    public void reconnectPlayer(String nickname) throws RemoteException {
-        gameController.reconnectPlayer(nickname);
-    }
-
-    @Override
     public void playerDraw(String nickname, int numcard, ShopType type) throws RemoteException {
         executorService.submit(() -> {
             try {

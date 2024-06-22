@@ -26,7 +26,6 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameManagerTest {
-
     private GameManager gameManager;
     @BeforeEach
     public void Setup(){
@@ -56,24 +55,32 @@ class GameManagerTest {
     }
 
     @Test
-    void disconnectPlayer() {
-        gameManager.disconnectPlayer("player1");
-        Player player = gameManager.nickToPlayer("player1");
-
-        assertFalse(player.getStatus(), "Player should be marked as disconnected.");
-    }
-
-    @Test
-    void reconnectPlayer() {
-        gameManager.disconnectPlayer("player1");
-        gameManager.reconnectPlayer("player1");
-        Player player = gameManager.nickToPlayer("player1");
-
-        assertTrue(player.getStatus(), "Player should be marked as reconnected.");
-    }
-
-    @Test
     void typeMessage() {
         gameManager.typeMessage("everyone", "player1", "Hello World");
+    }
+
+    @Test
+    void playStarterCard() {
+    }
+
+    @Test
+    void playerDraw() {
+    }
+
+    @Test
+    void playerPersonalMissionSelect() {
+    }
+
+    @Test
+    void playerPlayCard() {
+    }
+
+    @Test
+    void testTypeMessage() {
+    }
+
+    @Test
+    void gameEnd() {
+
     }
 }

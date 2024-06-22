@@ -10,7 +10,6 @@ public interface PlayerInterface {
     void addHandCard(Card drawnCard);
     void placeCard(int x, int y, Card playedCard) throws PersonalizedException.InvalidPlaceCardRequirementException, PersonalizedException.InvalidPlacementException;
     void addMissionScore(int Value);
-    void setStatus(boolean status);//setta il player alive o dead
     void setPersonalMissionFinal(Mission personalMission);
     int getPersonalScore();
     int getPersonalMissionTotalScore();

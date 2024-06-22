@@ -279,16 +279,6 @@ public class SocketClient extends GenericClient implements VirtualServer {
     }
 
     @Override
-    public void disconnectPlayer(String nickname) throws RemoteException {
-
-    }
-
-    @Override
-    public void reconnectPlayer(String nickname) throws RemoteException {
-
-    }
-
-    @Override
     public void playerDraw(String nickname, int numcard, ShopType type) throws RemoteException {
 
     }

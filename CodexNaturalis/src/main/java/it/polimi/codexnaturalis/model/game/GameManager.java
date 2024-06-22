@@ -86,7 +86,6 @@ public class GameManager extends Observable implements GameController {
         resourceShop = initializeShop(ShopType.RESOURCE);
         objectiveShop = initializeShop(ShopType.OBJECTIVE);
 
-        //initializePlayerHand();
         initializeCommonMission();
         setupPlayerContents();
 
@@ -122,14 +121,6 @@ public class GameManager extends Observable implements GameController {
                     argsGenerator(starterShop.drawTopDeckCard())));
         }
     }
-
-    /*private void initializePlayerHand(){
-        for(Player p: players){
-            p.addHandCard(resourceShop.drawTopDeckCard());
-            p.addHandCard(resourceShop.drawTopDeckCard());
-            p.addHandCard(objectiveShop.drawTopDeckCard());
-        }
-    }*/
 
     private void initializeCommonMission() {
         sharedMission1 = missionSelector.drawFromFile();
@@ -168,26 +159,13 @@ public class GameManager extends Observable implements GameController {
         System.out.print("\nMissions being selected\n");
     }
 
-    protected Player nickToPlayer(String nickname)/* throws PersonalizedException.InvalidNickname*/ {//TODO:throw exception da aggiungere
-            for (Player p : players) {
-                if (p.getNickname().equals(nickname))
-                    return p;
-            }
-        //throw new PersonalizedException.InvalidNickname;
+    private Player nickToPlayer(String nickname) {
+        for (Player p : players) {
+            if (p.getNickname().equals(nickname))
+                return p;
+        }
+
         return null;
-    }
-
-    @Override
-    public void disconnectPlayer(String nickname) {
-        /*Player dcPlayer=nickToPlayer(nickname);
-        dcPlayer.setStatus(false);
-        if (dcPlayer.equals(playerTurn))
-            nextTurn();*/
-    }
-
-    @Override
-    public void reconnectPlayer(String nickname) {
-        nickToPlayer(nickname).setStatus(true);
     }
 
     @Override

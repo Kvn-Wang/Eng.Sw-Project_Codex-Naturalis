@@ -310,16 +310,6 @@ public class RmiClient extends GenericClient implements VirtualServer {
     }
 
     @Override
-    public void disconnectPlayer(String nickname) throws RemoteException {
-        personalGameController.disconnectPlayer(nickname);
-    }
-
-    @Override
-    public void reconnectPlayer(String nickname) throws RemoteException {
-        personalGameController.reconnectPlayer(nickname);
-    }
-
-    @Override
     public void playerDraw(String nickname, int numcard, ShopType type) throws RemoteException {
         serviceThread.submit(() -> {
             try {
