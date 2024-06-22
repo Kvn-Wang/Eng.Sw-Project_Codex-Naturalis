@@ -209,6 +209,12 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 typeOfUI.printIsYourTurn();
                 break;
 
+            case NOTIFY_FINAL_TURN:
+                break;
+
+            case GAME_ENDED:
+                break;
+
             default:
                 //se non è nessuno dei messaggi precedenti, vuol dire che devo mostrare il messaggio
                 System.out.println(message.getArgs().get(0));
@@ -336,11 +342,6 @@ public class RmiClient extends GenericClient implements VirtualServer {
     @Override
     public void switchPlayer(String reqPlayer, String target) throws RemoteException {
         personalGameController.switchPlayer(reqPlayer, target);
-    }
-
-    @Override
-    public void endGame() throws RemoteException {
-        personalGameController.endGame();
     }
 
     private void runAsync(Runnable run) {

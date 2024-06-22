@@ -168,5 +168,7 @@ public enum MessageType {
     SWITCH_PLAYER_VIEW,
 
     //args = argsGenerator(getScoreResource())
-    CORRECT_PLACEMENT
+    CORRECT_PLACEMENT,
+    NOTIFY_FINAL_TURN,
+    GAME_ENDED
 }

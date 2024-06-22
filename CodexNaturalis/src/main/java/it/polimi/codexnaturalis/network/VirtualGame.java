@@ -10,7 +10,6 @@ import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.util.networkMessage.MessageType;
 import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
-import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.observer.Observer;
 
 import java.io.Serializable;
@@ -35,11 +34,18 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     GameState gameState;
     private GameController gameController;
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
+    /**
+     * variable used for the final turn mechanic
+     */
+    private boolean finalGamePhaseTurn;
+    private boolean finalTurn;
 
     public VirtualGame(ArrayList<PlayerInfo> players) throws RemoteException {
         super();
         this.players = players;
         gameState = GameState.PLAY_PHASE;
+        finalGamePhaseTurn = false;
+        finalTurn = false;
 
         // random order of play
         Collections.shuffle(this.players);
@@ -60,6 +66,17 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     private void goToNextPlayer()  {
         // Move to the next player
         currentPlayingPlayerIndex = (currentPlayingPlayerIndex + 1) % players.size();
+
+        // Check if it's the final turn and an extra turn has been taken
+        if ((currentPlayingPlayerIndex % players.size() == 0) && finalGamePhaseTurn && finalTurn) {
+            gameEnded();
+            return;
+        }
+
+        // finisci il turno in corso
+        if((currentPlayingPlayerIndex % players.size() == 0) && finalGamePhaseTurn) {
+            finalTurn = true;
+        }
 
         try {
             players.get(currentPlayingPlayerIndex).getClientHandler().showMessage(
@@ -180,12 +197,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     }
 
     @Override
-    public void endGame() throws RemoteException {
-        gameController.endGame();
-    }
-
-    @Override
-    public void update(NetworkMessage message) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
+    public void update(NetworkMessage message) {
         switch(message.getMessageType()) {
             //messaggi per playerSpecifici con argomenti illimitati
             case COM_ACK_TCP, CORRECT_PLACEMENT, GAME_SETUP_GIVE_STARTER_CARD, GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP,
@@ -205,15 +217,48 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
                 for(PlayerInfo p: players){
                     try {
                         p.getClientHandler().showMessage(message);
-                        //p.getClientHandler().showMessage(new NetworkMessage(message.getMessageType(), message.getNickname(), message.getArgs().get(0)));
                     } catch (RemoteException e) {
                         throw new RuntimeException(e);
                     }
                 }
                 break;
 
+            case NOTIFY_FINAL_TURN:
+                System.out.println("Turno finale!!!");
+
+                /**
+                 * notify all players
+                 */
+                for(PlayerInfo p: players){
+                    try {
+                        p.getClientHandler().showMessage(message);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                /**
+                 * initiate the procedure to end the game
+                 */
+                finalGamePhaseTurn = true;
+
+                break;
+
             default:
-                throw new PersonalizedException.InvalidRequestTypeOfNetworkMessage(message.getMessageType().toString());
+                System.err.println("Network message type requested not valid or not in the switch case: "+ message.getMessageType());
+        }
+    }
+
+    private void gameEnded() {
+        /**
+         * notify all players
+         */
+        for(PlayerInfo p: players){
+            try {
+                p.getClientHandler().showMessage(new NetworkMessage(MessageType.GAME_ENDED));
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

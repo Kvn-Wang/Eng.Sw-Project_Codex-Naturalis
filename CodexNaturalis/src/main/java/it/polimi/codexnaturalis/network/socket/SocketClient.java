@@ -343,9 +343,4 @@ public class SocketClient extends GenericClient implements VirtualServer {
     public void switchPlayer(String reqPlayer, String target) throws RemoteException {
 
     }
-
-    @Override
-    public void endGame() throws RemoteException {
-
-    }
 }
