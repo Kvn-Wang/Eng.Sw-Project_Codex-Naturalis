@@ -10,8 +10,6 @@ import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
-import it.polimi.codexnaturalis.utils.PersonalizedException;
-import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.view.TypeOfUI;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
 
@@ -33,36 +31,13 @@ public class TuiClient implements TypeOfUI {
     }
 
     public void initializeClient(VirtualServer virtualServer, ClientContainer clientContainer) throws RemoteException {
-        initializationPhase1(virtualServer, clientContainer);
-        initializationPhase2();
-    }
-
-    //chiamata che garantisce il setup del nickname univoco
-    protected void initializationPhase1(VirtualServer virtualServer, ClientContainer clientContainer) throws RemoteException {
         // aggiungo alla UI il potere di comunicare con l'esterno
-        connectVirtualNetwork(virtualServer, clientContainer);
+        this.networkCommand = virtualServer;
+        this.clientContainer = clientContainer;
 
         // per com'è stato scritto il codice, dopo questa riga avremo un nickname sicuramente settato correttamente
         // stessa cosa vale per le righe successive
         printSelectionNicknameRequest();
-    }
-
-    //chiamata che garantisce alla fine l'avvio del gioco o ritorno alla fase di selezione lobby
-    protected void initializationPhase2() {
-        try {
-            //setup lobbyName unico
-            printSelectionCreateOrJoinLobbyRequest();
-
-            lobbyActionReq();
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void connectVirtualNetwork(VirtualServer virtualNetworkCommand, ClientContainer clientContainer) {
-        this.networkCommand = virtualNetworkCommand;
-        this.clientContainer = clientContainer;
     }
 
     @Override
@@ -81,15 +56,16 @@ public class TuiClient implements TypeOfUI {
 
     @Override
     public void printSelectionNicknameRequestOutcome(boolean positiveOutcome, String nickname) {
-        if(positiveOutcome) {
-            System.out.println("Benvenuto: "+ nickname);
-        } else {
-            System.out.println("Nickname già preso, si prega di selezionare un altro.");
-            try {
+        try {
+            if(positiveOutcome) {
+                System.out.println("Welcome: "+ nickname);
+                printSelectionCreateOrJoinLobbyRequest();
+            } else {
+                System.out.println("Nickname already taken, please take an another one.");
                 printSelectionNicknameRequest();
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
             }
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -124,8 +100,13 @@ public class TuiClient implements TypeOfUI {
                     printSelectionCreateOrJoinLobbyRequest();
                 } else {
                     networkCommand.createLobby(clientContainer.getNickname(), command);
+                    lobbyActionReq();
                 }
                 break;
+
+            /**
+             * lobby joining
+             */
             default:
                 networkCommand.joinLobby(clientContainer.getNickname(), command);
                 break;
@@ -135,9 +116,10 @@ public class TuiClient implements TypeOfUI {
     @Override
     public void printJoinLobbyOutcome(boolean positiveOutcome, String lobbyName) throws RemoteException {
         if(positiveOutcome) {
-            System.out.println("you've joined the lobby: "+lobbyName);
+            System.out.println("You've joined the lobby: "+lobbyName);
+            lobbyActionReq();
         } else {
-            System.out.println("you failed to join the lobby");
+            System.out.println("You failed to join the lobby");
             printSelectionCreateOrJoinLobbyRequest();
         }
     }
@@ -180,6 +162,7 @@ public class TuiClient implements TypeOfUI {
                 case "LEAVE":
                     networkCommand.leaveLobby(clientContainer.getNickname());
                     flag = false;
+                    printSelectionCreateOrJoinLobbyRequest();
                     break;
 
                 default:
@@ -195,7 +178,6 @@ public class TuiClient implements TypeOfUI {
             System.out.println("You set yourself ready!");
         } else {
             System.out.println("You've left the lobby!");
-            initializationPhase2();
         }
     }
 

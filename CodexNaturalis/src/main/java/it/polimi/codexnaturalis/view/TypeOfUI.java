@@ -13,8 +13,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public interface TypeOfUI {
-    // collegare la UI alla network
-    void connectVirtualNetwork(VirtualServer virtualNetworkCommand, ClientContainer clientContainer);
     void connectGameController(GameController virtualGame);
     void printSelectionNicknameRequestOutcome(boolean positiveOutcome, String nickname);
     void printJoinLobbyOutcome(boolean positiveOutcome, String lobbyName) throws RemoteException;

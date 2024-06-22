@@ -19,18 +19,7 @@ public class GuiClient implements TypeOfUI {
     private GameController virtualGame;
 
     public void initializeClient(VirtualServer virtualServer, ClientContainer clientContainer) throws RemoteException {
-        initializationPhase1(virtualServer, clientContainer);
-    }
-
-    //chiamata che garantisce il setup del nickname univoco
-    protected void initializationPhase1(VirtualServer virtualServer, ClientContainer clientContainer)  {
-        // aggiungo alla UI il potere di comunicare con l'esterno
-        connectVirtualNetwork(virtualServer, clientContainer);
-    }
-
-    @Override
-    public void connectVirtualNetwork(VirtualServer virtualNetworkCommand, ClientContainer clientContainer) {
-        this.virtualNetworkCommand = virtualNetworkCommand;
+        this.virtualNetworkCommand = virtualServer;
         GuiGame.setupMenu(this.virtualNetworkCommand, clientContainer);
         javafx.application.Application.launch(GuiGame.class);
     }

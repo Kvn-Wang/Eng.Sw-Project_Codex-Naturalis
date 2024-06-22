@@ -179,11 +179,6 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
         gameController.typeMessage(receiver, sender, msg);
     }
 
-    @Override
-    public void switchPlayer(String reqPlayer, String target) throws RemoteException {
-        gameController.switchPlayer(reqPlayer, target);
-    }
-
     // not implemented
     @Override
     public void gameEnd() throws RemoteException {}

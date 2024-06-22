@@ -279,11 +279,6 @@ public class GameManager extends Observable implements GameController {
     }
 
     @Override
-    public void switchPlayer(String reqPlayer, String target) {
-        nickToPlayer(reqPlayer).switchPlayerView(nickToPlayer(target));
-    }
-
-    @Override
     public void gameEnd() throws RemoteException {
         setWinner();
     }

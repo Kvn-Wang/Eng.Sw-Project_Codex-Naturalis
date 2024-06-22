@@ -12,7 +12,6 @@ public interface PlayerInterface {
     void addMissionScore(int Value);
     void setStatus(boolean status);//setta il player alive o dead
     void setPersonalMissionFinal(Mission personalMission);
-    void switchPlayerView(Player target);
     int getPersonalScore();
     int getPersonalMissionTotalScore();
     ColorType getPawnColor();

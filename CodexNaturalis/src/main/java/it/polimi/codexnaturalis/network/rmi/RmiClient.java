@@ -346,11 +346,6 @@ public class RmiClient extends GenericClient implements VirtualServer {
         personalGameController.typeMessage(receiver, sender, msg);
     }
 
-    @Override
-    public void switchPlayer(String reqPlayer, String target) throws RemoteException {
-        personalGameController.switchPlayer(reqPlayer, target);
-    }
-
     // not implemented
     @Override
     public void gameEnd() throws RemoteException {}

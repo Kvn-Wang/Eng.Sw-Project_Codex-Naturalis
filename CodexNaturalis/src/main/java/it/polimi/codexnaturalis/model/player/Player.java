@@ -99,13 +99,6 @@ public class Player extends Observable implements PlayerInterface {
     }
 
     @Override
-    public void switchPlayerView(Player target) {
-        playerView=target;
-
-        notifyObserverSingle(new NetworkMessage(nickname, MessageType.SWITCH_PLAYER_VIEW, argsGenerator(playerView.getGameMap())));
-    }
-
-    @Override
     public int getPersonalMissionTotalScore() {
         return personalMissionTotalScore;
     }
