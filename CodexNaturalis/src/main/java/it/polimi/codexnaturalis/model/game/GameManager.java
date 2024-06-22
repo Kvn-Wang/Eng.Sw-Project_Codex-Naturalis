@@ -19,6 +19,7 @@ import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.utils.observer.Observable;
 import it.polimi.codexnaturalis.utils.observer.Observer;
 
+import java.rmi.RemoteException;
 import java.util.*;
 
 
@@ -30,7 +31,7 @@ public class GameManager extends Observable implements GameController {
     private ArrayList<PlayerInfo> networkPlayer;
     private Player[] players;
     private ChatManager chatManager;
-    private List <Player> winners;
+    private ArrayList<Player> winners;
     private String scoreCardImg;
     private int playerThatHasPlayedStarterCard;
     private int playerThatHasPlayedPersonalMission;
@@ -282,6 +283,11 @@ public class GameManager extends Observable implements GameController {
         nickToPlayer(reqPlayer).switchPlayerView(nickToPlayer(target));
     }
 
+    @Override
+    public void gameEnd() throws RemoteException {
+        setWinner();
+    }
+
     private void startFinalTurn() {
         notifyObserverSingle(new NetworkMessage(MessageType.NOTIFY_FINAL_TURN));
     }
@@ -309,39 +315,51 @@ public class GameManager extends Observable implements GameController {
     }
 
     private void setWinner(){
-        int max = 0;
+        int maxPersonalScore = 0;
+        winners = new ArrayList<>();
+
+        /**
+         * search for the highest score achieved by anyone
+         */
         for(Player p: players){
-            if(p.getPersonalScore()>max){
-                max=p.getPersonalScore();
+            if(p.getPersonalScore()>maxPersonalScore){
+                maxPersonalScore=p.getPersonalScore();
             }
         }
+        /**
+         * search who got it and add it to the list of winners
+         */
         for(Player p: players){
-            if(p.getPersonalScore()==max){
+            if(p.getPersonalScore()==maxPersonalScore){
                 winners.add(p);
             }
         }
-        max=0;
-        if(winners.size()==1) {}
-        else{
+
+        /**
+         * in case of multiple winners -> apply the special rules
+         */
+        int maxPersonalObjectiveMissionScore = 0;
+        if(winners.size() != 1){
             for(Player p: winners){
-                if(p.getPersonalMissionTotalScore()>max){
-                    max=p.getPersonalMissionTotalScore();
+                if(p.getPersonalMissionTotalScore() > maxPersonalObjectiveMissionScore){
+                    maxPersonalObjectiveMissionScore = p.getPersonalMissionTotalScore();
                 }
             }
             for(Player p: winners) {
-                if (p.getPersonalMissionTotalScore() < max) {
+                if (p.getPersonalMissionTotalScore() < maxPersonalScore) {
                     winners.remove(p);
                 }
             }
-            if(winners.size()==1) {}
-            else
-                tieHandler(winners);
         }
-    }
-    private void tieHandler(List<Player> winningPlayers){
-        System.out.printf("__Winners__%n%n");
-        for(Player p: winningPlayers){
-            System.out.printf("-%s%n", p.getNickname());
+
+        /**
+         * send to everyone the list of the winners
+         */
+        ArrayList<String> winnerNicknames = new ArrayList<>();
+        for(Player player : winners) {
+            winnerNicknames.add(player.getNickname());
         }
+
+        notifyObserverSingle(new NetworkMessage(MessageType.GAME_ENDED, argsGenerator(winnerNicknames)));
     }
 }

@@ -2,6 +2,7 @@ package it.polimi.codexnaturalis.network.rmi;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.enumeration.GameState;
@@ -210,9 +211,15 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 break;
 
             case NOTIFY_FINAL_TURN:
+                typeOfUI.printIsYourFinalTurn();
                 break;
 
             case GAME_ENDED:
+                ArrayList<String> winnerNicknames = gsonTranslator.fromJson(message.getArgs().get(0),
+                        new TypeToken<ArrayList<String>>() {}.getType());
+
+                typeOfUI.printWinners(winnerNicknames);
+
                 break;
 
             default:
@@ -344,25 +351,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
         personalGameController.switchPlayer(reqPlayer, target);
     }
 
-    private void runAsync(Runnable run) {
-        Future<?> future = executorServiceMainThread.submit(() -> {
-            try {
-                // Simula un'operazione lunga
-                Thread.sleep(2000);
-                String result = "Result from RMI";
-                System.out.println("ciao");
-            } catch (Exception e) {
-                System.err.println("err");
-            }
-        });
-
-        while (!future.isDone()) {
-            try {
-                System.out.println("Loading...");
-                Thread.sleep(1000); // Simula l'input dell'utente ogni secondo
-            } catch (Exception e) {
-                System.err.println("err");
-            }
-        }
-    }
+    // not implemented
+    @Override
+    public void gameEnd() throws RemoteException {}
 }

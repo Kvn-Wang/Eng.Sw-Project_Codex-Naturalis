@@ -170,5 +170,8 @@ public enum MessageType {
     //args = argsGenerator(getScoreResource())
     CORRECT_PLACEMENT,
     NOTIFY_FINAL_TURN,
+    /**
+     * args(0) = arraylist<String> winners
+     */
     GAME_ENDED
 }

@@ -122,6 +122,16 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
+    public void printIsYourFinalTurn() {
+
+    }
+
+    @Override
+    public void printWinners(ArrayList<String> winnersNickname) {
+
+    }
+
+    @Override
     public void connectGameController(GameController virtualGame) {
         GuiGame.startGame(virtualGame);
     }

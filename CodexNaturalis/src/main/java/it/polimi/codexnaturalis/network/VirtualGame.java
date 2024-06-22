@@ -71,10 +71,8 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
         if ((currentPlayingPlayerIndex % players.size() == 0) && finalGamePhaseTurn && finalTurn) {
             gameEnded();
             return;
-        }
-
-        // finisci il turno in corso
-        if((currentPlayingPlayerIndex % players.size() == 0) && finalGamePhaseTurn) {
+        } else if((currentPlayingPlayerIndex % players.size() == 0) && finalGamePhaseTurn) {
+            // finisci il turno in corso
             finalTurn = true;
         }
 
@@ -186,6 +184,10 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
         gameController.switchPlayer(reqPlayer, target);
     }
 
+    // not implemented
+    @Override
+    public void gameEnd() throws RemoteException {}
+
     //traduzione nick -> playerInfo
     private PlayerInfo nickToPlayerInfo(String nickname){
         for(PlayerInfo p: players){
@@ -212,7 +214,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
                 break;
 
             //per messaggi di broadcast con numero illimiatato di args
-            case SCORE_UPDATE, STATUS_PLAYER_CHANGE, DRAW_CARD_UPDATE_SHOP_CARD_POOL:
+            case SCORE_UPDATE, STATUS_PLAYER_CHANGE, DRAW_CARD_UPDATE_SHOP_CARD_POOL, GAME_ENDED:
                 System.out.println("Messaggio broadcast: "+message.getMessageType());
                 for(PlayerInfo p: players){
                     try {
@@ -253,12 +255,10 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
         /**
          * notify all players
          */
-        for(PlayerInfo p: players){
-            try {
-                p.getClientHandler().showMessage(new NetworkMessage(MessageType.GAME_ENDED));
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }
+        try {
+            gameController.gameEnd();
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
         }
     }
 }

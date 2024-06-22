@@ -24,8 +24,9 @@ public class TuiClient implements TypeOfUI {
     protected GameController virtualGame;
     protected ClientContainer clientContainer;
     Scanner scan;
-    public static final String ANSI_RESET = "\033[0m";
-    public static final String ANSI_BLUE = "\033[34m";
+    private static final String ANSI_RESET = "\033[0m";
+    private static final String ANSI_BLUE = "\033[34m";
+    private static final String ANSI_RED = "\u001B[31m";
 
     public TuiClient() {
         scan = new Scanner(System.in);
@@ -390,5 +391,19 @@ public class TuiClient implements TypeOfUI {
     @Override
     public void printIsYourTurn() {
         System.out.println(ANSI_BLUE + "Is your turn now!!!" + ANSI_RESET);
+    }
+
+    @Override
+    public void printIsYourFinalTurn() {
+        System.out.println(ANSI_RED + "Is your turn now!!!" + ANSI_RESET);
+    }
+
+    @Override
+    public void printWinners(ArrayList<String> winnersNickname) {
+        System.out.println(ANSI_RED + "The game has ended!!! list of winners: " + ANSI_RESET);
+
+        for(String winner : winnersNickname) {
+            System.out.println(ANSI_BLUE + "  -  " + winner + "" + ANSI_RESET);
+        }
     }
 }
