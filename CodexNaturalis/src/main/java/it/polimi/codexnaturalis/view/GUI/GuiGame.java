@@ -12,7 +12,6 @@ import it.polimi.codexnaturalis.model.shop.card.CardTypeAdapter;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
-import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
 import javafx.application.Application;
@@ -43,16 +42,19 @@ public class GuiGame extends Application {
     private static VirtualServer vnc;
     private static GameController vgc;
     private static ClientContainer clientContainer;
-    private static Circle[][]  anchorPointsMatrix;
+    private static Circle[][] anchorPointsMatrix;
     private static ArrayList<GuiCard> handCards;
+    private static Rectangle[] missions;
     private static Pane vHand;
+    private static VBox missionList;
     private static Pane map;
+    private static Pane cameraView;
     private static double cameraX=500;
     private static double cameraY=300;
-    private static double maxPlusX=1;
-    private static double maxPlusY=1;
-    private static double maxMinusX=-1;
-    private static double maxMinusY=-1;
+    private static double maxPlusX=100;
+    private static double maxPlusY=100;
+    private static double maxMinusX=-100;
+    private static double maxMinusY=-100;
     private static String playerNickname;
     private static boolean starterBeingPlaced = false;
 
@@ -153,9 +155,10 @@ public class GuiGame extends Application {
         });
     }
 
-    public static void UpdateHand(Hand hand){
+    public static void UpdateHand(Hand lol){
         Platform.runLater(() -> {
             System.out.println("update");
+            Hand hand=clientContainer.getPersonalHand();
             boolean alreadyInHand;
             for (int i = 0; i < hand.getCards().size(); i++) {
                 alreadyInHand = false;
@@ -196,9 +199,21 @@ public class GuiGame extends Application {
 
     public static void commonMissionSetup(Mission mission1, Mission mission2){
         Platform.runLater(() -> {
-            CommonMissionBox missionAlert = new CommonMissionBox();
-            missionAlert.setMission(mission1, mission2);
-            missionAlert.display("Shared Missions", 700, 300);
+//            CommonMissionBox missionAlert = new CommonMissionBox();
+//            missionAlert.setMission(mission1, mission2);
+//            missionAlert.display("Shared Missions", 700, 300);
+            Label request = new Label("Missioni Comuni");
+            Gson gson = new Gson();
+            String mission1Path = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+mission1.getPngNumber()+".png";
+            String mission2Path = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+mission2.getPngNumber()+".png";
+            missions[0]= new Rectangle(170, 100, new ImagePattern(new Image(GuiGame.class.getResourceAsStream(mission1Path))));
+            missions[0].setStroke(null);
+            missions[1]= new Rectangle(170, 100, new ImagePattern(new Image(GuiGame.class.getResourceAsStream(mission2Path))));
+            missions[1].setStroke(null);
+
+            missionList.getChildren().add(request);
+            missionList.getChildren().add(missions[0]);
+            missionList.getChildren().add(missions[1]);
         });
     }
     public static void missionSelection(Mission mission1, Mission mission2){
@@ -418,11 +433,12 @@ public class GuiGame extends Application {
     }
 
     public Scene gameScene() {
-        Pane game = new StackPane();
+        BorderPane game = new BorderPane();
         map = new Pane();
         anchorPointsMatrix = getAnchorPoints(game);
         vHand = handLayer();
-        vHand.setTranslateX(200);
+        missionList = missionLayer();
+        cameraView= new Pane(map);
 
 //        map.setMinSize(4000, 4000);
 
@@ -510,40 +526,20 @@ public class GuiGame extends Application {
                 map.getChildren().add(newRect);
                 success = true;
             }
-            /* let the source know whether the string was successfully transferred and used */
+
             e.setDropCompleted(success);
 
             e.consume();
         });
 
-//        ScrollPane scrollPane = new ScrollPane(map);
-//        scrollPane.setPannable(true); // Allows panning with mouse dragging
-//        scrollPane.setFitToWidth(true); // Ensures the map fits within the width of the ScrollPane
-//        scrollPane.setFitToHeight(true); // Ensures the map fits within the height of the ScrollPane
-
-        map.setOnScroll(event -> {
-            double deltaY = event.getDeltaY();
-            double scaleFactor = (deltaY > 0) ? 1.1 : 0.9;
-            map.setScaleX(map.getScaleX() * scaleFactor);
-            map.setScaleY(map.getScaleY() * scaleFactor);
-        });
-
-        game.getChildren().add(map);
-        game.getChildren().add(vHand);
-        vHand.setTranslateY(500);
-
-//        Rectangle draggableCard1 = vCard1.getRectangle();
-//        Rectangle draggableCard2 = vCard2.getRectangle();
-
+        game.setCenter(cameraView);
+        game.setBottom(vHand);
 
         for(Circle[] rows : anchorPointsMatrix) {
             for (Circle anchor : rows) {
                 map.getChildren().add(anchor);
             }
         }
-//        map.getChildren().add(draggableCard1);
-//        map.getChildren().add(draggableCard2);
-
 
         return new Scene(game, 1000, 600);
     }
@@ -617,44 +613,19 @@ public class GuiGame extends Application {
         maxMinusY = Math.min(y, maxMinusY);
         cameraX = (maxPlusX - maxMinusX)/2-cameraX;
         cameraY = (maxPlusY - maxMinusY)/2-cameraY;
-        map.setTranslateX(-cameraX);
-        map.setTranslateY(-cameraY);
-        map.setScaleX(map.getScaleX());
-        map.setScaleY(map.getScaleY());
+        cameraView.setTranslateX(-cameraX);
+        cameraView.setTranslateY(-cameraY);
+        cameraView.setScaleX(2/(Math.max(maxPlusX-maxMinusX, maxPlusY-maxMinusY)/100));
+        cameraView.setScaleY(2/(Math.max(maxPlusX-maxMinusX, maxPlusY-maxMinusY)/100));
     }
 
     private Pane handLayer(){
         handCards = new ArrayList<GuiCard>();
-        Pane vHand= new Pane();
+        return new Pane();
+    }
 
-//        StarterCard card1 = new StarterCard(    81,
-//                ResourceType.NONE,
-//                ResourceType.NONE,
-//                ResourceType.PLANT,
-//                ResourceType.INSECT,
-//                new ResourceType[]{ResourceType.INSECT},
-//                ResourceType.FUNGI,
-//                ResourceType.ANIMAL,
-//                ResourceType.PLANT,
-//                ResourceType.INSECT);
-//
-//        ResourceCard card2 = new ResourceCard(    4,
-//                ResourceType.NONE,
-//                ResourceType.NONE,
-//                ResourceType.PLANT,
-//                ResourceType.INSECT,
-//                ResourceType.PLANT,
-//                0);
-//        card1.setIsBack(false);
-//        card2.setIsBack(false);
-//
-//        handCards.add(new GuiCard(card1, anchorPointsMatrix));
-//        handCards.add(new GuiCard(card2, anchorPointsMatrix));
-//
-//        for(int i=0; i<handCards.size(); i++) {
-//            vHand.getChildren().add(handCards.get(i).getRectangle());
-//            handCards.get(i).getRectangle().setTranslateX(170*i);
-//        }
-        return vHand;
+    private VBox missionLayer(){
+        missions = new Rectangle[3];
+        return new VBox();
     }
 }

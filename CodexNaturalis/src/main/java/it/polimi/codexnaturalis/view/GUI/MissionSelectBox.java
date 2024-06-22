@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
@@ -32,7 +33,7 @@ public class MissionSelectBox extends AlertBox {
             alertWindow.close();
         });
 
-        VBox box = new VBox(10);
+        HBox box = new HBox(10);
         box.getChildren().add(request);
         box.getChildren().add(missionRect1);
         box.getChildren().add(missionRect2);
