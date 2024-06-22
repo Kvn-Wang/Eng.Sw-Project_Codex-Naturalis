@@ -344,8 +344,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
 
     }
 
+    // not implemented
     @Override
-    public void endGame() throws RemoteException {
-
-    }
+    public void gameEnd() throws RemoteException {}
 }

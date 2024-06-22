@@ -3,7 +3,6 @@ package it.polimi.codexnaturalis.model.game;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.chat.ChatManager;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
-import it.polimi.codexnaturalis.model.enumeration.GameState;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
@@ -20,6 +19,7 @@ import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.utils.observer.Observable;
 import it.polimi.codexnaturalis.utils.observer.Observer;
 
+import java.rmi.RemoteException;
 import java.util.*;
 
 
@@ -30,10 +30,8 @@ public class GameManager extends Observable implements GameController {
     private GeneralShop objectiveShop;
     private ArrayList<PlayerInfo> networkPlayer;
     private Player[] players;
-    private Player playerTurn;
     private ChatManager chatManager;
-    private boolean isFinalTurn = false;
-    private List <Player> winners;
+    private ArrayList<Player> winners;
     private String scoreCardImg;
     private int playerThatHasPlayedStarterCard;
     private int playerThatHasPlayedPersonalMission;
@@ -120,12 +118,8 @@ public class GameManager extends Observable implements GameController {
         System.out.println("Starter cards being placed for " + players.length + " players");
         for(Player p: players) {
             //manda la starterCard al playerSpecifico
-            try {
-                notifyObserverSingle(new NetworkMessage(p.getNickname(), MessageType.GAME_SETUP_GIVE_STARTER_CARD,
-                        argsGenerator(starterShop.drawTopDeckCard())));
-            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
-                throw new RuntimeException(e);
-            }
+            notifyObserverSingle(new NetworkMessage(p.getNickname(), MessageType.GAME_SETUP_GIVE_STARTER_CARD,
+                    argsGenerator(starterShop.drawTopDeckCard())));
         }
     }
 
@@ -185,10 +179,10 @@ public class GameManager extends Observable implements GameController {
 
     @Override
     public void disconnectPlayer(String nickname) {
-        Player dcPlayer=nickToPlayer(nickname);
+        /*Player dcPlayer=nickToPlayer(nickname);
         dcPlayer.setStatus(false);
         if (dcPlayer.equals(playerTurn))
-            nextTurn();
+            nextTurn();*/
     }
 
     @Override
@@ -213,11 +207,7 @@ public class GameManager extends Observable implements GameController {
             endGameCheckFinishedShop();
         }
 
-        try {
-            notifyObserverSingle(new NetworkMessage(nickname, MessageType.DRAWN_CARD_DECK, argsGenerator(drawnCard)));
-        } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
-            throw new RuntimeException(e);
-        }
+        notifyObserverSingle(new NetworkMessage(nickname, MessageType.DRAWN_CARD_DECK, argsGenerator(drawnCard)));
     }
 
     @Override
@@ -231,18 +221,15 @@ public class GameManager extends Observable implements GameController {
         //controllo se tutti i player hanno selezionato personal mission
         if(playerThatHasPlayedPersonalMission == players.length){
             System.out.println("Init phase finished, init game phase");
+
             /**
              * since the starting player is the first one in the list, notify him that it's his turn
              */
-            try {
-                notifyObserverSingle(new NetworkMessage(players[0].getNickname(),  MessageType.GAME_SETUP_NOTIFY_TURN,
-                        String.valueOf(true)));
-                for(int i = 1; i < players.length; i++) {
-                    notifyObserverSingle(new NetworkMessage(players[i].getNickname(),  MessageType.GAME_SETUP_NOTIFY_TURN,
-                            String.valueOf(false)));
-                }
-            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
-                throw new RuntimeException(e);
+            notifyObserverSingle(new NetworkMessage(players[0].getNickname(),  MessageType.GAME_SETUP_NOTIFY_TURN,
+                    String.valueOf(true)));
+            for(int i = 1; i < players.length; i++) {
+                notifyObserverSingle(new NetworkMessage(players[i].getNickname(),  MessageType.GAME_SETUP_NOTIFY_TURN,
+                        String.valueOf(false)));
             }
         }
 
@@ -273,20 +260,13 @@ public class GameManager extends Observable implements GameController {
 
             System.out.println("Carta giocata");
 
-            //TODO
-            endGameCheckScoreBoard();
-        } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
-            errorDuringPlayingPhase = true;
-            e.printStackTrace();
+            endGameCheckScoreBoard(nickToPlayer(nickname));
         } catch(PersonalizedException.InvalidPlaceCardRequirementException |
                  PersonalizedException.InvalidPlacementException e) {
             errorDuringPlayingPhase = true;
-            try {
-                notifyObserverSingle(new NetworkMessage(nickname, MessageType.PLACEMENT_CARD_OUTCOME,
-                        String.valueOf(false)));
-            } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage ex) {
-                e.printStackTrace();
-            }
+
+            notifyObserverSingle(new NetworkMessage(nickname, MessageType.PLACEMENT_CARD_OUTCOME,
+                    String.valueOf(false)));
         }
     }
 
@@ -304,18 +284,22 @@ public class GameManager extends Observable implements GameController {
     }
 
     @Override
-    public void endGame() {
-        isFinalTurn = true;
+    public void gameEnd() throws RemoteException {
+        setWinner();
+    }
+
+    private void startFinalTurn() {
+        notifyObserverSingle(new NetworkMessage(MessageType.NOTIFY_FINAL_TURN));
     }
     
     private void endGameCheckFinishedShop(){
         if(objectiveShop.checkEmptyShop() && resourceShop.checkEmptyShop())
-            isFinalTurn = true;
+            startFinalTurn();
     }
 
-    private void endGameCheckScoreBoard(){
-        /*if(playerTurn.getPersonalScore() >= 20)
-            isFinalTurn = true;*/
+    private void endGameCheckScoreBoard(Player playingPlayer){
+        if(playingPlayer.getPersonalScore() >= 20)
+            startFinalTurn();
     }
 
     private void executeSharedMission(){
@@ -330,77 +314,52 @@ public class GameManager extends Observable implements GameController {
         }
     }
 
-    private void nextTurn(){
-        /*do{
-            boolean playerfound=false;
-            int i=0;
-            while(!playerfound && i<players.length) {
-                if (playerTurn.equals(players[i])) {
-                    if (i != players.length - 1) {
-                        playerTurn = players[i + 1];
-                        playerfound=true;
-                        System.out.printf("per ora %s\n", playerTurn.getNickname());
-                    }
-                    else {
-                        playerTurn = players[0];
-                        playerfound=true;
-                        System.out.printf("per ora %s\n", playerTurn.getNickname());
-                        if(isFinalTurn){
-                            if(remainingRounds==0)
-                                setWinner();
-                            else
-                                remainingRounds--;
-                        }
-                    }
-                }
-                i++;
-            }
-        }while(!playerTurn.isPlayerAlive());
-        System.out.printf("é il turno di %s\n", playerTurn.getNickname());*/
-    }
-
     private void setWinner(){
-        int max = 0;
+        int maxPersonalScore = 0;
+        winners = new ArrayList<>();
+
+        /**
+         * search for the highest score achieved by anyone
+         */
         for(Player p: players){
-            if(p.getPersonalScore()>max){
-                max=p.getPersonalScore();
+            if(p.getPersonalScore()>maxPersonalScore){
+                maxPersonalScore=p.getPersonalScore();
             }
         }
+        /**
+         * search who got it and add it to the list of winners
+         */
         for(Player p: players){
-            if(p.getPersonalScore()==max){
+            if(p.getPersonalScore()==maxPersonalScore){
                 winners.add(p);
             }
         }
-        max=0;
-        if(winners.size()==1) {}
-        else{
+
+        /**
+         * in case of multiple winners -> apply the special rules
+         */
+        int maxPersonalObjectiveMissionScore = 0;
+        if(winners.size() != 1){
             for(Player p: winners){
-                if(p.getPersonalMissionTotalScore()>max){
-                    max=p.getPersonalMissionTotalScore();
+                if(p.getPersonalMissionTotalScore() > maxPersonalObjectiveMissionScore){
+                    maxPersonalObjectiveMissionScore = p.getPersonalMissionTotalScore();
                 }
             }
             for(Player p: winners) {
-                if (p.getPersonalMissionTotalScore() < max) {
+                if (p.getPersonalMissionTotalScore() < maxPersonalScore) {
                     winners.remove(p);
                 }
             }
-            if(winners.size()==1) {}
-            else
-                tieHandler(winners);
         }
-    }
-    private void tieHandler(List<Player> winningPlayers){
-        System.out.printf("__Winners__%n%n");
-        for(Player p: winningPlayers){
-            System.out.printf("-%s%n", p.getNickname());
+
+        /**
+         * send to everyone the list of the winners
+         */
+        ArrayList<String> winnerNicknames = new ArrayList<>();
+        for(Player player : winners) {
+            winnerNicknames.add(player.getNickname());
         }
-    }
 
-    public Player getPlayerTurn() {
-        return playerTurn;
-    }
-
-    public boolean getIsFinalTurn() {
-        return isFinalTurn;
+        notifyObserverSingle(new NetworkMessage(MessageType.GAME_ENDED, argsGenerator(winnerNicknames)));
     }
 }

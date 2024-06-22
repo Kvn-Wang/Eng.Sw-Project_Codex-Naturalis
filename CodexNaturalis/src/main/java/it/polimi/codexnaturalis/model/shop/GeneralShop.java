@@ -28,33 +28,24 @@ public class GeneralShop extends Shop {
                 //ritorna il vecchio topDeckCard e "pesca" una nuova
                 supp = topDeckCard;
                 topDeckCard = drawTopDeckCard();
-                try {
-                    notifyObserverSingle(new NetworkMessage(MessageType.DRAW_CARD_UPDATE_SHOP_CARD_POOL,
-                            argsGenerator(topDeckCard), String.valueOf(shopType), String.valueOf(0)));
-                } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
-                    throw new RuntimeException(e);
-                }
+
+                notifyObserverSingle(new NetworkMessage(MessageType.DRAW_CARD_UPDATE_SHOP_CARD_POOL,
+                        argsGenerator(topDeckCard), String.valueOf(shopType), String.valueOf(0)));
                 return supp;
 
             case 1:
                 supp = visibleCard1;
                 visibleCard1 = drawTopDeckCard();
-                try {
-                    notifyObserverSingle(new NetworkMessage(MessageType.DRAW_CARD_UPDATE_SHOP_CARD_POOL,
-                            argsGenerator(visibleCard1), String.valueOf(shopType), String.valueOf(0)));
-                } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
-                    throw new RuntimeException(e);
-                }
+
+                notifyObserverSingle(new NetworkMessage(MessageType.DRAW_CARD_UPDATE_SHOP_CARD_POOL,
+                        argsGenerator(visibleCard1), String.valueOf(shopType), String.valueOf(0)));
                 return supp;
             case 2:
                 supp = visibleCard2;
                 visibleCard2 = drawTopDeckCard();
-                try {
-                    notifyObserverSingle(new NetworkMessage(MessageType.DRAW_CARD_UPDATE_SHOP_CARD_POOL,
-                            argsGenerator(visibleCard2), String.valueOf(shopType), String.valueOf(0)));
-                } catch (PersonalizedException.InvalidRequestTypeOfNetworkMessage e) {
-                    throw new RuntimeException(e);
-                }
+
+                notifyObserverSingle(new NetworkMessage(MessageType.DRAW_CARD_UPDATE_SHOP_CARD_POOL,
+                        argsGenerator(visibleCard2), String.valueOf(shopType), String.valueOf(0)));
                 return supp;
             default:
                 throw new RuntimeException("è stata richiesta un numero di carta non valido: "+numCard);

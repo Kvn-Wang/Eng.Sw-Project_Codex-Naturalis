@@ -43,4 +43,6 @@ public interface TypeOfUI {
     void printErrorCommandSentGameState(GameState currentGameState);
 
     void printIsYourTurn();
+    void printIsYourFinalTurn();
+    void printWinners(ArrayList<String> winnersNickname);
 }
