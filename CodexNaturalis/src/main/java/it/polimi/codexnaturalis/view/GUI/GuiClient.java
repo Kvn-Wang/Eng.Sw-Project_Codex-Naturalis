@@ -76,6 +76,7 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printHand(Hand hand) {
+        System.out.println("Hand Update");
         GuiGame.UpdateHand(hand);
     }
 
