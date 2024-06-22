@@ -18,16 +18,12 @@ public interface TypeOfUI {
     void printSelectionNicknameRequestOutcome(boolean positiveOutcome, String nickname);
     void giveLobbies(ArrayList<LobbyInfo> lobbies);
     void printJoinLobbyOutcome(boolean positiveOutcome, String lobbyName) throws RemoteException;
-    void printLobbyStatus(ArrayList<PlayerInfo> lobbyPlayers) throws RemoteException;
     void printCreationLobbyRequestOutcome(boolean outcomePositive, String lobbyName);
     void lobbyActionOutcome(boolean isReady);
-
     void notifyLobbyStatus(String otherPlayerNickname, String status);
-    void printHand(Hand hand);
 
     /*---- SETUP ----*/
     void giveStarterCard(StarterCard starterCard);
-    void giveCommonMission(Mission mission1, Mission mission2);
     void givePersonalMission(Mission choice1, Mission choice2);
     void notifyIsYourTurnInitPhase(boolean isYourTurn);
 
@@ -38,7 +34,6 @@ public interface TypeOfUI {
 
     /**
      * it happens whe you try to play a card in a drawing phase for example
-     * @param gameState
      */
     void printErrorCommandSentGameState(GameState currentGameState);
 

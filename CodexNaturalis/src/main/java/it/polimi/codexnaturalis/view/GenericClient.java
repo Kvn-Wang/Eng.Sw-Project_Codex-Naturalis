@@ -28,22 +28,6 @@ public abstract class GenericClient extends UnicastRemoteObject implements GameC
         typeOfUI.connectGameController(virtualGameController);
     }
 
-    //ricevo una mano di 2 carte risorsa e 1 carta oro
-    protected void initializeInitialHand(Hand hand) {
-        clientContainer.setPersonalHand(hand);
-        typeOfUI.printHand(hand);
-    }
-
-    protected void initializeCommonMission(Mission mission1, Mission mission2) {
-        clientContainer.setCommonMission1(mission1);
-        clientContainer.setCommonMission2(mission2);
-        typeOfUI.giveCommonMission(mission1, mission2);
-    }
-
-    protected void initializePersonalMission(Mission personalMission1, Mission personalMission2) {
-        typeOfUI.givePersonalMission(personalMission1, personalMission2);
-    }
-
     public ClientContainer getClientContainerController() {
         return clientContainer;
     }

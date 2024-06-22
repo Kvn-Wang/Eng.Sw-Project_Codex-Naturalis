@@ -40,11 +40,6 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
-    public void printLobbyStatus(ArrayList<PlayerInfo> lobbyPlayers) throws RemoteException {
-
-    }
-
-    @Override
     public void printCreationLobbyRequestOutcome(boolean outcomePositive, String lobbyName) {
 
     }
@@ -72,18 +67,6 @@ public class GuiClient implements TypeOfUI {
     @Override
     public void giveStarterCard(StarterCard starterCard) {
         GuiGame.addStarter(starterCard);
-    }
-
-    @Override
-    public void printHand(Hand hand) {
-        System.out.println("Hand Update");
-        GuiGame.UpdateHand(hand);
-    }
-
-    @Override
-    public void giveCommonMission(Mission mission1, Mission mission2) {
-        System.out.println("Common Mission");
-        GuiGame.commonMissionSetup(mission1,mission2);
     }
 
     @Override

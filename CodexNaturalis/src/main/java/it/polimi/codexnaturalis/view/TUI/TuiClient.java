@@ -86,9 +86,19 @@ public class TuiClient implements TypeOfUI {
     }
 
     public void printSelectionCreateOrJoinLobbyRequest() throws RemoteException {
-        networkCommand.getAvailableLobby();
+        ArrayList<LobbyInfo> lobbies = networkCommand.getAvailableLobby();
+
+        System.out.println("Lobby list:");
+        if(lobbies != null) {
+            for (LobbyInfo elem : lobbies) {
+                System.out.println("  - " + elem.getLobbyName() + " | Player: " + elem.getCurrentPlayer() + "/" + elem.getMaxPlayer() + " | started:" + elem.getIsLobbyStarted());
+            }
+        } else {
+            System.out.println("  - No lobby Available");
+        }
+
         //aspetta che gli arrivino le lobby dal server e che li stampi
-        doWait();
+        //doWait();
 
         String command;
         System.out.println("Write the name of an existing lobby to join it or write 'CREATE' to create a new lobby");
@@ -125,11 +135,6 @@ public class TuiClient implements TypeOfUI {
             System.out.println("You failed to join the lobby");
             printSelectionCreateOrJoinLobbyRequest();
         }
-    }
-
-    @Override
-    public void printLobbyStatus(ArrayList<PlayerInfo> lobbyPlayers) throws RemoteException {
-        
     }
 
     @Override
@@ -226,23 +231,8 @@ public class TuiClient implements TypeOfUI {
     }
 
     @Override
-    public void printHand(Hand hand) {
-        PrintHandClass.printHand(hand);
-    }
-
-
-
-    @Override
     public void giveStarterCard(StarterCard starterCard) {
         printStarterCardReq(starterCard);
-    }
-
-    @Override
-    public void giveCommonMission(Mission mission1, Mission mission2) {
-        System.out.println("Common mission 1: " + mission1.getMissionType());
-        PrintMissionClass.printMission(mission1);
-        System.out.println("Common mission 2: " + mission2.getMissionType());
-        PrintMissionClass.printMission(mission2);
     }
 
     @Override
