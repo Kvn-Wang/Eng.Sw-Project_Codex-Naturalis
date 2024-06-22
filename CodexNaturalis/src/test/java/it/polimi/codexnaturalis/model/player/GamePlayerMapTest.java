@@ -58,31 +58,40 @@ class GamePlayerMapTest {
     @Test
     public void testPlaceCard() throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
         int middle = UtilCostantValue.lunghezzaMaxMappa / 2;
-        assertThrows(PersonalizedException.InvalidPlacementException.class, ()-> gamePlayerMap.placeCard(middle,middle,firstTestCard,true));
-        gamePlayerMap.placeCard(middle,middle,starterCard,true);
+        firstTestCard.setIsBack(true);
+        assertThrows(PersonalizedException.InvalidPlacementException.class, ()-> gamePlayerMap.placeCard(middle,middle,firstTestCard));
+        starterCard.setIsBack(true);
+        gamePlayerMap.placeCard(middle,middle,starterCard);
         PlayerScoreResource test = gamePlayerMap.getPlayerScoreCard();
-        gamePlayerMap.placeCard(middle,middle+1,starterCard,true);
-        gamePlayerMap.placeCard(middle,middle-1,secondTestCard,false);
-        gamePlayerMap.placeCard(middle+1,middle,thirdTestCard,false);
+        starterCard.setIsBack(true);
+        gamePlayerMap.placeCard(middle,middle+1,starterCard);
+
+        secondTestCard.setIsBack(false);
+        gamePlayerMap.placeCard(middle,middle-1,secondTestCard);
+        thirdTestCard.setIsBack(false);
+        gamePlayerMap.placeCard(middle+1,middle,thirdTestCard);
         PlayerScoreResource testscorecard = gamePlayerMap.getPlayerScoreCard();
         System.out.println(testscorecard.getScore(ResourceType.ANIMAL));
-        assertThrows(PersonalizedException.InvalidPlaceCardRequirementException.class, ()-> gamePlayerMap.placeCard(middle+2,middle,thirdTestCard,false));
-        assertThrows(PersonalizedException.InvalidPlacementException.class, ()-> gamePlayerMap.placeCard(1,1,thirdTestCard,true));
+        assertThrows(PersonalizedException.InvalidPlaceCardRequirementException.class, ()-> gamePlayerMap.placeCard(middle+2,middle,thirdTestCard));
+        thirdTestCard.setIsBack(true);
+        assertThrows(PersonalizedException.InvalidPlacementException.class, ()-> gamePlayerMap.placeCard(1,1,thirdTestCard));
+
+        firstTestCard.setIsBack(true);
         for(int i = middle+2; i < UtilCostantValue.lunghezzaMaxMappa  ;i++){
-            gamePlayerMap.placeCard(middle, i, firstTestCard, true);
+            gamePlayerMap.placeCard(middle, i, firstTestCard);
         }
-        assertThrows(PersonalizedException.InvalidPlacementException.class, ()-> gamePlayerMap.placeCard(middle, UtilCostantValue.lunghezzaMaxMappa, firstTestCard, true));
+        assertThrows(PersonalizedException.InvalidPlacementException.class, ()-> gamePlayerMap.placeCard(middle, UtilCostantValue.lunghezzaMaxMappa, firstTestCard));
         for(int i = middle-2; i >= 0 ; i--){
-            gamePlayerMap.placeCard(middle, i, firstTestCard, true);
+            gamePlayerMap.placeCard(middle, i, firstTestCard);
         }
-        assertThrows(PersonalizedException.InvalidPlacementException.class, ()-> gamePlayerMap.placeCard(middle, -1 , firstTestCard, true));
+        assertThrows(PersonalizedException.InvalidPlacementException.class, ()-> gamePlayerMap.placeCard(middle, -1 , firstTestCard));
         for(int i = middle-1; i >= 0 ; i--){
-            gamePlayerMap.placeCard(i , middle, firstTestCard, true);
+            gamePlayerMap.placeCard(i , middle, firstTestCard);
         }
-        assertThrows(PersonalizedException.InvalidPlacementException.class, ()-> gamePlayerMap.placeCard( -1 ,middle, firstTestCard, true));
+        assertThrows(PersonalizedException.InvalidPlacementException.class, ()-> gamePlayerMap.placeCard( -1 ,middle, firstTestCard));
         for(int i = middle+2; i < UtilCostantValue.lunghezzaMaxMappa  ;i++){
-            gamePlayerMap.placeCard( i, middle, firstTestCard, true);
+            gamePlayerMap.placeCard( i, middle, firstTestCard);
         }
-        assertThrows(PersonalizedException.InvalidPlacementException.class, ()-> gamePlayerMap.placeCard( UtilCostantValue.lunghezzaMaxMappa, middle, firstTestCard, true));
+        assertThrows(PersonalizedException.InvalidPlacementException.class, ()-> gamePlayerMap.placeCard( UtilCostantValue.lunghezzaMaxMappa, middle, firstTestCard));
     }
 }

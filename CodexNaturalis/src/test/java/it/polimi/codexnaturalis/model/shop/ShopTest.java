@@ -20,7 +20,7 @@ class ShopTest {
 
     Observer observer = new Observer() {
         @Override
-        public void update(NetworkMessage message) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
+        public void update(NetworkMessage message) {
 
         }
     };

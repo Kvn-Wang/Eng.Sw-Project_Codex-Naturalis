@@ -18,12 +18,7 @@ class PlayerTest {
     ResourceCard firstTestCard = new ResourceCard(1, ResourceType.FUNGI, null, ResourceType.NONE, ResourceType.FUNGI, ResourceType.FUNGI, 0);
     StarterCard starterCard = new StarterCard(81, ResourceType.NONE, ResourceType.NONE, ResourceType.PLANT, ResourceType.INSECT, new ResourceType[]{ResourceType.INSECT}, ResourceType.FUNGI, ResourceType.ANIMAL, ResourceType.PLANT, ResourceType.INSECT);
 
-    Observer observer = new Observer() {
-        @Override
-        public void update(NetworkMessage message) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
-
-        }
-    };
+    Observer observer;
     Player testPlayer1 = new Player("roberto", ColorType.RED, observer);
     int middle = UtilCostantValue.lunghezzaMaxMappa/2;
 
@@ -38,13 +33,17 @@ class PlayerTest {
     public void testPlaceCard() throws PersonalizedException.InvalidPopCardException, PersonalizedException.InvalidNumPopCardException, PersonalizedException.InvalidPlaceCardRequirementException, PersonalizedException.InvalidPlacementException {
         testPlayer1.addHandCard(starterCard);
         Hand testHand = testPlayer1.getHand();
-        testPlayer1.placeCard(middle,middle,0,false);
+
+        starterCard.setIsBack(false);
+        testPlayer1.placeCard(middle,middle,starterCard);
         GamePlayerMap testMap = testPlayer1.getGameMap();
         assertThrows(PersonalizedException.InvalidPopCardException.class, ()->testHand.popCard(0));
         Card testArray[][] = testMap.getMapArray();
         assertEquals(starterCard, testArray[middle][middle]);
         testPlayer1.addHandCard(firstTestCard);
-        assertThrows(PersonalizedException.InvalidPlacementException.class, ()->testPlayer1.placeCard(middle,middle,0,false));
+
+        firstTestCard.setIsBack(false);
+        assertThrows(PersonalizedException.InvalidPlacementException.class, ()->testPlayer1.placeCard(middle,middle,firstTestCard));
         assertEquals(firstTestCard, testHand.popCard(0));
     }
 

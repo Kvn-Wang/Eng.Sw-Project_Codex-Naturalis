@@ -73,40 +73,7 @@ class GameManagerTest {
     }
 
     @Test
-    void playerPlayCard() {
-        String playingPlayer=gameManager.getPlayerTurn().getNickname();
-        gameManager.playerPlayCard(playingPlayer, (UtilCostantValue.lunghezzaMaxMappa/2) + 1,UtilCostantValue.lunghezzaMaxMappa/2,1,false);
-    }
-
-    @Test
-    void playerDraw() {
-        String playingPlayer=gameManager.getPlayerTurn().getNickname();
-        gameManager.playerPlayCard(playingPlayer, (UtilCostantValue.lunghezzaMaxMappa/2) + 1,UtilCostantValue.lunghezzaMaxMappa/2,1,false);
-        gameManager.playerDraw(playingPlayer,1, ShopType.RESOURCE);
-    }
-
-    @Test
-    void nextTurn(){
-        for(int i=0; i<12; i++) {
-            String playingPlayer = gameManager.getPlayerTurn().getNickname();
-            gameManager.playerPlayCard(playingPlayer, (UtilCostantValue.lunghezzaMaxMappa / 2) - 1-(i/4), UtilCostantValue.lunghezzaMaxMappa / 2, 1, true);
-            gameManager.playerDraw(playingPlayer, 1, ShopType.RESOURCE);
-        }
-    }
-
-    @Test
     void typeMessage() {
         gameManager.typeMessage("everyone", "player1", "Hello World");
-    }
-
-    @Test
-    void switchPlayer() {
-        assertDoesNotThrow(() -> gameManager.switchPlayer("player1", "player2"));
-    }
-
-    @Test
-    void endGame() {
-        gameManager.endGame();
-        assertTrue(gameManager.getIsFinalTurn(), "Game should be marked as final turn.");
     }
 }

@@ -16,7 +16,7 @@ class GeneralShopTest {
     ShopType[] shopList = {ShopType.STARTER, ShopType.OBJECTIVE, ShopType.RESOURCE};
     Observer observer = new Observer() {
         @Override
-        public void update(NetworkMessage message) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
+        public void update(NetworkMessage message){
 
         }
     };
@@ -38,7 +38,7 @@ class GeneralShopTest {
             for (ShopType testShop : shopList) {
                 testGeneralShop = new GeneralShop(testShop, new Observer() {
                     @Override
-                    public void update(NetworkMessage message) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
+                    public void update(NetworkMessage message) {
 
                     }
                 });
@@ -56,7 +56,7 @@ class GeneralShopTest {
         for (ShopType testShop : shopList) {
             testGeneralShop = new GeneralShop(testShop, new Observer() {
                 @Override
-                public void update(NetworkMessage message) throws PersonalizedException.InvalidRequestTypeOfNetworkMessage {
+                public void update(NetworkMessage message) {
 
                 }
             });
