@@ -33,7 +33,9 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
      */
     GameState gameState;
     private GameController gameController;
-    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private ExecutorService executorService;
+    private ExecutorService senderExecturorService;
+
     /**
      * variable used for the final turn mechanic
      */
@@ -46,6 +48,13 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
         gameState = GameState.PLAY_PHASE;
         finalGamePhaseTurn = false;
         finalTurn = false;
+
+        /**
+         * create the only executor that will have access to the model of the game, and
+         *  a sender for every player that the model need to contact
+         */
+        executorService = Executors.newSingleThreadExecutor();
+        senderExecturorService = Executors.newFixedThreadPool(this.players.size());
 
         // random order of play
         Collections.shuffle(this.players);
@@ -187,26 +196,32 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     public void update(NetworkMessage message) {
         switch(message.getMessageType()) {
             //messaggi per playerSpecifici con argomenti illimitati
-            case CORRECT_PLACEMENT, GAME_SETUP_GIVE_STARTER_CARD, GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP,
+            case GAME_SETUP_GIVE_STARTER_CARD, GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP,
                     GAME_SETUP_SEND_PERSONAL_MISSION, GAME_SETUP_NOTIFY_TURN, PLACEMENT_CARD_OUTCOME, UPDATE_OTHER_PLAYER_GAME_MAP,
                     DRAWN_CARD_DECK:
-                System.out.println("Messaggio per "+message.getNickname()+" di tipo:"+message.getMessageType());
-                try {
-                    nickToPlayerInfo(message.getNickname()).getClientHandler().showMessage(message);
-                } catch (RemoteException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
 
-            //per messaggi di broadcast con numero illimiatato di args
-            case SCORE_UPDATE, STATUS_PLAYER_CHANGE, DRAW_CARD_UPDATE_SHOP_CARD_POOL, GAME_ENDED:
-                System.out.println("Messaggio broadcast: "+message.getMessageType());
-                for(PlayerInfo p: players){
+                System.out.println("Messaggio per "+message.getNickname()+" di tipo:"+message.getMessageType());
+
+                senderExecturorService.submit(() -> {
                     try {
-                        p.getClientHandler().showMessage(message);
+                        nickToPlayerInfo(message.getNickname()).getClientHandler().showMessage(message);
                     } catch (RemoteException e) {
                         throw new RuntimeException(e);
                     }
+                });
+                break;
+
+            //per messaggi di broadcast con numero illimiatato di args
+            case DRAW_CARD_UPDATE_SHOP_CARD_POOL, GAME_ENDED:
+                System.out.println("Messaggio broadcast: "+message.getMessageType());
+                for(PlayerInfo p: players){
+                    senderExecturorService.submit(() -> {
+                        try {
+                            p.getClientHandler().showMessage(message);
+                        } catch (RemoteException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
                 }
                 break;
 
@@ -217,11 +232,13 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
                  * notify all players
                  */
                 for(PlayerInfo p: players){
-                    try {
-                        p.getClientHandler().showMessage(message);
-                    } catch (RemoteException e) {
-                        throw new RuntimeException(e);
-                    }
+                    senderExecturorService.submit(()  -> {
+                        try {
+                            p.getClientHandler().showMessage(message);
+                        } catch (RemoteException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
                 }
 
                 /**

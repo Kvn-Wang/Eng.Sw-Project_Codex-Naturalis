@@ -24,22 +24,28 @@ public enum MessageType {
 
     //args(0) = joinedPlayerNick
     //args(1) = action that the player has done
-    // (JOIN, LEFT, READY, COLOR(+ args(1) = color), WAIT (quando un player è da solo in lobby e mette ready))
+    // (JOIN, LEFT, READY, WAIT (quando un player è da solo in lobby e mette ready))
     COM_LOBBY_STATUS_NOTIFY,
 
     /**
      * args(0): playerNick
-     * args(1): color
+     * args(1): color (enum)
      */
     COM_SET_PLAYER_COLOR,
+    /**
+     * args(0): isValid
+     * if isValid -> args(1): nickname that chose the color
+     * if isValid -> args(2): color
+     */
+    COM_SET_PLAYER_COLOR_OUTCOME,
 
     //args(0) = playerNickname
     COM_SET_READY_LOBBY_TCP,
+    COM_SET_READY_LOBBY_RESPONSE_TCP,
 
     //args(0) = playerNickname
     COM_LEAVE_LOBBY_TCP,
-
-    COM_ERROR_TCP,
+    COM_LEAVE_LOBBY_RESPONSE_TCP,
 
     //args(0) = playerNickname
     //args(1) = lobbyName
@@ -154,26 +160,6 @@ public enum MessageType {
      * args(2): which card? 0 (topDeck) or 1 or 2
      */
     DRAW_CARD_UPDATE_SHOP_CARD_POOL,
-
-
-
-    /* ---- TODO: non implementati ---- */
-
-    //quando un player va online/offline,
-    // args(0) = playerDisconnectedNickname
-    // args(1) = "true" o "false" boolean to string,
-    STATUS_PLAYER_CHANGE,
-
-    //in GameManager ha personalScoreBoardScore,
-    // args(0) = message.getNickname()
-    // args(1) = message.getArgs()
-    SCORE_UPDATE,
-
-    //args = argsGenerator(playerView.getGameMap())
-    SWITCH_PLAYER_VIEW,
-
-    //args = argsGenerator(getScoreResource())
-    CORRECT_PLACEMENT,
     NOTIFY_FINAL_TURN,
     /**
      * args(0) = arraylist<String> winners

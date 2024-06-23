@@ -20,7 +20,7 @@ public class Hand {
         return cards.get(numCard);
     }
 
-    public void addCard(Card drawnCard) throws PersonalizedException.InvalidAddCardException {
+    public void addCard(Card drawnCard) {
         cards.add(drawnCard);
     }
 

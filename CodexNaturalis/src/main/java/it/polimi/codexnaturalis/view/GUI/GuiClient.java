@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.view.GUI;
 
+import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.enumeration.GameState;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.controller.GameController;
@@ -47,6 +48,16 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
+    public void printChooseColorOutcome(boolean isSuccessful) {
+
+    }
+
+    @Override
+    public void notifyLobbyStatusColor(String otherPlayerNickname, ColorType color) {
+
+    }
+
+    @Override
     public void notifyLobbyStatus(String otherPlayerNickname, String status) {
         if(status.equals("JOIN")) {
             System.out.println(otherPlayerNickname + " has joined the lobby!");
@@ -89,6 +100,11 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printIsYourTurn() {
+
+    }
+
+    @Override
+    public void printIsNotYourTurn() {
 
     }
 

@@ -24,6 +24,6 @@ public interface VirtualServer extends Remote {
     ArrayList<PlayerInfo> joinLobby(String playerNickname, String lobbyName) throws RemoteException;
     void leaveLobby(String playerNickname) throws RemoteException;
     boolean createLobby(String playerNickname, String lobbyName) throws RemoteException;
-    boolean setPlayerColor(String nickname, ColorType colorChosen) throws RemoteException;
+    void setPlayerColor(String nickname, ColorType colorChosen) throws RemoteException;
     void setPlayerReady(String playerNickname) throws RemoteException;
 }

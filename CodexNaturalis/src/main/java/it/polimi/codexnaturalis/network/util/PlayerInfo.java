@@ -29,6 +29,10 @@ public class PlayerInfo implements Serializable {
         this.nickname = nickname;
     }
 
+    public void setColorChosen(ColorType colorChosen) {
+        this.colorChosen = colorChosen;
+    }
+
     public ColorType getColorChosen() {
         return colorChosen;
     }

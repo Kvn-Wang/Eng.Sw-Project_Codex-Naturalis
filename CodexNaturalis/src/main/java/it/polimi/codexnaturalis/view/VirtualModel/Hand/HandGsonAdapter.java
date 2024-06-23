@@ -16,12 +16,7 @@ public class HandGsonAdapter implements JsonDeserializer<Hand> {
         for (JsonElement jsonCard : jsonCards) {
             // Deserialize each card element in the array
             Card card = context.deserialize(jsonCard, Card.class);
-            try {
-                hand.addCard(card); // Add the deserialized card to the hand
-            } catch (PersonalizedException.InvalidAddCardException e) {
-                // Handle exception if needed
-                System.out.println("ERRORE!");
-            }
+            hand.addCard(card); // Add the deserialized card to the hand
         }
         return hand;
     }

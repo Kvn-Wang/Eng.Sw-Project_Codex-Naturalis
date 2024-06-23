@@ -1,6 +1,7 @@
 package it.polimi.codexnaturalis.view.TUI;
 
 import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.enumeration.GameState;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
@@ -19,6 +20,11 @@ public class TuiClient implements TypeOfUI {
     protected VirtualServer networkCommand;
     protected GameController virtualGame;
     protected ClientContainer clientContainer;
+    boolean outcomeSetNick = false;
+    boolean outcomeJoinLobby = false;
+    boolean outcomeChooseColor = false;
+    boolean outcomeJoinGame = false;
+
     private Scanner scan;
     private final Object lock = new Object();
     private StarterCard tempStarterCard;
@@ -37,32 +43,39 @@ public class TuiClient implements TypeOfUI {
         this.networkCommand = virtualServer;
         this.clientContainer = clientContainer;
 
-        // per com'è stato scritto il codice, dopo questa riga avremo un nickname sicuramente settato correttamente
-        // stessa cosa vale per le righe successive
-        printSelectionNicknameRequest();
+        connectToGameProcedure();
     }
 
     private void connectToGameProcedure() throws RemoteException {
-        boolean outcomeSetNick = false;
-        boolean outcomeJoinGame = false;
-        boolean outcomeJoinLobby = false;
-
         while(!outcomeJoinGame) {
             while(!outcomeSetNick) {
                 printSelectionNicknameRequest();
                 doWait();
-                printSelectionNicknameRequestOutcome(outcomeSetNick, "");
             }
 
             while(!outcomeJoinLobby) {
                 networkCommand.getAvailableLobby();
                 doWait(); // aspetti che stampi le lobby
 
-                printSelectionCreateOrJoinLobbyRequest();
+                String command = printSelectionCreateOrJoinLobbyRequest();
+                if(command.equals("CREATE")) {
+                    doWait();
+                } else if(command.equals("LEAVE")) {
+                } else if(command.equals("JOIN")) {
+                    doWait();
+                }
+            }
+
+            while(!outcomeChooseColor) {
+                printChooseColorReq();
+                doWait();
             }
 
             lobbyActionReq();
+            doWait();
         }
+
+        gameSetupProcedure();
     }
 
     @Override
@@ -81,17 +94,15 @@ public class TuiClient implements TypeOfUI {
 
     @Override
     public void printSelectionNicknameRequestOutcome(boolean positiveOutcome, String nickname) {
-        try {
-            if(positiveOutcome) {
-                System.out.println("Welcome: "+ nickname);
-                printSelectionCreateOrJoinLobbyRequest();
-            } else {
-                System.out.println("Nickname already taken, please take an another one.");
-                printSelectionNicknameRequest();
-            }
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
+        if(positiveOutcome) {
+            System.out.println("Welcome: "+ nickname);
+            outcomeSetNick = true;
+        } else {
+            System.out.println("Nickname already taken, please take an another one.");
+            outcomeSetNick = false;
         }
+
+        doNotify();
     }
 
     @Override
@@ -108,21 +119,7 @@ public class TuiClient implements TypeOfUI {
         doNotify();
     }
 
-    public void printSelectionCreateOrJoinLobbyRequest() throws RemoteException {
-        ArrayList<LobbyInfo> lobbies = networkCommand.getAvailableLobby();
-
-        System.out.println("Lobby list:");
-        if(lobbies != null) {
-            for (LobbyInfo elem : lobbies) {
-                System.out.println("  - " + elem.getLobbyName() + " | Player: " + elem.getCurrentPlayer() + "/" + elem.getMaxPlayer() + " | started:" + elem.getIsLobbyStarted());
-            }
-        } else {
-            System.out.println("  - No lobby Available");
-        }
-
-        //aspetta che gli arrivino le lobby dal server e che li stampi
-        //doWait();
-
+    private String printSelectionCreateOrJoinLobbyRequest() throws RemoteException {
         String command;
         System.out.println("Write the name of an existing lobby to join it or write 'CREATE' to create a new lobby");
         command = scan.nextLine();
@@ -133,65 +130,85 @@ public class TuiClient implements TypeOfUI {
                 command = scan.nextLine();
 
                 if(command.equals("LEAVE")) {
-                    printSelectionCreateOrJoinLobbyRequest();
+                    return "LEAVE";
                 } else {
                     networkCommand.createLobby(clientContainer.getNickname(), command);
-                    lobbyActionReq();
+                    return "CREATE";
                 }
-                break;
 
             /**
              * lobby joining
              */
             default:
                 networkCommand.joinLobby(clientContainer.getNickname(), command);
-                break;
+                return "JOIN";
+        }
+    }
+
+    private void printChooseColorReq() {
+        String command;
+
+        do {
+            System.out.println("Choose a color between: ");
+            System.out.println("  - RED");
+            System.out.println("  - BLUE");
+            System.out.println("  - GREEN");
+            System.out.println("  - YELLOW");
+            command = scan.nextLine();
+        } while(!(command.equals("RED") || command.equals("BLUE") || command.equals("GREEN") || command.equals("YELLOW")));
+
+        try {
+            networkCommand.setPlayerColor(clientContainer.getNickname(), ColorType.valueOf(command));
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 
     @Override
-    public void printJoinLobbyOutcome(boolean positiveOutcome, String lobbyName) throws RemoteException {
+    public void printJoinLobbyOutcome(boolean positiveOutcome, String lobbyName) {
         if(positiveOutcome) {
             System.out.println("You've joined the lobby: "+lobbyName);
-            lobbyActionReq();
+            outcomeJoinLobby = true;
         } else {
             System.out.println("You failed to join the lobby");
-            printSelectionCreateOrJoinLobbyRequest();
+            outcomeJoinLobby = false;
         }
+
+        doNotify();
     }
 
     @Override
     public void printCreationLobbyRequestOutcome(boolean outcomePositive, String lobbyName) {
         if(outcomePositive) {
             System.out.println("You successfully created the lobby: "+ lobbyName);
+            outcomeJoinLobby = true;
         } else {
             System.out.println("Creation lobby failed, "+lobbyName+" name has already been taken!");
-            try {
-                printSelectionCreateOrJoinLobbyRequest();
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }
+            outcomeJoinLobby = false;
         }
+
+        doNotify();
     }
 
     // una volta joinata la lobby, puoi entrare o uscire
-    private boolean lobbyActionReq() throws RemoteException {
+    private void lobbyActionReq() throws RemoteException {
         String command;
+        boolean flag = true;
 
-        while(true) {
+        while(flag) {
             System.out.println("Write READY to set your state as ready, LEAVE to leave the lobby");
             command = scan.nextLine();
 
             switch(command) {
                 case "READY":
                     networkCommand.setPlayerReady(clientContainer.getNickname());
-                    gameSetupProcedure();
-                    return true;
+                    flag = false;
+                    break;
 
                 case "LEAVE":
                     networkCommand.leaveLobby(clientContainer.getNickname());
-                    printSelectionCreateOrJoinLobbyRequest();
-                    return false;
+                    flag = false;
+                    break;
 
                 default:
                     System.out.println("Comando non valido");
@@ -215,9 +232,33 @@ public class TuiClient implements TypeOfUI {
     public void lobbyActionOutcome(boolean isReady) {
         if(isReady) {
             System.out.println("You set yourself ready!");
+            outcomeJoinGame = true;
         } else {
             System.out.println("You've left the lobby!");
+            outcomeJoinLobby = false;
+            outcomeChooseColor = false;
+            outcomeJoinGame = false;
         }
+
+        doNotify();
+    }
+
+    @Override
+    public void printChooseColorOutcome(boolean isSuccessful) {
+        if(isSuccessful) {
+            System.out.println("You've confirmed your color");
+            outcomeChooseColor = true;
+        } else {
+            System.out.println("ERR. someone else has already chosen this color!!!");
+            outcomeChooseColor = false;
+        }
+
+        doNotify();
+    }
+
+    @Override
+    public void notifyLobbyStatusColor(String otherPlayerNickname, ColorType color) {
+        System.out.println("The player: "+ otherPlayerNickname +", has chosen the color: "+ color.name());
     }
 
     @Override
@@ -411,6 +452,11 @@ public class TuiClient implements TypeOfUI {
     @Override
     public void printIsYourTurn() {
         System.out.println(ANSI_BLUE + "Is your turn now!!!" + ANSI_RESET);
+    }
+
+    @Override
+    public void printIsNotYourTurn() {
+        System.out.println(ANSI_BLUE + "It's NOT your turn!!!" + ANSI_RESET);
     }
 
     @Override

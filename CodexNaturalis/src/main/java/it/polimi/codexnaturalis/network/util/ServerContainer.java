@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.network.util;
 
+import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.network.lobby.Lobby;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
@@ -9,11 +10,11 @@ import java.util.ArrayList;
 
 public class ServerContainer {
     private static ServerContainer instance;
-    private static ArrayList<PlayerInfo> lobbyLessClients;
+    private static ArrayList<PlayerInfo> activeClients;
     private static ArrayList<Lobby> activeLobby;
 
     private ServerContainer() {
-        lobbyLessClients = new ArrayList<>();
+        activeClients = new ArrayList<>();
         this.activeLobby = new ArrayList<>();
     }
 
@@ -32,7 +33,7 @@ public class ServerContainer {
         if(checkNickGlobalNicknameValidity(nickname)) {
             System.out.println("Created player nickname: " + nickname);
             playerInfo = new PlayerInfo(client, nickname);
-            lobbyLessClients.add(playerInfo);
+            activeClients.add(playerInfo);
 
             return true;
         } else {
@@ -95,6 +96,8 @@ public class ServerContainer {
         if(!lobby.disconnectPlayer(player)) {
             activeLobby.remove(lobby);
         }
+
+        System.out.println(playerNickname + " has left the lobby");
     }
 
     public void setPlayerReady(String playerNickname) throws RemoteException {
@@ -109,7 +112,7 @@ public class ServerContainer {
 
     public boolean checkNickGlobalNicknameValidity(String checkNickname) {
         // check each player that has yet to join a lobby
-        for(PlayerInfo elem : lobbyLessClients) {
+        for(PlayerInfo elem : activeClients) {
             if(elem.getNickname().equals(checkNickname)) {
                 return false;
             }
@@ -137,7 +140,7 @@ public class ServerContainer {
     private PlayerInfo stringToPlayer(String nickname) {
         PlayerInfo player = null;
 
-        for(PlayerInfo elem : lobbyLessClients) {
+        for(PlayerInfo elem : activeClients) {
             if(elem.getNickname().equals(nickname)) {
                 player = elem;
             }
@@ -171,6 +174,13 @@ public class ServerContainer {
         }
 
         throw new PersonalizedException.LobbyNotFoundException("Lobby non trovata per player: " + playerName);
+    }
+
+    public void setPlayerColor(String nickname, ColorType colorType) {
+        PlayerInfo player = stringToPlayer(nickname);
+        Lobby playerLobby = getLobbyByPlayer(nickname);
+
+        playerLobby.setPlayerColor(player, colorType);
     }
 
     public ArrayList<Lobby> getActiveLobby() {

@@ -191,10 +191,6 @@ public class ClientContainer {
     }
 
     public void addCardToHand(Card card) {
-        try {
-            personalHand.addCard(card);
-        } catch(PersonalizedException.InvalidAddCardException e) {
-            e.printStackTrace();
-        }
+        personalHand.addCard(card);
     }
 }

@@ -1,6 +1,7 @@
 package it.polimi.codexnaturalis.network.lobby;
 
 import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.network.util.networkMessage.MessageType;
 import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
@@ -39,12 +40,43 @@ public class Lobby {
     public boolean disconnectPlayer(PlayerInfo player) throws RemoteException {
         listOfPlayers.remove(player);
 
+        /**
+         * reset of the eventual color that he has chosen
+         */
+        player.setColorChosen(null);
+
         broadCastNotify(player.getNickname(), "LEFT");
 
         if(lobbyInfo.removePlayer()) {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public void setPlayerColor(PlayerInfo player, ColorType colorChosen) {
+        boolean someoneHasChosenThatColor = false;
+
+        for(PlayerInfo singlePlayer : listOfPlayers) {
+            if(player != singlePlayer && singlePlayer.getColorChosen() == colorChosen) {
+                someoneHasChosenThatColor = true;
+            }
+        }
+
+        try {
+            if(someoneHasChosenThatColor) {
+                player.notifyPlayer(new NetworkMessage(MessageType.COM_SET_PLAYER_COLOR_OUTCOME,
+                        String.valueOf(false)));
+            } else {
+                player.setColorChosen(colorChosen);
+                // broadCast a tutti che ho selezionato quel colore
+                for(PlayerInfo elem : listOfPlayers) {
+                    elem.notifyPlayer(new NetworkMessage(player.getNickname(), MessageType.COM_SET_PLAYER_COLOR_OUTCOME,
+                            String.valueOf(true), player.getNickname(), String.valueOf(colorChosen)));
+                }
+            }
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -80,9 +112,9 @@ public class Lobby {
     private void connectPlayerToGame() throws RemoteException {
         lobbyInfo.isLobbyStarted = true;
 
+        // passo ad ogni player il virtualGameController e la lista degli altri player
         gameController = new VirtualGame(listOfPlayers);
         for(PlayerInfo playerInfo : listOfPlayers) {
-            // passo ad ogni player il virtualGameController e la lista degli altri player
             playerInfo.getClientHandler().connectToGame(gameController, copyArrayListExceptOne(listOfPlayers, playerInfo));
         }
 

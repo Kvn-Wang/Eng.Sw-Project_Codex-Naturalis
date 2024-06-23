@@ -78,6 +78,23 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 typeOfUI.notifyLobbyStatus(message.getNickname(), message.getArgs().get(0));
                 break;
 
+            case COM_SET_PLAYER_COLOR_OUTCOME:
+                boolean actionSuccessful = Boolean.parseBoolean(message.getArgs().get(0));
+
+                if(actionSuccessful) {
+                    String nickname = message.getArgs().get(1);
+                    ColorType color = ColorType.valueOf(message.getArgs().get(2));
+
+                    if(nickname.equals(clientContainer.getNickname())) {
+                        typeOfUI.printChooseColorOutcome(true);
+                    } else {
+                        typeOfUI.notifyLobbyStatusColor(nickname, color);
+                    }
+                } else {
+                    typeOfUI.printChooseColorOutcome(false);
+                }
+                break;
+
             // ---------  SETUP ----------- //
             case GAME_SETUP_GIVE_STARTER_CARD:
                 //crea un thread che fa l'operazione così che non sia il thread server a gestire la gestione della starter card
@@ -121,8 +138,6 @@ public class RmiClient extends GenericClient implements VirtualServer {
                         clientContainer.initialSetupOfResources(hand, commonMission1, commonMission2,
                                 topDeckCardResource, visible1CardResource, visible2CardResource,
                                 topDeckCardObj, visible1CardObj, visible2CardObj);
-
-                        System.out.println("finished Client setup initial resources");
                     } catch (Exception e) {
                         System.err.println("Err Init resources: "+e.getMessage());
                     }
@@ -138,8 +153,6 @@ public class RmiClient extends GenericClient implements VirtualServer {
                         Mission personalMission2 = gsonTranslator.fromJson(message.getArgs().get(1), Mission.class);
 
                         typeOfUI.givePersonalMission(personalMission1, personalMission2);
-
-                        System.out.println("finished Client setup Personal");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -207,6 +220,10 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 typeOfUI.printIsYourTurn();
                 break;
 
+            case NOT_YOUR_TURN:
+                typeOfUI.printIsNotYourTurn();
+                break;
+
             case NOTIFY_FINAL_TURN:
                 typeOfUI.printIsYourFinalTurn();
                 break;
@@ -236,75 +253,131 @@ public class RmiClient extends GenericClient implements VirtualServer {
     public void connectRMI(VirtualView client, String UUID) throws RemoteException {}
 
     @Override
-    public boolean setNickname(String UUID, String nickname) throws RemoteException {
-        if(server.setNickname(this.ID, nickname)) {
-            clientContainer.setNickname(nickname);
-            typeOfUI.printSelectionNicknameRequestOutcome(true, nickname);
-        } else {
-            typeOfUI.printSelectionNicknameRequestOutcome(false, nickname);
-        }
+    public boolean setNickname(String UUID, String nickname) {
+        serviceThread.submit(() -> {
+            try {
+                if(server.setNickname(this.ID, nickname)) {
+                    clientContainer.setNickname(nickname);
+                    typeOfUI.printSelectionNicknameRequestOutcome(true, nickname);
+                } else {
+                    typeOfUI.printSelectionNicknameRequestOutcome(false, nickname);
+                }
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         //è un ritorno fittizzio, non è utilizzato da nessuno
         return false;
     }
 
     @Override
-    public ArrayList<LobbyInfo> getAvailableLobby() throws RemoteException {
-        typeOfUI.giveLobbies(server.getAvailableLobby());
-        return server.getAvailableLobby();
+    public ArrayList<LobbyInfo> getAvailableLobby() {
+        serviceThread.submit(() -> {
+            try {
+                typeOfUI.giveLobbies(server.getAvailableLobby());
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        //return inutile
+        return null;
     }
 
     @Override
-    public ArrayList<PlayerInfo> joinLobby(String playerNickname, String lobbyName) throws RemoteException {
-        if(server.joinLobby(playerNickname, lobbyName) != null) {
-            clientContainer.setLobbyNickname(lobbyName);
-            typeOfUI.printJoinLobbyOutcome(true, lobbyName);
-        } else {
-            typeOfUI.printJoinLobbyOutcome(false, lobbyName);
-        }
+    public ArrayList<PlayerInfo> joinLobby(String playerNickname, String lobbyName) {
+        serviceThread.submit(() -> {
+            try  {
+                if(server.joinLobby(playerNickname, lobbyName) != null) {
+                    clientContainer.setLobbyNickname(lobbyName);
+                    typeOfUI.printJoinLobbyOutcome(true, lobbyName);
+                } else {
+                    typeOfUI.printJoinLobbyOutcome(false, lobbyName);
+                }
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         return null;
     }
 
     @Override
-    public void leaveLobby(String playerNickname) throws RemoteException {
-        server.leaveLobby(playerNickname);
-        typeOfUI.lobbyActionOutcome(false);
+    public void leaveLobby(String playerNickname) {
+        serviceThread.submit(() -> {
+            try {
+                server.leaveLobby(playerNickname);
+                typeOfUI.lobbyActionOutcome(false);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override
-    public boolean createLobby(String playerNickname, String lobbyName) throws RemoteException {
-        if(server.createLobby(playerNickname, lobbyName)) {
-            clientContainer.setLobbyNickname(lobbyName);
-            typeOfUI.printCreationLobbyRequestOutcome(true, lobbyName);
-        } else {
-            typeOfUI.printCreationLobbyRequestOutcome(false, lobbyName);
-        }
+    public boolean createLobby(String playerNickname, String lobbyName) {
+        serviceThread.submit(() -> {
+            try {
+                if(server.createLobby(playerNickname, lobbyName)) {
+                    clientContainer.setLobbyNickname(lobbyName);
+                    typeOfUI.printCreationLobbyRequestOutcome(true, lobbyName);
+                } else {
+                    typeOfUI.printCreationLobbyRequestOutcome(false, lobbyName);
+                }
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         //ritorno fittizzio
         return false;
     }
 
     @Override
-    public boolean setPlayerColor(String nickname, ColorType colorChosen) throws RemoteException {
-        return server.setPlayerColor(nickname, colorChosen);
+    public void setPlayerColor(String nickname, ColorType colorChosen) {
+        serviceThread.submit(() -> {
+            try {
+                server.setPlayerColor(nickname, colorChosen);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override
-    public void setPlayerReady(String playerNickname) throws RemoteException {
-        server.setPlayerReady(playerNickname);
-        typeOfUI.lobbyActionOutcome(true);
+    public void setPlayerReady(String playerNickname) {
+        serviceThread.submit(() -> {
+            try {
+                server.setPlayerReady(playerNickname);
+                typeOfUI.lobbyActionOutcome(true);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override
-    public void playStarterCard(String playerNick, StarterCard starterCard) throws RemoteException {
-        clientContainer.playedStarterCard(starterCard);
-        personalGameController.playStarterCard(playerNick, starterCard);
+    public void playStarterCard(String playerNick, StarterCard starterCard)  {
+        serviceThread.submit(() -> {
+            try {
+                clientContainer.playedStarterCard(starterCard);
+                personalGameController.playStarterCard(playerNick, starterCard);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override
-    public void playerPersonalMissionSelect(String nickname, Mission mission) throws RemoteException {
-        personalGameController.playerPersonalMissionSelect(nickname, mission);
+    public void playerPersonalMissionSelect(String nickname, Mission mission) {
+        serviceThread.submit(() -> {
+            try {
+                personalGameController.playerPersonalMissionSelect(nickname, mission);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override

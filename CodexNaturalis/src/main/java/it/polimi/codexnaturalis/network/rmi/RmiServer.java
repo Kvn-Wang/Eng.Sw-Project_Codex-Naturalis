@@ -63,7 +63,6 @@ public class RmiServer extends Thread implements VirtualServer {
     @Override
     public void leaveLobby(String playerNickname) throws RemoteException {
         serverContainer.leaveLobby(playerNickname);
-        System.out.println(playerNickname + " has left the lobby");
     }
 
     @Override
@@ -80,8 +79,8 @@ public class RmiServer extends Thread implements VirtualServer {
     }
 
     @Override
-    public boolean setPlayerColor(String nickname, ColorType colorChosen) {
-        return false;
+    public void setPlayerColor(String nickname, ColorType colorChosen) {
+        serverContainer.setPlayerColor(nickname, colorChosen);
     }
 
     @Override

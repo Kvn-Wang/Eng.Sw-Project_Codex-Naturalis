@@ -5,8 +5,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
+import it.polimi.codexnaturalis.model.enumeration.GameState;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
+import it.polimi.codexnaturalis.model.mission.MissionAdapter;
+import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.CardTypeAdapter;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
@@ -19,6 +22,8 @@ import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.view.GenericClient;
 import it.polimi.codexnaturalis.view.TypeOfUI;
+import it.polimi.codexnaturalis.view.VirtualModel.Hand.Hand;
+import it.polimi.codexnaturalis.view.VirtualModel.Hand.HandGsonAdapter;
 
 import java.io.*;
 import java.net.Socket;
@@ -32,12 +37,14 @@ public class SocketClient extends GenericClient implements VirtualServer {
     private String setupNickname;
     private String setupLobbyName;
     private boolean outcomeReceived;
-    private Gson gson;
+    private Gson gsonTranslator = new GsonBuilder()
+            .registerTypeAdapter(Card.class, new CardTypeAdapter())
+            .registerTypeAdapter(Hand.class, new HandGsonAdapter())
+            .registerTypeAdapter(Mission.class, new MissionAdapter())
+            .create();
 
     public SocketClient(TypeOfUI typeOfUI) throws IOException {
         super(typeOfUI);
-
-        gson = new Gson();
 
         String host = "127.0.0.1";
         int port = UtilCostantValue.portSocketServer;
@@ -69,6 +76,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
 
             // Read message and perform action
             switch (message.getMessageType()) {
+                // ---------  Lobby Phase ----------- //
                 case COM_SET_NICKNAME_RESPONSE_TCP:
                     //getArgs = (String) boolean
                     outcomeReceived = Boolean.parseBoolean(argsRX.get(0));
@@ -84,13 +92,13 @@ public class SocketClient extends GenericClient implements VirtualServer {
 
                 case COM_GET_LOBBIES_RESPONSE_TCP:
                     // getArgs = json of lobbiesInfo
-                    ArrayList<LobbyInfo> lobbies = gson.fromJson(argsRX.get(0), new TypeToken<ArrayList<LobbyInfo>>() {}.getType());
+                    ArrayList<LobbyInfo> lobbies = gsonTranslator.fromJson(argsRX.get(0), new TypeToken<ArrayList<LobbyInfo>>() {}.getType());
 
                     typeOfUI.giveLobbies(lobbies);
                     break;
 
                 case COM_CONNECT_GAME_TCP:
-                    ArrayList<PlayerInfo> arg0 = gson.fromJson(argsRX.get(0), new TypeToken<ArrayList<PlayerInfo>>() {}.getType());
+                    ArrayList<PlayerInfo> arg0 = gsonTranslator.fromJson(argsRX.get(0), new TypeToken<ArrayList<PlayerInfo>>() {}.getType());
 
                     connectToGame(this, arg0);
                     break;
@@ -108,11 +116,18 @@ public class SocketClient extends GenericClient implements VirtualServer {
                     }
                     break;
 
+                case COM_SET_READY_LOBBY_RESPONSE_TCP:
+                    typeOfUI.lobbyActionOutcome(true);
+                    break;
+
+                case COM_LEAVE_LOBBY_RESPONSE_TCP:
+                    typeOfUI.lobbyActionOutcome(false);
+                    break;
+
                 case COM_CREATE_LOBBY_OUTCOME_TCP:
                     //getArgs = (String) boolean
                     outcomeReceived = Boolean.parseBoolean(argsRX.get(0));
 
-                    // fa partire una specie di ricorsione finchè il nick non è valido
                     if(outcomeReceived == false) {
                         typeOfUI.printCreationLobbyRequestOutcome(false, setupLobbyName);
                     } else {
@@ -121,42 +136,144 @@ public class SocketClient extends GenericClient implements VirtualServer {
                     }
                     break;
 
+                case COM_SET_PLAYER_COLOR_OUTCOME:
+                    boolean actionSuccessful = Boolean.parseBoolean(message.getArgs().get(0));
+
+                    if(actionSuccessful) {
+                        String nickname = message.getArgs().get(1);
+                        ColorType color = ColorType.valueOf(message.getArgs().get(2));
+
+                        if(nickname.equals(clientContainer.getNickname())) {
+                            typeOfUI.printChooseColorOutcome(true);
+                        } else {
+                            typeOfUI.notifyLobbyStatusColor(nickname, color);
+                        }
+                    } else {
+                        typeOfUI.printChooseColorOutcome(false);
+                    }
+                    break;
+
                 case COM_LOBBY_STATUS_NOTIFY:
                     typeOfUI.notifyLobbyStatus(message.getNickname(), argsRX.get(0));
                     break;
 
-                case STATUS_PLAYER_CHANGE:
+                // ---------  SETUP ----------- //
+                case GAME_SETUP_GIVE_STARTER_CARD:
+                    Card starterCard = gsonTranslator.fromJson(message.getArgs().get(0), Card.class);
+
+                    typeOfUI.giveStarterCard((StarterCard) starterCard);
+                    break;
+
+                case GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP:
+                    //receive setup hand
+                    Card resourceCard1 = gsonTranslator.fromJson(message.getArgs().get(0), Card.class);
+                    Card resourceCard2 = gsonTranslator.fromJson(message.getArgs().get(1), Card.class);
+                    Card ObjCard1 = gsonTranslator.fromJson(message.getArgs().get(2), Card.class);
+                    Hand hand = new Hand();
+                    hand.addCard(resourceCard1);
+                    hand.addCard(resourceCard2);
+                    hand.addCard(ObjCard1);
+
+                    // 2 common mission
+                    Mission commonMission1 = gsonTranslator.fromJson(message.getArgs().get(3), Mission.class);
+                    Mission commonMission2 = gsonTranslator.fromJson(message.getArgs().get(4), Mission.class);
+                    // topDeckCard + 2 visible resource card from shop
+                    Card topDeckCardResource = gsonTranslator.fromJson(message.getArgs().get(5), Card.class);
+                    Card visible1CardResource = gsonTranslator.fromJson(message.getArgs().get(6), Card.class);
+                    Card visible2CardResource = gsonTranslator.fromJson(message.getArgs().get(7), Card.class);
+
+                    // topDeckCard + 2 visible objective card from shop
+                    Card topDeckCardObj = gsonTranslator.fromJson(message.getArgs().get(8), Card.class);
+                    Card visible1CardObj = gsonTranslator.fromJson(message.getArgs().get(9), Card.class);
+                    Card visible2CardObj = gsonTranslator.fromJson(message.getArgs().get(10), Card.class);
+
+                    clientContainer.initialSetupOfResources(hand, commonMission1, commonMission2,
+                            topDeckCardResource, visible1CardResource, visible2CardResource,
+                            topDeckCardObj, visible1CardObj, visible2CardObj);
+                    break;
+
+                case GAME_SETUP_SEND_PERSONAL_MISSION:
+                    //receive personal mission
+                    Mission personalMission1 = gsonTranslator.fromJson(message.getArgs().get(0), Mission.class);
+                    Mission personalMission2 = gsonTranslator.fromJson(message.getArgs().get(1), Mission.class);
+
+                    typeOfUI.givePersonalMission(personalMission1, personalMission2);
+                    break;
+
+                case GAME_SETUP_NOTIFY_TURN:
+                    typeOfUI.notifyIsYourTurnInitPhase(Boolean.parseBoolean(message.getArgs().get(0)));
+                    break;
+
+                // ---------  GAME Phase ----------- //
+                case DRAW_CARD_UPDATE_SHOP_CARD_POOL:
+                    Card cardShop = gsonTranslator.fromJson(message.getArgs().get(0), Card.class);
+                    ShopType shopType = ShopType.valueOf(message.getArgs().get(1));
+                    int numShopCardToBeUpdated = Integer.parseInt(message.getArgs().get(2));
+
+                    clientContainer.updateShopCard(cardShop, shopType, numShopCardToBeUpdated);
+                    break;
+
+                case DRAWN_CARD_DECK:
+                    Card cardDrawn = gsonTranslator.fromJson(message.getArgs().get(0), Card.class);
+
+                    clientContainer.addCardToHand(cardDrawn);
+                    break;
+
+                case PLACEMENT_CARD_OUTCOME:
+                    boolean isValidPlacement = Boolean.parseBoolean(message.getArgs().get(0));
+
+                    if(isValidPlacement) {
+                        Card playedCard = gsonTranslator.fromJson(message.getArgs().get(1), Card.class);
+                        PlayerScoreResource playerScoreResource = gsonTranslator.fromJson(message.getArgs().get(2), PlayerScoreResource.class);
+                        int updatedScoreBoardValue = Integer.parseInt(message.getArgs().get(3));
+
+                        clientContainer.playedCard(playedCard);
+                        clientContainer.updateScore(updatedScoreBoardValue, playerScoreResource);
+                        typeOfUI.outcomePlayCard(true);
+                    } else {
+                        typeOfUI.outcomePlayCard(false);
+                    }
+
+                    break;
+
+                case UPDATE_OTHER_PLAYER_GAME_MAP:
+                    String nickName = message.getArgs().get(0);
+                    Card playedCard = gsonTranslator.fromJson(message.getArgs().get(1), Card.class);
+                    int x_pos = Integer.parseInt(message.getArgs().get(2));
+                    int y_pos = Integer.parseInt(message.getArgs().get(3));
+
+                    System.out.println("the player: "+nickName+" has played a card in ("+x_pos+","+y_pos+")");
+
+                    clientContainer.updateOtherPlayerMap(nickName, x_pos, y_pos, playedCard);
+                    break;
+
+                case ERR_GAME_STATE_COMMAND:
+                    GameState currGameState = GameState.valueOf(message.getArgs().get(0));
+                    typeOfUI.printErrorCommandSentGameState(currGameState);
+                    break;
+
+                case YOUR_TURN:
+                    typeOfUI.printIsYourTurn();
                     break;
 
                 case NOT_YOUR_TURN:
+                    typeOfUI.printIsNotYourTurn();
                     break;
 
-                case SCORE_UPDATE:
+                case NOTIFY_FINAL_TURN:
+                    typeOfUI.printIsYourFinalTurn();
                     break;
 
-                case SWITCH_PLAYER_VIEW:
-                    break;
+                case GAME_ENDED:
+                    ArrayList<String> winnerNicknames = gsonTranslator.fromJson(message.getArgs().get(0),
+                            new TypeToken<ArrayList<String>>() {}.getType());
 
-                case GAME_SETUP_GIVE_STARTER_CARD:
-                    Gson cardTranslator = new GsonBuilder()
-                            .registerTypeAdapter(Card.class, new CardTypeAdapter())
-                            .create();
+                    typeOfUI.printWinners(winnerNicknames);
 
-                    System.out.println("received starter card: "+ message.getArgs().get(0));
-                    Card supp = cardTranslator.fromJson(message.getArgs().get(0), Card.class);
-
-                    typeOfUI.giveStarterCard((StarterCard) supp);
-                    break;
-
-                case CORRECT_PLACEMENT:
-                    break;
-
-                case COM_ERROR_TCP:
-                    //TODO
                     break;
 
                 default:
-                    // sono messaggi di notifiche
+                    //se non è nessuno dei messaggi precedenti, vuol dire che devo mostrare il messaggio
                     System.out.println(message.getArgs().get(0));
                     break;
             }
@@ -164,24 +281,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
     }
 
     @Override
-    public void showMessage(NetworkMessage message) throws RemoteException {
-        switch(message.getMessageType()) {
-            case STATUS_PLAYER_CHANGE:
-                break;
-
-            case NOT_YOUR_TURN:
-                break;
-
-            case SCORE_UPDATE:
-                break;
-
-            case SWITCH_PLAYER_VIEW:
-                break;
-
-            case CORRECT_PLACEMENT:
-                break;
-        }
-    }
+    public void showMessage(NetworkMessage message) throws RemoteException {}
 
     @Override
     public void connectToGame(GameController gameController, ArrayList<PlayerInfo> listOtherPlayer) {
@@ -222,6 +322,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
     public ArrayList<LobbyInfo> getAvailableLobby() throws RemoteException {
         socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_GET_LOBBIES_TCP)));
 
+        //return inutile
         return null;
     }
 
@@ -237,16 +338,12 @@ public class SocketClient extends GenericClient implements VirtualServer {
     @Override
     public void leaveLobby(String playerNickname) throws RemoteException {
         socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_LEAVE_LOBBY_TCP, playerNickname)));
-
-        typeOfUI.lobbyActionOutcome(false);
-
-        //reset della variabile in attesa di altri ACK
-        outcomeReceived = false;
     }
 
     @Override
     public boolean createLobby(String playerNickname, String lobbyName) throws RemoteException {
         setupLobbyName = lobbyName;
+
         socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_CREATE_LOBBY_TCP, playerNickname, lobbyName)));
 
         //return inutile
@@ -254,35 +351,38 @@ public class SocketClient extends GenericClient implements VirtualServer {
     }
 
     @Override
-    public boolean setPlayerColor(String nickname, ColorType colorChosen) {
-        return false;
+    public void setPlayerColor(String nickname, ColorType colorChosen) {
+        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_SET_PLAYER_COLOR,
+                nickname, String.valueOf(colorChosen))));
     }
 
     @Override
     public void setPlayerReady(String playerNickname) throws RemoteException {
         socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_SET_READY_LOBBY_TCP, playerNickname)));
-
-        typeOfUI.lobbyActionOutcome(true);
     }
 
     @Override
     public void playStarterCard(String playerNick, StarterCard starterCard) {
-
+        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.GAME_SETUP_STARTER_CARD_PLAY,
+                playerNick, argsGenerator(starterCard))));
     }
 
     @Override
     public void playerPersonalMissionSelect(String nickname, Mission mission) throws RemoteException {
-
+        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.GAME_SETUP_CHOOSE_PERSONAL_MISSION,
+                nickname, argsGenerator(mission))));
     }
 
     @Override
     public void playerDraw(String nickname, int numcard, ShopType type) throws RemoteException {
-
+        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.DRAW_CARD,
+                nickname, String.valueOf(type), String.valueOf(numcard))));
     }
 
     @Override
     public void playerPlayCard(String nickname, int x, int y, Card playedCard) throws RemoteException {
-
+        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.PLAY_CARD,
+                nickname, argsGenerator(playedCard), String.valueOf(x), String.valueOf(y))));
     }
 
     @Override
@@ -293,4 +393,9 @@ public class SocketClient extends GenericClient implements VirtualServer {
     // not implemented
     @Override
     public void gameEnd() throws RemoteException {}
+
+    private String argsGenerator(Object object){
+        Gson gson = new Gson();
+        return gson.toJson(object);
+    }
 }
