@@ -18,8 +18,6 @@ public class Player extends Observable implements PlayerInterface {
     private Mission selectedPersonalMission;
     private PlayerScoreResource scoreResource;
     private GamePlayerMap gameMap;
-    private Hand hand;
-    private String pawnImg;
 
     public Player(String nick, ColorType color){
         nickname = nick;
@@ -29,8 +27,6 @@ public class Player extends Observable implements PlayerInterface {
         selectedPersonalMission = null;
         scoreResource = new PlayerScoreResource();
         gameMap = new GamePlayerMap(scoreResource);
-        hand = new Hand();
-        pawnImg = null;//TODO:mettere case con inserimento immagine
     }
 
     public Player(String nick, ColorType color, Observer observer){
@@ -41,26 +37,11 @@ public class Player extends Observable implements PlayerInterface {
         selectedPersonalMission = null;
         scoreResource = new PlayerScoreResource();
         gameMap = new GamePlayerMap(scoreResource);
-        hand = new Hand();
-        pawnImg = null;//TODO:mettere case con inserimento immagine
         addObserver(observer);
-    }
-
-    public void addHandCard(Card drawnCard) {
-        try {
-            hand.addCard(drawnCard);
-            //notifyObserverSingle(new NetworkMessage(nickname, MessageType.CORRECT_DRAW_CARD, this.argsGenerator(hand)));
-        } catch (PersonalizedException.InvalidAddCardException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public String getNickname() {
         return nickname;
-    }
-
-    public Hand getHand() {
-        return hand;
     }
 
     @Override
@@ -100,11 +81,6 @@ public class Player extends Observable implements PlayerInterface {
     @Override
     public int getPersonalScore() {
         return personalScoreBoardScore;
-    }
-
-    @Override
-    public ColorType getPawnColor() {
-        return pawnColor;
     }
 
     @Override

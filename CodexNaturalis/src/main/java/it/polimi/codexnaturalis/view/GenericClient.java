@@ -1,8 +1,6 @@
 package it.polimi.codexnaturalis.view;
 
 import it.polimi.codexnaturalis.controller.GameController;
-import it.polimi.codexnaturalis.model.mission.Mission;
-import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;

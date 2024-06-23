@@ -2,7 +2,7 @@ package it.polimi.codexnaturalis.view.VirtualModel;
 
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
-import it.polimi.codexnaturalis.model.player.Hand;
+import it.polimi.codexnaturalis.view.VirtualModel.Hand.Hand;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;

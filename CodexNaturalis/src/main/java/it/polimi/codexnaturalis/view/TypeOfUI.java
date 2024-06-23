@@ -3,12 +3,8 @@ package it.polimi.codexnaturalis.view;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.GameState;
 import it.polimi.codexnaturalis.model.mission.Mission;
-import it.polimi.codexnaturalis.model.player.Hand;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
-import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
-import it.polimi.codexnaturalis.network.util.PlayerInfo;
-import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;

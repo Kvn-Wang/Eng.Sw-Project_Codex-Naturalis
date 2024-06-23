@@ -5,11 +5,10 @@ import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.ResourceCard;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
-import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.utils.observer.Observer;
-import org.junit.jupiter.api.BeforeEach;
+import it.polimi.codexnaturalis.view.VirtualModel.Hand.Hand;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,28 +22,15 @@ class PlayerTest {
     int middle = UtilCostantValue.lunghezzaMaxMappa/2;
 
     @Test
-    public void testAddHandCard() throws PersonalizedException.InvalidPopCardException, PersonalizedException.InvalidNumPopCardException {
-        testPlayer1.addHandCard(firstTestCard);
-        Hand testHand = testPlayer1.getHand();
-        assertEquals(firstTestCard, testHand.popCard(0));
-    }
-
-    @Test
-    public void testPlaceCard() throws PersonalizedException.InvalidPopCardException, PersonalizedException.InvalidNumPopCardException, PersonalizedException.InvalidPlaceCardRequirementException, PersonalizedException.InvalidPlacementException {
-        testPlayer1.addHandCard(starterCard);
-        Hand testHand = testPlayer1.getHand();
-
+    public void testPlaceCard() throws PersonalizedException.InvalidPlaceCardRequirementException, PersonalizedException.InvalidPlacementException {
         starterCard.setIsBack(false);
         testPlayer1.placeCard(middle,middle,starterCard);
         GamePlayerMap testMap = testPlayer1.getGameMap();
-        assertThrows(PersonalizedException.InvalidPopCardException.class, ()->testHand.popCard(0));
         Card testArray[][] = testMap.getMapArray();
         assertEquals(starterCard, testArray[middle][middle]);
-        testPlayer1.addHandCard(firstTestCard);
 
         firstTestCard.setIsBack(false);
         assertThrows(PersonalizedException.InvalidPlacementException.class, ()->testPlayer1.placeCard(middle,middle,firstTestCard));
-        assertEquals(firstTestCard, testHand.popCard(0));
     }
 
     @Test

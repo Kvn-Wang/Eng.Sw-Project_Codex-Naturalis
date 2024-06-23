@@ -9,8 +9,8 @@ import it.polimi.codexnaturalis.model.enumeration.GameState;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.mission.MissionAdapter;
-import it.polimi.codexnaturalis.model.player.Hand;
-import it.polimi.codexnaturalis.model.player.HandGsonAdapter;
+import it.polimi.codexnaturalis.view.VirtualModel.Hand.Hand;
+import it.polimi.codexnaturalis.view.VirtualModel.Hand.HandGsonAdapter;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.CardTypeAdapter;
@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class RmiClient extends GenericClient implements VirtualServer {
     private final String serverName = UtilCostantValue.RMIServerName;

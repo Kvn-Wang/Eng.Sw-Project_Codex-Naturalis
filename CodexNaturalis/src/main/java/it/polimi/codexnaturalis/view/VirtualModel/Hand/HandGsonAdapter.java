@@ -1,4 +1,4 @@
-package it.polimi.codexnaturalis.model.player;
+package it.polimi.codexnaturalis.view.VirtualModel.Hand;
 
 import com.google.gson.*;
 import it.polimi.codexnaturalis.model.shop.card.Card;

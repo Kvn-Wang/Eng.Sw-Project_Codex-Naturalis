@@ -1,4 +1,4 @@
-package it.polimi.codexnaturalis.model.player;
+package it.polimi.codexnaturalis.view.VirtualModel.Hand;
 
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
@@ -22,19 +22,9 @@ public class Hand {
 
     public void addCard(Card drawnCard) throws PersonalizedException.InvalidAddCardException {
         cards.add(drawnCard);
-        /*if(cards.size() <= 3) {
-
-        } else {
-            throw new PersonalizedException.InvalidAddCardException();
-        }*/
     }
 
     public Card popCard(int numCard) throws PersonalizedException.InvalidPopCardException {
-        /*System.out.println("Qualcuno ha giocato la carta: " + numCard);
-        for(Card elem : cards) {
-            System.out.println(elem);
-        }*/
-
         if(0 <= cards.size() && numCard < cards.size()) {
             return cards.remove(numCard);
             }

@@ -21,9 +21,6 @@ public class TestScoreCard {
             //newp.setPawnColor(inputString);
             players[i] = newp;
         }
-        for(int i = 0; i<4; i++){
-            System.out.println(players[i].getNickname() + players[i].getPawnColor());
-        }
 //        ScoreBoard board = new ScoreBoard(players);
 //        for(Pawn p: board.getpawns()) {
 //            System.out.printf("%n%s", p.getPlayer().getNickname());
