@@ -74,12 +74,13 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void notifyIsYourTurnInitPhase(boolean isYourTurn) {
-        GuiGame.turnNotify();
+        GuiGame.turnNotify(isYourTurn);
     }
 
     @Override
     public void outcomePlayCard(boolean isValidPlacement) {
-
+        System.out.println("played card outcome: " + isValidPlacement);
+        GuiGame.validPlacement(isValidPlacement);
     }
 
     @Override
