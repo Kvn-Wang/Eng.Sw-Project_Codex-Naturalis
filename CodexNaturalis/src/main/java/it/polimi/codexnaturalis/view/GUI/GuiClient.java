@@ -78,11 +78,6 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
-    public void startGamePhase() {
-
-    }
-
-    @Override
     public void outcomePlayCard(boolean isValidPlacement) {
 
     }

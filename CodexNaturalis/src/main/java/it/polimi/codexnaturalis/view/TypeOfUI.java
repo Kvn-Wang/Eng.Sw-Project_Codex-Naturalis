@@ -24,7 +24,6 @@ public interface TypeOfUI {
     void notifyIsYourTurnInitPhase(boolean isYourTurn);
 
     /*---- PLAY ----*/
-    void startGamePhase();
     // i valori aggiornati dei score sono nel container
     void outcomePlayCard(boolean isValidPlacement);
 

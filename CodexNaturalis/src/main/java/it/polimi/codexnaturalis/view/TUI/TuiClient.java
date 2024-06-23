@@ -21,6 +21,9 @@ public class TuiClient implements TypeOfUI {
     protected ClientContainer clientContainer;
     private Scanner scan;
     private final Object lock = new Object();
+    private StarterCard tempStarterCard;
+    private Mission tempMission1;
+    private Mission tempMission2;
     private static final String ANSI_RESET = "\033[0m";
     private static final String ANSI_BLUE = "\033[34m";
     private static final String ANSI_RED = "\u001B[31m";
@@ -37,6 +40,29 @@ public class TuiClient implements TypeOfUI {
         // per com'è stato scritto il codice, dopo questa riga avremo un nickname sicuramente settato correttamente
         // stessa cosa vale per le righe successive
         printSelectionNicknameRequest();
+    }
+
+    private void connectToGameProcedure() throws RemoteException {
+        boolean outcomeSetNick = false;
+        boolean outcomeJoinGame = false;
+        boolean outcomeJoinLobby = false;
+
+        while(!outcomeJoinGame) {
+            while(!outcomeSetNick) {
+                printSelectionNicknameRequest();
+                doWait();
+                printSelectionNicknameRequestOutcome(outcomeSetNick, "");
+            }
+
+            while(!outcomeJoinLobby) {
+                networkCommand.getAvailableLobby();
+                doWait(); // aspetti che stampi le lobby
+
+                printSelectionCreateOrJoinLobbyRequest();
+            }
+
+            lobbyActionReq();
+        }
     }
 
     @Override
@@ -149,32 +175,40 @@ public class TuiClient implements TypeOfUI {
     }
 
     // una volta joinata la lobby, puoi entrare o uscire
-    public void lobbyActionReq() throws RemoteException {
+    private boolean lobbyActionReq() throws RemoteException {
         String command;
-        boolean flag;
 
-        flag = true;
-        while(flag) {
+        while(true) {
             System.out.println("Write READY to set your state as ready, LEAVE to leave the lobby");
             command = scan.nextLine();
 
             switch(command) {
                 case "READY":
                     networkCommand.setPlayerReady(clientContainer.getNickname());
-                    flag = false;
-                    break;
+                    gameSetupProcedure();
+                    return true;
 
                 case "LEAVE":
                     networkCommand.leaveLobby(clientContainer.getNickname());
-                    flag = false;
                     printSelectionCreateOrJoinLobbyRequest();
-                    break;
+                    return false;
 
                 default:
                     System.out.println("Comando non valido");
                     break;
             }
         }
+    }
+
+    private void gameSetupProcedure() {
+        doWait();
+        printStarterCardReq(tempStarterCard);
+
+        doWait();
+        printSelectPersonalMission(tempMission1, tempMission2);
+
+        doWait();
+        startGamePhase();
     }
 
     @Override
@@ -229,11 +263,18 @@ public class TuiClient implements TypeOfUI {
 
     @Override
     public void giveStarterCard(StarterCard starterCard) {
-        printStarterCardReq(starterCard);
+        tempStarterCard = starterCard;
+        doNotify();
     }
 
     @Override
     public void givePersonalMission(Mission choice1, Mission choice2) {
+        tempMission1 = choice1;
+        tempMission2 = choice2;
+        doNotify();
+    }
+
+    private void printSelectPersonalMission(Mission choice1, Mission choice2) {
         String command;
         System.out.println("Personal mission 1: " + choice1.getMissionType());
         PrintMissionClass.printMission(choice1);
@@ -267,11 +308,12 @@ public class TuiClient implements TypeOfUI {
     @Override
     public void notifyIsYourTurnInitPhase(boolean isYourTurn) {
         System.out.println(ANSI_BLUE + "Is my turn: "+ isYourTurn + "" + ANSI_RESET);
+        doNotify();
     }
 
-    @Override
-    public void startGamePhase() {
+    private void startGamePhase() {
         String command;
+
         while(true) {
             System.out.println("1) if you want to see yours map");
             System.out.println("2) if you want to play a card");
@@ -313,6 +355,11 @@ public class TuiClient implements TypeOfUI {
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
                 }
+
+                /**
+                 * wait the server response
+                 */
+                doWait();
             }else if(command.equals("3")) {
                 ShopType shopType;
                 int numCard;
@@ -353,6 +400,7 @@ public class TuiClient implements TypeOfUI {
     @Override
     public void outcomePlayCard(boolean isValidPlacement) {
         System.out.println(ANSI_BLUE + "The played card isValid: "+ isValidPlacement + ""+ ANSI_RESET);
+        doNotify();
     }
 
     @Override
