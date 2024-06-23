@@ -49,6 +49,7 @@ public class GuiGame extends Application {
     private static VBox missionList;
     private static Pane map;
     private static Pane cameraView;
+    private static Rectangle cardBeingPlaced;
     private static double cameraX=500;
     private static double cameraY=300;
     private static double maxPlusX=100;
@@ -149,47 +150,24 @@ public class GuiGame extends Application {
         });
     }
 
-    public static void UpdateShop(){
-        Platform.runLater(() -> {
-
-        });
-    }
-
-    public static void UpdateHand(Hand lol){
-        Platform.runLater(() -> {
-            System.out.println("update");
-            Hand hand=clientContainer.getPersonalHand();
-            boolean alreadyInHand;
-            for (int i = 0; i < hand.getCards().size(); i++) {
-                alreadyInHand = false;
-                for (GuiCard handCard : handCards) {
-                    if (handCard.getCard().equals(hand.getCards().get(i))) {
-                        alreadyInHand = true;
-                        break;
-                    }
-                }
-                if (!alreadyInHand) {
-                    handCards.add(new GuiCard(hand.getCards().get(i), anchorPointsMatrix));
-                    vHand.getChildren().add(handCards.getLast().getRectangle());
-                    handCards.getLast().setNum(i);
-                    handCards.getLast().getRectangle().setTranslateX(170 * i);
-                }
-            }
-        });
-    }
-
-    public static void turnNotify(){
+    public static void turnNotify(Boolean isYourTurn){
         Platform.runLater(() -> {
             Popup popup = new Popup();
             Button closePop = new Button("ok");
-            Label nick = new Label("é il tuo turno");
+            Label turn = new Label();
+            if(isYourTurn){
+                turn.setText("é il tuo turno");
+            }
+            else{
+                turn.setText("é il turno di un altro giocatore");
+            }
             closePop.setOnAction(event -> {
                 if (popup.isShowing()) {
                     popup.hide();
                 }
             });
             VBox vBox = new VBox(
-                    nick,
+                    turn,
                     closePop
             );
             popup.getContent().add(vBox);
@@ -197,15 +175,17 @@ public class GuiGame extends Application {
         });
     }
 
-    public static void commonMissionSetup(Mission mission1, Mission mission2){
+    public static void missionSelection(Mission mission1, Mission mission2){
         Platform.runLater(() -> {
-//            CommonMissionBox missionAlert = new CommonMissionBox();
-//            missionAlert.setMission(mission1, mission2);
-//            missionAlert.display("Shared Missions", 700, 300);
+            updateHand(clientContainer.getPersonalHand());
             Label request = new Label("Missioni Comuni");
-            Gson gson = new Gson();
-            String mission1Path = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+mission1.getPngNumber()+".png";
-            String mission2Path = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+mission2.getPngNumber()+".png";
+            Gson gsonTranslator = new GsonBuilder()
+                    .registerTypeAdapter(Card.class, new CardTypeAdapter())
+                    .registerTypeAdapter(Hand.class, new HandGsonAdapter())
+                    .registerTypeAdapter(Mission.class, new MissionAdapter())
+                    .create();
+            String mission1Path = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+clientContainer.getCommonMission1().getPngNumber()+".png";
+            String mission2Path = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+clientContainer.getCommonMission2().getPngNumber()+".png";
             missions[0]= new Rectangle(170, 100, new ImagePattern(new Image(GuiGame.class.getResourceAsStream(mission1Path))));
             missions[0].setStroke(null);
             missions[1]= new Rectangle(170, 100, new ImagePattern(new Image(GuiGame.class.getResourceAsStream(mission2Path))));
@@ -214,21 +194,62 @@ public class GuiGame extends Application {
             missionList.getChildren().add(request);
             missionList.getChildren().add(missions[0]);
             missionList.getChildren().add(missions[1]);
-        });
-    }
-    public static void missionSelection(Mission mission1, Mission mission2){
-        Platform.runLater(() -> {
-            Gson gsonTranslator = new GsonBuilder()
-                    .registerTypeAdapter(Card.class, new CardTypeAdapter())
-                    .registerTypeAdapter(Hand.class, new HandGsonAdapter())
-                    .registerTypeAdapter(Mission.class, new MissionAdapter())
-                    .create();
+
             MissionSelectBox missionAlert = new MissionSelectBox();
             missionAlert.setMission(mission1, mission2);
             try {
-                vgc.playerPersonalMissionSelect(playerNickname, gsonTranslator.fromJson(missionAlert.display("Mission selection", 800, 700), Mission.class));
+                Mission selectedMission = gsonTranslator.fromJson(missionAlert.display("Mission selection", 800, 700), Mission.class);
+                vgc.playerPersonalMissionSelect(playerNickname, selectedMission);
+                String mission3Path = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+selectedMission.getPngNumber()+".png";
+                missions[2]= new Rectangle(170, 100, new ImagePattern(new Image(GuiGame.class.getResourceAsStream(mission3Path))));
+                missions[2].setStroke(null);
+                missionList.getChildren().add(missions[2]);
+                clientContainer.setPersonalMission(selectedMission);
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
+            }
+        });
+    }
+
+    public static void validPlacement(boolean isValidPlacement) {
+        if(isValidPlacement){
+            System.out.println("successful placement");
+            map.getChildren().add(cardBeingPlaced);
+            updateHand(clientContainer.getPersonalHand());
+        }
+        else{
+            updateHand(clientContainer.getPersonalHand());
+        }
+    }
+
+    private static void updateHand(Hand personalHand) {
+        Platform.runLater(() -> {
+            System.out.println("Hand Update");
+//            boolean alreadyInHand;
+//            for (int i = 0; i < personalHand.getCards().size(); i++) {
+//                alreadyInHand = false;
+//                for (GuiCard handCard : handCards) {
+//                    if (handCard.getCard() != null)
+//                        if (handCard.getCard().equals(personalHand.getCards().get(i))) {
+//                            alreadyInHand = true;
+//                            break;
+//                        }
+//                }
+//                if (!alreadyInHand) {
+//                    handCards.add(new GuiCard(personalHand.getCards().get(i), anchorPointsMatrix));
+//                    vHand.getChildren().add(handCards.getLast().getRectangle());
+//                    handCards.getLast().setNum(i);
+//                }
+//
+//                }
+//            }
+            vHand.getChildren().clear();
+            int i=0;
+            for(Card card: personalHand.getCards()) {
+                handCards.add(new GuiCard(card, anchorPointsMatrix));
+                vHand.getChildren().add(handCards.getLast().getRectangle());
+                handCards.getLast().setNum(i);
+                i++;
             }
         });
     }
@@ -481,6 +502,7 @@ public class GuiGame extends Application {
                     moveCamera(-newRect.getBoundsInLocal().getCenterX(), -newRect.getBoundsInLocal().getCenterY());
                     try {
                         vgc.playStarterCard(playerNickname, gsonTranslator.fromJson(cardString, StarterCard.class));
+                        map.getChildren().add(newRect);
                     } catch (RemoteException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -514,16 +536,14 @@ public class GuiGame extends Application {
                     if (closestAnchor != null && closestDistance < snapThreshold) {
                         newRect.setTranslateX(closestAnchor.getCenterX() - newRect.getBoundsInLocal().getCenterX());
                         newRect.setTranslateY(closestAnchor.getCenterY() - newRect.getBoundsInLocal().getCenterY());
-                        /*try {
-                            vgc.playerPlayCard(playerNickname, x, y, Integer.parseInt(droppedStrings[1]), Boolean.parseBoolean(droppedStrings[0]));
-                        } catch (PersonalizedException.InvalidPlacementException |
-                                 PersonalizedException.InvalidPlaceCardRequirementException | RemoteException ex) {
+                        try {
+                            vgc.playerPlayCard(playerNickname, x, y, gsonTranslator.fromJson(cardString, Card.class));
+                        } catch (RemoteException ex) {
                             throw new RuntimeException(ex);
-                        }*/
+                        }
                     }
                 }
-
-                map.getChildren().add(newRect);
+                cardBeingPlaced = newRect;
                 success = true;
             }
 
@@ -534,6 +554,7 @@ public class GuiGame extends Application {
 
         game.setCenter(cameraView);
         game.setBottom(vHand);
+        game.setLeft(missionList);
 
         for(Circle[] rows : anchorPointsMatrix) {
             for (Circle anchor : rows) {
@@ -621,7 +642,7 @@ public class GuiGame extends Application {
 
     private Pane handLayer(){
         handCards = new ArrayList<GuiCard>();
-        return new Pane();
+        return new HBox();
     }
 
     private VBox missionLayer(){
