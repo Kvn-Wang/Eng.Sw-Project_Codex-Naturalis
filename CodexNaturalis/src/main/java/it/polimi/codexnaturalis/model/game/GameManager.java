@@ -23,6 +23,9 @@ import java.rmi.RemoteException;
 import java.util.*;
 
 
+/**
+ * The type Game manager.
+ */
 public class GameManager extends Observable implements GameController {
     private Mission sharedMission1;
     private Mission sharedMission2;
@@ -37,9 +40,18 @@ public class GameManager extends Observable implements GameController {
     private int playerThatHasPlayedPersonalMission;
     private Observer vobs;
     private MissionSelector missionSelector;
-    //variabile che mi serve per contattare virtualGame che dentro playCard è entrato nella catch
+    /**
+     * The Error during playing phase.
+     * Variable that I need to contact virtual game that reached the catch inside playCard
+     */
     public boolean errorDuringPlayingPhase;
 
+    /**
+     * Instantiates a new Game manager.
+     *
+     * @param playerInfo the player info
+     * @param observer   the observer
+     */
     public GameManager(ArrayList<PlayerInfo> playerInfo, Observer observer) {
         networkPlayer = playerInfo;
         players = new Player[playerInfo.size()];

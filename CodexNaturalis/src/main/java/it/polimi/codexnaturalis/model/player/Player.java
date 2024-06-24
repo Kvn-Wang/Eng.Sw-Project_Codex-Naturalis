@@ -10,6 +10,9 @@ import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.observer.Observable;
 import it.polimi.codexnaturalis.utils.observer.Observer;
 
+/**
+ * The type Player.
+ */
 public class Player extends Observable implements PlayerInterface {
     private String nickname;
     private int personalScoreBoardScore;
@@ -19,6 +22,12 @@ public class Player extends Observable implements PlayerInterface {
     private PlayerScoreResource scoreResource;
     private GamePlayerMap gameMap;
 
+    /**
+     * Instantiates a new Player.
+     *
+     * @param nick  the nick
+     * @param color the color
+     */
     public Player(String nick, ColorType color){
         nickname = nick;
         pawnColor = color;
@@ -29,6 +38,13 @@ public class Player extends Observable implements PlayerInterface {
         gameMap = new GamePlayerMap(scoreResource);
     }
 
+    /**
+     * Instantiates a new Player.
+     *
+     * @param nick     the nick
+     * @param color    the color
+     * @param observer the observer
+     */
     public Player(String nick, ColorType color, Observer observer){
         nickname = nick;
         pawnColor = color;
@@ -40,6 +56,11 @@ public class Player extends Observable implements PlayerInterface {
         addObserver(observer);
     }
 
+    /**
+     * Gets nickname.
+     *
+     * @return the nickname
+     */
     public String getNickname() {
         return nickname;
     }
@@ -88,18 +109,38 @@ public class Player extends Observable implements PlayerInterface {
         this.nickname = nickname;
     }
 
+    /**
+     * Gets score resource.
+     *
+     * @return the score resource
+     */
     public PlayerScoreResource getScoreResource() {
         return scoreResource;
     }
 
+    /**
+     * Gets game map.
+     *
+     * @return the game map
+     */
     public GamePlayerMap getGameMap() {
         return gameMap;
     }
 
+    /**
+     * Gets personal score board score.
+     *
+     * @return the personal score board score
+     */
     public int getPersonalScoreBoardScore() {
         return personalScoreBoardScore;
     }
 
+    /**
+     * Add score.
+     *
+     * @param value the value
+     */
     public void addScore(int value){
         personalScoreBoardScore = personalScoreBoardScore+value;
     }

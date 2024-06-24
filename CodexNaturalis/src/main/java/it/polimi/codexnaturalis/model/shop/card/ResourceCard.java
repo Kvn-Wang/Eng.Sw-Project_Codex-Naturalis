@@ -8,10 +8,30 @@ import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 
 import java.util.ArrayList;
 
+/**
+ * The type Resource card.
+ */
 public class ResourceCard extends Card{
+    /**
+     * The Back central resource.
+     */
     protected ResourceType backCentralResource;
+    /**
+     * The Front card point.
+     */
     protected int frontCardPoint;
 
+    /**
+     * Instantiates a new Resource card.
+     *
+     * @param png                 the png
+     * @param frontNorthResource  the front north resource
+     * @param frontSouthResource  the front south resource
+     * @param frontEastResource   the front east resource
+     * @param frontWestResource   the front west resource
+     * @param backCentralResource the back central resource
+     * @param frontCardPoint      the front card point
+     */
     public ResourceCard(int png, ResourceType frontNorthResource, ResourceType frontSouthResource, ResourceType frontEastResource, ResourceType frontWestResource,
                         ResourceType backCentralResource, int frontCardPoint) {
         super(png, frontNorthResource, frontSouthResource, frontEastResource, frontWestResource);
@@ -19,6 +39,11 @@ public class ResourceCard extends Card{
         this.frontCardPoint = frontCardPoint;
     }
 
+    /**
+     * Gets front card point.
+     *
+     * @return the front card point
+     */
     public int getFrontCardPoint() {
         return frontCardPoint;
     }

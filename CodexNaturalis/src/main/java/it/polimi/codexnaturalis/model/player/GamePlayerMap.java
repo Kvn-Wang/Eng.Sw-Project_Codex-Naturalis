@@ -9,16 +9,29 @@ import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 import java.util.ArrayList;
 
+/**
+ * The type Game player map.
+ */
 public class GamePlayerMap {
 
     private Card[][] mapArray;
 
     private PlayerScoreResource playerScoreCard;
 
+    /**
+     * Gets player score card.
+     *
+     * @return the player score card
+     */
     public PlayerScoreResource getPlayerScoreCard() {
         return playerScoreCard;
     }
 
+    /**
+     * Instantiates a new Game player map.
+     *
+     * @param playerScoreResource the player score resource
+     */
     public GamePlayerMap(PlayerScoreResource playerScoreResource) {
         this.playerScoreCard = playerScoreResource;
         this.mapArray = new Card[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
@@ -31,11 +44,18 @@ public class GamePlayerMap {
         }//cancellato il metodo per la starter card
     }
 
-    //la chiamata a placeCard ritornerà
-    //throw exception come valore speciale per dire che non vale piazzare la carta,
-    // = 0 come valore per indicare che la carta è stata aggiunta senza aggiunta eventuali di punti (carte obbiettivo o carte risorsa front),
-    // oppure > 0 per indicare che la carta piazzata deve aggiungere punti equivalente al valore di ritorno al punteggio del player
-    // la carta è piazzabile se c'è una carta valida a fianco
+    /**
+     * Place card
+     * the call to placeCard is returning
+     * the card is placeable if there is a valid one in the side
+     *
+     * @param x    the x
+     * @param y    the y
+     * @param card the card
+     * @return the int
+     * @throws InvalidPlacementException            the card cannot be placed (= 0 come valore per indicare che la carta è stata aggiunta senza aggiunta eventuali di punti (carte obbiettivo o carte risorsa front),
+     * @throws InvalidPlaceCardRequirementException the invalid place card requirement exception (oppure > 0 per indicare che la carta piazzata deve aggiungere punti equivalente al valore di ritorno al punteggio del player)
+     */
     public int placeCard(int x, int y, Card card) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
         int neightbouringCard;
         ArrayList<ResourceType> tempListOfResources;
@@ -80,6 +100,13 @@ public class GamePlayerMap {
         }
     }
 
+    /**
+     * Get validity boolean.
+     *
+     * @param x the x
+     * @param y the y
+     * @return the boolean
+     */
     public boolean getValidity(int x, int y){
         boolean validity;
         validity = checkValidityXY(x,y);
@@ -204,6 +231,11 @@ public class GamePlayerMap {
         }
     }
 
+    /**
+     * Get map array card [ ] [ ].
+     *
+     * @return the card [ ] [ ]
+     */
     public Card[][] getMapArray() {
         return mapArray;
     }

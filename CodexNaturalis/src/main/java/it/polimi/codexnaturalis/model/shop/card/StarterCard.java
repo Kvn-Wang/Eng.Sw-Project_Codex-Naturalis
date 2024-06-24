@@ -8,13 +8,45 @@ import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 
 import java.util.ArrayList;
 
+/**
+ * The type Starter card.
+ */
 public class StarterCard extends Card{
+    /**
+     * The Back central resource.
+     */
     ResourceType[] backCentralResource;
+    /**
+     * The Back north resource.
+     */
     protected ResourceType backNorthResource;
+    /**
+     * The Back south resource.
+     */
     protected ResourceType backSouthResource;
+    /**
+     * The Back east resource.
+     */
     protected ResourceType backEastResource;
+    /**
+     * The Back west resource.
+     */
     protected ResourceType backWestResource;
 
+    /**
+     * Instantiates a new Starter card.
+     *
+     * @param png                 the png
+     * @param frontNorthResource  the front north resource
+     * @param frontSouthResource  the front south resource
+     * @param frontEastResource   the front east resource
+     * @param frontWestResource   the front west resource
+     * @param backCentralResource the back central resource
+     * @param backNorthResource   the back north resource
+     * @param backSouthResource   the back south resource
+     * @param backEastResource    the back east resource
+     * @param backWestResource    the back west resource
+     */
     public StarterCard(int png, ResourceType frontNorthResource, ResourceType frontSouthResource, ResourceType frontEastResource, ResourceType frontWestResource,
                        ResourceType [] backCentralResource, ResourceType backNorthResource, ResourceType backSouthResource, ResourceType backEastResource, ResourceType backWestResource) {
         super(png, frontNorthResource, frontSouthResource, frontEastResource, frontWestResource);

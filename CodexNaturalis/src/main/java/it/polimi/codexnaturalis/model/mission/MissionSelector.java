@@ -10,10 +10,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * The type Mission selector.
+ */
 public class MissionSelector {
     private String missionFile;
     private ArrayList<Mission> missions;
 
+    /**
+     * Instantiates a new Mission selector.
+     */
     public MissionSelector() {
         System.out.println("inizializzato");
         missions = new ArrayList<>();
@@ -21,6 +27,11 @@ public class MissionSelector {
         initializeArrayMissions();
     }
 
+    /**
+     * Gets missions.
+     *
+     * @return the missions
+     */
     public ArrayList<Mission> getMissions() {
         return missions;
     }
@@ -84,6 +95,11 @@ public class MissionSelector {
         Collections.shuffle(missions);
     }
 
+    /**
+     * Draw from file mission.
+     *
+     * @return the mission
+     */
     public Mission drawFromFile() {
         return missions.remove(0);
     }

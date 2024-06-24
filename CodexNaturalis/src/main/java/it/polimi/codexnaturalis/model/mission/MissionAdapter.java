@@ -4,6 +4,9 @@ import com.google.gson.*;
 
 import java.lang.reflect.Type;
 
+/**
+ * The type Mission adapter.
+ */
 public class MissionAdapter implements JsonDeserializer<Mission> {
     @Override
     public Mission deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {

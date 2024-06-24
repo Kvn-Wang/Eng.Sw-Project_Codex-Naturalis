@@ -9,13 +9,28 @@ import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 import java.io.Serializable;
 
+/**
+ * The type Bend mission.
+ */
 public class BendMission extends Mission implements Serializable {
     private Card[][] mapArray;
     private CardCorner decorationPosition;
     private ResourceType pillarResource;
     private ResourceType decorationResource;
+    /**
+     * The Middle.
+     */
     int middle = UtilCostantValue.lunghezzaMaxMappa/2;
 
+    /**
+     * Instantiates a new Bend mission.
+     *
+     * @param pngNumber          the png
+     * @param pointPerCondition  the point per condition
+     * @param pillarResource     the pillar resource
+     * @param decorationResource the decoration resource
+     * @param decorationPosition the decoration position
+     */
     public BendMission(int pngNumber, int pointPerCondition, ResourceType pillarResource, ResourceType decorationResource, CardCorner decorationPosition) {
         super(pngNumber, pointPerCondition);
         this.decorationPosition = decorationPosition;
@@ -99,14 +114,29 @@ public class BendMission extends Mission implements Serializable {
         return match*pointPerCondition;
     }
 
+    /**
+     * Gets decoration position.
+     *
+     * @return the decoration position
+     */
     public CardCorner getDecorationPosition() {
         return decorationPosition;
     }
 
+    /**
+     * Gets pillar resource.
+     *
+     * @return the pillar resource
+     */
     public ResourceType getPillarResource() {
         return pillarResource;
     }
 
+    /**
+     * Gets decoration resource.
+     *
+     * @return the decoration resource
+     */
     public ResourceType getDecorationResource() {
         return decorationResource;
     }

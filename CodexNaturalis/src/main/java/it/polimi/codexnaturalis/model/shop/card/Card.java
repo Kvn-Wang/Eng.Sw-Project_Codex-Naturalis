@@ -10,14 +10,44 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * The type Card.
+ */
 public abstract class Card implements Serializable {
+    /**
+     * The Png.
+     */
     protected int png;
+    /**
+     * The Front north resource.
+     */
     protected ResourceType frontNorthResource;
+    /**
+     * The Front south resource.
+     */
     protected ResourceType frontSouthResource;
+    /**
+     * The Front east resource.
+     */
     protected ResourceType frontEastResource;
+    /**
+     * The Front west resource.
+     */
     protected ResourceType frontWestResource;
+    /**
+     * The Is back.
+     */
     protected boolean isBack;
 
+    /**
+     * Instantiates a new Card.
+     *
+     * @param png                the png
+     * @param frontNorthResource the front north resource
+     * @param frontSouthResource the front south resource
+     * @param frontEastResource  the front east resource
+     * @param frontWestResource  the front west resource
+     */
     public Card(int png, ResourceType frontNorthResource, ResourceType frontSouthResource, ResourceType frontEastResource, ResourceType frontWestResource) {
         this.png = png;
         this.frontNorthResource = frontNorthResource;
@@ -26,39 +56,146 @@ public abstract class Card implements Serializable {
         this.frontWestResource = frontWestResource;
         this.isBack = false;
     }
+
+    /**
+     * Gets card color.
+     *
+     * @return the card color
+     */
     public abstract ResourceType getCardColor();
+
+    /**
+     * Check placeable card condition boolean.
+     *
+     * @param scoreCard the score card
+     * @return the boolean
+     */
     public abstract boolean checkPlaceableCardCondition(PlayerScoreResource scoreCard);
+
+    /**
+     * Gets card resources.
+     *
+     * @return the card resources
+     */
     public abstract ArrayList<ResourceType> getCardResources();
+
+    /**
+     * Gets card points.
+     *
+     * @param scoreCard         the score card
+     * @param neightbouringCard the neightbouring card
+     * @return the card points
+     */
     public abstract int getCardPoints(PlayerScoreResource scoreCard, int neightbouringCard);
+
+    /**
+     * Gets back north resource.
+     *
+     * @return the back north resource
+     */
     public abstract ResourceType getBackNorthResource();
+
+    /**
+     * Gets back south resource.
+     *
+     * @return the back south resource
+     */
     public abstract ResourceType getBackSouthResource();
+
+    /**
+     * Gets back east resource.
+     *
+     * @return the back east resource
+     */
     public abstract ResourceType getBackEastResource();
+
+    /**
+     * Gets back west resource.
+     *
+     * @return the back west resource
+     */
     public abstract ResourceType getBackWestResource();
+
+    /**
+     * Get back central resources resource type [ ].
+     *
+     * @return the resource type [ ]
+     */
     public abstract ResourceType[] getBackCentralResources();
-    // se non ha condizioni la carta, si restituisce ConditionResourceType.NONE
+
+    /**
+     * Gets condition.
+     *
+     * @return the condition
+     */
+// se non ha condizioni la carta, si restituisce ConditionResourceType.NONE
     public abstract ConditionResourceType getCondition();
+
+    /**
+     * Get placeable card resources resource type [ ].
+     *
+     * @return the resource type [ ]
+     */
     public abstract ResourceType[] getPlaceableCardResources();
-    //può essere il numero della risorsa che da punti, oppure quella della condition card che da punti per ogni condizione soddisfatta
+
+    /**
+     * Gets frontal number.
+     *
+     * @return the frontal number
+     */
+//può essere il numero della risorsa che da punti, oppure quella della condition card che da punti per ogni condizione soddisfatta
     public abstract int getFrontalNumber();
+
+    /**
+     * Gets card type.
+     *
+     * @return the card type
+     */
     public abstract CardType getCardType();
 
+    /**
+     * Gets front north resource.
+     *
+     * @return the front north resource
+     */
     public ResourceType getFrontNorthResource() {
         return frontNorthResource;
     }
 
+    /**
+     * Gets front south resource.
+     *
+     * @return the front south resource
+     */
     public ResourceType getFrontSouthResource() {
         return frontSouthResource;
     }
 
+    /**
+     * Gets front east resource.
+     *
+     * @return the front east resource
+     */
     public ResourceType getFrontEastResource() {
         return frontEastResource;
     }
 
+    /**
+     * Gets front west resource.
+     *
+     * @return the front west resource
+     */
     public ResourceType getFrontWestResource() {
         return frontWestResource;
     }
 
-    //NB: ritorna NONE se il corner è utilizzabile per piazzare carte, null altrimenti
+    /**
+     * Get card corner resource type.
+     *
+     * @param corner the corner
+     * @return the resource type
+     */
+//NB: ritorna NONE se il corner è utilizzabile per piazzare carte, null altrimenti
     public ResourceType getCardCorner(CardCorner corner){
         switch(corner){
             case NORTH:
@@ -89,18 +226,39 @@ public abstract class Card implements Serializable {
         return null;
     }
 
+    /**
+     * Gets png.
+     *
+     * @return the png
+     */
     public int getPng() {
         return png;
     }
 
+    /**
+     * Gets is back.
+     *
+     * @return the is back
+     */
     public boolean getIsBack() {
         return isBack;
     }
 
+    /**
+     * Sets is back.
+     *
+     * @param back the back
+     */
     public void setIsBack(boolean back) {
         isBack = back;
     }
 
+    /**
+     * Check valid resource boolean.
+     *
+     * @param resourceType the resource type
+     * @return the boolean
+     */
     public boolean checkValidResource(ResourceType resourceType) {
         if(resourceType != ResourceType.NONE && resourceType != ResourceType.UNASSIGNABLE) {
             return true;

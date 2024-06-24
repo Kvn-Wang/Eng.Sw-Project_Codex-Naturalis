@@ -22,12 +22,30 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * The type Shop.
+ */
 public class Shop extends Observable {
+    /**
+     * The Shop type.
+     */
     public final ShopType shopType;
+    /**
+     * The Cards file.
+     */
     protected final String cardsFile;
     private ArrayList<Card> cardDeck;
+    /**
+     * The Top deck card.
+     */
     protected Card topDeckCard;
 
+    /**
+     * Instantiates a new Shop.
+     *
+     * @param type     the type
+     * @param observer the observer
+     */
     public Shop(ShopType type, Observer observer){
         this.shopType = type;
 
@@ -132,10 +150,15 @@ public class Shop extends Observable {
         Collections.shuffle(cardDeck);
     }
 
-    // dopo aver "pescato" la carta in cima al deck, lo rimpiazza con una carta nuova
-    // questa funzione verrà chiamata solo da starterShop o durante la fase di setup quando si danno le carte iniziali
-    // quindi non serve notificare alcun utente
-    // le altre volte per cui viene chiamato, è da generalShop e gestisce già lui le notifiche a utente
+    /**
+     * Draw top deck card card.
+     * dopo aver "pescato" la carta in cima al deck, lo rimpiazza con una carta nuova
+     * questa funzione verrà chiamata solo da starterShop o durante la fase di setup quando si danno le carte iniziali
+     * quindi non serve notificare alcun utente
+     * le altre volte per cui viene chiamato, è da generalShop e gestisce già lui le notifiche a utente
+     *
+     * @return the card
+     */
     public Card drawTopDeckCard(){
         Card supp = topDeckCard;
 
@@ -148,11 +171,22 @@ public class Shop extends Observable {
         return supp;
     }
 
-    // questo perchè .valueOf non può ritornare null quando ha null come argomento (comportamento desiderato), ma fa una throw
+    /**
+     * Parse resource type resource type.
+     * questo perchè .valueOf non può ritornare null quando ha null come argomento (comportamento desiderato), ma fa una throw
+     *
+     * @param input the input
+     * @return the resource type
+     */
     public static ResourceType parseResourceType(String input) {
         return (input != null) ? ResourceType.valueOf(input) : null;
     }
 
+    /**
+     * Gets top deck card.
+     *
+     * @return the top deck card
+     */
     public Card getTopDeckCard() {
         return topDeckCard;
     }
