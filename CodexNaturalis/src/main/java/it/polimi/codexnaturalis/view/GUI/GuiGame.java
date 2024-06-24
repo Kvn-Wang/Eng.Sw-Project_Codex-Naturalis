@@ -157,6 +157,7 @@ public class GuiGame extends Application {
 
     public static void turnNotify(Boolean isYourTurn){
         Platform.runLater(() -> {
+            updateHand(clientContainer.getPersonalHand());
             Popup popup = new Popup();
             Button closePop = new Button("ok");
             Label turn = new Label();
@@ -279,7 +280,6 @@ public class GuiGame extends Application {
             default:
                 break;
         }
-        updateHand(clientContainer.getPersonalHand());
     }
 
     private static void updateHand(Hand personalHand) {
