@@ -3,6 +3,9 @@ package it.polimi.codexnaturalis.model.shop.card;
 import com.google.gson.*;
 import java.lang.reflect.Type;
 
+/**
+ * The type Card type adapter.
+ */
 public class CardTypeAdapter implements JsonDeserializer<Card> {
     @Override
     public Card deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {

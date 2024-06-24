@@ -8,11 +8,22 @@ import it.polimi.codexnaturalis.model.shop.card.Card;
 
 import java.io.Serializable;
 
+/**
+ * The type Resource mission.
+ */
 public class ResourceMission extends Mission implements Serializable {
     private PlayerScoreResource playerScoreResource;
     private int numberOfSymbols;
     private ResourceType[] typeOfResource;
 
+    /**
+     * Instantiates a new Resource mission.
+     *
+     * @param pngNumber         the png number
+     * @param pointPerCondition the point per condition
+     * @param numberOfSymbols   the number of symbols
+     * @param typeOfResource    the type of resource
+     */
     public ResourceMission(int pngNumber, int pointPerCondition, int numberOfSymbols, ResourceType[] typeOfResource) {
         super(pngNumber, pointPerCondition);
         this.numberOfSymbols = numberOfSymbols;
@@ -48,10 +59,20 @@ public class ResourceMission extends Mission implements Serializable {
         return MissionType.RESOURCE;
     }
 
+    /**
+     * Gets number of symbols.
+     *
+     * @return the number of symbols
+     */
     public int getNumberOfSymbols() {
         return numberOfSymbols;
     }
 
+    /**
+     * Get type of resource resource type [ ].
+     *
+     * @return the resource type [ ]
+     */
     public ResourceType[] getTypeOfResource() {
         return typeOfResource;
     }

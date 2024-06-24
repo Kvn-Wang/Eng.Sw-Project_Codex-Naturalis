@@ -7,11 +7,22 @@ import it.polimi.codexnaturalis.model.shop.card.Card;
 
 import java.io.Serializable;
 
+/**
+ * The type Diagonal mission.
+ */
 public class DiagonalMission extends Mission implements Serializable {
     private Card[][] mapArray;
     private boolean isLeftToRight;
     private ResourceType resourceType;
 
+    /**
+     * Instantiates a new Diagonal mission.
+     *
+     * @param pngNumber         the png number
+     * @param pointPerCondition the point per condition
+     * @param isLeftToRight     the is left to right
+     * @param typeOfResource    the type of resource
+     */
     public DiagonalMission(int pngNumber, int pointPerCondition, boolean isLeftToRight, ResourceType typeOfResource) {
         super(pngNumber, pointPerCondition);
         this.isLeftToRight = isLeftToRight;
@@ -56,14 +67,29 @@ public class DiagonalMission extends Mission implements Serializable {
         return match*pointPerCondition;
     }
 
+    /**
+     * Get map array card [ ] [ ].
+     *
+     * @return the card [ ] [ ]
+     */
     public Card[][] getMapArray() {
         return mapArray;
     }
 
+    /**
+     * Gets is left to right.
+     *
+     * @return the is left to right
+     */
     public boolean getIsLeftToRight() {
         return isLeftToRight;
     }
 
+    /**
+     * Gets resource type.
+     *
+     * @return the resource type
+     */
     public ResourceType getResourceType() {
         return resourceType;
     }

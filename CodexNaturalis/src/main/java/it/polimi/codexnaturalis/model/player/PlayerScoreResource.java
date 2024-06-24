@@ -2,6 +2,9 @@ package it.polimi.codexnaturalis.model.player;
 
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 
+/**
+ * The type Player score resource.
+ */
 public class PlayerScoreResource {
     private int scoreAnimal;
     private int scoreFungi;
@@ -11,6 +14,9 @@ public class PlayerScoreResource {
     private int scoreManuscript;
     private int scoreQuill;
 
+    /**
+     * Instantiates a new Player score resource.
+     */
     public PlayerScoreResource() {
         scoreAnimal = 0;
         scoreFungi = 0;
@@ -20,7 +26,13 @@ public class PlayerScoreResource {
         scoreManuscript = 0;
         scoreQuill = 0;
     }
-    //constructor used to make a copy of the same obj
+
+    /**
+     * Instantiates a new Player score resource.
+     * constructor used to make a copy of the same obj
+     *
+     * @param original the original
+     */
     public PlayerScoreResource(PlayerScoreResource original) {
         this.scoreAnimal = original.getScoreAnimal();
         this.scoreFungi = original.getScoreFungi();
@@ -31,6 +43,12 @@ public class PlayerScoreResource {
         this.scoreQuill = original.getScoreQuill();
     }
 
+    /**
+     * Gets score.
+     *
+     * @param type the type
+     * @return the score
+     */
     public int getScore(ResourceType type) {
         switch(type){
             case ANIMAL:
@@ -52,7 +70,13 @@ public class PlayerScoreResource {
         }
     }
 
-    // rimozione di risorsa una per volta, ritorna falso in caso la risorsa sia già = 0 e non si possa fare -1;
+    /**
+     * Substract score boolean.
+     * rimozione di risorsa una per volta, ritorna falso in caso la risorsa sia già = 0 e non si possa fare -1;
+     *
+     * @param type the type
+     * @return the boolean
+     */
     public boolean substractScore(ResourceType type) {
         switch(type){
             case ANIMAL:
@@ -119,7 +143,12 @@ public class PlayerScoreResource {
         return true;
     }
 
-    // aggiunta di risorsa una per volta
+    /**
+     * Add score.
+     * aggiunta di risorsa una per volta
+     *
+     * @param type the type
+     */
     public void addScore(ResourceType type) {
         switch(type){
             case ANIMAL:
@@ -152,30 +181,65 @@ public class PlayerScoreResource {
         }
     }
 
+    /**
+     * Gets score animal.
+     *
+     * @return the score animal
+     */
     public int getScoreAnimal() {
         return scoreAnimal;
     }
 
+    /**
+     * Gets score fungi.
+     *
+     * @return the score fungi
+     */
     public int getScoreFungi() {
         return scoreFungi;
     }
 
+    /**
+     * Gets score plant.
+     *
+     * @return the score plant
+     */
     public int getScorePlant() {
         return scorePlant;
     }
 
+    /**
+     * Gets score insect.
+     *
+     * @return the score insect
+     */
     public int getScoreInsect() {
         return scoreInsect;
     }
 
+    /**
+     * Gets score inkwell.
+     *
+     * @return the score inkwell
+     */
     public int getScoreInkwell() {
         return scoreInkwell;
     }
 
+    /**
+     * Gets score manuscript.
+     *
+     * @return the score manuscript
+     */
     public int getScoreManuscript() {
         return scoreManuscript;
     }
 
+    /**
+     * Gets score quill.
+     *
+     * @return the score quill
+     */
     public int getScoreQuill() {
         return scoreQuill;
     }

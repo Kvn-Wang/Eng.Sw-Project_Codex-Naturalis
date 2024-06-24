@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GameManagerTest {
     private GameManager gameManager;
+
     @BeforeEach
     public void Setup(){
         var playerInfo = new ArrayList<PlayerInfo>();

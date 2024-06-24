@@ -8,14 +8,42 @@ import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 
 import java.util.ArrayList;
 
+/**
+ * The type Objective card.
+ */
 public class ObjectiveCard extends Card {
+    /**
+     * The Back central resource.
+     */
     protected ResourceType backCentralResource;
-    // rappresenta il sopra
+    /**
+     * The Point per condition resource.
+     * rappresenta il sopra
+     */
     protected ConditionResourceType pointPerConditionResource;
+    /**
+     * The Point per condition.
+     */
     protected int pointPerCondition;
-    // rappresenta il sotto
+    /**
+     * The Condition resources.
+     * rappresenta il sotto
+     */
     protected ResourceType[] conditionResources;
 
+    /**
+     * Instantiates a new Objective card.
+     *
+     * @param png                       the png
+     * @param frontNorthResource        the front north resource
+     * @param frontSouthResource        the front south resource
+     * @param frontEastResource         the front east resource
+     * @param frontWestResource         the front west resource
+     * @param backCentralResource       the back central resource
+     * @param pointPerConditionResource the point per condition resource
+     * @param pointPerCondition         the point per condition
+     * @param conditionResource         the condition resource
+     */
     public ObjectiveCard(int png, ResourceType frontNorthResource, ResourceType frontSouthResource, ResourceType frontEastResource, ResourceType frontWestResource,
                          ResourceType backCentralResource, ConditionResourceType pointPerConditionResource, int pointPerCondition, ResourceType [] conditionResource) {
         super(png, frontNorthResource, frontSouthResource, frontEastResource, frontWestResource);
