@@ -191,10 +191,12 @@ public class RmiClient extends GenericClient implements VirtualServer {
                     PlayerScoreResource playerScoreResource = gsonTranslator.fromJson(message.getArgs().get(2), PlayerScoreResource.class);
                     int updatedScoreBoardValue = Integer.parseInt(message.getArgs().get(3));
 
+                    System.out.println("Piazzamento valido");
                     clientContainer.playedCard(playedCard);
-                    clientContainer.updateScore(updatedScoreBoardValue, playerScoreResource);
+                    clientContainer.updatePersonalScore(updatedScoreBoardValue, playerScoreResource);
                     typeOfUI.outcomePlayCard(true);
                 } else {
+                    System.out.println("Piazzamento non valido");
                     typeOfUI.outcomePlayCard(false);
                 }
 
@@ -205,10 +207,11 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 Card playedCard = gsonTranslator.fromJson(message.getArgs().get(1), Card.class);
                 int x_pos = Integer.parseInt(message.getArgs().get(2));
                 int y_pos = Integer.parseInt(message.getArgs().get(3));
+                int hisNewPlayerScore = Integer.parseInt(message.getArgs().get(4));
 
                 System.out.println("the player: "+nickName+" has played a card in ("+x_pos+","+y_pos+")");
 
-                clientContainer.updateOtherPlayerMap(nickName, x_pos, y_pos, playedCard);
+                clientContainer.updateOtherPlayerMap(nickName, x_pos, y_pos, playedCard, hisNewPlayerScore);
                 break;
 
             case ERR_GAME_STATE_COMMAND:
@@ -374,6 +377,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
         serviceThread.submit(() -> {
             try {
                 personalGameController.playerPersonalMissionSelect(nickname, mission);
+                clientContainer.setPersonalMission(mission);
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }

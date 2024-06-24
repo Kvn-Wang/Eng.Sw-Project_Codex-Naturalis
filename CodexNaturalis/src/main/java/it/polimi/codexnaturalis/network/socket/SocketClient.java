@@ -228,7 +228,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
                         int updatedScoreBoardValue = Integer.parseInt(message.getArgs().get(3));
 
                         clientContainer.playedCard(playedCard);
-                        clientContainer.updateScore(updatedScoreBoardValue, playerScoreResource);
+                        clientContainer.updatePersonalScore(updatedScoreBoardValue, playerScoreResource);
                         typeOfUI.outcomePlayCard(true);
                     } else {
                         typeOfUI.outcomePlayCard(false);
@@ -241,10 +241,11 @@ public class SocketClient extends GenericClient implements VirtualServer {
                     Card playedCard = gsonTranslator.fromJson(message.getArgs().get(1), Card.class);
                     int x_pos = Integer.parseInt(message.getArgs().get(2));
                     int y_pos = Integer.parseInt(message.getArgs().get(3));
+                    int hisNewPlayerScore = Integer.parseInt(message.getArgs().get(4));
 
                     System.out.println("the player: "+nickName+" has played a card in ("+x_pos+","+y_pos+")");
 
-                    clientContainer.updateOtherPlayerMap(nickName, x_pos, y_pos, playedCard);
+                    clientContainer.updateOtherPlayerMap(nickName, x_pos, y_pos, playedCard, hisNewPlayerScore);
                     break;
 
                 case ERR_GAME_STATE_COMMAND:
@@ -365,12 +366,16 @@ public class SocketClient extends GenericClient implements VirtualServer {
     public void playStarterCard(String playerNick, StarterCard starterCard) {
         socketTx.println(serializeMesssage(new NetworkMessage(MessageType.GAME_SETUP_STARTER_CARD_PLAY,
                 playerNick, argsGenerator(starterCard))));
+
+        clientContainer.playedStarterCard(starterCard);
     }
 
     @Override
     public void playerPersonalMissionSelect(String nickname, Mission mission) throws RemoteException {
         socketTx.println(serializeMesssage(new NetworkMessage(MessageType.GAME_SETUP_CHOOSE_PERSONAL_MISSION,
                 nickname, argsGenerator(mission))));
+
+        clientContainer.setPersonalMission(mission);
     }
 
     @Override

@@ -11,9 +11,12 @@ import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.view.TypeOfUI;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
+import it.polimi.codexnaturalis.view.VirtualModel.OtherPlayerData;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class TuiClient implements TypeOfUI {
@@ -279,10 +282,9 @@ public class TuiClient implements TypeOfUI {
     public void printStarterCardReq(Card starterCard) {
         String command;
         System.out.flush();
-        System.out.println("Here's your starter card");
+        System.out.println("Here's your starter card:");
         PrintCardClass TUIstarterCard = new PrintCardClass(starterCard);
-        TUIstarterCard.printCard(starterCard, true);
-        TUIstarterCard.printCard(starterCard, false);
+        TUIstarterCard.printCardHorizzontal(starterCard);
 
         do {
             System.out.println("Type FRONT or BACK to select the face of the starting card");
@@ -363,8 +365,7 @@ public class TuiClient implements TypeOfUI {
             System.out.println("5) if you want to see other player's map");
             System.out.println("6) if you want to see the Shop");
             System.out.println("7) if you want to see the scoreboard");
-            System.out.println("8) if you want to see Your resources");
-            System.out.println("9) if you want to see Your missions");
+            System.out.println("8) if you want to see your missions");
 
             command = scan.nextLine();
             if(command.equals("1")) {
@@ -425,14 +426,17 @@ public class TuiClient implements TypeOfUI {
             }else if(command.equals("5")) {
 
             }else if(command.equals("6")) {
-
+                PrintShop.printShop(clientContainer);
             }else if(command.equals("7")) {
-
+                printPlayerScore();
             }else if(command.equals("8")) {
-
-            }else if(command.equals("9")) {
+                System.out.println(ANSI_BLUE + "1) Common Mission:" + ANSI_RESET);
                 PrintMissionClass.printMission(clientContainer.getCommonMission1());
+
+                System.out.println(ANSI_BLUE + "2) Common Mission:" + ANSI_RESET);
                 PrintMissionClass.printMission(clientContainer.getCommonMission2());
+
+                System.out.println(ANSI_BLUE + "Personal Mission:" + ANSI_RESET);
                 PrintMissionClass.printMission(clientContainer.getPersonalMission());
             }
         }
@@ -486,6 +490,17 @@ public class TuiClient implements TypeOfUI {
     private void doNotify() {
         synchronized (lock) {
             lock.notify(); // Wakes up one waiting thread
+        }
+    }
+
+    private void printPlayerScore() {
+        HashMap<String, OtherPlayerData>  players = clientContainer.getPlayers();
+
+        for (Map.Entry<String, OtherPlayerData> entry : players.entrySet()) {
+            String nickname = entry.getKey();
+            OtherPlayerData playerData = entry.getValue();
+
+            System.out.println("  - " + nickname + ", score: " + "Scoreboard: " + playerData.intScoreBoardScore);
         }
     }
 }

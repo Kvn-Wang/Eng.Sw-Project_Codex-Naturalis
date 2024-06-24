@@ -138,6 +138,7 @@ public enum MessageType {
      * args(1): card
      * args(2): x_pos
      * args(3): y_pos
+     * args(4): his scoreboard player score
      */
     UPDATE_OTHER_PLAYER_GAME_MAP,
 

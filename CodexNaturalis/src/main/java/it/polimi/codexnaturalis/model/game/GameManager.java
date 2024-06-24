@@ -245,7 +245,8 @@ public class GameManager extends Observable implements GameController {
             for (Player otherPlayer : players) {
                 if (!otherPlayer.getNickname().equals(nickname))
                     notifyObserverSingle(new NetworkMessage(otherPlayer.getNickname(), MessageType.UPDATE_OTHER_PLAYER_GAME_MAP,
-                            nickname, argsGenerator(playedCard), String.valueOf(x), String.valueOf(y)));
+                            nickname, argsGenerator(playedCard), String.valueOf(x), String.valueOf(y),
+                            String.valueOf(p.getPersonalScoreBoardScore())));
             }
 
             System.out.println("Carta giocata");

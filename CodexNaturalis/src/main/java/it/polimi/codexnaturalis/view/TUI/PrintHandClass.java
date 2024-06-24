@@ -13,12 +13,7 @@ public class PrintHandClass {
         int i = 0;
         for (Card card : hand.getCards()) {
             System.out.println("card number: " + i);
-            System.out.println("front:");
-            PrintCardClass.printCard(card, true);
-
-            System.out.println("back:");
-            PrintCardClass.printCard(card, false);
-
+            PrintCardClass.printCardHorizzontal(card);
             i++;
         }
         if (hand.getCards().isEmpty()) {

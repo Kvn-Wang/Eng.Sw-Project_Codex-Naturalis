@@ -13,6 +13,7 @@ public class PrintCardClass {
     boolean isSwCovered;
     static String [] TUICard;
     static Card card;
+    static final int cardLen = 5;
 
     // ANSI Escape Codes for colors of the card
     private static final String ANSI_YELLOW = "\u001B[33m";
@@ -98,6 +99,34 @@ public class PrintCardClass {
         for(int i = 0; i < TUICard.length; i++){
             System.out.println(TUICard[i]);
         }
+    }
+
+    public static void printCardHorizzontal(Card card){
+        String[] front = createCard(card, true);
+        String[] back = createCard(card, false);
+        String repeatedSpaces = repeat(" ", cardLen);
+
+        String [] printCard = new String[cardLen];
+
+        for(int i = 0; i < TUICard.length; i++){
+            printCard[i] = front[i] + repeatedSpaces + back[i];
+        }
+
+        System.out.println("Front:" + repeatedSpaces + "Back:");
+        for(int i = 0; i < TUICard.length; i++){
+            System.out.println(printCard[i]);
+        }
+    }
+
+    private static String repeat(String str, int n) {
+        if (str == null || n <= 0) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            sb.append(str);
+        }
+        return sb.toString();
     }
 }
 

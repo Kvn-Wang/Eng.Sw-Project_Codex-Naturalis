@@ -6,18 +6,15 @@ import it.polimi.codexnaturalis.view.VirtualModel.Hand.Hand;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
-import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ClientContainer {
     private String nickname;
     private String lobbyNickname;
-    private ArrayList<PlayerInfo> otherPlayerList;
-    private ArrayList<Card[][]> otherPlayerGameMap;
-    private Card[][] personalGameMap;
-    int personalScoreBoardValue;
+    private HashMap<String, OtherPlayerData> players;
     PlayerScoreResource personalPlayerScoreResource;
     private Hand personalHand;
     private Mission commonMission1;
@@ -29,13 +26,7 @@ public class ClientContainer {
     private Card [] visibleObjectiveCardShop;
 
     public ClientContainer() {
-        // inizializzazione mappa personale
-        personalGameMap = new Card[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
-        for(int i = 0; i < UtilCostantValue.lunghezzaMaxMappa; i++) {
-            for(int j = 0; j < UtilCostantValue.lunghezzaMaxMappa; j++) {
-                personalGameMap[i][j] = null;
-            }
-        }
+        players = new HashMap<>();
 
         visibleResourceCardShop = new Card[2];
         visibleObjectiveCardShop = new Card[2];
@@ -65,57 +56,30 @@ public class ClientContainer {
         this.lobbyNickname = lobbyNickname;
     }
 
-    public ArrayList<PlayerInfo> getOtherPlayerList() {
-        return otherPlayerList;
-    }
-
     public void setOtherPlayerList(ArrayList<PlayerInfo> otherPlayerList) {
-        this.otherPlayerList = otherPlayerList;
+        players.put(getNickname(), new OtherPlayerData());
 
-        otherPlayerGameMap = new ArrayList<>();
-
-        //inizializzazione mappa degli altri player
-        for(int playerNum = 0; playerNum < otherPlayerList.size(); playerNum++) {
-            Card [][] supp = new Card[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
-            for(int i = 0; i < UtilCostantValue.lunghezzaMaxMappa; i++) {
-                for (int j = 0; j < UtilCostantValue.lunghezzaMaxMappa; j++) {
-                    supp[i][j] = null;
-                }
-            }
-            otherPlayerGameMap.add(supp);
+        for(PlayerInfo playerInfo : otherPlayerList) {
+            players.put(playerInfo.getNickname(), new OtherPlayerData());
         }
     }
 
     public Card[][] getPersonalGameMap() {
-        return personalGameMap;
-    }
-
-    public void setPersonalGameMap(Card[][] personalGameMap) {
-        this.personalGameMap = personalGameMap;
+        return players.get(getNickname()).map;
     }
 
     public Hand getPersonalHand() {
         return personalHand;
     }
 
-    public void setPersonalHand(Hand personalHand) {
-        this.personalHand = personalHand;
-    }
 
     public Mission getCommonMission1() {
         return commonMission1;
     }
 
-    public void setCommonMission1(Mission commonMission1) {
-        this.commonMission1 = commonMission1;
-    }
 
     public Mission getCommonMission2() {
         return commonMission2;
-    }
-
-    public void setCommonMission2(Mission commonMission2) {
-        this.commonMission2 = commonMission2;
     }
 
     public void initialSetupOfResources(Hand initialHand, Mission firstCommonMission, Mission secondCommonMission,
@@ -156,8 +120,8 @@ public class ClientContainer {
         }
     }
 
-    public void updateScore(int personalScoreBoardValue, PlayerScoreResource personalPlayerScoreResource) {
-        this.personalScoreBoardValue = personalScoreBoardValue;
+    public void updatePersonalScore(int personalScoreBoardValue, PlayerScoreResource personalPlayerScoreResource) {
+        players.get(getNickname()).intScoreBoardScore = personalScoreBoardValue;
         this.personalPlayerScoreResource = personalPlayerScoreResource;
     }
 
@@ -169,25 +133,12 @@ public class ClientContainer {
     }
 
     public void playedStarterCard(Card starterCard) {
-        personalGameMap[UtilCostantValue.lunghezzaMaxMappa/2][UtilCostantValue.lunghezzaMaxMappa/2] = starterCard;
+        players.get(getNickname()).map[UtilCostantValue.lunghezzaMaxMappa/2][UtilCostantValue.lunghezzaMaxMappa/2] = starterCard;
     }
 
-    public void updateOtherPlayerMap(String nickname, int x, int y, Card card) {
-        otherPlayerGameMap.get(convertNicknameToIntMap(nickname))[x][y] = card;
-    }
-
-    /**
-     * convert from string value to an int that correspond to which map is in its possession in the
-     * ArrayList<Card[][]> otherPlayerGameMap object
-     */
-    private int convertNicknameToIntMap(String nickname) {
-        for(int i = 0; i < otherPlayerList.size(); i++) {
-            if(nickname.equals(otherPlayerList.get(i).getNickname())) {
-                return i;
-            }
-        }
-
-        return -1;
+    public void updateOtherPlayerMap(String nickname, int x, int y, Card card, int hisNewPlayerScore) {
+        players.get(nickname).map[x][y] = card;
+        players.get(nickname).intScoreBoardScore = hisNewPlayerScore;
     }
 
     public void addCardToHand(Card card) {
@@ -208,5 +159,9 @@ public class ClientContainer {
 
     public Card[] getVisibleObjectiveCardShop() {
         return visibleObjectiveCardShop;
+    }
+
+    public HashMap<String, OtherPlayerData> getPlayers() {
+        return players;
     }
 }

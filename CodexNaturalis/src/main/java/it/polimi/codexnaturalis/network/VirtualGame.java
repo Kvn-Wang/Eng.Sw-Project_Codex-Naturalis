@@ -153,7 +153,6 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
                 if(nickname.equals(players.get(currentPlayingPlayerIndex).getNickname())) {
                     if(gameState == GameState.PLAY_PHASE) {
                         gameController.playerPlayCard(nickname, x, y, playedCard);
-                        System.out.println(((GameManager) gameController).errorDuringPlayingPhase);
                         if(!((GameManager) gameController).errorDuringPlayingPhase == true) {
                             gameState = GameState.DRAW_PHASE;
                         }

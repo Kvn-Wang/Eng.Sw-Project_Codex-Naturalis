@@ -15,6 +15,8 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 public class PrintMissionClass {
+    private static final String ANSI_RESET = "\033[0m";
+    private static final String ANSI_BLUE = "\033[34m";
 
     public static void main(String[] args) {
         DiagonalMission testDiagonalMission = new DiagonalMission(87, 2 , false, ResourceType.INSECT);
