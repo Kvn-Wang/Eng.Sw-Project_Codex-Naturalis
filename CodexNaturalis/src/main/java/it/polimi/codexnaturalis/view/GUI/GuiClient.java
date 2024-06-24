@@ -96,7 +96,8 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printErrorCommandSentGameState(GameState currentGameState) {
-
+        System.out.println("it's not the play_phase");
+        GuiGame.validPlacement(false);
     }
 
     @Override
@@ -106,7 +107,8 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printIsNotYourTurn() {
-
+        System.out.println("you can't place cards during another player's turn");
+        GuiGame.validPlacement(false);
     }
 
     @Override

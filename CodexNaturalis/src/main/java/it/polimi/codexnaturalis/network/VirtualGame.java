@@ -148,11 +148,12 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     @Override
     public void playerPlayCard(String nickname, int x, int y, Card playedCard) {
         executorService.submit(() -> {
-            try {
+           try {
                 System.out.println("il giocatore: "+nickname+" sta cercando di posizionare una carta in ("+x+","+y+"), durante la fase di gioco: "+gameState);
                 if(nickname.equals(players.get(currentPlayingPlayerIndex).getNickname())) {
                     if(gameState == GameState.PLAY_PHASE) {
                         gameController.playerPlayCard(nickname, x, y, playedCard);
+                        System.out.println(((GameManager) gameController).errorDuringPlayingPhase);
                         if(!((GameManager) gameController).errorDuringPlayingPhase == true) {
                             gameState = GameState.DRAW_PHASE;
                         }

@@ -92,6 +92,7 @@ public class GuiGame extends Application {
     public static void main(String[] args) {
         launch(args);
     } //lancia il codice UOMO!
+
     public static void setupMenu(VirtualServer virtualNetworkCommand, ClientContainer clientContainer){
         vnc = virtualNetworkCommand;
         GuiGame.clientContainer = clientContainer;
@@ -150,7 +151,6 @@ public class GuiGame extends Application {
             handCards.add(new GuiCard(starter, anchorPointsMatrix));
             vHand.getChildren().add(handCards.getLast().getRectangle());
             handCards.getLast().setNum(0);
-            handCards.getLast().getRectangle().setTranslateX(170);
             starterBeingPlaced = true;
         });
     }
@@ -217,14 +217,16 @@ public class GuiGame extends Application {
     }
 
     public static void validPlacement(boolean isValidPlacement) {
-        if(isValidPlacement){
-            System.out.println("successful placement");
-            map.getChildren().add(cardBeingPlaced);
-            updateHand(clientContainer.getPersonalHand());
-        }
-        else{
-            updateHand(clientContainer.getPersonalHand());
-        }
+        Platform.runLater(() -> {
+            if (isValidPlacement) {
+                System.out.println("successful placement");
+                updateHand(clientContainer.getPersonalHand());
+            } else {
+                System.out.println("invalid placement");
+                map.getChildren().removeLast();
+                updateHand(clientContainer.getPersonalHand());
+            }
+        });
     }
 
     private static void openShop(){
@@ -277,6 +279,7 @@ public class GuiGame extends Application {
             default:
                 break;
         }
+        updateHand(clientContainer.getPersonalHand());
     }
 
     private static void updateHand(Hand personalHand) {
@@ -301,7 +304,7 @@ public class GuiGame extends Application {
 //                }
 //            }
             vHand.getChildren().clear();
-            for(int i=0; i<3; i++) {
+            for(int i=0; i<personalHand.getCards().size(); i++) {
                 handCards.add(new GuiCard(personalHand.getCards().get(i), anchorPointsMatrix));
                 vHand.getChildren().add(handCards.getLast().getRectangle());
                 handCards.getLast().setNum(i);
@@ -597,9 +600,10 @@ public class GuiGame extends Application {
                         } catch (RemoteException ex) {
                             throw new RuntimeException(ex);
                         }
+                        cardBeingPlaced = newRect;
+                        map.getChildren().add(cardBeingPlaced);
                     }
                 }
-                cardBeingPlaced = newRect;
                 success = true;
             }
 
@@ -713,6 +717,7 @@ public class GuiGame extends Application {
         shopButton.setOnAction(event -> {
             openShop();
         });
+        actions.getChildren().add(shopButton);
         return actions;
     }
 }

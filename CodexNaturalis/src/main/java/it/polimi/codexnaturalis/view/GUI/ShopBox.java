@@ -74,7 +74,7 @@ public class ShopBox extends AlertBox {
                 retstring = "o"+Integer.toString(num);
                 alertWindow.close();
             });
-            resourceShop.getChildren().add(objectiveCardRect);
+            objectiveShop.getChildren().add(objectiveCardRect);
         }
 
         VBox box = new VBox(10);
