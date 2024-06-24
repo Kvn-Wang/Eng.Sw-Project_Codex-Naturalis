@@ -3,6 +3,7 @@ package it.polimi.codexnaturalis.view.GUI;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.mission.MissionAdapter;
 import it.polimi.codexnaturalis.view.VirtualModel.Hand.Hand;
@@ -42,11 +43,13 @@ public class GuiGame extends Application {
     private static VirtualServer vnc;
     private static GameController vgc;
     private static ClientContainer clientContainer;
+    private static ObservableList<LobbyInfo> lobbyList;
     private static Circle[][] anchorPointsMatrix;
     private static ArrayList<GuiCard> handCards;
     private static Rectangle[] missions;
     private static Pane vHand;
     private static VBox missionList;
+    private static VBox actionMenu;
     private static Pane map;
     private static Pane cameraView;
     private static Rectangle cardBeingPlaced;
@@ -117,16 +120,16 @@ public class GuiGame extends Application {
         }
     }
 
-    private static void updateLobbyList(ObservableList<LobbyInfo> lobbyList){
-        ArrayList<LobbyInfo> lobbyInfoList;
+    public static void LobbyListRefresh(ArrayList<LobbyInfo> lobbies){
+        lobbyList.addAll(lobbies);
+    }
 
+    private static void updateLobbyList(ObservableList<LobbyInfo> lobbyList){
         try {
-            lobbyInfoList = vnc.getAvailableLobby();
+            vnc.getAvailableLobby();
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
-
-        lobbyList.addAll(lobbyInfoList);
     }
 
 //    private static void playerListJoin(ObservableList<String> playerList){
@@ -222,6 +225,58 @@ public class GuiGame extends Application {
         }
     }
 
+    private static void openShop(){
+        ShopBox shopAlert = new ShopBox();
+        shopAlert.setCC(clientContainer);
+        String drawnCard = shopAlert.display("Shop", 400,300);
+        switch(drawnCard){
+            case "r0":
+                try {
+                    vgc.playerDraw(playerNickname,0, ShopType.RESOURCE);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            case "r1":
+                try {
+                    vgc.playerDraw(playerNickname,1, ShopType.RESOURCE);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            case "r2":
+                try {
+                    vgc.playerDraw(playerNickname,2, ShopType.RESOURCE);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            case "o0":
+                try {
+                    vgc.playerDraw(playerNickname,0, ShopType.OBJECTIVE);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            case "01":
+                try {
+                    vgc.playerDraw(playerNickname,1, ShopType.OBJECTIVE);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            case "o2":
+                try {
+                    vgc.playerDraw(playerNickname,2, ShopType.OBJECTIVE);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
     private static void updateHand(Hand personalHand) {
         Platform.runLater(() -> {
             System.out.println("Hand Update");
@@ -244,12 +299,10 @@ public class GuiGame extends Application {
 //                }
 //            }
             vHand.getChildren().clear();
-            int i=0;
-            for(Card card: personalHand.getCards()) {
-                handCards.add(new GuiCard(card, anchorPointsMatrix));
+            for(int i=0; i<3; i++) {
+                handCards.add(new GuiCard(personalHand.getCards().get(i), anchorPointsMatrix));
                 vHand.getChildren().add(handCards.getLast().getRectangle());
                 handCards.getLast().setNum(i);
-                i++;
             }
         });
     }
@@ -361,7 +414,7 @@ public class GuiGame extends Application {
         Button refresh = new Button("refresh");
         Button create = new Button("create lobby");
         TableView<LobbyInfo> lobbyTable = new TableView<>();
-        ObservableList<LobbyInfo> lobbyList = FXCollections.observableArrayList();
+        lobbyList = FXCollections.observableArrayList();
 
         TableColumn<LobbyInfo, String> column1 = new TableColumn<>("Lobby Name");
         column1.setCellValueFactory(new PropertyValueFactory<>("lobbyName"));
@@ -459,6 +512,7 @@ public class GuiGame extends Application {
         anchorPointsMatrix = getAnchorPoints(game);
         vHand = handLayer();
         missionList = missionLayer();
+        actionMenu = actionMenuLayer();
         cameraView= new Pane(map);
 
 //        map.setMinSize(4000, 4000);
@@ -555,6 +609,7 @@ public class GuiGame extends Application {
         game.setCenter(cameraView);
         game.setBottom(vHand);
         game.setLeft(missionList);
+        game.setRight(actionMenu);
 
         for(Circle[] rows : anchorPointsMatrix) {
             for (Circle anchor : rows) {
@@ -648,5 +703,14 @@ public class GuiGame extends Application {
     private VBox missionLayer(){
         missions = new Rectangle[3];
         return new VBox();
+    }
+    private VBox actionMenuLayer(){
+        VBox actions = new VBox();
+        Button shopButton = new Button("Shop");
+        shopButton.setMinSize(150,100);
+        shopButton.setOnAction(event -> {
+            openShop();
+        });
+        return actions;
     }
 }

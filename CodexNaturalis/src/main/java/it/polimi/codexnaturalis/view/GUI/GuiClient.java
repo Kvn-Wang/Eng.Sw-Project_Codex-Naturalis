@@ -30,7 +30,7 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void giveLobbies(ArrayList<LobbyInfo> lobbies) {
-
+        GuiGame.LobbyListRefresh(lobbies);
     }
 
     @Override

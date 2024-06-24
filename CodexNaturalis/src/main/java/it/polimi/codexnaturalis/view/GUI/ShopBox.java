@@ -5,9 +5,11 @@ import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.ObjectiveCard;
 import it.polimi.codexnaturalis.model.shop.card.ResourceCard;
+import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
@@ -17,41 +19,75 @@ import java.util.ArrayList;
 public class ShopBox extends AlertBox {
     private ArrayList<ResourceCard> resourceCards;
     private ArrayList<ObjectiveCard> objectiveCards;
+    private ClientContainer cc;
 
     protected Scene scene() {
-//        Label request = new Label("Shop");
-//        Gson gson = new Gson();
-//        String mission1Path = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+mission1.getPngNumber()+".png";
-//        String mission2Path = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+mission2.getPngNumber()+".png";
-//        Rectangle missionRect1 = new Rectangle();
-//        missionRect1.setStroke(null);
-//        missionRect1.setFill(new ImagePattern(new Image("path" + mission1.getPngNumber() + ".png")));
-//        Rectangle missionRect2 = new Rectangle();
-//        missionRect2.setStroke(null);
-//        missionRect2.setFill(new ImagePattern(new Image("path" + mission2.getPngNumber() + ".png")));
-//
-//
-//        missionRect1.setOnMouseClicked(e -> {
-//            retstring = "1";
-//            alertWindow.close();
-//        });
-//        missionRect2.setOnMouseClicked(e -> {
-//            retstring = "2";
-//            alertWindow.close();
-//        });
-//
+        Label shop1 = new Label("Resource Shop");
+        Label shop2 = new Label("Objective Shop");
+        Gson gson = new Gson();
+        Card topResourceCard = cc.getTopDeckResourceCardShop();
+        Card topObjectiveCard = cc.getTopDeckObjCardShop();
+        Card[] resourceCards = cc.getVisibleResourceCardShop();
+        Card[] objectiveCards = cc.getVisibleObjectiveCardShop();
+
+        String topResourceCardPath = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+topResourceCard.getPng()+".png";
+        String topObjectiveCardPath = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+topObjectiveCard.getPng()+".png";
+        Rectangle topRecCardRect = new Rectangle(170, 100, new ImagePattern(new Image(getClass().getResourceAsStream(topResourceCardPath))));
+        topRecCardRect.setStroke(null);
+        Rectangle topObjCardRect = new Rectangle(170, 100, new ImagePattern(new Image(getClass().getResourceAsStream(topObjectiveCardPath))));
+        topObjCardRect.setStroke(null);
+
+
+        HBox resourceShop = new HBox();
+        resourceShop.getChildren().add(topRecCardRect);
+        topRecCardRect.setOnMouseClicked(e -> {
+            retstring = "r0";
+            alertWindow.close();
+        });
+
+        for(int i = 0; i<resourceCards.length; i++){
+            int num = i+1;
+            String resourceCardPath = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+ resourceCards[i].getPng() + ".png";
+            Rectangle resourceCardRect = new Rectangle(170, 100, new ImagePattern(new Image(getClass().getResourceAsStream(resourceCardPath))));
+            topRecCardRect.setStroke(null);
+            resourceCardRect.setOnMouseClicked(e -> {
+                retstring = "r"+Integer.toString(num);
+                alertWindow.close();
+            });
+            resourceShop.getChildren().add(resourceCardRect);
+        }
+
+
+        HBox objectiveShop = new HBox();
+        objectiveShop.getChildren().add(topObjCardRect);
+        topObjCardRect.setOnMouseClicked(e -> {
+            retstring = "o0";
+            alertWindow.close();
+        });
+
+        for(int i = 0; i<objectiveCards.length; i++){
+            int num = i+1;
+            String objectiveCardPath = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+ objectiveCards[i].getPng() + ".png";
+            Rectangle objectiveCardRect = new Rectangle(170, 100, new ImagePattern(new Image(getClass().getResourceAsStream(objectiveCardPath))));
+            topRecCardRect.setStroke(null);
+            objectiveCardRect.setOnMouseClicked(e -> {
+                retstring = "o"+Integer.toString(num);
+                alertWindow.close();
+            });
+            resourceShop.getChildren().add(objectiveCardRect);
+        }
+
         VBox box = new VBox(10);
-//        box.getChildren().add(request);
-//        box.getChildren().add(missionRect1);
-//        box.getChildren().add(missionRect2);
-//
+        box.getChildren().add(shop1);
+        box.getChildren().add(resourceShop);
+        box.getChildren().add(shop2);
+        box.getChildren().add(objectiveShop);
+
         return new Scene(box);
     }
 
-    public void setMission(Mission m1, Mission m2){
-    //    resourceCards.add();
-    //    objectiveCards
-    //    mission2=m2;
+    public void setCC(ClientContainer clientContainer){
+        cc=clientContainer;
     }
 }
 

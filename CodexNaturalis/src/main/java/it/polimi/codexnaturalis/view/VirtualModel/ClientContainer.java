@@ -193,4 +193,20 @@ public class ClientContainer {
     public void addCardToHand(Card card) {
         personalHand.addCard(card);
     }
+
+    public Card getTopDeckResourceCardShop() {
+        return topDeckResourceCardShop;
+    }
+
+    public Card getTopDeckObjCardShop() {
+        return topDeckObjCardShop;
+    }
+
+    public Card[] getVisibleResourceCardShop() {
+        return visibleResourceCardShop;
+    }
+
+    public Card[] getVisibleObjectiveCardShop() {
+        return visibleObjectiveCardShop;
+    }
 }
