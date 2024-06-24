@@ -90,34 +90,36 @@ public class GuiGame extends Application {
                      );
          */
     public static void main(String[] args) {
-        launch(args); //
-    }
+        launch(args);
+    } //lancia il codice UOMO!
     public static void setupMenu(VirtualServer virtualNetworkCommand, ClientContainer clientContainer){
         vnc = virtualNetworkCommand;
         GuiGame.clientContainer = clientContainer;
     }
 
     public static void setNickname(boolean outcome, String nickname){
-        if(outcome){
-            gameWindow.setScene(lobbyListScene);
-        } else{
-            Popup popup = new Popup();
-            Button closePop = new Button("close");
-            Label nick = new Label(nickname+" é già stato selezionato");
-            closePop.setOnAction(event -> {
-                if (popup.isShowing()) {
-                    popup.hide();
-                }
-            });
-            VBox vBox = new VBox(
-                    nick,
-                    closePop
-            );
+        Platform.runLater(() -> {
+            if(outcome){
+                gameWindow.setScene(lobbyListScene);
+            } else{
+                Popup popup = new Popup();
+                Button closePop = new Button("close");
+                Label nick = new Label(nickname+" é già stato selezionato");
+                closePop.setOnAction(event -> {
+                    if (popup.isShowing()) {
+                        popup.hide();
+                    }
+                });
+                VBox vBox = new VBox(
+                        nick,
+                        closePop
+                );
 
-            popup.getContent().add(vBox);
-            closePop.setTranslateY(20);
-            popup.show(gameWindow);
-        }
+                popup.getContent().add(vBox);
+                closePop.setTranslateY(20);
+                popup.show(gameWindow);
+            }
+        });
     }
 
     public static void LobbyListRefresh(ArrayList<LobbyInfo> lobbies){
