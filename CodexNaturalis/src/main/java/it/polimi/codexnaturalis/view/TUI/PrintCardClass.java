@@ -14,6 +14,16 @@ public class PrintCardClass {
     static String [] TUICard;
     static Card card;
 
+    // ANSI Escape Codes for colors of the card
+    private static final String ANSI_YELLOW = "\u001B[33m";
+    private static final String ANSI_CYAN = "\u001B[36m";
+    private static final String ANSI_WHITE = "\u001B[97m";
+
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String colorCorner = ANSI_WHITE;
+    private static final String colorCenter = ANSI_YELLOW;
+
+
     public PrintCardClass(Card card) {
         this.card = card;
         isNwCovered = false;
@@ -23,7 +33,6 @@ public class PrintCardClass {
         TUICard = new String[7];
     }
 
-
     public static void main(String[] args) {
         StarterCard starterCard = new StarterCard(81, ResourceType.NONE, ResourceType.NONE, ResourceType.PLANT, ResourceType.INSECT, new ResourceType[]{ResourceType.INSECT, ResourceType.ANIMAL}, ResourceType.FUNGI, ResourceType.ANIMAL, ResourceType.PLANT, ResourceType.INSECT);
         ResourceCard firstTestCard = new ResourceCard(1, ResourceType.FUNGI, ResourceType.UNASSIGNABLE, ResourceType.NONE, ResourceType.FUNGI, ResourceType.FUNGI, 0);
@@ -31,17 +40,11 @@ public class PrintCardClass {
         printCard(firstTestCard, false);
         printCard(starterCard, true);
         printCard(starterCard, false);
-        System.out.println("\uD83C\uDF44║");
-        System.out.println("\u2004\u2004\u2004\u2004\u200A"+"║");
     }
 
     public static String[] createCard(Card card, boolean isFront) {
-        String nw, ne, sw, se, cardColor = "", center = "";
+        String nw, ne, sw, se;
         String[] c;
-        boolean isCenterEmpty=false;
-        int punti;
-        String conditionResource;
-        String[] conditionPlaceableCardResource;
 
         if (isFront) {
             nw = PrintSymbols.convertResourceType(card.getFrontNorthResource(), true);
@@ -51,12 +54,7 @@ public class PrintCardClass {
             if (card.getCardType() == CardType.STARTER){
                 c = PrintSymbols.convertMultipleResourceType(card.getBackCentralResources(), true);
             } else {c = PrintSymbols.convertMultipleResourceType(new ResourceType[]{ResourceType.NONE},true);
-            isCenterEmpty = true;
             }
-
-            punti = card.getFrontalNumber();
-            conditionResource = PrintSymbols.convertConditionType(card.getCondition(),true);
-            conditionPlaceableCardResource = PrintSymbols.convertMultipleResourceType(card.getPlaceableCardResources(), true);
         } else {
             nw = PrintSymbols.convertResourceType(card.getBackNorthResource(),true);
             ne = PrintSymbols.convertResourceType(card.getBackEastResource(),true);
@@ -64,120 +62,42 @@ public class PrintCardClass {
             sw = PrintSymbols.convertResourceType(card.getBackWestResource(),true);
             if (card.getCardType() != CardType.STARTER) {
                 c = PrintSymbols.convertMultipleResourceType(card.getBackCentralResources(), true);
-                isCenterEmpty = true;
             }else {
                 c = PrintSymbols.convertMultipleResourceType(new ResourceType[]{ResourceType.NONE}, true);
             }
-            punti = 0;
-            conditionResource = "";
-            conditionPlaceableCardResource = null;
-        }
-        if(card.getCardType() == CardType.STARTER){
-            cardColor = "\uD83D\uDFE8"+"\u2004";
-        }else{
-            cardColor = PrintSymbols.convertResourceType(card.getCardColor(), false) + "\u2004";
         }
 
-        if(isCenterEmpty==false) {
-            center = formatCenter(c, card);
-        }else{
-            center = "       ";
-        }
-        TUICard = new String[7];
-        nw = formatCorner(7, nw);
-        ne = formatCorner(7, ne);
-        sw = formatCorner(7, sw);
-        se = formatCorner(7, se);
-        TUICard[0] = "╔═══════╦═══════╦═══════╗";
-        TUICard[1] = nw+"       "+ne;
-        TUICard[2] = "╠═══════╝       ╚═══════╣";
-        //TUICard[3] = "║       " + (c.length > 1 ? c[1] : "\u2004\u2004\u2004\u2004\u200A") +  (c.length > 0 ? c[0] : "\u2004\u2004\u2004\u2004\u200A") +   (c.length > 2 ? c[2] : "\u2004\u2004\u2004\u2004\u200A") +"\u2009"+"        ║";
-        TUICard[3] = "║        " +center+"        ║";
+        TUICard = new String[5];
 
-        TUICard[4] = "╠═══════╦═══════╦═══════╣";
-        TUICard[5] = sw+"  "+cardColor+"  "+se;
-        TUICard[6] = "╚═══════╩═══════╩═══════╝";
-        System.out.println(conditionResource);
-        /*System.out.println("╔════╦═════╦════╗");
-        if (punti == 0 && conditionResource.equals("")) {
-            System.out.println(sw + "     " + nw);
-        } else if (punti != 0 && conditionResource.equals("")) {
-            System.out.println(nw + " " + punti + " " + ne);
-        } else {
-            System.out.println(nw + " " + punti + " | " + conditionResource + " " + ne);
+        nw = colorCorner + nw + ANSI_RESET;
+        ne = colorCorner + ne + ANSI_RESET;
+        sw = colorCorner + sw + ANSI_RESET;
+        se = colorCorner + se + ANSI_RESET;
+
+        String ANSI_COLOR = PrintSymbols.convertColor(card.getCardColor());
+
+        TUICard[0] = ANSI_COLOR + "╔═══╗" + ANSI_RESET;
+        TUICard[1] = ANSI_COLOR + "║"+ ANSI_RESET + nw + " " + ne + ANSI_COLOR+"║" + ANSI_RESET;
+        if(c.length == 0) {
+            TUICard[2] = ANSI_COLOR + "║" + "   " + "║" + ANSI_RESET;
+        } else if(c.length == 1) {
+            TUICard[2] = ANSI_COLOR + "║"+ colorCenter + " " + c[0] + " " + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
+        } else if(c.length == 2) {
+            TUICard[2] = ANSI_COLOR + "║"+ colorCenter + " " + c[0] + c[1] + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
+        } else if(c.length == 3) {
+            TUICard[2] = ANSI_COLOR + "║"+ colorCenter + c[2] + c[0] + c[1] + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
         }
-        System.out.println("╠════╩═════╩════╣");
-        System.out.println("║  " + (c.length > 1 ? c[1] : " ") + "            ║");
-        System.out.println("║  " + (c.length > 0 ? c[0] : "") + "            ║");
-        System.out.println("║  " + (c.length > 2 ? c[2] : " ") + "            ║");
-        System.out.println("╠════╦═════╦════╣");
-        String conditionResourcesStr = conditionPlaceableCardResource != null ? String.join(", ", conditionPlaceableCardResource) : "";
-        System.out.println(se + "    " + ne);
-        System.out.println("╚════╩═════╩════╝");
-        if(card.getCardType() == CardType.OBJECTIVE){
-            System.out.println("necessary Condition: " + conditionResourcesStr);
-        }
-        System.out.println("╔══════╦═══════╦══════╗");
-        System.out.println(nw+"       "+ne);
-        System.out.println("╠══════╝       ╚══════╣");
-        System.out.println("║        " + (c.length > 1 ? c[1] : "   "+"\u2009") +  (c.length > 0 ? c[0] : "   "+"\u2009") +   (c.length > 2 ? c[2] : "   "+"\u2009") +"\u2009"+"      ║");
-        System.out.println("╠══════╦═══════╦══════╣");
-        System.out.println(sw+"       "+se);
-        System.out.println("╚══════╩═══════╩══════╝");*/
+        TUICard[3] = ANSI_COLOR + "║" + ANSI_RESET + sw + " " + se + ANSI_COLOR + "║" + ANSI_RESET;
+        TUICard[4] = ANSI_COLOR + "╚═══╝" + ANSI_RESET;
+
         return TUICard;
-    }
-
-    private static int getVisualLength(String str) {
-        int length = 0;
-        for (int i = 0; i < str.length(); i++) {
-            char ch = str.charAt(i);
-            // Aggiustamento per caratteri Unicode che occupano più spazio
-            if (Character.isSupplementaryCodePoint(ch) || ch > 0xFFFF) {
-                length += 2; // Supponiamo che occupi 2 spazi
-            } else {
-                length += 1;
-            }
-        }
-        return length;
     }
 
     public static void printCard(Card card, boolean isFront){
         createCard(card,isFront);
-        for(int i = 0;i < TUICard.length;i++){
-            System.out.print(TUICard[i]+"\n");
+        for(int i = 0; i < TUICard.length; i++){
+            System.out.println(TUICard[i]);
         }
-    }
-
-    private static String formatCenter(String[] group, Card card){
-        String centre = "";
-        if(card.getCardType() == CardType.STARTER) {
-            for (int i = 0; i < group.length; i++) {
-                centre += group[i];
-            }
-            for (int i = 0; i < 3 - group.length; i++) {
-                centre += "\u2004\u2004\u2004\u2004\u200A";
-            }
-            if(group[0].equals("")){
-                centre += "\u2004\u2004\u2004\u2004\u200A";
-            }
-        }else {
-            centre += "\u2004\u2004\u2004\u2004\u200A"+ PrintSymbols.convertResourceType(card.getCardColor(), true) +"\u2004\u2004\u2004\u2004\u200A";
-        }
-        return centre;
-    }
-
-    private static String formatCorner(int totalLength, String cornerValue) {
-        int valueLength = getVisualLength(cornerValue);
-        int padding = (totalLength - valueLength) / 2;
-        String paddingSpaces = " ".repeat(Math.max(0, padding));
-        String formattedCorner = "║" + paddingSpaces + cornerValue + paddingSpaces;
-        int remainingSpaces = totalLength - getVisualLength(formattedCorner);
-        if(totalLength%2 > 0){
-            formattedCorner += " ".repeat(Math.max(0, remainingSpaces)) + "\u2004" + "║";
-        }else {
-            formattedCorner += " ".repeat(Math.max(0, remainingSpaces)) + "║";
-        }
-        return formattedCorner;
     }
 }
 

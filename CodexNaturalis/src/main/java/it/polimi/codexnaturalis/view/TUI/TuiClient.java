@@ -280,9 +280,9 @@ public class TuiClient implements TypeOfUI {
         String command;
         System.out.flush();
         System.out.println("Here's your starter card");
-        PrintCardClass TUISstarterCard = new PrintCardClass(starterCard);
-        TUISstarterCard.printCard(starterCard, true);
-        TUISstarterCard.printCard(starterCard, false);
+        PrintCardClass TUIstarterCard = new PrintCardClass(starterCard);
+        TUIstarterCard.printCard(starterCard, true);
+        TUIstarterCard.printCard(starterCard, false);
 
         do {
             System.out.println("Type FRONT or BACK to select the face of the starting card");
