@@ -477,6 +477,16 @@ public class TuiClient implements TypeOfUI {
         }
     }
 
+    @Override
+    public void updateHand() {
+        //do not implement!
+    }
+
+    @Override
+    public void updatePlayerScoreBoard() {
+        //do not implement!
+    }
+
     private void doWait() {
         synchronized (lock) {
             try {
