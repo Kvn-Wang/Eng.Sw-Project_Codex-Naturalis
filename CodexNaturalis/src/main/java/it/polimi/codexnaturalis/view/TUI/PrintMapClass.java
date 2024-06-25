@@ -13,8 +13,9 @@ import java.util.Arrays;
 
 // numero di spazio da spostare formula Ncarte -1 * 23 +15
 public class PrintMapClass {
-
-    private static ResourceCard fillerCard = new ResourceCard(-1, ResourceType.UNASSIGNABLE, ResourceType.UNASSIGNABLE, ResourceType.UNASSIGNABLE, ResourceType.UNASSIGNABLE, ResourceType.UNASSIGNABLE, 0);
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static String ANSI_COLOR = PrintSymbols.convertColor(ResourceType.NONE);
+    private static ResourceCard fillerCard = new ResourceCard(-1, ResourceType.NONE, ResourceType.NONE, ResourceType.NONE, ResourceType.NONE, ResourceType.NONE, 0);
     public PrintMapClass() {
     }
 
@@ -37,28 +38,31 @@ public class PrintMapClass {
         } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
             throw new RuntimeException(e);
         }
-        printMap(map.getMapArray());
-        /*try {
-            mapRearranger(map);
+        printYourMap(map);
+    }
+    public static void printYourMap(GamePlayerMap map) {
+        Card[][] TUIMap;
+        try {
+            TUIMap = mapRearranger(map);
         } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
             throw new RuntimeException(e);
         } catch (PersonalizedException.InvalidPlacementException e) {
             throw new RuntimeException(e);
-        }*/
+        }
+        printMap(TUIMap);
     }
-
     public static void printMap(Card[][] TUIMap){
         int[] leftMostPrintableCard;
         int[] firstPrintableCard;
         int[] lastPrintableCard;
-        int counter, line=0;
-        String[] TUICard = new String[50];
-        String space = " ".repeat(3);
+        int counter = 1, line=0;
+        String[] TUICard = new String[500];
+        String space = " ".repeat(2);
         leftMostPrintableCard= leftMostPrintableCardPos(TUIMap);
         firstPrintableCard= firstPrintableCardPos(TUIMap);
         lastPrintableCard = lastPrintableCardPos(TUIMap);
-        int lastRow = lastPrintableCard[0];
-        int lastCol = lastPrintableCard[1];
+        int lastRow = lastPrintableCard[0]+1;
+        int lastCol = lastPrintableCard[1]+1;
         int firstPrintRow = firstPrintableCard[0];
         int firstPrintColumn = firstPrintableCard[1];
         int printRow = firstPrintableCard[0];
@@ -68,29 +72,38 @@ public class PrintMapClass {
         boolean isFinished = false;
         while(!isFinished){
             lastCardInLine = lastCardInLinePos(TUIMap, firstPrintRow, firstPrintColumn);
+            int distancefromleft=(firstPrintColumn+firstPrintRow)-(leftMostPrintableCard[1]+leftMostPrintableCard[0]);
+            for(int i=0; i<card.length;i++){
+                TUICard[line+i]=space.repeat(distancefromleft);
+            }
             do{
-                int distancefromleft=(firstPrintColumn+firstPrintRow)-(leftMostPrintableCard[1]+leftMostPrintableCard[0]);
-                for(int i=0; i<card.length;i++){
-                    TUICard[line+i]=space.repeat(distancefromleft);
-                }
                 if(TUIMap[printRow][printColumn] == null){
                     for(int i=0; i<card.length; i++ ){
-                        TUICard[line] =TUICard[line]+ space.repeat(3);
-                        line++;
+                        TUICard[line+i] =TUICard[line+i]+ space.repeat(3);
                     }
+                }else if(TUIMap[printRow][printColumn].getPng() == -1){
+                    TUICard[line] = TUICard[line] + ANSI_COLOR + "╔═══╗" + ANSI_RESET;
+                    TUICard[line+1] = TUICard[line+1] + ANSI_COLOR + "║   ║" + ANSI_RESET;
+                    if(counter<10){
+                        TUICard[line+2] = TUICard[line+2] + ANSI_COLOR + "║" + " " + counter + " " + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
+                    }else if(10 < counter && counter<100){
+                        TUICard[line+2] = TUICard[line+2] + ANSI_COLOR + "║"+ " " + counter + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
+                    }else{
+                        TUICard[line+2] = TUICard[line+2] + ANSI_COLOR + "║"+ counter + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
+                    }
+                    TUICard[line+3] = TUICard[line+3] + ANSI_COLOR + "║   ║" + ANSI_RESET;
+                    TUICard[line+4] = TUICard[line+4] + ANSI_COLOR + "╚═══╝" + ANSI_RESET;
+                    counter++;
                 }else{
-                    card = PrintCardClass.createCard(TUIMap[printRow][printColumn], true);
+                    card = PrintCardClass.createCard(TUIMap[printRow][printColumn], !TUIMap[printRow][printColumn].getIsBack());
                     for(int i=0; i<5; i++ ){
-                        TUICard[line] =(TUICard[line] == null ? "": TUICard[line])+ card[i];
-                        line++;
+                        TUICard[line+i] =(TUICard[line+i] == null ? "": TUICard[line+i])+ card[i];
                     }
                 }
-                line++;
-                if(printRow !=lastCardInLine[0] && printColumn !=lastCardInLine[1]) {
-                    printRow++;
-                    printColumn++;
-                }
-            }while(printRow != lastCardInLine[0] && printColumn != lastCardInLine[1]);
+                printRow++;
+                printColumn++;
+
+            }while(printRow != lastCardInLine[0]+1 && printColumn != lastCardInLine[1]+1);
             if(printRow == lastRow && printColumn == lastCol){
                 isFinished = true;
             }else{
@@ -105,6 +118,7 @@ public class PrintMapClass {
                 firstPrintColumn = firstCardInLinePos(TUIMap, firstPrintColumn,temp)[1];
                 printRow = firstPrintRow;
                 printColumn = firstPrintColumn;
+                line = line+5;
             }
         }
         for(int i=0; i<TUICard.length; i++){
@@ -307,16 +321,18 @@ public class PrintMapClass {
         return new int[]{row, col};
     }
 
-    /*public static Card[][] mapRearranger(GamePlayerMap gamePlayerMap) throws PersonalizedException.InvalidPlaceCardRequirementException, PersonalizedException.InvalidPlacementException {
-        GamePlayerMap tempGamePlayerMap = gamePlayerMap;
+    public static Card[][] mapRearranger(GamePlayerMap gamePlayerMap) throws PersonalizedException.InvalidPlaceCardRequirementException, PersonalizedException.InvalidPlacementException {
+        Card [][] tempGamePlayerMap = gamePlayerMap.getMapArray();
+        Card[][] mapArray = new Card[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
         for(int i = 0 ; i < UtilCostantValue.lunghezzaMaxMappa ; i++){
             for(int j = 0 ; j < UtilCostantValue.lunghezzaMaxMappa ; j++){
-                if()
-                if(tempGamePlayerMap.getCheckValidPosition(i,j) != -1){
-                    tempGamePlayerMap.placeCard(i,j,fillerCard);
+                if(tempGamePlayerMap[i][j] !=null && tempGamePlayerMap[i][j].getPng() != -1){
+                    mapArray[i][j] = tempGamePlayerMap[i][j];
+                }else if (gamePlayerMap.getCheckValidPosition(i,j) != -1){
+                    mapArray[i][j] = fillerCard;
                 }
             }
         }
-        return gamePlayerMap.getMapArray();
-    }*/
+        return mapArray;
+    }
 }

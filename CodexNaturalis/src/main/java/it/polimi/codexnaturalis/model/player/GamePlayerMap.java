@@ -127,7 +127,7 @@ public class GamePlayerMap {
         if(x == UtilCostantValue.lunghezzaMaxMappa - 1) {
             if(!(mapArray[x - 1][y] == null)) {
                 //controllo corner
-                if(mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == null) {
+                if(mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == null || mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == ResourceType.UNASSIGNABLE) {
                     throw new PersonalizedException.InvalidPlacementException();
                 }
                 adiacentNumCard++;
@@ -135,20 +135,20 @@ public class GamePlayerMap {
         } else if(x == 0) {
             if(!(mapArray[x + 1][y] == null)) {
                 //controllo del corner
-                if(mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == null) {
+                if(mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == null || mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == ResourceType.UNASSIGNABLE) {
                     throw new PersonalizedException.InvalidPlacementException();
                 }
                 adiacentNumCard++;
             }
         } else {
             if(!(mapArray[x + 1][y] == null)) {
-                if(mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == null) {
+                if(mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == null || mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == ResourceType.UNASSIGNABLE) {
                     throw new PersonalizedException.InvalidPlacementException();
                 }
                 adiacentNumCard++;
             }
             if(!(mapArray[x - 1][y] == null)) {
-                if(mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == null) {
+                if(mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == null || mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == ResourceType.UNASSIGNABLE) {
                     throw new PersonalizedException.InvalidPlacementException();
                 }
                 adiacentNumCard++;
@@ -158,7 +158,7 @@ public class GamePlayerMap {
         if(y == UtilCostantValue.lunghezzaMaxMappa - 1) {
             if(!(mapArray[x][y - 1] == null)) {
                 //controllo del corner
-                if(mapArray[x][y - 1].getCardCorner(CardCorner.EAST) == null) {
+                if(mapArray[x][y - 1].getCardCorner(CardCorner.EAST) == null || mapArray[x][y - 1].getCardCorner(CardCorner.EAST) == ResourceType.UNASSIGNABLE) {
                     throw new PersonalizedException.InvalidPlacementException();
                 }
                 adiacentNumCard++;
@@ -166,7 +166,7 @@ public class GamePlayerMap {
         } else if(y == 0) {
             if(!(mapArray[x][y + 1] == null)) {
                 //controllo del corner
-                if(mapArray[x][y + 1].getCardCorner(CardCorner.WEST) == null) {
+                if(mapArray[x][y + 1].getCardCorner(CardCorner.WEST) == null || mapArray[x][y + 1].getCardCorner(CardCorner.WEST) == ResourceType.UNASSIGNABLE) {
                     throw new PersonalizedException.InvalidPlacementException();
                 }
                 adiacentNumCard++;
@@ -174,14 +174,14 @@ public class GamePlayerMap {
         } else {
             if(!(mapArray[x][y + 1] == null)) {
                 //controllo del corner
-                if(mapArray[x][y + 1].getCardCorner(CardCorner.WEST) == null) {
+                if(mapArray[x][y + 1].getCardCorner(CardCorner.WEST) == null || mapArray[x][y + 1].getCardCorner(CardCorner.WEST) == ResourceType.UNASSIGNABLE) {
                     throw new PersonalizedException.InvalidPlacementException();
                 }
                 adiacentNumCard++;
             }
             if(!(mapArray[x][y - 1] == null)) {
                 //controllo del corner
-                if(mapArray[x][y - 1].getCardCorner(CardCorner.EAST) == null) {
+                if(mapArray[x][y - 1].getCardCorner(CardCorner.EAST) == null || mapArray[x][y - 1].getCardCorner(CardCorner.EAST) == ResourceType.UNASSIGNABLE) {
                     throw new PersonalizedException.InvalidPlacementException();
                 }
                 adiacentNumCard++;
@@ -244,7 +244,11 @@ public class GamePlayerMap {
         if(x < 0 || y < 0 || x >= UtilCostantValue.lunghezzaMaxMappa || y >= UtilCostantValue.lunghezzaMaxMappa) {
             return false;
         } else {
-            return true;
+            if (mapArray[x][y] == null) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
