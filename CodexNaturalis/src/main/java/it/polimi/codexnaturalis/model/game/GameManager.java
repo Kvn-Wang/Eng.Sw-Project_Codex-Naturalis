@@ -60,6 +60,7 @@ public class GameManager extends Observable implements GameController {
 
         playerThatHasPlayedStarterCard = 0;
         playerThatHasPlayedPersonalMission = 0;
+        chatManager = new ChatManager();
 
         vobs = observer;
         addObserver(observer);

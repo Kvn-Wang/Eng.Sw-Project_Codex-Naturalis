@@ -11,6 +11,9 @@ import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+/**
+ * The type Lobby.
+ */
 public class Lobby {
     private LobbyInfo lobbyInfo;
     //final int timoutGameStart;
@@ -19,12 +22,24 @@ public class Lobby {
     private ArrayList<PlayerInfo> listOfPlayers;
     private GameController gameController;
 
+    /**
+     * Instantiates a new Lobby.
+     *
+     * @param lobbyName the lobby name
+     */
     public Lobby(String lobbyName) {
         this.listOfPlayers = new ArrayList<>();
         lobbyInfo = new LobbyInfo(lobbyName, false, UtilCostantValue.maxPlayerPerLobby);
         //this.timoutGameStart = UtilCostantValue.timeoutSecGameStart;
     }
 
+    /**
+     * Connect player boolean.
+     *
+     * @param player the player
+     * @return the boolean
+     * @throws RemoteException the remote exception
+     */
     public boolean connectPlayer(PlayerInfo player) throws RemoteException {
         if(lobbyInfo.addPlayer()) {
             broadCastNotify(player.getNickname(), "JOIN");
@@ -36,7 +51,13 @@ public class Lobby {
         }
     }
 
-    //if after removing a player, currentPlayer == 0, returns False, else True
+    /**
+     * Disconnect player boolean.
+     *
+     * @param player the player
+     * @return if after removing a player, currentPlayer == 0, returns False, else True
+     * @throws RemoteException the remote exception
+     */
     public boolean disconnectPlayer(PlayerInfo player) throws RemoteException {
         listOfPlayers.remove(player);
 
@@ -54,6 +75,12 @@ public class Lobby {
         }
     }
 
+    /**
+     * Sets player color.
+     *
+     * @param player      the player
+     * @param colorChosen the color chosen
+     */
     public void setPlayerColor(PlayerInfo player, ColorType colorChosen) {
         boolean someoneHasChosenThatColor = false;
 
@@ -80,6 +107,12 @@ public class Lobby {
         }
     }
 
+    /**
+     * Sets player ready.
+     *
+     * @param player the player
+     * @throws RemoteException the remote exception
+     */
     public void setPlayerReady(PlayerInfo player) throws RemoteException {
         listOfPlayers.get(listOfPlayers.indexOf(player)).setPlayerReady(true);
 
@@ -141,14 +174,29 @@ public class Lobby {
         }
     }
 
+    /**
+     * Gets lobby name.
+     *
+     * @return the lobby name
+     */
     public String getLobbyName() {
         return lobbyInfo.getLobbyName();
     }
 
+    /**
+     * Gets list of players.
+     *
+     * @return the list of players
+     */
     public ArrayList<PlayerInfo> getListOfPlayers() {
         return listOfPlayers;
     }
 
+    /**
+     * Gets lobby info.
+     *
+     * @return the lobby info
+     */
     public LobbyInfo getLobbyInfo() {
         return lobbyInfo;
     }

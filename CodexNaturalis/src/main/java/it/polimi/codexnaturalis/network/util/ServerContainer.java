@@ -13,7 +13,7 @@ public class ServerContainer {
     private static ArrayList<PlayerInfo> activeClients;
     private static ArrayList<Lobby> activeLobby;
 
-    private ServerContainer() {
+    public ServerContainer() {
         activeClients = new ArrayList<>();
         this.activeLobby = new ArrayList<>();
     }
