@@ -153,13 +153,13 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
                 if(nickname.equals(players.get(currentPlayingPlayerIndex).getNickname())) {
                     if(gameState == GameState.PLAY_PHASE) {
                         gameController.playerPlayCard(nickname, x, y, playedCard);
-                        System.out.println(((GameManager) gameController).errorDuringPlayingPhase);
+
                         if(!((GameManager) gameController).errorDuringPlayingPhase == true) {
                             gameState = GameState.DRAW_PHASE;
                         }
 
                     } else {
-                        System.out.println("Errore giocata carta");
+                        System.out.println("Error: invalid action");
                         nickToPlayerInfo(nickname).notifyPlayer(new NetworkMessage(MessageType.ERR_GAME_STATE_COMMAND, String.valueOf(gameState)));
                     }
                 }

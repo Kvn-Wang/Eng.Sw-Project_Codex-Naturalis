@@ -249,15 +249,18 @@ public class GameManager extends Observable implements GameController {
                             String.valueOf(p.getPersonalScoreBoardScore())));
             }
 
-            System.out.println("Carta giocata");
+            System.out.println("The card has been placed");
 
             endGameCheckScoreBoard(nickToPlayer(nickname));
         } catch(PersonalizedException.InvalidPlaceCardRequirementException |
                  PersonalizedException.InvalidPlacementException e) {
             errorDuringPlayingPhase = true;
+            System.out.println("Error placement Card");
 
             notifyObserverSingle(new NetworkMessage(nickname, MessageType.PLACEMENT_CARD_OUTCOME,
                     String.valueOf(false)));
+        } catch(Exception e) {
+            e.printStackTrace();
         }
     }
 

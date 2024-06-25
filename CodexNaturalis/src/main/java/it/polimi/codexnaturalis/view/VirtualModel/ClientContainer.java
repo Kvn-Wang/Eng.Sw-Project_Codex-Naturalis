@@ -139,6 +139,7 @@ public class ClientContainer {
     public void updateOtherPlayerMap(String nickname, int x, int y, Card card, int hisNewPlayerScore) {
         players.get(nickname).map[x][y] = card;
         players.get(nickname).intScoreBoardScore = hisNewPlayerScore;
+        System.out.println("player: "+ nickname + ", score: "+ hisNewPlayerScore);
     }
 
     public void addCardToHand(Card card) {

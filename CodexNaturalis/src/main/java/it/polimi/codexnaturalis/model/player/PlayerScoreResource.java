@@ -137,6 +137,7 @@ public class PlayerScoreResource {
                 break;
 
             default:
+                System.err.println("Requested illegal type of resource: "+ type);
                 throw new IllegalArgumentException("Errore richiesta tipo di risorsa");
         }
 
