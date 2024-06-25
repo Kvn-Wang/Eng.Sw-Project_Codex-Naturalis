@@ -39,6 +39,7 @@ public class PrintMapClass {
             throw new RuntimeException(e);
         }
         printYourMap(map);
+
     }
     public static void printYourMap(GamePlayerMap map) {
         Card[][] TUIMap;
