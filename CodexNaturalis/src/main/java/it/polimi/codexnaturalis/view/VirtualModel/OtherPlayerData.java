@@ -20,4 +20,8 @@ public class OtherPlayerData {
 
         intScoreBoardScore = 0;
     }
+
+    public int getIntScoreBoardScore() {
+        return intScoreBoardScore;
+    }
 }

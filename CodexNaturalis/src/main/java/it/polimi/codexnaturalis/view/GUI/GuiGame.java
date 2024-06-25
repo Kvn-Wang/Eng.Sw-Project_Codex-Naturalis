@@ -19,6 +19,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -37,6 +38,7 @@ import javafx.stage.Stage;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GuiGame extends Application {
 
@@ -47,6 +49,7 @@ public class GuiGame extends Application {
     private static Circle[][] anchorPointsMatrix;
     private static ArrayList<GuiCard> handCards;
     private static Rectangle[] missions;
+    private static ObservableMap<String, Integer> scores;
     private static Pane vHand;
     private static VBox missionList;
     private static VBox actionMenu;
@@ -214,6 +217,21 @@ public class GuiGame extends Application {
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
+
+            Button shopButton = new Button("Shop");
+            shopButton.setMinSize(150,100);
+            shopButton.setOnAction(event -> {
+                openShop();
+            });
+            actionMenu.getChildren().add(shopButton);
+
+
+            scores = FXCollections.observableHashMap();
+            clientContainer.getPlayers().forEach((nick, playerData) -> {
+                scores.put(nick, playerData.getIntScoreBoardScore());
+            });
+            TableView<HashMap<String, Integer>> scoreTable= new TableView<>();
+            actionMenu.getChildren().add(scoreTable);
         });
     }
 
@@ -234,51 +252,53 @@ public class GuiGame extends Application {
         ShopBox shopAlert = new ShopBox();
         shopAlert.setCC(clientContainer);
         String drawnCard = shopAlert.display("Shop", 400,300);
-        switch(drawnCard){
-            case "r0":
-                try {
-                    vgc.playerDraw(playerNickname,0, ShopType.RESOURCE);
-                } catch (RemoteException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            case "r1":
-                try {
-                    vgc.playerDraw(playerNickname,1, ShopType.RESOURCE);
-                } catch (RemoteException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            case "r2":
-                try {
-                    vgc.playerDraw(playerNickname,2, ShopType.RESOURCE);
-                } catch (RemoteException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            case "o0":
-                try {
-                    vgc.playerDraw(playerNickname,0, ShopType.OBJECTIVE);
-                } catch (RemoteException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            case "01":
-                try {
-                    vgc.playerDraw(playerNickname,1, ShopType.OBJECTIVE);
-                } catch (RemoteException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            case "o2":
-                try {
-                    vgc.playerDraw(playerNickname,2, ShopType.OBJECTIVE);
-                } catch (RemoteException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            default:
-                break;
+        if(drawnCard!=null) {
+            switch (drawnCard) {
+                case "r0":
+                    try {
+                        vgc.playerDraw(playerNickname, 0, ShopType.RESOURCE);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                case "r1":
+                    try {
+                        vgc.playerDraw(playerNickname, 1, ShopType.RESOURCE);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                case "r2":
+                    try {
+                        vgc.playerDraw(playerNickname, 2, ShopType.RESOURCE);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                case "o0":
+                    try {
+                        vgc.playerDraw(playerNickname, 0, ShopType.OBJECTIVE);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                case "01":
+                    try {
+                        vgc.playerDraw(playerNickname, 1, ShopType.OBJECTIVE);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                case "o2":
+                    try {
+                        vgc.playerDraw(playerNickname, 2, ShopType.OBJECTIVE);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -712,12 +732,6 @@ public class GuiGame extends Application {
     }
     private VBox actionMenuLayer(){
         VBox actions = new VBox();
-        Button shopButton = new Button("Shop");
-        shopButton.setMinSize(150,100);
-        shopButton.setOnAction(event -> {
-            openShop();
-        });
-        actions.getChildren().add(shopButton);
         return actions;
     }
 }

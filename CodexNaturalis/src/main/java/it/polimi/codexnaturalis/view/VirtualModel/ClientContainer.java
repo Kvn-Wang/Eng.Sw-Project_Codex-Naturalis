@@ -15,7 +15,7 @@ public class ClientContainer {
     private String nickname;
     private String lobbyNickname;
     private HashMap<String, OtherPlayerData> players;
-    PlayerScoreResource personalPlayerScoreResource;
+    private PlayerScoreResource personalPlayerScoreResource;
     private Hand personalHand;
     private Mission commonMission1;
     private Mission commonMission2;
