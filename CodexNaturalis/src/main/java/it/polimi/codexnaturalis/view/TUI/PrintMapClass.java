@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.view.TUI;
 
+import it.polimi.codexnaturalis.model.enumeration.CardCorner;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.GamePlayerMap;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
@@ -335,5 +336,103 @@ public class PrintMapClass {
             }
         }
         return mapArray;
+    }
+
+    public int getCheckValidPosition(int x, int y, Card[][] mapArray){
+        int adiacentNumCard = -1;
+        if(checkValidityXY(x,y,mapArray)){
+            try {
+                adiacentNumCard = checkValidPosition(x,y,mapArray);
+            } catch (PersonalizedException.InvalidPlacementException e) {
+                return adiacentNumCard;
+            }
+        }
+        return adiacentNumCard;
+    }
+
+    private int checkValidPosition(int x, int y, Card[][] mapArray) throws PersonalizedException.InvalidPlacementException {
+        int adiacentNumCard = 0;
+
+        //controllo di adiacenza della carta facendo attenzione ai valori limite
+        if(x == UtilCostantValue.lunghezzaMaxMappa - 1) {
+            if(!(mapArray[x - 1][y] == null)) {
+                //controllo corner
+                if(mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == null || mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == ResourceType.UNASSIGNABLE) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
+                adiacentNumCard++;
+            }
+        } else if(x == 0) {
+            if(!(mapArray[x + 1][y] == null)) {
+                //controllo del corner
+                if(mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == null || mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == ResourceType.UNASSIGNABLE) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
+                adiacentNumCard++;
+            }
+        } else {
+            if(!(mapArray[x + 1][y] == null)) {
+                if(mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == null || mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == ResourceType.UNASSIGNABLE) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
+                adiacentNumCard++;
+            }
+            if(!(mapArray[x - 1][y] == null)) {
+                if(mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == null || mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == ResourceType.UNASSIGNABLE) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
+                adiacentNumCard++;
+            }
+        }
+
+        if(y == UtilCostantValue.lunghezzaMaxMappa - 1) {
+            if(!(mapArray[x][y - 1] == null)) {
+                //controllo del corner
+                if(mapArray[x][y - 1].getCardCorner(CardCorner.EAST) == null || mapArray[x][y - 1].getCardCorner(CardCorner.EAST) == ResourceType.UNASSIGNABLE) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
+                adiacentNumCard++;
+            }
+        } else if(y == 0) {
+            if(!(mapArray[x][y + 1] == null)) {
+                //controllo del corner
+                if(mapArray[x][y + 1].getCardCorner(CardCorner.WEST) == null || mapArray[x][y + 1].getCardCorner(CardCorner.WEST) == ResourceType.UNASSIGNABLE) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
+                adiacentNumCard++;
+            }
+        } else {
+            if(!(mapArray[x][y + 1] == null)) {
+                //controllo del corner
+                if(mapArray[x][y + 1].getCardCorner(CardCorner.WEST) == null || mapArray[x][y + 1].getCardCorner(CardCorner.WEST) == ResourceType.UNASSIGNABLE) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
+                adiacentNumCard++;
+            }
+            if(!(mapArray[x][y - 1] == null)) {
+                //controllo del corner
+                if(mapArray[x][y - 1].getCardCorner(CardCorner.EAST) == null || mapArray[x][y - 1].getCardCorner(CardCorner.EAST) == ResourceType.UNASSIGNABLE) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
+                adiacentNumCard++;
+            }
+        }
+
+        if(adiacentNumCard == 0 && mapArray[UtilCostantValue.lunghezzaMaxMappa/2][UtilCostantValue.lunghezzaMaxMappa/2]!=null) {
+            throw new PersonalizedException.InvalidPlacementException();
+        }
+        return adiacentNumCard;
+    }
+
+    private boolean checkValidityXY(int x, int y, Card[][] mapArray) {
+        if(x < 0 || y < 0 || x >= UtilCostantValue.lunghezzaMaxMappa || y >= UtilCostantValue.lunghezzaMaxMappa) {
+            return false;
+        } else {
+            if (mapArray[x][y] == null) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 }
