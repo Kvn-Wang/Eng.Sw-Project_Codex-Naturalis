@@ -70,13 +70,13 @@ public class PrintMissionClass {
         String resources[] = PrintSymbols.convertMultipleResourceType(mission.getTypeOfResource(), true);
         String symbol = "";
         if(resources.length == 1){
-            for(int i=0; i<mission.getNumberOfSymbols(); i++){
-                symbol += resources[0];
+            for(int i=0; i < mission.getNumberOfSymbols(); i++){
+                symbol = symbol + " " + resources[0];
             }
             System.out.println(symbol);
         }else {
             for(int i=0; i<mission.getNumberOfSymbols(); i++){
-                symbol += resources[i];
+                symbol = symbol + " " + resources[i];
             }
             System.out.println(symbol);
         }

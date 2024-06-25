@@ -30,30 +30,30 @@ public class PrintSymbols {
             }
             case PLANT -> {
                 if (isCard) {
-                    return ANSI_GREEN+"▆"+ANSI_RESET;
+                    return ANSI_GREEN+"█"+ANSI_RESET;
                 } else {
-                    return "\uD83D\uDFE9";
+                    return "█";
                 }
             }
             case ANIMAL -> {
                 if(isCard) {
-                    return ANSI_BLUE+"▆"+ANSI_RESET;
+                    return ANSI_BLUE+"█"+ANSI_RESET;
                 } else{
-                    return "\uD83D\uDFE6";
+                    return "█";
                 }
             }
             case FUNGI -> {
                 if(isCard) {
-                    return ANSI_RED+"▆"+ANSI_RESET;
+                    return ANSI_RED+"█"+ANSI_RESET;
                 }else {
-                    return "\uD83D\uDFE5";
+                    return "█";
                 }
             }
             case INSECT -> {
                 if(isCard) {
-                    return ANSI_PURPLE+"▆"+ANSI_RESET;
+                    return ANSI_PURPLE+"█"+ANSI_RESET;
                 } else {
-                    return "\uD83D\uDFEA";
+                    return "█";
                 }
             }
             case QUILL -> {

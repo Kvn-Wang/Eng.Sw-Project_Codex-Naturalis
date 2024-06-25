@@ -35,7 +35,6 @@ public class GameManager extends Observable implements GameController {
     private Player[] players;
     private ChatManager chatManager;
     private ArrayList<Player> winners;
-    private String scoreCardImg;
     private int playerThatHasPlayedStarterCard;
     private int playerThatHasPlayedPersonalMission;
     private Observer vobs;
@@ -89,7 +88,6 @@ public class GameManager extends Observable implements GameController {
     }
 
     private void gamePhase1(){
-        initializeScoreboard();
         initializePlayer();
         initializeStarterCard();
     }
@@ -102,10 +100,6 @@ public class GameManager extends Observable implements GameController {
         setupPlayerContents();
 
         initializePlayerPersonalMission();
-    }
-
-    private void initializeScoreboard(){
-        scoreCardImg = UtilCostantValue.pathToScoreCardImg;
     }
 
     private GeneralShop initializeShop(ShopType typeOfShop){
