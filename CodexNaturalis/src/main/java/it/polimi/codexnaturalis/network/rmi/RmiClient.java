@@ -181,6 +181,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 Card cardDrawn = gsonTranslator.fromJson(message.getArgs().get(0), Card.class);
 
                 clientContainer.addCardToHand(cardDrawn);
+                typeOfUI.updateHand();
                 break;
 
             case PLACEMENT_CARD_OUTCOME:
@@ -195,6 +196,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
                     clientContainer.playedCard(playedCard);
                     clientContainer.updatePersonalScore(updatedScoreBoardValue, playerScoreResource);
                     typeOfUI.outcomePlayCard(true);
+                    typeOfUI.updatePlayerScoreBoard();
                 } else {
                     System.out.println("Piazzamento non valido");
                     typeOfUI.outcomePlayCard(false);
@@ -212,6 +214,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 System.out.println("the player: "+nickName+" has played a card in ("+x_pos+","+y_pos+")");
 
                 clientContainer.updateOtherPlayerMap(nickName, x_pos, y_pos, playedCard, hisNewPlayerScore);
+                typeOfUI.updatePlayerScoreBoard();
                 break;
 
             case ERR_GAME_STATE_COMMAND:

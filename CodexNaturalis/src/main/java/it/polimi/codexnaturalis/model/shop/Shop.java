@@ -19,6 +19,8 @@ import it.polimi.codexnaturalis.utils.observer.Observer;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -50,11 +52,11 @@ public class Shop extends Observable {
         this.shopType = type;
 
         if(type.equals(ShopType.OBJECTIVE)) {
-            cardsFile = UtilCostantValue.pathToObjectiveJson;
+            cardsFile = "/it/polimi/codexnaturalis/matchCardFileInfo/objectiveCardsFile.json";
         } else if(type.equals(ShopType.RESOURCE)) {
-            cardsFile = UtilCostantValue.pathToResourceJson;
+            cardsFile = "/it/polimi/codexnaturalis/matchCardFileInfo/resourceCardsFile.json";
         } else if(type.equals(ShopType.STARTER)) {
-            cardsFile = UtilCostantValue.pathToStarterJson;
+            cardsFile = "/it/polimi/codexnaturalis/matchCardFileInfo/starterCardsFile.json";
         } else {
             throw new RuntimeException("Errore inizializzazione shop di tipo: "+ type);
         }
@@ -68,79 +70,79 @@ public class Shop extends Observable {
         cardDeck = new ArrayList<>();
         Card suppCard;
 
-        try {
-            FileReader reader = new FileReader(cardsFile);
+        // Usa getResourceAsStream per ottenere l'InputStream del file JSON
+        InputStream inputStream = getClass().getResourceAsStream(cardsFile);
+        if (inputStream == null) {
+            throw new RuntimeException("File JSON Mission non trovato");
+        }
+        InputStreamReader reader = new InputStreamReader(inputStream);
 
-            JsonParser jsonParser = new JsonParser();
-            JsonArray jsonArray = jsonParser.parse(reader).getAsJsonArray();
+        JsonParser jsonParser = new JsonParser();
+        JsonArray jsonArray = jsonParser.parse(reader).getAsJsonArray();
 
-            if(shopType.equals(ShopType.OBJECTIVE)) {
-                for(JsonElement element : jsonArray) {
-                    JsonObject jsonObject = element.getAsJsonObject();
+        if(shopType.equals(ShopType.OBJECTIVE)) {
+            for(JsonElement element : jsonArray) {
+                JsonObject jsonObject = element.getAsJsonObject();
 
-                    int pngNumber = jsonObject.get("png").getAsInt();
-                    ResourceType frontNorthResource = parseResourceType(jsonObject.get("frontNorthResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontNorthResource").getAsString()) : null;
-                    ResourceType frontSouthResource = parseResourceType(jsonObject.get("frontSouthResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontSouthResource").getAsString()) : null;
-                    ResourceType frontEastResource = parseResourceType(jsonObject.get("frontEastResource").getAsString());
-                    ResourceType frontWestResource = parseResourceType(jsonObject.get("frontWestResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontWestResource").getAsString()) : null;
-                    ResourceType backCentralResource = parseResourceType(jsonObject.get("backCentralResource").getAsString());
-                    ConditionResourceType pointPerConditionResource = ConditionResourceType.valueOf(jsonObject.get("pointPerConditionResource").getAsString());
-                    int pointPerCondition = jsonObject.get("pointPerCondition").getAsInt();
+                int pngNumber = jsonObject.get("png").getAsInt();
+                ResourceType frontNorthResource = parseResourceType(jsonObject.get("frontNorthResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontNorthResource").getAsString()) : null;
+                ResourceType frontSouthResource = parseResourceType(jsonObject.get("frontSouthResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontSouthResource").getAsString()) : null;
+                ResourceType frontEastResource = parseResourceType(jsonObject.get("frontEastResource").getAsString());
+                ResourceType frontWestResource = parseResourceType(jsonObject.get("frontWestResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontWestResource").getAsString()) : null;
+                ResourceType backCentralResource = parseResourceType(jsonObject.get("backCentralResource").getAsString());
+                ConditionResourceType pointPerConditionResource = ConditionResourceType.valueOf(jsonObject.get("pointPerConditionResource").getAsString());
+                int pointPerCondition = jsonObject.get("pointPerCondition").getAsInt();
 
-                    JsonArray supp = jsonObject.getAsJsonArray("conditionResource");
-                    ResourceType[] conditionResource = new ResourceType[supp.size()];
-                    for (int i = 0; i < supp.size(); i++) {
-                        conditionResource[i] = ResourceType.valueOf(supp.get(i).getAsString());
-                    }
-
-                    suppCard = new ObjectiveCard(pngNumber, frontNorthResource, frontSouthResource, frontEastResource, frontWestResource, backCentralResource,
-                            pointPerConditionResource, pointPerCondition, conditionResource);
-                    cardDeck.add(suppCard);
+                JsonArray supp = jsonObject.getAsJsonArray("conditionResource");
+                ResourceType[] conditionResource = new ResourceType[supp.size()];
+                for (int i = 0; i < supp.size(); i++) {
+                    conditionResource[i] = ResourceType.valueOf(supp.get(i).getAsString());
                 }
-            } else if(shopType.equals(ShopType.RESOURCE)) {
-                for(JsonElement element : jsonArray) {
-                    JsonObject jsonObject = element.getAsJsonObject();
 
-                    int pngNumber = jsonObject.get("png").getAsInt();
-                    ResourceType frontNorthResource = parseResourceType(jsonObject.get("frontNorthResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontNorthResource").getAsString()) : null;
-                    ResourceType frontSouthResource = parseResourceType(jsonObject.get("frontSouthResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontSouthResource").getAsString()) : null;
-                    ResourceType frontEastResource = parseResourceType(jsonObject.get("frontEastResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontEastResource").getAsString()) : null;
-                    ResourceType frontWestResource = parseResourceType(jsonObject.get("frontWestResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontWestResource").getAsString()) : null;
-                    ResourceType backCentralResource = parseResourceType(jsonObject.get("backCentralResource").getAsString());
-                    int frontCardPoint = jsonObject.get("frontCardPoint").getAsInt();
-
-                    suppCard = new ResourceCard(pngNumber, frontNorthResource, frontSouthResource, frontEastResource, frontWestResource, backCentralResource, frontCardPoint);
-                    cardDeck.add(suppCard);
-                }
-            } else if(shopType.equals(ShopType.STARTER)) {
-                for(JsonElement element : jsonArray) {
-                    JsonObject jsonObject = element.getAsJsonObject();
-
-                    int pngNumber = jsonObject.get("png").getAsInt();
-                    ResourceType frontNorthResource = parseResourceType(jsonObject.get("frontNorthResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontNorthResource").getAsString()) : null;
-                    ResourceType frontSouthResource = parseResourceType(jsonObject.get("frontSouthResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontSouthResource").getAsString()) : null;
-                    ResourceType frontEastResource = parseResourceType(jsonObject.get("frontEastResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontEastResource").getAsString()) : null;
-                    ResourceType frontWestResource = parseResourceType(jsonObject.get("frontWestResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontWestResource").getAsString()) : null;
-
-                    JsonArray supp = jsonObject.getAsJsonArray("backCentralResource");
-                    ResourceType[] backCentralResource = new ResourceType[supp.size()];
-                    for (int i = 0; i < supp.size(); i++) {
-                        backCentralResource[i] = ResourceType.valueOf(supp.get(i).getAsString());
-                    }
-
-                    ResourceType backNorthResource = parseResourceType(jsonObject.get("backNorthResource").getAsString()) != null ? parseResourceType(jsonObject.get("backNorthResource").getAsString()) : null;
-                    ResourceType backSouthResource = parseResourceType(jsonObject.get("backSouthResource").getAsString()) != null ? parseResourceType(jsonObject.get("backSouthResource").getAsString()) : null;
-                    ResourceType backEastResource = parseResourceType(jsonObject.get("backEastResource").getAsString()) != null ? parseResourceType(jsonObject.get("backEastResource").getAsString()) : null;
-                    ResourceType backWestResource = parseResourceType(jsonObject.get("backWestResource").getAsString()) != null ? parseResourceType(jsonObject.get("backWestResource").getAsString()) : null;
-
-                    suppCard = new StarterCard(pngNumber, frontNorthResource, frontSouthResource, frontEastResource, frontWestResource, backCentralResource,
-                            backNorthResource, backSouthResource, backEastResource, backWestResource);
-                    cardDeck.add(suppCard);
-                }
+                suppCard = new ObjectiveCard(pngNumber, frontNorthResource, frontSouthResource, frontEastResource, frontWestResource, backCentralResource,
+                        pointPerConditionResource, pointPerCondition, conditionResource);
+                cardDeck.add(suppCard);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("File JSON: "+ cardsFile +" non trovato");
+        } else if(shopType.equals(ShopType.RESOURCE)) {
+            for(JsonElement element : jsonArray) {
+                JsonObject jsonObject = element.getAsJsonObject();
+
+                int pngNumber = jsonObject.get("png").getAsInt();
+                ResourceType frontNorthResource = parseResourceType(jsonObject.get("frontNorthResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontNorthResource").getAsString()) : null;
+                ResourceType frontSouthResource = parseResourceType(jsonObject.get("frontSouthResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontSouthResource").getAsString()) : null;
+                ResourceType frontEastResource = parseResourceType(jsonObject.get("frontEastResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontEastResource").getAsString()) : null;
+                ResourceType frontWestResource = parseResourceType(jsonObject.get("frontWestResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontWestResource").getAsString()) : null;
+                ResourceType backCentralResource = parseResourceType(jsonObject.get("backCentralResource").getAsString());
+                int frontCardPoint = jsonObject.get("frontCardPoint").getAsInt();
+
+                suppCard = new ResourceCard(pngNumber, frontNorthResource, frontSouthResource, frontEastResource, frontWestResource, backCentralResource, frontCardPoint);
+                cardDeck.add(suppCard);
+            }
+        } else if(shopType.equals(ShopType.STARTER)) {
+            for(JsonElement element : jsonArray) {
+                JsonObject jsonObject = element.getAsJsonObject();
+
+                int pngNumber = jsonObject.get("png").getAsInt();
+                ResourceType frontNorthResource = parseResourceType(jsonObject.get("frontNorthResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontNorthResource").getAsString()) : null;
+                ResourceType frontSouthResource = parseResourceType(jsonObject.get("frontSouthResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontSouthResource").getAsString()) : null;
+                ResourceType frontEastResource = parseResourceType(jsonObject.get("frontEastResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontEastResource").getAsString()) : null;
+                ResourceType frontWestResource = parseResourceType(jsonObject.get("frontWestResource").getAsString()) != null ? parseResourceType(jsonObject.get("frontWestResource").getAsString()) : null;
+
+                JsonArray supp = jsonObject.getAsJsonArray("backCentralResource");
+                ResourceType[] backCentralResource = new ResourceType[supp.size()];
+                for (int i = 0; i < supp.size(); i++) {
+                    backCentralResource[i] = ResourceType.valueOf(supp.get(i).getAsString());
+                }
+
+                ResourceType backNorthResource = parseResourceType(jsonObject.get("backNorthResource").getAsString()) != null ? parseResourceType(jsonObject.get("backNorthResource").getAsString()) : null;
+                ResourceType backSouthResource = parseResourceType(jsonObject.get("backSouthResource").getAsString()) != null ? parseResourceType(jsonObject.get("backSouthResource").getAsString()) : null;
+                ResourceType backEastResource = parseResourceType(jsonObject.get("backEastResource").getAsString()) != null ? parseResourceType(jsonObject.get("backEastResource").getAsString()) : null;
+                ResourceType backWestResource = parseResourceType(jsonObject.get("backWestResource").getAsString()) != null ? parseResourceType(jsonObject.get("backWestResource").getAsString()) : null;
+
+                suppCard = new StarterCard(pngNumber, frontNorthResource, frontSouthResource, frontEastResource, frontWestResource, backCentralResource,
+                        backNorthResource, backSouthResource, backEastResource, backWestResource);
+                cardDeck.add(suppCard);
+            }
         }
 
         shuffleCardDeck();
