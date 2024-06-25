@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.view.VirtualModel;
 
+import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 public class OtherPlayerData {
     public Card[][] map;
     public int intScoreBoardScore;
+    private ColorType color;
 
     public OtherPlayerData() {
         //inizializzazione mappa degli altri player
@@ -23,5 +25,9 @@ public class OtherPlayerData {
 
     public int getIntScoreBoardScore() {
         return intScoreBoardScore;
+    }
+
+    public ColorType getColor(){
+        return color;
     }
 }

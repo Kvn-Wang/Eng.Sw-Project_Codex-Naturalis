@@ -128,7 +128,7 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void updatePlayerScoreBoard() {
-
+        GuiGame.updateScore();
     }
 
     @Override
