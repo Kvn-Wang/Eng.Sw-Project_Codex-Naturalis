@@ -33,7 +33,10 @@ public class ServerContainer {
         if(checkNickGlobalNicknameValidity(nickname)) {
             System.out.println("Created player nickname: " + nickname);
             playerInfo = new PlayerInfo(client, nickname);
-            activeClients.add(playerInfo);
+
+            synchronized (activeClients) {
+                activeClients.add(playerInfo);
+            }
 
             return true;
         } else {
@@ -43,14 +46,12 @@ public class ServerContainer {
 
     public boolean lobbyCreation(String lobbyName) {
         if(checkNickGlobalLobbyNameValidity(lobbyName)) {
-            for(Lobby elem : activeLobby) {
-                if(elem.getLobbyName().equals(lobbyName)) {
-                    return false;
-                }
+            Lobby newLobby = new Lobby(lobbyName);
+
+            synchronized (activeLobby) {
+                activeLobby.add(newLobby);
             }
 
-            Lobby newLobby = new Lobby(lobbyName);
-            activeLobby.add(newLobby);
             return true;
         } else {
             return false;
@@ -94,7 +95,9 @@ public class ServerContainer {
 
         //remove the player, and if currentPlayer == 0, eliminate the thread
         if(!lobby.disconnectPlayer(player)) {
-            activeLobby.remove(lobby);
+            synchronized (activeLobby) {
+                activeLobby.remove(lobby);
+            }
         }
 
         System.out.println(playerNickname + " has left the lobby");
@@ -112,16 +115,20 @@ public class ServerContainer {
 
     public boolean checkNickGlobalNicknameValidity(String checkNickname) {
         // check each player that has yet to join a lobby
-        for(PlayerInfo elem : activeClients) {
-            if(elem.getNickname().equals(checkNickname)) {
-                return false;
+        synchronized (activeClients) {
+            for(PlayerInfo elem : activeClients) {
+                if(elem.getNickname().equals(checkNickname)) {
+                    return false;
+                }
             }
         }
 
-        for(Lobby elem : activeLobby) {
-            for(PlayerInfo elem1 : elem.getListOfPlayers()) {
-                if(elem1.getNickname().equals(checkNickname)) {
-                    return false;
+        synchronized (activeLobby) {
+            for(Lobby elem : activeLobby) {
+                for(PlayerInfo elem1 : elem.getListOfPlayers()) {
+                    if(elem1.getNickname().equals(checkNickname)) {
+                        return false;
+                    }
                 }
             }
         }
@@ -129,9 +136,11 @@ public class ServerContainer {
     }
 
     public boolean checkNickGlobalLobbyNameValidity(String checkLobbyNickname) {
-        for(Lobby elem : activeLobby) {
-            if(elem.getLobbyName().equals(checkLobbyNickname)) {
-                return false;
+        synchronized (activeLobby) {
+            for(Lobby elem : activeLobby) {
+                if(elem.getLobbyName().equals(checkLobbyNickname)) {
+                    return false;
+                }
             }
         }
         return true;
@@ -140,9 +149,11 @@ public class ServerContainer {
     private PlayerInfo stringToPlayer(String nickname) {
         PlayerInfo player = null;
 
-        for(PlayerInfo elem : activeClients) {
-            if(elem.getNickname().equals(nickname)) {
-                player = elem;
+        synchronized (activeClients) {
+            for(PlayerInfo elem : activeClients) {
+                if(elem.getNickname().equals(nickname)) {
+                    player = elem;
+                }
             }
         }
 
@@ -154,10 +165,12 @@ public class ServerContainer {
     }
 
     private Lobby getLobby(String lobbyName) {
-        for(Lobby elem : activeLobby) {
-            if (elem.getLobbyName().equals(lobbyName)) {
-                //remove the player, and if currentPlayer == 0, eliminate the thread
-                return elem;
+        synchronized (activeLobby) {
+            for(Lobby elem : activeLobby) {
+                if (elem.getLobbyName().equals(lobbyName)) {
+                    //remove the player, and if currentPlayer == 0, eliminate the thread
+                    return elem;
+                }
             }
         }
 
@@ -165,10 +178,12 @@ public class ServerContainer {
     }
 
     private Lobby getLobbyByPlayer(String playerName) {
-        for(Lobby elem : activeLobby) {
-            for(PlayerInfo player : elem.getListOfPlayers()) {
-                if(player.getNickname().equals(playerName)) {
-                    return elem;
+        synchronized (activeLobby) {
+            for(Lobby elem : activeLobby) {
+                for(PlayerInfo player : elem.getListOfPlayers()) {
+                    if(player.getNickname().equals(playerName)) {
+                        return elem;
+                    }
                 }
             }
         }

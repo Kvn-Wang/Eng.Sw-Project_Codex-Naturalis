@@ -86,6 +86,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
                     ColorType color = ColorType.valueOf(message.getArgs().get(2));
 
                     if(nickname.equals(clientContainer.getNickname())) {
+                        clientContainer.setPersonalColor(color);
                         typeOfUI.printChooseColorOutcome(true);
                     } else {
                         typeOfUI.notifyLobbyStatusColor(nickname, color);
@@ -268,8 +269,8 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 } else {
                     typeOfUI.printSelectionNicknameRequestOutcome(false, nickname);
                 }
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
 
@@ -282,8 +283,8 @@ public class RmiClient extends GenericClient implements VirtualServer {
         serviceThread.submit(() -> {
             try {
                 typeOfUI.giveLobbies(server.getAvailableLobby());
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
 

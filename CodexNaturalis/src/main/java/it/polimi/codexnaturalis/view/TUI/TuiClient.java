@@ -510,7 +510,7 @@ public class TuiClient implements TypeOfUI {
             String nickname = entry.getKey();
             OtherPlayerData playerData = entry.getValue();
 
-            System.out.println("  - " + nickname + ", score: " + "Scoreboard: " + playerData.intScoreBoardScore);
+            System.out.println("  - " + nickname + ", score: " + "Scoreboard: " + playerData.getIntScoreBoardScore() + ", COLOR: " + playerData.getColor());
         }
     }
 }

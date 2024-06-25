@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.view.VirtualModel;
 
+import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.view.VirtualModel.Hand.Hand;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 public class ClientContainer {
     private String nickname;
     private String lobbyNickname;
+    private ColorType personalColor;
     private HashMap<String, OtherPlayerData> players;
     private PlayerScoreResource personalPlayerScoreResource;
     private Hand personalHand;
@@ -58,14 +60,16 @@ public class ClientContainer {
 
     public void setOtherPlayerList(ArrayList<PlayerInfo> otherPlayerList) {
         players.put(getNickname(), new OtherPlayerData());
+        players.get(getNickname()).setColor(personalColor);
 
         for(PlayerInfo playerInfo : otherPlayerList) {
             players.put(playerInfo.getNickname(), new OtherPlayerData());
+            players.get(playerInfo.getNickname()).setColor(playerInfo.getColorChosen());
         }
     }
 
     public Card[][] getPersonalGameMap() {
-        return players.get(getNickname()).map;
+        return players.get(getNickname()).getMap();
     }
 
     public Hand getPersonalHand() {
@@ -121,7 +125,7 @@ public class ClientContainer {
     }
 
     public void updatePersonalScore(int personalScoreBoardValue, PlayerScoreResource personalPlayerScoreResource) {
-        players.get(getNickname()).intScoreBoardScore = personalScoreBoardValue;
+        players.get(getNickname()).setIntScoreBoardScore(personalScoreBoardValue);
         this.personalPlayerScoreResource = personalPlayerScoreResource;
     }
 
@@ -133,13 +137,13 @@ public class ClientContainer {
     }
 
     public void playedStarterCard(Card starterCard) {
-        players.get(getNickname()).map[UtilCostantValue.lunghezzaMaxMappa/2][UtilCostantValue.lunghezzaMaxMappa/2] = starterCard;
+        players.get(getNickname()).playCard(UtilCostantValue.lunghezzaMaxMappa/2, UtilCostantValue.lunghezzaMaxMappa/2, starterCard);
     }
 
     public void updateOtherPlayerMap(String nickname, int x, int y, Card card, int hisNewPlayerScore) {
-        players.get(nickname).map[x][y] = card;
-        players.get(nickname).intScoreBoardScore = hisNewPlayerScore;
-        System.out.println("player: "+ nickname + ", score: "+ hisNewPlayerScore);
+
+        players.get(nickname).playCard(x, y, card);
+        players.get(nickname).setIntScoreBoardScore(hisNewPlayerScore);
     }
 
     public void addCardToHand(Card card) {
@@ -164,5 +168,9 @@ public class ClientContainer {
 
     public HashMap<String, OtherPlayerData> getPlayers() {
         return players;
+    }
+
+    public void setPersonalColor(ColorType color) {
+        personalColor = color;
     }
 }

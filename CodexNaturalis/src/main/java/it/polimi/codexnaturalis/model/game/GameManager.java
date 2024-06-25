@@ -81,6 +81,16 @@ public class GameManager extends Observable implements GameController {
         }
 
         System.out.println("Player: "+playerNick+" ha giocato la sua starter card con isBack: "+starterCard.getIsBack());
+        /**
+         * notify the other players that the map of the player that has played card has changed
+         */
+        for (Player otherPlayer : players) {
+            if (!otherPlayer.getNickname().equals(playerNick))
+                notifyObserverSingle(new NetworkMessage(otherPlayer.getNickname(), MessageType.UPDATE_OTHER_PLAYER_GAME_MAP,
+                        playerNick, argsGenerator(starterCard), String.valueOf(UtilCostantValue.lunghezzaMaxMappa/2),
+                        String.valueOf(UtilCostantValue.lunghezzaMaxMappa/2),
+                        String.valueOf(0)));
+        }
 
         playerThatHasPlayedStarterCard++;
         if(playerThatHasPlayedStarterCard == players.length) {

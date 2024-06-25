@@ -8,6 +8,7 @@ public class LobbyInfo implements Serializable {
     protected Boolean isLobbyStarted;
     protected final int maxPlayer;
     protected int currentPlayer;
+    private transient final Object lock = new Object();
 
     public LobbyInfo(String lobbyName, Boolean isLobbyStarted, int maxPlayer) {
         this.lobbyName = lobbyName;
@@ -33,21 +34,25 @@ public class LobbyInfo implements Serializable {
     }
 
     public boolean addPlayer() {
-        if(currentPlayer >= maxPlayer || isLobbyStarted) {
-            return false;
-        } else {
-            currentPlayer++;
-            return true;
+        synchronized (lock) {
+            if(currentPlayer >= maxPlayer || isLobbyStarted) {
+                return false;
+            } else {
+                currentPlayer++;
+                return true;
+            }
         }
     }
 
     //if after removing a player, currentPlayer == 0, returns False, else True
     public boolean removePlayer() {
-        currentPlayer--;
-        if(currentPlayer == 0) {
-            return false;
-        } else {
-            return true;
+        synchronized (lock) {
+            currentPlayer--;
+            if(currentPlayer == 0) {
+                return false;
+            } else {
+                return true;
+            }
         }
     }
 
