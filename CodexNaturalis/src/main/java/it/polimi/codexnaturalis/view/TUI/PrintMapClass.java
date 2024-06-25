@@ -14,8 +14,7 @@ import java.util.Arrays;
 // numero di spazio da spostare formula Ncarte -1 * 23 +15
 public class PrintMapClass {
 
-    String[] TUIMap;
-
+    private static ResourceCard fillerCard = new ResourceCard(-1, ResourceType.UNASSIGNABLE, ResourceType.UNASSIGNABLE, ResourceType.UNASSIGNABLE, ResourceType.UNASSIGNABLE, ResourceType.UNASSIGNABLE, 0);
     public PrintMapClass() {
     }
 
@@ -38,7 +37,14 @@ public class PrintMapClass {
         } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
             throw new RuntimeException(e);
         }
-        printMap(map.getMapArray());;
+        printMap(map.getMapArray());
+        /*try {
+            mapRearranger(map);
+        } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
+            throw new RuntimeException(e);
+        } catch (PersonalizedException.InvalidPlacementException e) {
+            throw new RuntimeException(e);
+        }*/
     }
 
     public static void printMap(Card[][] TUIMap){
@@ -46,8 +52,8 @@ public class PrintMapClass {
         int[] firstPrintableCard;
         int[] lastPrintableCard;
         int counter, line=0;
-        String[] TUICard = new String[7];
-        String space = " ".repeat(8);
+        String[] TUICard = new String[50];
+        String space = " ".repeat(3);
         leftMostPrintableCard= leftMostPrintableCardPos(TUIMap);
         firstPrintableCard= firstPrintableCardPos(TUIMap);
         lastPrintableCard = lastPrintableCardPos(TUIMap);
@@ -57,34 +63,57 @@ public class PrintMapClass {
         int firstPrintColumn = firstPrintableCard[1];
         int printRow = firstPrintableCard[0];
         int printColumn = firstPrintableCard[1];
-        int[] lastCardInLine;
-        String[] card = new String[7];
+        int[] lastCardInLine = lastCardInLinePos(TUIMap, firstPrintRow, firstPrintColumn);
+        String[] card = new String[5];
         boolean isFinished = false;
         while(!isFinished){
-            lastCardInLine = lastCardInLinePos(TUIMap, firstPrintColumn, firstPrintColumn);
+            lastCardInLine = lastCardInLinePos(TUIMap, firstPrintRow, firstPrintColumn);
             do{
                 int distancefromleft=(firstPrintColumn+firstPrintRow)-(leftMostPrintableCard[1]+leftMostPrintableCard[0]);
-                for(int i=0; i<7;i++){
-                    TUICard[line]=space.repeat(distancefromleft);
+                for(int i=0; i<card.length;i++){
+                    TUICard[line+i]=space.repeat(distancefromleft);
                 }
                 if(TUIMap[printRow][printColumn] == null){
-                    for(int i=0; i<TUICard.length; i++ ){
+                    for(int i=0; i<card.length; i++ ){
                         TUICard[line] =TUICard[line]+ space.repeat(3);
+                        line++;
                     }
                 }else{
                     card = PrintCardClass.createCard(TUIMap[printRow][printColumn], true);
-                    for(int i=0; i<7; i++ ){
+                    for(int i=0; i<5; i++ ){
                         TUICard[line] =(TUICard[line] == null ? "": TUICard[line])+ card[i];
                         line++;
                     }
                 }
-            }while(printRow != lastPrintableCard[0] && printColumn != lastPrintableCard[1]);
+                line++;
+                if(printRow !=lastCardInLine[0] && printColumn !=lastCardInLine[1]) {
+                    printRow++;
+                    printColumn++;
+                }
+            }while(printRow != lastCardInLine[0] && printColumn != lastCardInLine[1]);
             if(printRow == lastRow && printColumn == lastCol){
                 isFinished = true;
+            }else{
+                if(firstPrintColumn == 0){
+                    firstPrintRow++;
+                }
+                else{
+                    firstPrintColumn--;
+                }
+                int temp = firstPrintRow;
+                firstPrintRow = firstCardInLinePos(TUIMap, firstPrintColumn,temp)[0];
+                firstPrintColumn = firstCardInLinePos(TUIMap, firstPrintColumn,temp)[1];
+                printRow = firstPrintRow;
+                printColumn = firstPrintColumn;
             }
         }
-        /*while(firstPrintRow != lastRow || frstPrintColumn != lastCol){
-            lastCardInLine = lastCardInLinePos(TUIMap, frstPrintColumn, frstPrintColumn);
+        for(int i=0; i<TUICard.length; i++){
+            if(TUICard[i] != null) {
+                System.out.print(TUICard[i] + "\n");
+            }
+        }
+        /*while(firstPrintRow != lastRow || firstPrintColumn != lastCol){
+            lastCardInLine = lastCardInLinePos(TUIMap, firstPrintColumn, firstPrintColumn);
             while (printRow!=lastCardInLine[0]-1 && printColumn!=lastCardInLine[1]-1){
                 if(TUIMap[printRow][printColumn] == null){
                     for(int i=0; i<TUICard.length; i++ ){
@@ -100,36 +129,36 @@ public class PrintMapClass {
                 for(int i=0; i<TUICard.length; i++ ){
                     TUICard[i] =TUICard[i]+ space;
                 }
-                if(firstPrintRow < frstPrintColumn){
-                    int[] newFirstCard = firstCardInLinePos(TUIMap, frstPrintColumn-1, firstPrintRow);
+                if(firstPrintRow < firstPrintColumn){
+                    int[] newFirstCard = firstCardInLinePos(TUIMap, firstPrintColumn-1, firstPrintRow);
                     firstPrintRow =newFirstCard[0];
-                    frstPrintColumn  =newFirstCard[1];
+                    firstPrintColumn  =newFirstCard[1];
                 }else{
-                    int[] newFirstCard = firstCardInLinePos(TUIMap, frstPrintColumn, firstPrintRow+1);
+                    int[] newFirstCard = firstCardInLinePos(TUIMap, firstPrintColumn, firstPrintRow+1);
                     firstPrintRow =newFirstCard[0];
-                    frstPrintColumn  =newFirstCard[1];
+                    firstPrintColumn  =newFirstCard[1];
                 }
                 printRow = firstPrintRow;
-                printColumn = frstPrintColumn;
+                printColumn = firstPrintColumn;
             }
 
             System.out.println(line);
-            if(firstPrintRow < frstPrintColumn){
-                int[] newFirstCard = firstCardInLinePos(TUIMap, frstPrintColumn-1, firstPrintRow);
+            if(firstPrintRow < firstPrintColumn){
+                int[] newFirstCard = firstCardInLinePos(TUIMap, firstPrintColumn-1, firstPrintRow);
                 firstPrintRow =newFirstCard[0];
-                frstPrintColumn  =newFirstCard[1];
+                firstPrintColumn  =newFirstCard[1];
             }else{
-                int[] newFirstCard = firstCardInLinePos(TUIMap, frstPrintColumn, firstPrintRow+1);
+                int[] newFirstCard = firstCardInLinePos(TUIMap, firstPrintColumn, firstPrintRow+1);
                 firstPrintRow =newFirstCard[0];
-                frstPrintColumn  =newFirstCard[1];
+                firstPrintColumn  =newFirstCard[1];
             }
             printRow = firstPrintRow;
-            printColumn = frstPrintColumn;
-        }*/
+            printColumn = firstPrintColumn;
+        }
         for(int i=0; i<TUICard.length; i++ ){
             System.out.println(TUICard[i]);
         }
-        /*TUICard = PrintCardClass.createCard(TUIMap[firstPrintableCard[0]][firstPrintableCard[1]], true);
+        TUICard = PrintCardClass.createCard(TUIMap[firstPrintableCard[0]][firstPrintableCard[1]], true);
         counter = firstPrintableCard[0]-(leftMostPrintableCard[0]-(firstPrintableCard[1]-leftMostPrintableCard[1]));
         System.out.println(counter);
         for(int i=0; i<TUICard.length; i++){
@@ -278,7 +307,16 @@ public class PrintMapClass {
         return new int[]{row, col};
     }
 
-    public static Card[][] mapRearranger(Card[][] mapArray){
-        return null;
-    }
+    /*public static Card[][] mapRearranger(GamePlayerMap gamePlayerMap) throws PersonalizedException.InvalidPlaceCardRequirementException, PersonalizedException.InvalidPlacementException {
+        GamePlayerMap tempGamePlayerMap = gamePlayerMap;
+        for(int i = 0 ; i < UtilCostantValue.lunghezzaMaxMappa ; i++){
+            for(int j = 0 ; j < UtilCostantValue.lunghezzaMaxMappa ; j++){
+                if()
+                if(tempGamePlayerMap.getCheckValidPosition(i,j) != -1){
+                    tempGamePlayerMap.placeCard(i,j,fillerCard);
+                }
+            }
+        }
+        return gamePlayerMap.getMapArray();
+    }*/
 }

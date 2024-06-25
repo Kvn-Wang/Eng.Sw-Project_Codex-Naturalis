@@ -194,6 +194,18 @@ public class GamePlayerMap {
         return adiacentNumCard;
     }
 
+    public int getCheckValidPosition(int x, int y){
+        int adiacentNumCard = -1;
+        if(checkValidityXY(x,y)){
+            try {
+                adiacentNumCard = checkValidPosition(x,y);
+            } catch (PersonalizedException.InvalidPlacementException e) {
+                return adiacentNumCard;
+            }
+        }
+        return adiacentNumCard;
+    }
+    
     private ArrayList<ResourceType> checkResourceCovered(int x, int y) {
         ArrayList<ResourceType> coveredResource = new ArrayList<ResourceType>();
         ResourceType temp;
