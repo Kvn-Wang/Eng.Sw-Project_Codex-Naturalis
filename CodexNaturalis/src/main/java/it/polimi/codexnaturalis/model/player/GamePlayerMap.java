@@ -79,10 +79,15 @@ public class GamePlayerMap {
 
                     //controllo di quali risorse vengono coperte dopo aver piazzato la carta
                     tempListOfResources = checkResourceCovered(x, y);
-                    if(tempListOfResources != null) {
-                        for (ResourceType element : tempListOfResources) {
-                            playerScoreCard.substractScore(element);
+                    if(!tempListOfResources.isEmpty()) {
+                        if(tempListOfResources.contains(ResourceType.UNASSIGNABLE)) {
+                            throw new PersonalizedException.InvalidPlacementException();
+                        } else {
+                            for (ResourceType element : tempListOfResources) {
+                                playerScoreCard.substractScore(element);
+                            }
                         }
+
                     }
 
 
@@ -193,7 +198,7 @@ public class GamePlayerMap {
         ArrayList<ResourceType> coveredResource = new ArrayList<ResourceType>();
         ResourceType temp;
 
-        if(x < 159 && mapArray[x + 1][y]!=null) {
+        if(x < UtilCostantValue.lunghezzaMaxMappa - 1 && mapArray[x + 1][y] != null) {
             temp = mapArray[x + 1][y].getCardCorner(CardCorner.NORTH);
             if (temp != null && temp != ResourceType.NONE) {
                 coveredResource.add(temp);
@@ -207,7 +212,7 @@ public class GamePlayerMap {
             }
         }
 
-        if(y < 159 && mapArray[x][y + 1]!=null) {
+        if(y < UtilCostantValue.lunghezzaMaxMappa - 1 && mapArray[x][y + 1]!=null) {
             temp = mapArray[x][y + 1].getCardCorner(CardCorner.EAST);
             if (temp != null && temp != ResourceType.NONE) {
                 coveredResource.add(temp);
