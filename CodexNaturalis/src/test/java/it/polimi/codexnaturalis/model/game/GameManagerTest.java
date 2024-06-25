@@ -1,58 +1,56 @@
 package it.polimi.codexnaturalis.model.game;
 
-import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.model.enumeration.CardCorner;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
-import it.polimi.codexnaturalis.model.enumeration.GameState;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
+import it.polimi.codexnaturalis.model.mission.BendMission;
 import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.model.shop.card.Card;
+import it.polimi.codexnaturalis.model.shop.card.ResourceCard;
+import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.VirtualGame;
+import it.polimi.codexnaturalis.network.lobby.Lobby;
+import it.polimi.codexnaturalis.network.socket.ClientHandler;
+import it.polimi.codexnaturalis.network.socket.SocketClient;
+import it.polimi.codexnaturalis.network.socket.SocketServer;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
-import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
-import it.polimi.codexnaturalis.utils.PersonalizedException;
-import it.polimi.codexnaturalis.utils.UtilCostantValue;
+import it.polimi.codexnaturalis.network.util.ServerContainer;
 import it.polimi.codexnaturalis.utils.observer.Observer;
+import it.polimi.codexnaturalis.view.GUI.GuiClient;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.awt.*;
+import java.io.IOException;
+import java.net.Proxy;
+import java.net.Socket;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameManagerTest {
-    private GameManager gameManager;
+    private static GameManager gameManager;
 
-    @BeforeEach
-    public void Setup(){
+    @BeforeAll
+    public static void Setup() throws IOException {
+        var socketServer = new SocketServer();
+        socketServer.start();
+
+        var socketClient = new SocketClient(new GuiClient());
+        var clientHandler = new ClientHandler(new ServerContainer(), socketClient.serverSocket);
         var playerInfo = new ArrayList<PlayerInfo>();
-        // TODO: correctly instance players info
-        // playerInfo.add(new PlayerInfo(, "player1"));
-        // playerInfo.add(new PlayerInfo("player2"));
+        playerInfo.add(new PlayerInfo(clientHandler, "player1"));
+        playerInfo.add(new PlayerInfo(clientHandler, "player2"));
 
-        try {
-            var virtualGame = new VirtualGame(playerInfo);
-            gameManager = (GameManager)virtualGame.getGameController();
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
+        var virtualGame = new VirtualGame(playerInfo);
+        gameManager = (GameManager)virtualGame.getGameController();
     }
 
     @Test
-    @BeforeEach
     void initializeGame() {
         gameManager.initializeGame();
-
-        //for(Map.Entry<String, ColorType> entry: playerInfo.entrySet())
-        //    gameManager.playerPlayCard(entry.getKey(), 1, 3, 0, true);
-
-        //for(Map.Entry<String, ColorType> entry: playerInfo.entrySet())
-        //    gameManager.playerPersonalMissionSelect(entry.getKey(), Mission);
     }
 
     @Test
@@ -62,26 +60,45 @@ class GameManagerTest {
 
     @Test
     void playStarterCard() {
+        // gameManager.playStarterCard("player1", new StarterCard());
+        // assertEquals(1, gameManager.playerThatHasPlayedStarterCard);
     }
 
     @Test
     void playerDraw() {
+        // gameManager.playerDraw("player1", 1, ShopType.RESOURCE);
     }
 
     @Test
     void playerPersonalMissionSelect() {
+        gameManager.playerPersonalMissionSelect("player1", new BendMission(
+                0,
+                1,
+                ResourceType.ANIMAL,
+                ResourceType.ANIMAL,
+                CardCorner.EAST
+        ));
     }
 
     @Test
     void playerPlayCard() {
-    }
-
-    @Test
-    void testTypeMessage() {
+        gameManager.playerPlayCard("player1", 0, 0, new ResourceCard(
+                0,
+                ResourceType.ANIMAL,
+                ResourceType.ANIMAL,
+                ResourceType.ANIMAL,
+                ResourceType.ANIMAL,
+                ResourceType.ANIMAL,
+                1
+        ));
     }
 
     @Test
     void gameEnd() {
-
+        try {
+            gameManager.gameEnd();
+        } catch (RemoteException e) {
+            fail("RemoteException thrown");
+        }
     }
 }

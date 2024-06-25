@@ -31,7 +31,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class SocketClient extends GenericClient implements VirtualServer {
-    private Socket serverSocket;
+    public Socket serverSocket;
     private BufferedReader socketRx;
     private PrintWriter socketTx;
     private String setupNickname;
