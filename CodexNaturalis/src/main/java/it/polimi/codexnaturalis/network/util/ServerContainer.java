@@ -149,11 +149,9 @@ public class ServerContainer {
     private PlayerInfo stringToPlayer(String nickname) {
         PlayerInfo player = null;
 
-        synchronized (activeClients) {
-            for(PlayerInfo elem : activeClients) {
-                if(elem.getNickname().equals(nickname)) {
-                    player = elem;
-                }
+        for(PlayerInfo elem : activeClients) {
+            if(elem.getNickname().equals(nickname)) {
+                player = elem;
             }
         }
 
@@ -178,12 +176,10 @@ public class ServerContainer {
     }
 
     private Lobby getLobbyByPlayer(String playerName) {
-        synchronized (activeLobby) {
-            for(Lobby elem : activeLobby) {
-                for(PlayerInfo player : elem.getListOfPlayers()) {
-                    if(player.getNickname().equals(playerName)) {
-                        return elem;
-                    }
+        for(Lobby elem : activeLobby) {
+            for(PlayerInfo player : elem.getListOfPlayers()) {
+                if(player.getNickname().equals(playerName)) {
+                    return elem;
                 }
             }
         }

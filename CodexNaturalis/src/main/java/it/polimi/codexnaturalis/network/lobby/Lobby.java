@@ -88,30 +88,31 @@ public class Lobby {
      */
     public void setPlayerColor(PlayerInfo player, ColorType colorChosen) {
         boolean someoneHasChosenThatColor = false;
+        System.out.println("Setting up color for: "+ player.getNickname());
 
-        synchronized (listOfPlayers) {
-            for(PlayerInfo singlePlayer : listOfPlayers) {
-                if(player != singlePlayer && singlePlayer.getColorChosen() == colorChosen) {
-                    someoneHasChosenThatColor = true;
-                }
+        for(PlayerInfo singlePlayer : listOfPlayers) {
+            if(player != singlePlayer && singlePlayer.getColorChosen() == colorChosen) {
+                someoneHasChosenThatColor = true;
             }
         }
 
-
         try {
             if(someoneHasChosenThatColor) {
+                System.out.println("ciao");
                 player.notifyPlayer(new NetworkMessage(MessageType.COM_SET_PLAYER_COLOR_OUTCOME,
                         String.valueOf(false)));
             } else {
+                System.out.println("ciao");
                 player.setColorChosen(colorChosen);
                 // broadCast a tutti che ho selezionato quel colore
                 for(PlayerInfo elem : listOfPlayers) {
                     elem.notifyPlayer(new NetworkMessage(player.getNickname(), MessageType.COM_SET_PLAYER_COLOR_OUTCOME,
                             String.valueOf(true), player.getNickname(), String.valueOf(colorChosen)));
                 }
+                System.out.println("ciao");
             }
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
