@@ -10,7 +10,7 @@ public class PrintHandClass {
 
     public  static void printHand(Hand hand) {
         String Command;
-        int i = 0;
+        int i = 1;
         for (Card card : hand.getCards()) {
             System.out.println("card number: " + i);
             PrintCardClass.printCardHorizzontal(card);

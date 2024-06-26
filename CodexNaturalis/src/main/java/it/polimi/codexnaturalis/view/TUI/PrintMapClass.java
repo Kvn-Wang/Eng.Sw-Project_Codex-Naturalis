@@ -10,6 +10,7 @@ import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 // numero di spazio da spostare formula Ncarte -1 * 23 +15
 public class PrintMapClass {
@@ -18,6 +19,9 @@ public class PrintMapClass {
     private static ResourceCard fillerCard = new ResourceCard(-1, ResourceType.NONE, ResourceType.NONE, ResourceType.NONE, ResourceType.NONE, ResourceType.NONE, 0);
     public PrintMapClass() {
     }
+
+    private static int publicCounter;
+    private static HashMap<Integer, Integer[]> freePos;
 
     public static void main(String[] args) {
         StarterCard starterCard = new StarterCard(81, ResourceType.NONE, ResourceType.NONE, ResourceType.PLANT, ResourceType.INSECT, new ResourceType[]{ResourceType.INSECT, ResourceType.ANIMAL, ResourceType.FUNGI}, ResourceType.FUNGI, ResourceType.ANIMAL, ResourceType.PLANT, ResourceType.INSECT);
@@ -93,6 +97,10 @@ public class PrintMapClass {
                     }
                     TUICard[line+3] = TUICard[line+3] + ANSI_COLOR + "║    ║" + ANSI_RESET;
                     TUICard[line+4] = TUICard[line+4] + ANSI_COLOR + "╚════╝" + ANSI_RESET;
+                    Integer[] coordinates = new Integer[2];
+                    coordinates[0] = printRow;
+                    coordinates[1] = printColumn;
+                    freePos.put(counter,coordinates);
                     counter++;
                 }else{
                     card = PrintCardClass.createCard(TUIMap[printRow][printColumn], !TUIMap[printRow][printColumn].getIsBack());
@@ -126,62 +134,15 @@ public class PrintMapClass {
                 System.out.print(TUICard[i] + "\n");
             }
         }
-        /*while(firstPrintRow != lastRow || firstPrintColumn != lastCol){
-            lastCardInLine = lastCardInLinePos(TUIMap, firstPrintColumn, firstPrintColumn);
-            while (printRow!=lastCardInLine[0]-1 && printColumn!=lastCardInLine[1]-1){
-                if(TUIMap[printRow][printColumn] == null){
-                    for(int i=0; i<TUICard.length; i++ ){
-                        TUICard[line] =TUICard[line]+ space.repeat(3);
-                    }
-                }else{
-                    card = PrintCardClass.createCard(TUIMap[printRow][printColumn], true);
-                    for(int i=0; i<7; i++ ){
-                        TUICard[line] =(TUICard[line] == null ? "": TUICard[line])+ card[i];
-                        line++;
-                    }
-                }
-                for(int i=0; i<TUICard.length; i++ ){
-                    TUICard[i] =TUICard[i]+ space;
-                }
-                if(firstPrintRow < firstPrintColumn){
-                    int[] newFirstCard = firstCardInLinePos(TUIMap, firstPrintColumn-1, firstPrintRow);
-                    firstPrintRow =newFirstCard[0];
-                    firstPrintColumn  =newFirstCard[1];
-                }else{
-                    int[] newFirstCard = firstCardInLinePos(TUIMap, firstPrintColumn, firstPrintRow+1);
-                    firstPrintRow =newFirstCard[0];
-                    firstPrintColumn  =newFirstCard[1];
-                }
-                printRow = firstPrintRow;
-                printColumn = firstPrintColumn;
-            }
+        publicCounter = counter;
+    }
 
-            System.out.println(line);
-            if(firstPrintRow < firstPrintColumn){
-                int[] newFirstCard = firstCardInLinePos(TUIMap, firstPrintColumn-1, firstPrintRow);
-                firstPrintRow =newFirstCard[0];
-                firstPrintColumn  =newFirstCard[1];
-            }else{
-                int[] newFirstCard = firstCardInLinePos(TUIMap, firstPrintColumn, firstPrintRow+1);
-                firstPrintRow =newFirstCard[0];
-                firstPrintColumn  =newFirstCard[1];
-            }
-            printRow = firstPrintRow;
-            printColumn = firstPrintColumn;
-        }
-        for(int i=0; i<TUICard.length; i++ ){
-            System.out.println(TUICard[i]);
-        }
-        TUICard = PrintCardClass.createCard(TUIMap[firstPrintableCard[0]][firstPrintableCard[1]], true);
-        counter = firstPrintableCard[0]-(leftMostPrintableCard[0]-(firstPrintableCard[1]-leftMostPrintableCard[1]));
-        System.out.println(counter);
-        for(int i=0; i<TUICard.length; i++){
-            System.out.print(space.repeat(counter*2)+TUICard[i]+"\n");
-        }
-        TUICard=PrintCardClass.createCard(TUIMap[leftMostPrintableCard[0]][leftMostPrintableCard[1]], true);
-        for(int i=0; i<TUICard.length; i++){
-            System.out.print(TUICard[i]+"\n");
-        }*/
+    public static HashMap<Integer, Integer[]> getFreePos() {
+        return freePos;
+    }
+
+    public static int getPublicCounter() {
+        return publicCounter;
     }
 
     public static int[] leftMostPrintableCardPos(Card[][] mapArray){

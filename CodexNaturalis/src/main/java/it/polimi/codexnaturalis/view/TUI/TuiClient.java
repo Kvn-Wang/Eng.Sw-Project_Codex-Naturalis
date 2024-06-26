@@ -364,8 +364,9 @@ public class TuiClient implements TypeOfUI {
             System.out.println("4) if you want to see your Hand");
             System.out.println("5) if you want to see other player's map");
             System.out.println("6) if you want to see the Shop");
-            System.out.println("7) if you want to see the scoreboard");
+            System.out.println("7) if you want to see your resources");
             System.out.println("8) if you want to see your missions");
+            System.out.println("9) if you want to see the scoreboard");
 
             command = scan.nextLine();
             if(command.equals("1")) {
@@ -376,7 +377,7 @@ public class TuiClient implements TypeOfUI {
 
                 System.out.println("Give me which num card in hand to play");
                 int numCard = scan.nextInt();
-                Card card = clientContainer.getPersonalHand().getCard(numCard);
+                Card card = clientContainer.getPersonalHand().getCard(numCard-1);
 
                 System.out.println("Type 0 if you want to play the card front face, 1 back face");
                 int isReversed = scan.nextInt();
@@ -385,12 +386,13 @@ public class TuiClient implements TypeOfUI {
                 } else {
                     card.setIsBack(false);
                 }
-
-                System.out.println("Give me x");
-                int x = scan.nextInt();
-                System.out.println("Give me y");
-                int y = scan.nextInt();
-
+                int key;
+                do{
+                    System.out.println("Enter the number of the space you want to put your card in");
+                    key = scan.nextInt();
+                }while(key<1 || key > PrintMapClass.getPublicCounter());
+                int x = PrintMapClass.getFreePos().get(key)[0];
+                int y = PrintMapClass.getFreePos().get(key)[1];
                 try {
                     virtualGame.playerPlayCard(clientContainer.getNickname(), x, y,
                             clientContainer.getPersonalHand().getCard(numCard));
@@ -438,6 +440,8 @@ public class TuiClient implements TypeOfUI {
 
                 System.out.println(ANSI_BLUE + "Personal Mission:" + ANSI_RESET);
                 PrintMissionClass.printMission(clientContainer.getPersonalMission());
+            } else if(command.equals("9")) {
+
             }
         }
     }
