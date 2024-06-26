@@ -20,7 +20,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -34,6 +33,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
@@ -47,16 +47,18 @@ public class GuiGame extends Application {
     private static GameController vgc;
     private static ClientContainer clientContainer;
     private static ObservableList<LobbyInfo> lobbyList;
+    private static ObservableList<String> lobbyPlayers;
+    private static ListView<String> playerBox;
     private static Circle[][] anchorPointsMatrix;
     private static ArrayList<GuiCard> handCards;
     private static Rectangle[] missions;
-    private static ObservableMap<String, Integer> scores;
     private static Pane vHand;
     private static VBox missionList;
     private static VBox actionMenu;
     private static Pane map;
     private static Pane cameraView;
     private static HashMap<String, Circle> pawns;
+    private static int test=0; //TODO da togliere
     private static Rectangle cardBeingPlaced;
     private static double cameraX=500;
     private static double cameraY=300;
@@ -128,8 +130,43 @@ public class GuiGame extends Application {
         });
     }
 
-    public static void LobbyListRefresh(ArrayList<LobbyInfo> lobbies){
-        lobbyList.addAll(lobbies);
+
+    private static void pickColor(ColorType color){
+        try {
+            vnc.setPlayerColor(playerNickname, color);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void colorPicked(String nick){
+        Platform.runLater(() -> {
+            Popup popup = new Popup();
+            Button closePop = new Button("close");
+            Label nickname = new Label(nick + " ha selezionato un colore");
+            closePop.setOnAction(event -> {
+                if (popup.isShowing()) {
+                    popup.hide();
+                }
+            });
+            VBox vBox = new VBox(
+                    nickname,
+                    closePop
+            );
+
+            popup.getContent().add(vBox);
+            closePop.setTranslateY(20);
+            popup.show(gameWindow);
+
+            playerBox.refresh();
+
+        });
+    }
+
+    public static void lobbyListRefresh(ArrayList<LobbyInfo> lobbies){
+        Platform.runLater(() -> {
+            lobbyList.addAll(lobbies);
+        });
     }
 
     private static void updateLobbyList(ObservableList<LobbyInfo> lobbyList){
@@ -139,17 +176,6 @@ public class GuiGame extends Application {
             throw new RuntimeException(e);
         }
     }
-
-//    private static void playerListJoin(ObservableList<String> playerList){
-//
-//        try {
-//            players = vnc.;
-//        } catch (RemoteException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        playerList.addAll(players);
-//    }
 
     public static void addStarter(Card starter){
         Platform.runLater(() -> {
@@ -225,18 +251,16 @@ public class GuiGame extends Application {
             shopButton.setOnAction(event -> {
                 openShop();
             });
+
+
             actionMenu.getChildren().add(shopButton);
 
-
-            scores = FXCollections.observableHashMap();
-            clientContainer.getPlayers().forEach((nick, playerData) -> {
-                scores.put(nick, playerData.getIntScoreBoardScore());
+            Button testButton = new Button("test+1");
+            testButton.setOnAction(event -> {
+                test++;
+                movePawn(pawns.get(playerNickname),test);
             });
-
-            Pane scoreBoard = scoreBoard();
-
-
-            actionMenu.getChildren().add(scoreBoard);
+            actionMenu.getChildren().add(scoreBoard());
         });
     }
 
@@ -507,15 +531,93 @@ public class GuiGame extends Application {
     }
 
     private Scene lobbyScene(){
-
+        VBox lobbyLayout = new VBox();
         Button leave = new Button("<-");
         Button ready = new Button("Ready");
-        VBox playerBox = new VBox();
 
-        ListView<String> lobby = new ListView<>();
-        ObservableList<String> players = FXCollections.observableArrayList();
+        playerBox = new ListView<>();
+        lobbyPlayers = FXCollections.observableArrayList();
 
-        lobby.setMaxWidth(300);
+        HBox colorChoice = new HBox();
+        Rectangle red = new Rectangle();
+        Rectangle yellow = new Rectangle();
+        Rectangle green = new Rectangle();
+        Rectangle blue = new Rectangle();
+
+        red.setFill(Color.RED);
+        yellow.setFill(Color.YELLOW);
+        green.setFill(Color.GREEN);
+        blue.setFill(Color.BLUE);
+
+        red.setWidth(30);
+        red.setHeight(30);
+        yellow.setWidth(30);
+        yellow.setHeight(30);
+        green.setWidth(30);
+        green.setHeight(30);
+        blue.setWidth(30);
+        blue.setHeight(30);
+
+        colorChoice.getChildren().addAll(red, yellow, green, blue);
+        clientContainer.getPlayers().forEach((nick, playerData)->{
+            lobbyPlayers.add(nick);
+            if (playerData.getColor() != null) {
+                switch (playerData.getColor()) {
+                    case RED -> colorChoice.getChildren().remove(red);
+                    case YELLOW -> colorChoice.getChildren().remove(yellow);
+                    case GREEN -> colorChoice.getChildren().remove(green);
+                    case BLUE -> colorChoice.getChildren().remove(blue);
+                }
+            }
+        });
+        playerBox.setItems(lobbyPlayers);
+
+        red.setOnMouseClicked(actionEvent -> {
+            pickColor(ColorType.RED);
+            lobbyLayout.getChildren().get(2).setVisible(false);
+        });
+        yellow.setOnMouseClicked(actionEvent -> {
+            pickColor(ColorType.YELLOW);
+            lobbyLayout.getChildren().get(2).setVisible(false);
+        });
+        green.setOnMouseClicked(actionEvent -> {
+            pickColor(ColorType.GREEN);
+            lobbyLayout.getChildren().get(2).setVisible(false);
+        });
+        blue.setOnMouseClicked(actionEvent -> {
+            pickColor(ColorType.BLUE);
+            lobbyLayout.getChildren().get(2).setVisible(false);
+        });
+        playerBox.setCellFactory(lv -> new ListCell<String>() {
+            private Text text = new Text();
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    text.setText(item);
+                    switch(clientContainer.getPlayers().get(item).getColor()) {
+                        case ColorType.RED:
+                            text.setFill(Color.RED);
+                            break;
+                        case ColorType.YELLOW:
+                            text.setFill(Color.YELLOW);
+                            break;
+                        case ColorType.GREEN:
+                            text.setFill(Color.GREEN);
+                            break;
+                        case ColorType.BLUE:
+                            text.setFill(Color.BLUE);
+                            break;
+                    }
+                    setGraphic(text);
+                }
+            }
+        });
+        playerBox.setMaxWidth(300);
 
         leave.setOnAction(actionEvent -> {
             try {
@@ -534,10 +636,10 @@ public class GuiGame extends Application {
             ready.setVisible(false);
         });
 
-        VBox lobbyLayout = new VBox();
-            lobbyLayout.getChildren().add(lobby);
+            lobbyLayout.getChildren().add(playerBox);
+            lobbyLayout.getChildren().add(colorChoice);
             lobbyLayout.getChildren().add(leave);
-        lobbyLayout.getChildren().add(ready);
+            lobbyLayout.getChildren().add(ready);
         return new Scene(lobbyLayout);
     }
 

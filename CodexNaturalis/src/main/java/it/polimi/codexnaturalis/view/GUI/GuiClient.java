@@ -30,7 +30,7 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void giveLobbies(ArrayList<LobbyInfo> lobbies) {
-        GuiGame.LobbyListRefresh(lobbies);
+        GuiGame.lobbyListRefresh(lobbies);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void notifyLobbyStatusColor(String otherPlayerNickname, ColorType color) {
-
+        GuiGame.colorPicked(otherPlayerNickname);
     }
 
     @Override
