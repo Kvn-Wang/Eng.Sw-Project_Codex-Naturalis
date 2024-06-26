@@ -53,22 +53,22 @@ public class PrintSymbols {
         return null;
     }
 
-    public static String convertConditionType(ConditionResourceType conditionResourceType, boolean isCard) {
+    public static String convertConditionType(ConditionResourceType conditionResourceType) {
         switch (conditionResourceType) {
             case NONE -> {
                 return "";
             }
             case INKWELL -> {
-                return "⚱";
+                return "I";
             }
             case MANUSCRIPT -> {
-                return "\uD83D\uDCDC";
+                return "M";
             }
             case QUILL -> {
-                return "✒";
+                return "Q";
             }
             case OCCUPIEDSPACE -> {
-                return "U+274C";
+                return "Occupied Space";
             }
         }
         return null;

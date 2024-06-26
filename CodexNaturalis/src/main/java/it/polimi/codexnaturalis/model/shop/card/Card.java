@@ -129,26 +129,25 @@ public abstract class Card implements Serializable {
     public abstract ResourceType[] getBackCentralResources();
 
     /**
-     * Gets condition.
+     * se non ha condizioni la carta, si restituisce ConditionResourceType.NONE
      *
      * @return the condition
      */
-// se non ha condizioni la carta, si restituisce ConditionResourceType.NONE
     public abstract ConditionResourceType getCondition();
 
     /**
-     * Get placeable card resources resource type [ ].
+     * return null if the card has no condition
      *
      * @return the resource type [ ]
      */
     public abstract ResourceType[] getPlaceableCardResources();
 
     /**
-     * Gets frontal number.
+     * può essere il numero della risorsa che da punti,
+     * oppure quella della condition card che da punti per ogni condizione soddisfatta
      *
      * @return the frontal number
      */
-//può essere il numero della risorsa che da punti, oppure quella della condition card che da punti per ogni condizione soddisfatta
     public abstract int getFrontalNumber();
 
     /**

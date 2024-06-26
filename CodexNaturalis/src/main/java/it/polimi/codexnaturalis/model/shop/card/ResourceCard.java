@@ -124,7 +124,7 @@ public class ResourceCard extends Card{
 
     @Override
     public ResourceType[] getPlaceableCardResources() {
-        return new ResourceType[0];
+        return null;
     }
 
     @Override

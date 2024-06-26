@@ -357,10 +357,10 @@ public class TuiClient implements TypeOfUI {
         while(true) {
             System.out.println("1) if you want to see your map");
             System.out.println("2) if you want to play a card");
-            System.out.println("3) if you want to see your Hand");
-            System.out.println("4) if you want to see other player's map");
-            System.out.println("5) if you want to see the Shop");
-            System.out.println("6) if you want to see your resources");
+            System.out.println("3) if you want to draw a card");
+            System.out.println("4) if you want to see your Hand");
+            System.out.println("5) if you want to see other player's map");
+            System.out.println("6) if you want to see the Shop");
             System.out.println("7) if you want to see your missions");
             System.out.println("8) if you want to see the scoreboard");
 
@@ -373,12 +373,14 @@ public class TuiClient implements TypeOfUI {
 
                 System.out.println("Give me which num card in hand to play");
                 int numCard = scan.nextInt();
-                Card card = clientContainer.getPersonalHand().getCard(numCard);
+
+                Card card = clientContainer.getPersonalHand().getCard(numCard - 1);
                 int isReversed;
                 do {
                     System.out.println("Type 0 if you want to play the card front face, 1 back face");
                     isReversed = scan.nextInt();
-                }while (!(isReversed == 0 || isReversed == 1));
+                }while (isReversed != 0 || isReversed != 1);
+
                 if(isReversed == 1) {
                     card.setIsBack(true);
                 } else {
@@ -393,26 +395,24 @@ public class TuiClient implements TypeOfUI {
                 int y = PrintMapClass.getFreePos().get(key)[1];
                 try {
                     virtualGame.playerPlayCard(clientContainer.getNickname(), x, y,
-                            clientContainer.getPersonalHand().getCard(numCard));
+                            clientContainer.getPersonalHand().getCard(numCard - 1));
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
                 }
 
-                /**
-                 * wait the server response
-                 */
                 doWait();
-                ShopType shopType = null;
-                String shop = "";
+            } else if(command.equals("3")) {
+                ShopType shopType;
+                String shop;
+
                 do {
                     System.out.println("Tell me from which shop you want to draw: RESOURCE or OBJECTIVE");
                     shop = scan.nextLine();
                 } while(!(shop.equals("RESOURCE") || shop.equals("OBJECTIVE")));
-                if(shop.equals("RESOURCE")) {
-                    shopType = ShopType.RESOURCE;
-                }else if(shop.equals("OBJECTIVE")) {
-                    shopType = ShopType.OBJECTIVE;
-                }
+
+                shopType = ShopType.valueOf(shop);
+                int numCard = -1;
+
                 do {
                     System.out.println("Give me which card you want to draw: 0 top deck, 1 first card, 2 second card");
                     numCard = scan.nextInt();
@@ -423,9 +423,9 @@ public class TuiClient implements TypeOfUI {
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
                 }
-            }else if(command.equals("3")) {
-                PrintHandClass.printHand(clientContainer.getPersonalHand());
             }else if(command.equals("4")) {
+                PrintHandClass.printHand(clientContainer.getPersonalHand());
+            }else if(command.equals("5")) {
                 Set<String> players = clientContainer.getOtherPlayerNames();
                 System.out.println("list of other players" + players);
                 String choice = "";
@@ -434,10 +434,8 @@ public class TuiClient implements TypeOfUI {
                     choice = scan.nextLine();
                 }while(!players.contains(choice));
                 PrintMapClass.printMap(clientContainer.getOthersGameMap(choice));
-            }else if(command.equals("5")) {
-                PrintShop.printShop(clientContainer);
             }else if(command.equals("6")) {
-                printPlayerScore();
+                PrintShop.printShop(clientContainer);
             }else if(command.equals("7")) {
                 System.out.println(ANSI_BLUE + "1) Common Mission:" + ANSI_RESET);
                 PrintMissionClass.printMission(clientContainer.getCommonMission1());
@@ -448,7 +446,7 @@ public class TuiClient implements TypeOfUI {
                 System.out.println(ANSI_BLUE + "Personal Mission:" + ANSI_RESET);
                 PrintMissionClass.printMission(clientContainer.getPersonalMission());
             } else if(command.equals("8")) {
-
+                printPlayerScore();
             }
         }
     }

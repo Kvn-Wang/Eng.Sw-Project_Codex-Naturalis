@@ -134,7 +134,8 @@ public class ClientContainer {
     /**
      * pop card
      */
-    public void playedCard(Card card) {
+    public void playedCard(int x, int y, Card card) {
+        players.get(getNickname()).playCard(x, y, card);
         personalHand.popCard(card);
     }
 
