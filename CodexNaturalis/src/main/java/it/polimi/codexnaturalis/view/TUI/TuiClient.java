@@ -373,10 +373,12 @@ public class TuiClient implements TypeOfUI {
 
                 System.out.println("Give me which num card in hand to play");
                 int numCard = scan.nextInt();
-                Card card = clientContainer.getPersonalHand().getCard((numCard-1));
-
-                System.out.println("Type 0 if you want to play the card front face, 1 back face");
-                int isReversed = scan.nextInt();
+                Card card = clientContainer.getPersonalHand().getCard(numCard);
+                int isReversed;
+                do {
+                    System.out.println("Type 0 if you want to play the card front face, 1 back face");
+                    isReversed = scan.nextInt();
+                }while (isReversed != 0 || isReversed != 1);
                 if(isReversed == 1) {
                     card.setIsBack(true);
                 } else {
@@ -400,13 +402,17 @@ public class TuiClient implements TypeOfUI {
                  * wait the server response
                  */
                 doWait();
-                ShopType shopType;
-
+                ShopType shopType = null;
+                String shop = "";
                 do {
                     System.out.println("Tell me from which shop you want to draw: RESOURCE or OBJECTIVE");
-                    shopType = ShopType.valueOf(scan.nextLine());
-                } while(!(shopType.equals(ShopType.RESOURCE) || shopType.equals(ShopType.OBJECTIVE)));
-
+                    shop = scan.nextLine();
+                } while(!shop.equals("RESOURCE") || !shop.equals("OBJECTIVE"));
+                if(shop.equals("RESOURCE")) {
+                    shopType = ShopType.RESOURCE;
+                }else if(shop.equals("OBJECTIVE")) {
+                    shopType = ShopType.OBJECTIVE;
+                }
                 do {
                     System.out.println("Give me which card you want to draw: 0 top deck, 1 first card, 2 second card");
                     numCard = scan.nextInt();
