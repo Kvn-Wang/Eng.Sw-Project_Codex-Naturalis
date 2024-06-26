@@ -60,11 +60,11 @@ public class ClientMain {
         } else {
             if(typeOfUserView == 1) {
                 GuiClient guiClient = new GuiClient();
-                RmiClient rmiClient = new RmiClient(guiClient);
+                RmiClient rmiClient = new RmiClient(guiClient, address);
                 guiClient.initializeClient(rmiClient, rmiClient.getClientContainerController());
             } else {
                 TuiClient tuiClient = new TuiClient();
-                RmiClient rmiClient = new RmiClient(tuiClient);
+                RmiClient rmiClient = new RmiClient(tuiClient, address);
                 tuiClient.initializeClient(rmiClient, rmiClient.getClientContainerController());
             }
         }

@@ -38,7 +38,7 @@ class GameManagerTest {
         var socketServer = new SocketServer();
         socketServer.start();
 
-        var socketClient = new SocketClient(new GuiClient());
+        var socketClient = new SocketClient(new GuiClient(), "127.0.0.1");
         var clientHandler = new ClientHandler(new ServerContainer(), socketClient.serverSocket);
         var playerInfo = new ArrayList<PlayerInfo>();
         playerInfo.add(new PlayerInfo(clientHandler, "player1"));

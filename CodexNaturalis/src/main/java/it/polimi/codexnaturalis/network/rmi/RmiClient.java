@@ -53,14 +53,14 @@ public class RmiClient extends GenericClient implements VirtualServer {
             .registerTypeAdapter(Mission.class, new MissionAdapter())
             .create();
 
-    public RmiClient(TypeOfUI typeOfUI) throws RemoteException, NotBoundException, InterruptedException {
+    public RmiClient(TypeOfUI typeOfUI, String address) throws RemoteException, NotBoundException, InterruptedException {
         //setup communicazione bidirezionale tra rete e oggetto grafico
         super(typeOfUI);
 
         serviceThread = Executors.newSingleThreadExecutor();
         serviceThread = Executors.newSingleThreadExecutor();
 
-        registry = LocateRegistry.getRegistry(UtilCostantValue.ipAddressSocketServer, UtilCostantValue.portRmiServer);
+        registry = LocateRegistry.getRegistry(address, UtilCostantValue.portRmiServer);
         this.server = (VirtualServer) registry.lookup(serverName);
 
         System.out.println("Collegato al server: " + serverName);
