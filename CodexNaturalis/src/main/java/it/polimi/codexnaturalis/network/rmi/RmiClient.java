@@ -274,6 +274,13 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 typeOfUI.printIsNotYourTurn();
                 break;
 
+            case INCOMING_MESSAGE:
+                String sender = message.getArgs().get(0);
+                String msg = message.getArgs().get(1);
+
+                typeOfUI.printPlayerMsg(sender, msg);
+                break;
+
             case NOTIFY_FINAL_TURN:
                 typeOfUI.printIsYourFinalTurn();
                 break;
@@ -454,8 +461,14 @@ public class RmiClient extends GenericClient implements VirtualServer {
     }
 
     @Override
-    public void typeMessage(String receiver, String sender, String msg) throws RemoteException {
-        personalGameController.typeMessage(receiver, sender, msg);
+    public void typeMessage(String sender, String receiver, String msg) {
+        serviceThread.submit(() -> {
+            try {
+                personalGameController.typeMessage(receiver, sender, msg);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     // not implemented

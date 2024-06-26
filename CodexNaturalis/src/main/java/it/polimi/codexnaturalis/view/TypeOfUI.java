@@ -52,4 +52,5 @@ public interface TypeOfUI {
     void printWinners(ArrayList<String> winnersNickname);
     void updateHand();
     void updatePlayerScoreBoard();
+    void printPlayerMsg(String sender, String msg);
 }

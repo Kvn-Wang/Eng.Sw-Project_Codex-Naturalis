@@ -132,6 +132,11 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
+    public void printPlayerMsg(String sender, String msg) {
+
+    }
+
+    @Override
     public void connectGameController(GameController virtualGame) {
         GuiGame.startGame(virtualGame);
     }

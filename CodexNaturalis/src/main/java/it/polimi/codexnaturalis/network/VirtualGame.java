@@ -174,8 +174,14 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     }
 
     @Override
-    public void typeMessage(String receiver, String sender, String msg) throws RemoteException {
-        gameController.typeMessage(receiver, sender, msg);
+    public void typeMessage(String sender, String receiver, String msg) {
+        executorService.submit(() -> {
+            try {
+                gameController.typeMessage(receiver, sender, msg);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     // not implemented
@@ -198,7 +204,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
             //messaggi per playerSpecifici con argomenti illimitati
             case GAME_SETUP_GIVE_STARTER_CARD, GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP,
                     GAME_SETUP_SEND_PERSONAL_MISSION, GAME_SETUP_NOTIFY_TURN, PLACEMENT_CARD_OUTCOME, UPDATE_OTHER_PLAYER_GAME_MAP,
-                    DRAWN_CARD_DECK:
+                    DRAWN_CARD_DECK, INCOMING_MESSAGE:
 
                 System.out.println("Messaggio per "+message.getNickname()+" di tipo:"+message.getMessageType());
 

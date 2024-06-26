@@ -33,6 +33,7 @@ public class TuiClient implements TypeOfUI {
     private static final String ANSI_RESET = "\033[0m";
     private static final String ANSI_BLUE = "\033[34m";
     private static final String ANSI_RED = "\u001B[31m";
+    private static final String ANSI_GREEN = "\u001B[33m";
 
     public TuiClient() {
         scan = new Scanner(System.in);
@@ -363,6 +364,7 @@ public class TuiClient implements TypeOfUI {
             System.out.println("6) if you want to see the Shop");
             System.out.println("7) if you want to see your missions");
             System.out.println("8) if you want to see the scoreboard");
+            System.out.println("9) if you want to send a message to an another player");
 
             command = scan.nextLine();
             if(command.equals("1")) {
@@ -447,6 +449,29 @@ public class TuiClient implements TypeOfUI {
                 PrintMissionClass.printMission(clientContainer.getPersonalMission());
             } else if(command.equals("8")) {
                 printPlayerScore();
+            } else if(command.equals("9")) {
+                HashMap<String, PlayerData> players = clientContainer.getPlayers();
+
+                // Iteriamo sulla HashMap usando un ciclo for-each su entrySet()
+                for (Map.Entry<String, PlayerData> entry : players.entrySet()) {
+                    String playerName = entry.getKey();
+
+                    if(!playerName.equals(clientContainer.getNickname())) {
+                        System.out.println("Player: " + playerName);
+                    }
+                }
+
+                System.out.println("Select to whom you want to send a message to, or write EVERYONE:");
+                String receiver = scan.nextLine();
+
+                System.out.println("type the message:");
+                String msg = scan.nextLine();
+
+                try {
+                    virtualGame.typeMessage(clientContainer.getNickname(), receiver, msg);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
@@ -494,6 +519,12 @@ public class TuiClient implements TypeOfUI {
     @Override
     public void updatePlayerScoreBoard() {
         //do not implement!
+    }
+
+    @Override
+    public void printPlayerMsg(String sender, String msg) {
+        System.out.println(ANSI_GREEN + "Incoming Message from " + sender + "!" + ANSI_RESET);
+        System.out.println(ANSI_GREEN + "  - " + msg + ANSI_RESET);
     }
 
     private void doWait() {
