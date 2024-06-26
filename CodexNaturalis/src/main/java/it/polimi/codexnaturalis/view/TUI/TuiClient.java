@@ -378,7 +378,7 @@ public class TuiClient implements TypeOfUI {
                 do {
                     System.out.println("Type 0 if you want to play the card front face, 1 back face");
                     isReversed = scan.nextInt();
-                }while (isReversed != 0 || isReversed != 1);
+                }while (!(isReversed == 0 || isReversed == 1));
                 if(isReversed == 1) {
                     card.setIsBack(true);
                 } else {
@@ -407,7 +407,7 @@ public class TuiClient implements TypeOfUI {
                 do {
                     System.out.println("Tell me from which shop you want to draw: RESOURCE or OBJECTIVE");
                     shop = scan.nextLine();
-                } while(!shop.equals("RESOURCE") || !shop.equals("OBJECTIVE"));
+                } while(!(shop.equals("RESOURCE") || shop.equals("OBJECTIVE")));
                 if(shop.equals("RESOURCE")) {
                     shopType = ShopType.RESOURCE;
                 }else if(shop.equals("OBJECTIVE")) {

@@ -116,6 +116,14 @@ public class PrintCardClass {
         for(int i = 0; i < TUICard.length; i++){
             System.out.println(printCard[i]);
         }
+        if(card.getCardType() == CardType.OBJECTIVE){
+            ResourceType[] condition = card.getPlaceableCardResources();
+            String print = "";
+            for(int i = 0; i < condition.length; i++) {
+                print = print + condition[i];
+            }
+            System.out.println("Condition: " + print);
+        }
     }
 
     private static String repeat(String str, int n) {

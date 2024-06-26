@@ -12,7 +12,7 @@ public class PrintHandClass {
         String Command;
         int i = 0;
         for (Card card : hand.getCards()) {
-            System.out.println("card number: " + i);
+            System.out.println("card number: " + i +"  card type: " + card.getCardType());
             PrintCardClass.printCardHorizzontal(card);
             i++;
         }
