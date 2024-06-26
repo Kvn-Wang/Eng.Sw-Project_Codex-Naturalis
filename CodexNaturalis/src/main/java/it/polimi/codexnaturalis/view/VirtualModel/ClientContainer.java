@@ -76,6 +76,7 @@ public class ClientContainer {
         return personalHand;
     }
 
+    public Card[][] getOtherPlayerGameMap(String playerNickname) {return players.get(playerNickname).getMap();}
 
     public Mission getCommonMission1() {
         return commonMission1;

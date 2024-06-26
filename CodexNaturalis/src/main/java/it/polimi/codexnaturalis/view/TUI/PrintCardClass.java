@@ -77,19 +77,19 @@ public class PrintCardClass {
 
         String ANSI_COLOR = PrintSymbols.convertColor(card.getCardColor());
 
-        TUICard[0] = ANSI_COLOR + "╔═══╗" + ANSI_RESET;
-        TUICard[1] = ANSI_COLOR + "║"+ ANSI_RESET + nw + " " + ne + ANSI_COLOR+"║" + ANSI_RESET;
+        TUICard[0] = ANSI_COLOR + "╔════╗" + ANSI_RESET;
+        TUICard[1] = ANSI_COLOR + "║"+ ANSI_RESET + nw + "  " + ne + ANSI_COLOR+"║" + ANSI_RESET;
         if(c.length == 0) {
-            TUICard[2] = ANSI_COLOR + "║" + "   " + "║" + ANSI_RESET;
+            TUICard[2] = ANSI_COLOR + "║" + "    " + "║" + ANSI_RESET;
         } else if(c.length == 1) {
-            TUICard[2] = ANSI_COLOR + "║"+ colorCenter + " " + c[0] + " " + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
+            TUICard[2] = ANSI_COLOR + "║"+ colorCenter + " " + c[0] + "  " + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
         } else if(c.length == 2) {
-            TUICard[2] = ANSI_COLOR + "║"+ colorCenter + " " + c[0] + c[1] + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
+            TUICard[2] = ANSI_COLOR + "║"+ colorCenter + " " + c[0] + c[1] + " " + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
         } else if(c.length == 3) {
-            TUICard[2] = ANSI_COLOR + "║"+ colorCenter + c[2] + c[0] + c[1] + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
+            TUICard[2] = ANSI_COLOR + "║"+ colorCenter + c[2] + c[0] + c[1] + " " + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
         }
-        TUICard[3] = ANSI_COLOR + "║" + ANSI_RESET + sw + " " + se + ANSI_COLOR + "║" + ANSI_RESET;
-        TUICard[4] = ANSI_COLOR + "╚═══╝" + ANSI_RESET;
+        TUICard[3] = ANSI_COLOR + "║" + ANSI_RESET + sw + "  " + se + ANSI_COLOR + "║" + ANSI_RESET;
+        TUICard[4] = ANSI_COLOR + "╚════╝" + ANSI_RESET;
 
         return TUICard;
     }
@@ -105,7 +105,7 @@ public class PrintCardClass {
         String[] front = createCard(card, true);
         String[] back = createCard(card, false);
         String repeatedSpaces = repeat(" ", cardLen);
-
+        String condition = "";
         String [] printCard = new String[cardLen];
 
         for(int i = 0; i < TUICard.length; i++){
@@ -116,6 +116,10 @@ public class PrintCardClass {
         for(int i = 0; i < TUICard.length; i++){
             System.out.println(printCard[i]);
         }
+        for(int i = 0; i < PrintSymbols.convertMultipleResourceType(card.getPlaceableCardResources(), true).length; i++) {
+            condition = condition + " " + PrintSymbols.convertMultipleResourceType(card.getPlaceableCardResources(), true)[i];
+        }
+        System.out.println("Condition:" + condition);
     }
 
     private static String repeat(String str, int n) {

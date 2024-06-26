@@ -14,10 +14,7 @@ import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
 import it.polimi.codexnaturalis.view.VirtualModel.OtherPlayerData;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class TuiClient implements TypeOfUI {
     protected VirtualServer networkCommand;
@@ -354,7 +351,7 @@ public class TuiClient implements TypeOfUI {
         doNotify();
     }
 
-    private void startGamePhase() {
+    public void startGamePhase() {
         String command;
 
         while(true) {
@@ -364,33 +361,37 @@ public class TuiClient implements TypeOfUI {
             System.out.println("4) if you want to see your Hand");
             System.out.println("5) if you want to see other player's map");
             System.out.println("6) if you want to see the Shop");
-            System.out.println("7) if you want to see the scoreboard");
-            System.out.println("8) if you want to see your missions");
+            System.out.println("7) if you want to see your resources");
+            System.out.println("8) if you want to see the scoreboard");
+            System.out.println("9) if you want to see your missions");
 
             command = scan.nextLine();
             if(command.equals("1")) {
-                PrintMapClass.printMap(clientContainer.getPersonalGameMap());
+                PrintMapClass.printYourMap(clientContainer.getPersonalGameMap());
             }else if(command.equals("2")) {
-                PrintMapClass.printMap(clientContainer.getPersonalGameMap());
+                PrintMapClass.printYourMap(clientContainer.getPersonalGameMap());
                 PrintHandClass.printHand(clientContainer.getPersonalHand());
-
-                System.out.println("Give me which num card in hand to play");
+                System.out.println("Give me which num card in hand to play or write CLOSE to not play a card");
                 int numCard = scan.nextInt();
                 Card card = clientContainer.getPersonalHand().getCard(numCard);
 
                 System.out.println("Type 0 if you want to play the card front face, 1 back face");
                 int isReversed = scan.nextInt();
-                if(isReversed == 1) {
+                if (isReversed == 1) {
                     card.setIsBack(true);
                 } else {
                     card.setIsBack(false);
                 }
-
-                System.out.println("Give me x");
-                int x = scan.nextInt();
-                System.out.println("Give me y");
-                int y = scan.nextInt();
-
+                int coordinates;
+                do {
+                    System.out.println("Write the number corresponding to the space where you want to place the card");
+                    coordinates = scan.nextInt();
+                    if(coordinates<=0 || coordinates>PrintMapClass.getPublicCounter()) {
+                        System.out.println("this number is out of range");
+                    }
+                } while (coordinates <= 0 || coordinates > PrintMapClass.getPublicCounter());
+                int x = PrintMapClass.getFreePos().get(coordinates)[0];
+                int y = PrintMapClass.getFreePos().get(coordinates)[1];
                 try {
                     virtualGame.playerPlayCard(clientContainer.getNickname(), x, y,
                             clientContainer.getPersonalHand().getCard(numCard));
@@ -424,12 +425,22 @@ public class TuiClient implements TypeOfUI {
             }else if(command.equals("4")) {
                 PrintHandClass.printHand(clientContainer.getPersonalHand());
             }else if(command.equals("5")) {
-
+                Set<String> otherPlayers = clientContainer.getPlayers().keySet();
+                String playername = "";
+                System.out.println("Name of the other players: " + otherPlayers);
+                do{
+                    System.out.println("Write the name of the other player: ");
+                    playername = scan.nextLine();
+                }while (otherPlayers.contains(playername));
+                Card[][] map = clientContainer.getOtherPlayerGameMap(playername);
+                PrintMapClass.printMap(map);
             }else if(command.equals("6")) {
                 PrintShop.printShop(clientContainer);
             }else if(command.equals("7")) {
                 printPlayerScore();
             }else if(command.equals("8")) {
+
+            }else if(command.equals("9")) {
                 System.out.println(ANSI_BLUE + "1) Common Mission:" + ANSI_RESET);
                 PrintMissionClass.printMission(clientContainer.getCommonMission1());
 

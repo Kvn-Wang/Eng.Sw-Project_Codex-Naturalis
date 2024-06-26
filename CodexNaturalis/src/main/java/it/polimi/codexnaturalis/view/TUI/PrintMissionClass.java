@@ -86,44 +86,73 @@ public class PrintMissionClass {
 
     private static void printBendMission(BendMission mission) {
         System.out.println("Requirements for the bend mission:");
+            String[] squareDecoration = printSquare(mission.getDecorationResource());
+            String[] squarePillar = printSquare(mission.getPillarResource());
             String pillarRequirements = PrintSymbols.convertResourceType(mission.getPillarResource(), false);
             String decorationRequirements = PrintSymbols.convertResourceType(mission.getDecorationResource(), false);
             if(mission.getDecorationPosition() == CardCorner.SOUTH){
-                System.out.println(pillarRequirements);
-                System.out.println(pillarRequirements);
-                System.out.println("  " + decorationRequirements);
+                for(int i=0; i < 2; i++){
+                    for(int j=0; j < 2; j++) {
+                        System.out.println(squarePillar[j]);
+                    }
+                }
+                System.out.println("  " + squareDecoration[0]);
+                System.out.println("  " + squareDecoration[1]);
             }
         if(mission.getDecorationPosition() == CardCorner.WEST){
-            System.out.println("  " + pillarRequirements);
-            System.out.println("  " + pillarRequirements);
-            System.out.println(decorationRequirements);
+            for(int i=0; i < 2; i++){
+                for(int j=0; j < 2; j++) {
+                    System.out.println("  " + squarePillar[j]);
+                }
+            }
+            System.out.println(squareDecoration[0]);
+            System.out.println(squareDecoration[1]);
         }
         if(mission.getDecorationPosition() == CardCorner.NORTH){
-            System.out.println(decorationRequirements);
-            System.out.println("  " + pillarRequirements);
-            System.out.println("  " + pillarRequirements);
+            System.out.println(squareDecoration[0]);
+            System.out.println(squareDecoration[1]);
+            for(int i=0; i < 2; i++){
+                for(int j=0; j < 2; j++) {
+                    System.out.println("  " + squarePillar[j]);
+                }
+            }
         }
         if(mission.getDecorationPosition() == CardCorner.EAST){
-            System.out.println("  " + decorationRequirements);
-            System.out.println(pillarRequirements);
-            System.out.println(pillarRequirements);
+            System.out.println("  " + squareDecoration[0]);
+            System.out.println("  " + squareDecoration[1]);
+            for(int i=0; i < 2; i++){
+                for(int j=0; j < 2; j++) {
+                    System.out.println(squarePillar[j]);
+                }
+            }
         }
         System.out.println("point per bend: " + mission.getPointPerCondition());
     }
 
     private static void printDiagonalMission(DiagonalMission mission) {
         System.out.println("Requirements for the diagonal mission:");
-        String Requirements = PrintSymbols.convertResourceType(mission.getResourceType(), false);
+        String[] square = printSquare(mission.getResourceType());
         if(mission.getIsLeftToRight()){
-            System.out.println(Requirements);
-            System.out.println("  " + Requirements);
-            System.out.println("    " + Requirements);
+            for(int i=0; i < 3; i++){
+                String space = " ".repeat(i);
+                System.out.println(space+square[0]);
+                System.out.println(space+square[1]);
+            }
         }else {
-            System.out.println("    " + Requirements);
-            System.out.println("  " + Requirements);
-            System.out.println(Requirements);
-
+            for(int i=0; i < 3; i++){
+                String space = " ".repeat(3-i);
+                System.out.println(space+square[0]);
+                System.out.println(space+square[1]);
+            }
         }
         System.out.println("point per diagonal: " + mission.getPointPerCondition());
+    }
+
+    private static String[] printSquare(ResourceType color){
+        String ANSI_COLOR = PrintSymbols.convertColor(color);
+        String[] TUICard = new String[2];
+        TUICard[0] = ANSI_COLOR + "╔╗" + ANSI_RESET;
+        TUICard[1] = ANSI_COLOR + "╚╝" + ANSI_RESET;
+        return TUICard;
     }
 }

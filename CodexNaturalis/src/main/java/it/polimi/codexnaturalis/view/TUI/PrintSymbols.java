@@ -53,7 +53,7 @@ public class PrintSymbols {
         return null;
     }
 
-    public static String convertConditionType(ConditionResourceType conditionResourceType, boolean isCard) {
+    public static String convertConditionType(ConditionResourceType conditionResourceType) {
         switch (conditionResourceType) {
             case NONE -> {
                 return "";
