@@ -14,6 +14,8 @@ public abstract class GenericClient extends UnicastRemoteObject implements GameC
     protected ClientContainer clientContainer;
 
     public GenericClient(TypeOfUI typeOfUI) throws RemoteException  {
+        super();
+
         this.typeOfUI = typeOfUI;
         clientContainer = new ClientContainer();
     }

@@ -17,7 +17,7 @@ public class ClientContainer {
     private String nickname;
     private String lobbyNickname;
     private ColorType personalColor;
-    private HashMap<String, OtherPlayerData> players;
+    private HashMap<String, PlayerData> players;
     private PlayerScoreResource personalPlayerScoreResource;
     private Hand personalHand;
     private Mission commonMission1;
@@ -60,12 +60,12 @@ public class ClientContainer {
     }
 
     public void setOtherPlayerList(ArrayList<PlayerInfo> otherPlayerList) {
-        players.put(getNickname(), new OtherPlayerData());
-        players.get(getNickname()).setColor(personalColor);
+        players.put(getNickname(), new PlayerData());
+        players.get(getNickname()).setPlayerColor(personalColor);
 
         for(PlayerInfo playerInfo : otherPlayerList) {
-            players.put(playerInfo.getNickname(), new OtherPlayerData());
-            players.get(playerInfo.getNickname()).setColor(playerInfo.getColorChosen());
+            players.put(playerInfo.getNickname(), new PlayerData());
+            players.get(playerInfo.getNickname()).setPlayerColor(playerInfo.getColorChosen());
         }
     }
 
@@ -168,7 +168,7 @@ public class ClientContainer {
         return visibleObjectiveCardShop;
     }
 
-    public HashMap<String, OtherPlayerData> getPlayers() {
+    public HashMap<String, PlayerData> getPlayers() {
         return players;
     }
 

@@ -4,15 +4,13 @@ import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
-import java.util.ArrayList;
-
-public class OtherPlayerData {
+public class PlayerData {
     private Card[][] map;
     private int intScoreBoardScore;
-    private ColorType color;
+    private ColorType playerColor;
     private int placedCardOrder;
 
-    public OtherPlayerData() {
+    public PlayerData() {
         //inizializzazione mappa degli altri player
         map = new Card[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
         for(int i = 0; i < UtilCostantValue.lunghezzaMaxMappa; i++) {
@@ -25,16 +23,16 @@ public class OtherPlayerData {
         placedCardOrder = 0;
     }
 
-    public void setColor(ColorType color) {
-        this.color = color;
+    public void setPlayerColor(ColorType playerColor) {
+        this.playerColor = playerColor;
     }
 
     public int getIntScoreBoardScore() {
         return intScoreBoardScore;
     }
 
-    public ColorType getColor(){
-        return color;
+    public ColorType getPlayerColor(){
+        return playerColor;
     }
 
     public Card[][] getMap() {
