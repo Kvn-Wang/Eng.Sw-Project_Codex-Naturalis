@@ -373,10 +373,14 @@ public class TuiClient implements TypeOfUI {
 
                 System.out.println("Give me which num card in hand to play");
                 int numCard = scan.nextInt();
-                Card card = clientContainer.getPersonalHand().getCard((numCard - 1));
 
-                System.out.println("Type 0 if you want to play the card front face, 1 back face");
-                int isReversed = scan.nextInt();
+                Card card = clientContainer.getPersonalHand().getCard(numCard - 1);
+                int isReversed;
+                do {
+                    System.out.println("Type 0 if you want to play the card front face, 1 back face");
+                    isReversed = scan.nextInt();
+                }while (isReversed != 0 || isReversed != 1);
+
                 if(isReversed == 1) {
                     card.setIsBack(true);
                 } else {
