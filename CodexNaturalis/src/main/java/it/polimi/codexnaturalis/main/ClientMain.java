@@ -6,7 +6,9 @@ import it.polimi.codexnaturalis.network.socket.SocketClient;
 import it.polimi.codexnaturalis.view.GUI.GuiClient;
 import it.polimi.codexnaturalis.view.TUI.TuiClient;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.rmi.NotBoundException;
 import java.util.Scanner;
 
@@ -15,6 +17,15 @@ public class ClientMain {
         int typeOfconnectionClient;
         int typeOfUserView;
         Scanner scan = new Scanner(System.in);
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader((System.in)));
+        String address;
+        System.out.println("Insert address:");
+        try {
+            address = (reader.readLine());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         typeOfconnectionClient = 0;
         do {
@@ -39,11 +50,11 @@ public class ClientMain {
         if(typeOfconnectionClient == 1) {
             if(typeOfUserView == 1) {
                 GuiClient guiClient = new GuiClient();
-                SocketClient socketClient = new SocketClient(guiClient);
+                SocketClient socketClient = new SocketClient(guiClient, address);
                 guiClient.initializeClient(socketClient, socketClient.getClientContainerController());
             } else {
                 TuiClient tuiClient = new TuiClient();
-                SocketClient socketClient = new SocketClient(tuiClient);
+                SocketClient socketClient = new SocketClient(tuiClient, address);
                 tuiClient.initializeClient(socketClient, socketClient.getClientContainerController());
             }
         } else {

@@ -4,19 +4,20 @@ import it.polimi.codexnaturalis.network.util.ServerContainer;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 
 public class SocketServer extends Thread {
     ServerContainer serverContainer;
-    int portServer;
+    int portServer = UtilCostantValue.portSocketServer;
     ServerSocket serverSocket;
 
     public SocketServer() throws IOException {
-        portServer = UtilCostantValue.portSocketServer;
         this.serverContainer = ServerContainer.getInstance();
         serverSocket = new ServerSocket(portServer);
+        //serverSocket.bind(new InetSocketAddress(networkAddress, 50505));
     }
 
     private void runRxServer() throws IOException {

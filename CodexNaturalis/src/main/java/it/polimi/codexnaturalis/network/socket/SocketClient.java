@@ -43,13 +43,12 @@ public class SocketClient extends GenericClient implements VirtualServer {
             .registerTypeAdapter(Mission.class, new MissionAdapter())
             .create();
 
-    public SocketClient(TypeOfUI typeOfUI) throws IOException {
+    public SocketClient(TypeOfUI typeOfUI, String address) throws IOException {
         super(typeOfUI);
 
-        String host = "127.0.0.1";
         int port = UtilCostantValue.portSocketServer;
 
-        serverSocket = new Socket(host, port);
+        serverSocket = new Socket(address, port);
 
         socketRx = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
         socketTx = new PrintWriter(new OutputStreamWriter(serverSocket.getOutputStream()), true);

@@ -9,6 +9,9 @@ import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.network.util.ServerContainer;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -101,6 +104,6 @@ public class RmiServer extends Thread implements VirtualServer {
             throw new RuntimeException(e);
         }
 
-        System.out.println("RMI server started");
+        System.out.println("RMI server started: "+ registry);
     }
 }
