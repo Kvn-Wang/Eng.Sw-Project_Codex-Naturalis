@@ -44,6 +44,14 @@ public class PrintMapClass {
             throw new RuntimeException(e);
         }
         printYourMap(map.getMapArray());
+        try {
+            map.placeCard((UtilCostantValue.lunghezzaMaxMappa/2), UtilCostantValue.lunghezzaMaxMappa/2-2, firstTestCard);
+        } catch (PersonalizedException.InvalidPlacementException e) {
+            throw new RuntimeException(e);
+        } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
+            throw new RuntimeException(e);
+        }
+        printYourMap(map.getMapArray());
     }
     public static void printYourMap(Card[][] map) {
         Card[][] TUIMap;
@@ -136,6 +144,59 @@ public class PrintMapClass {
             }
         }
         publicCounter = counter;
+    }
+
+    public static void newPrintMap(Card[][] TUIMap){
+        int[] leftMostPrintableCard;
+        int[] firstPrintableCard;
+        int[] lastPrintableCard;
+        int counter = 1, line=0, column=0;
+        String[][] TUICard = new String[UtilCostantValue.lunghezzaMaxMappa*5][UtilCostantValue.lunghezzaMaxMappa*6];
+        String space = " ";
+        leftMostPrintableCard= leftMostPrintableCardPos(TUIMap);
+        firstPrintableCard= firstPrintableCardPos(TUIMap);
+        lastPrintableCard = lastPrintableCardPos(TUIMap);
+        int lastRow = lastPrintableCard[0]+1;
+        int lastCol = lastPrintableCard[1]+1;
+        int firstPrintRow = firstPrintableCard[0];
+        int firstPrintColumn = firstPrintableCard[1];
+        int printRow = firstPrintableCard[0];
+        int printColumn = firstPrintableCard[1];
+        int[] lastCardInLine = lastCardInLinePos(TUIMap, firstPrintRow, firstPrintColumn);
+        String[] card = new String[5];
+        boolean isFinished = false;
+        while(!isFinished){
+            int distancefromleft=(firstPrintColumn+firstPrintRow)-(leftMostPrintableCard[1]+leftMostPrintableCard[0]);
+            for(int i=0; i<card.length; i++){
+                for(int j=0; j<distancefromleft*3; j++){
+                    if(TUICard[line+i][column+j] == " " || TUICard[line+i][column+j] == null ) {
+                        TUICard[line + i][column + j] = space;
+                    }
+                }
+            }
+            column = column + distancefromleft*3;
+            do{
+                if(TUIMap[printRow][printColumn] == null){
+                    for(int i=0; i<card.length; i++ ){
+                        for(int j=0; j<card[0].length(); j++) {
+                            if(TUICard[line+i][column+j] == null || TUICard[line+i][column+j] == " ") {
+                                TUICard[line+i][column+j] = space;
+                            }
+                        }
+                    }
+                }else if(TUIMap[printRow][printColumn].getPng() == -1){
+                    TUICard[line][column] =ANSI_COLOR + "╔";TUICard[line][column+1]="═";TUICard[line][column+2]="═";TUICard[line][column+3]="═";TUICard[line][column+4]="═";TUICard[line][column+5]="╗" + ANSI_RESET;
+                    TUICard[line+1][column] =ANSI_COLOR + "║";TUICard[line+1][column+1]=" ";TUICard[line+1][column+2]=" ";TUICard[line+1][column+3]=" ";TUICard[line+1][column+4]=" ";TUICard[line+1][column+5]="║" + ANSI_RESET;
+                    if(counter<10){
+                        TUICard[line+2][column] =ANSI_COLOR + "║";TUICard[line+2][column+1]= " ";TUICard[line+2][column+2]= String.valueOf(counter);TUICard[line+2][column+3]=" ";TUICard[line+2][column+4]=" " + ANSI_RESET;TUICard[line+2][column+5]= ANSI_COLOR+"║" + ANSI_RESET;
+                    }else if(10 < counter && counter<100){
+                        TUICard[line+2][column] = ANSI_COLOR + "║";TUICard[line+2][column+1]= " ";TUICard[line+2][column+2]= String.valueOf(counter/10); TUICard[line+2][column+3]=String.valueOf(counter%10);TUICard[line+2][column+4] =" ";TUICard[line+2][column+5]= ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
+                    }else{
+                        TUICard[line+2][column] = ANSI_COLOR + "║";TUICard[line+2][column+1]= String.valueOf(counter/100);TUICard[line+2][column]= String.valueOf((counter%100)/10);TUICard[line+2][column]= " " + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
+                    }
+                }
+            }while(printRow != lastCardInLine[0]+1 && printColumn != lastCardInLine[1]+1);
+        }
     }
 
     public static HashMap<Integer, Integer[]> getFreePos() {

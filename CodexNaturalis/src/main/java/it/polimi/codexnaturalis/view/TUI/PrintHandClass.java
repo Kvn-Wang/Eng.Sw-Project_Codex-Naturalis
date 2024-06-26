@@ -14,7 +14,7 @@ public class PrintHandClass {
         String Command;
         int i = 1;
         for (Card card : hand.getCards()) {
-            System.out.println("card number: " + i);
+            System.out.println("card number: " + i +"  card type: " + card.getCardType());
             PrintCardClass.printCardHorizzontal(card);
 
             // print upper front card
