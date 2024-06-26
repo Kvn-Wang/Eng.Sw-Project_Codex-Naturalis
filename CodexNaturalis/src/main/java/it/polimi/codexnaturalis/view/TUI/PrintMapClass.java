@@ -1,5 +1,6 @@
 package it.polimi.codexnaturalis.view.TUI;
 
+import it.polimi.codexnaturalis.model.enumeration.CardCorner;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.GamePlayerMap;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
@@ -21,7 +22,7 @@ public class PrintMapClass {
     }
 
     private static int publicCounter;
-    private static HashMap<Integer, Integer[]> freePos;
+    private static HashMap<Integer, Integer[]> freePos = new HashMap<Integer, Integer[]>();
 
     public static void main(String[] args) {
         StarterCard starterCard = new StarterCard(81, ResourceType.NONE, ResourceType.NONE, ResourceType.PLANT, ResourceType.INSECT, new ResourceType[]{ResourceType.INSECT, ResourceType.ANIMAL, ResourceType.FUNGI}, ResourceType.FUNGI, ResourceType.ANIMAL, ResourceType.PLANT, ResourceType.INSECT);
@@ -42,9 +43,9 @@ public class PrintMapClass {
         } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
             throw new RuntimeException(e);
         }
-        printYourMap(map);
+        printYourMap(map.getMapArray());
     }
-    public static void printYourMap(GamePlayerMap map) {
+    public static void printYourMap(Card[][] map) {
         Card[][] TUIMap;
         try {
             TUIMap = mapRearranger(map);
@@ -87,13 +88,13 @@ public class PrintMapClass {
                     }
                 }else if(TUIMap[printRow][printColumn].getPng() == -1){
                     TUICard[line] = TUICard[line] + ANSI_COLOR + "╔════╗" + ANSI_RESET;
-                    TUICard[line+1] = TUICard[line+1] + ANSI_COLOR + "║   ║" + ANSI_RESET;
+                    TUICard[line+1] = TUICard[line+1] + ANSI_COLOR + "║    ║" + ANSI_RESET;
                     if(counter<10){
-                        TUICard[line+2] = TUICard[line+2] + ANSI_COLOR + "║" + " " + counter + " " + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
+                        TUICard[line+2] = TUICard[line+2] + ANSI_COLOR + "║" + " " + counter + "  " + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
                     }else if(10 < counter && counter<100){
-                        TUICard[line+2] = TUICard[line+2] + ANSI_COLOR + "║"+ " " + counter + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
+                        TUICard[line+2] = TUICard[line+2] + ANSI_COLOR + "║"+ " " + counter +" " + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
                     }else{
-                        TUICard[line+2] = TUICard[line+2] + ANSI_COLOR + "║"+ counter + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
+                        TUICard[line+2] = TUICard[line+2] + ANSI_COLOR + "║"+ counter + " " + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
                     }
                     TUICard[line+3] = TUICard[line+3] + ANSI_COLOR + "║    ║" + ANSI_RESET;
                     TUICard[line+4] = TUICard[line+4] + ANSI_COLOR + "╚════╝" + ANSI_RESET;
@@ -281,15 +282,111 @@ public class PrintMapClass {
             }
         return new int[]{row, col};
     }
+    private static int getCheckValidPosition(int x, int y, Card[][] mapArray){
+        int adiacentNumCard = -1;
+        if(checkValidityXY(x,y, mapArray)){
+            try {
+                adiacentNumCard = checkValidPosition(x,y, mapArray);
+            } catch (PersonalizedException.InvalidPlacementException e) {
+                return adiacentNumCard;
+            }
+        }
+        return adiacentNumCard;
+    }
 
-    public static Card[][] mapRearranger(GamePlayerMap gamePlayerMap) throws PersonalizedException.InvalidPlaceCardRequirementException, PersonalizedException.InvalidPlacementException {
-        Card [][] tempGamePlayerMap = gamePlayerMap.getMapArray();
+    private static int checkValidPosition(int x, int y, Card[][] mapArray) throws PersonalizedException.InvalidPlacementException {
+        int adiacentNumCard = 0;
+
+        //controllo di adiacenza della carta facendo attenzione ai valori limite
+        if(x == UtilCostantValue.lunghezzaMaxMappa - 1) {
+            if(!(mapArray[x - 1][y] == null)) {
+                //controllo corner
+                if(mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == null || mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == ResourceType.UNASSIGNABLE) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
+                adiacentNumCard++;
+            }
+        } else if(x == 0) {
+            if(!(mapArray[x + 1][y] == null)) {
+                //controllo del corner
+                if(mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == null || mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == ResourceType.UNASSIGNABLE) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
+                adiacentNumCard++;
+            }
+        } else {
+            if(!(mapArray[x + 1][y] == null)) {
+                if(mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == null || mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == ResourceType.UNASSIGNABLE) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
+                adiacentNumCard++;
+            }
+            if(!(mapArray[x - 1][y] == null)) {
+                if(mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == null || mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == ResourceType.UNASSIGNABLE) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
+                adiacentNumCard++;
+            }
+        }
+
+        if(y == UtilCostantValue.lunghezzaMaxMappa - 1) {
+            if(!(mapArray[x][y - 1] == null)) {
+                //controllo del corner
+                if(mapArray[x][y - 1].getCardCorner(CardCorner.EAST) == null || mapArray[x][y - 1].getCardCorner(CardCorner.EAST) == ResourceType.UNASSIGNABLE) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
+                adiacentNumCard++;
+            }
+        } else if(y == 0) {
+            if(!(mapArray[x][y + 1] == null)) {
+                //controllo del corner
+                if(mapArray[x][y + 1].getCardCorner(CardCorner.WEST) == null || mapArray[x][y + 1].getCardCorner(CardCorner.WEST) == ResourceType.UNASSIGNABLE) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
+                adiacentNumCard++;
+            }
+        } else {
+            if(!(mapArray[x][y + 1] == null)) {
+                //controllo del corner
+                if(mapArray[x][y + 1].getCardCorner(CardCorner.WEST) == null || mapArray[x][y + 1].getCardCorner(CardCorner.WEST) == ResourceType.UNASSIGNABLE) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
+                adiacentNumCard++;
+            }
+            if(!(mapArray[x][y - 1] == null)) {
+                //controllo del corner
+                if(mapArray[x][y - 1].getCardCorner(CardCorner.EAST) == null || mapArray[x][y - 1].getCardCorner(CardCorner.EAST) == ResourceType.UNASSIGNABLE) {
+                    throw new PersonalizedException.InvalidPlacementException();
+                }
+                adiacentNumCard++;
+            }
+        }
+
+        if(adiacentNumCard == 0 && mapArray[UtilCostantValue.lunghezzaMaxMappa/2][UtilCostantValue.lunghezzaMaxMappa/2]!=null) {
+            throw new PersonalizedException.InvalidPlacementException();
+        }
+        return adiacentNumCard;
+    }
+    private static boolean checkValidityXY(int x, int y, Card[][] mapArray) {
+        if(x < 0 || y < 0 || x >= UtilCostantValue.lunghezzaMaxMappa || y >= UtilCostantValue.lunghezzaMaxMappa) {
+            return false;
+        } else {
+            if (mapArray[x][y] == null) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public static Card[][] mapRearranger(Card[][] tempGamePlayerMap) throws PersonalizedException.InvalidPlaceCardRequirementException, PersonalizedException.InvalidPlacementException {
+
         Card[][] mapArray = new Card[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
         for(int i = 0 ; i < UtilCostantValue.lunghezzaMaxMappa ; i++){
             for(int j = 0 ; j < UtilCostantValue.lunghezzaMaxMappa ; j++){
-                if(tempGamePlayerMap[i][j] !=null && tempGamePlayerMap[i][j].getPng() != -1){
+                if(tempGamePlayerMap[i][j] !=null){
                     mapArray[i][j] = tempGamePlayerMap[i][j];
-                }else if (gamePlayerMap.getCheckValidPosition(i,j) != -1){
+                }else if (getCheckValidPosition(i,j, tempGamePlayerMap) != -1){
                     mapArray[i][j] = fillerCard;
                 }
             }

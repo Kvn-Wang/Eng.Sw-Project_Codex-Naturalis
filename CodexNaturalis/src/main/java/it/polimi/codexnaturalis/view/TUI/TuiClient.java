@@ -14,10 +14,7 @@ import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
 import it.polimi.codexnaturalis.view.VirtualModel.OtherPlayerData;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class TuiClient implements TypeOfUI {
     protected VirtualServer networkCommand;
@@ -370,9 +367,9 @@ public class TuiClient implements TypeOfUI {
 
             command = scan.nextLine();
             if(command.equals("1")) {
-                PrintMapClass.printMap(clientContainer.getPersonalGameMap());
+                PrintMapClass.printYourMap(clientContainer.getPersonalGameMap());
             }else if(command.equals("2")) {
-                PrintMapClass.printMap(clientContainer.getPersonalGameMap());
+                PrintMapClass.printYourMap(clientContainer.getPersonalGameMap());
                 PrintHandClass.printHand(clientContainer.getPersonalHand());
 
                 System.out.println("Give me which num card in hand to play");
@@ -426,7 +423,14 @@ public class TuiClient implements TypeOfUI {
             }else if(command.equals("4")) {
                 PrintHandClass.printHand(clientContainer.getPersonalHand());
             }else if(command.equals("5")) {
-
+                Set<String> players = clientContainer.getOtherPlayerNames();
+                System.out.println("list of other players" + players);
+                String choice = "";
+                do{
+                    System.out.println("Enter the name of the player: ");
+                    choice = scan.nextLine();
+                }while(!players.contains(choice));
+                PrintMapClass.printMap(clientContainer.getOthersGameMap(choice));
             }else if(command.equals("6")) {
                 PrintShop.printShop(clientContainer);
             }else if(command.equals("7")) {

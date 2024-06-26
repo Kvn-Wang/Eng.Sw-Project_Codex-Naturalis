@@ -11,6 +11,7 @@ import it.polimi.codexnaturalis.utils.UtilCostantValue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 public class ClientContainer {
     private String nickname;
@@ -76,6 +77,7 @@ public class ClientContainer {
         return personalHand;
     }
 
+    public Card[][] getOthersGameMap(String playerNickname) {return players.get(playerNickname).getMap();}
 
     public Mission getCommonMission1() {
         return commonMission1;
@@ -169,6 +171,8 @@ public class ClientContainer {
     public HashMap<String, OtherPlayerData> getPlayers() {
         return players;
     }
+
+    public Set<String> getOtherPlayerNames() {return players.keySet();}
 
     public void setPersonalColor(ColorType color) {
         personalColor = color;
