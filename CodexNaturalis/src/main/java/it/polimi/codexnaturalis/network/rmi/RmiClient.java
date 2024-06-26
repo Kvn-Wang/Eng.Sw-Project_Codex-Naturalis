@@ -345,7 +345,9 @@ public class RmiClient extends GenericClient implements VirtualServer {
     public void setPlayerColor(String nickname, ColorType colorChosen) {
         serviceThread.submit(() -> {
             try {
+                System.out.println("Color");
                 server.setPlayerColor(nickname, colorChosen);
+                System.out.println("Color");
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }

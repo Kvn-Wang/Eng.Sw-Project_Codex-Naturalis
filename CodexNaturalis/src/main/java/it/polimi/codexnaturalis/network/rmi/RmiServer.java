@@ -83,6 +83,7 @@ public class RmiServer extends Thread implements VirtualServer {
 
     @Override
     public void setPlayerColor(String nickname, ColorType colorChosen) {
+        System.out.println("received command color");
         serverContainer.setPlayerColor(nickname, colorChosen);
     }
 
