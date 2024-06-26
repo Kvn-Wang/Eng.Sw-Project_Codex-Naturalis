@@ -477,6 +477,16 @@ public class TuiClient implements TypeOfUI {
         }
     }
 
+    @Override
+    public void updateHand() {
+        //do not implement!
+    }
+
+    @Override
+    public void updatePlayerScoreBoard() {
+        //do not implement!
+    }
+
     private void doWait() {
         synchronized (lock) {
             try {
@@ -500,7 +510,7 @@ public class TuiClient implements TypeOfUI {
             String nickname = entry.getKey();
             OtherPlayerData playerData = entry.getValue();
 
-            System.out.println("  - " + nickname + ", score: " + "Scoreboard: " + playerData.intScoreBoardScore);
+            System.out.println("  - " + nickname + ", score: " + "Scoreboard: " + playerData.getIntScoreBoardScore() + ", COLOR: " + playerData.getColor());
         }
     }
 }

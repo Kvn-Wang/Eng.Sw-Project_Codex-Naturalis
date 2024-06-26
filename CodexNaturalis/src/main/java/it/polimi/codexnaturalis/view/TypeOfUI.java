@@ -50,4 +50,6 @@ public interface TypeOfUI {
     void printIsNotYourTurn();
     void printIsYourFinalTurn();
     void printWinners(ArrayList<String> winnersNickname);
+    void updateHand();
+    void updatePlayerScoreBoard();
 }

@@ -29,32 +29,16 @@ public class PrintSymbols {
                 return " ";
             }
             case PLANT -> {
-                if (isCard) {
-                    return ANSI_GREEN+"▆"+ANSI_RESET;
-                } else {
-                    return "\uD83D\uDFE9";
-                }
+                return ANSI_GREEN+"█"+ANSI_RESET;
             }
             case ANIMAL -> {
-                if(isCard) {
-                    return ANSI_BLUE+"▆"+ANSI_RESET;
-                } else{
-                    return "\uD83D\uDFE6";
-                }
+                return ANSI_BLUE+"█"+ANSI_RESET;
             }
             case FUNGI -> {
-                if(isCard) {
-                    return ANSI_RED+"▆"+ANSI_RESET;
-                }else {
-                    return "\uD83D\uDFE5";
-                }
+                return ANSI_RED+"█"+ANSI_RESET;
             }
             case INSECT -> {
-                if(isCard) {
-                    return ANSI_PURPLE+"▆"+ANSI_RESET;
-                } else {
-                    return "\uD83D\uDFEA";
-                }
+                return ANSI_PURPLE+"█"+ANSI_RESET;
             }
             case QUILL -> {
                 return "Q";

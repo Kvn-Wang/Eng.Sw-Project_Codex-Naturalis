@@ -38,6 +38,10 @@ public abstract class Card implements Serializable {
      * The Is back.
      */
     protected boolean isBack;
+    /**
+     * variable used to keep track of when a certain card has been placed
+     */
+    protected int placedOrder;
 
     /**
      * Instantiates a new Card.
@@ -55,6 +59,7 @@ public abstract class Card implements Serializable {
         this.frontEastResource = frontEastResource;
         this.frontWestResource = frontWestResource;
         this.isBack = false;
+        placedOrder = 0;
     }
 
     /**
@@ -292,5 +297,13 @@ public abstract class Card implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(png, frontNorthResource, frontSouthResource, frontEastResource, frontWestResource, isBack);
+    }
+
+    public int getPlacedOrder() {
+        return placedOrder;
+    }
+
+    public void setPlacedOrder(int placedOrder) {
+        this.placedOrder = placedOrder;
     }
 }

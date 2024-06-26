@@ -122,6 +122,16 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
+    public void updateHand() {
+
+    }
+
+    @Override
+    public void updatePlayerScoreBoard() {
+        GuiGame.updateScore();
+    }
+
+    @Override
     public void connectGameController(GameController virtualGame) {
         GuiGame.startGame(virtualGame);
     }

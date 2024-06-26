@@ -44,7 +44,10 @@ public class Lobby {
         if(lobbyInfo.addPlayer()) {
             broadCastNotify(player.getNickname(), "JOIN");
 
-            listOfPlayers.add(player);
+            synchronized (listOfPlayers) {
+                listOfPlayers.add(player);
+            }
+
             return true;
         } else {
             return false;
@@ -59,7 +62,9 @@ public class Lobby {
      * @throws RemoteException the remote exception
      */
     public boolean disconnectPlayer(PlayerInfo player) throws RemoteException {
-        listOfPlayers.remove(player);
+        synchronized (listOfPlayers) {
+            listOfPlayers.remove(player);
+        }
 
         /**
          * reset of the eventual color that he has chosen
@@ -84,11 +89,14 @@ public class Lobby {
     public void setPlayerColor(PlayerInfo player, ColorType colorChosen) {
         boolean someoneHasChosenThatColor = false;
 
-        for(PlayerInfo singlePlayer : listOfPlayers) {
-            if(player != singlePlayer && singlePlayer.getColorChosen() == colorChosen) {
-                someoneHasChosenThatColor = true;
+        synchronized (listOfPlayers) {
+            for(PlayerInfo singlePlayer : listOfPlayers) {
+                if(player != singlePlayer && singlePlayer.getColorChosen() == colorChosen) {
+                    someoneHasChosenThatColor = true;
+                }
             }
         }
+
 
         try {
             if(someoneHasChosenThatColor) {
@@ -114,7 +122,9 @@ public class Lobby {
      * @throws RemoteException the remote exception
      */
     public void setPlayerReady(PlayerInfo player) throws RemoteException {
-        listOfPlayers.get(listOfPlayers.indexOf(player)).setPlayerReady(true);
+        synchronized (listOfPlayers) {
+            listOfPlayers.get(listOfPlayers.indexOf(player)).setPlayerReady(true);
+        }
 
         broadCastNotify(player.getNickname(), "READY");
 
@@ -123,21 +133,23 @@ public class Lobby {
     }
 
     private void startGame() throws RemoteException {
-        if(listOfPlayers.size() >= UtilCostantValue.minPlayerPerLobby) {
-            boolean allPlayerReady;
+        synchronized (listOfPlayers) {
+            if(listOfPlayers.size() >= UtilCostantValue.minPlayerPerLobby) {
+                boolean allPlayerReady;
 
-            allPlayerReady = true;
-            for(PlayerInfo playerInfo : listOfPlayers) {
-                if(!playerInfo.isPlayerReady()) {
-                    allPlayerReady = false;
+                allPlayerReady = true;
+                for(PlayerInfo playerInfo : listOfPlayers) {
+                    if(!playerInfo.isPlayerReady()) {
+                        allPlayerReady = false;
+                    }
                 }
-            }
 
-            if(allPlayerReady) {
-                connectPlayerToGame();
+                if(allPlayerReady) {
+                    connectPlayerToGame();
+                }
+            } else {
+                broadCastNotify(listOfPlayers.get(0).getNickname(), "WAIT");
             }
-        } else {
-            broadCastNotify(listOfPlayers.get(0).getNickname(), "WAIT");
         }
     }
 
@@ -189,7 +201,9 @@ public class Lobby {
      * @return the list of players
      */
     public ArrayList<PlayerInfo> getListOfPlayers() {
-        return listOfPlayers;
+        synchronized (listOfPlayers) {
+            return listOfPlayers;
+        }
     }
 
     /**

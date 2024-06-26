@@ -3,6 +3,7 @@ package it.polimi.codexnaturalis.view.GUI;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import it.polimi.codexnaturalis.controller.GameController;
+import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.mission.MissionAdapter;
@@ -19,6 +20,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -37,6 +39,7 @@ import javafx.stage.Stage;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GuiGame extends Application {
 
@@ -47,11 +50,13 @@ public class GuiGame extends Application {
     private static Circle[][] anchorPointsMatrix;
     private static ArrayList<GuiCard> handCards;
     private static Rectangle[] missions;
+    private static ObservableMap<String, Integer> scores;
     private static Pane vHand;
     private static VBox missionList;
     private static VBox actionMenu;
     private static Pane map;
     private static Pane cameraView;
+    private static HashMap<String, Circle> pawns;
     private static Rectangle cardBeingPlaced;
     private static double cameraX=500;
     private static double cameraY=300;
@@ -214,6 +219,24 @@ public class GuiGame extends Application {
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
+
+            Button shopButton = new Button("Shop");
+            shopButton.setMinSize(200,50);
+            shopButton.setOnAction(event -> {
+                openShop();
+            });
+            actionMenu.getChildren().add(shopButton);
+
+
+            scores = FXCollections.observableHashMap();
+            clientContainer.getPlayers().forEach((nick, playerData) -> {
+                scores.put(nick, playerData.getIntScoreBoardScore());
+            });
+
+            Pane scoreBoard = scoreBoard();
+
+
+            actionMenu.getChildren().add(scoreBoard);
         });
     }
 
@@ -229,56 +252,63 @@ public class GuiGame extends Application {
             }
         });
     }
+    public static void updateScore(){
+        clientContainer.getPlayers().forEach((nick, playerData)->{
+            movePawn(pawns.get(nick),playerData.getIntScoreBoardScore());
+        });
+    }
 
     private static void openShop(){
         ShopBox shopAlert = new ShopBox();
         shopAlert.setCC(clientContainer);
         String drawnCard = shopAlert.display("Shop", 400,300);
-        switch(drawnCard){
-            case "r0":
-                try {
-                    vgc.playerDraw(playerNickname,0, ShopType.RESOURCE);
-                } catch (RemoteException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            case "r1":
-                try {
-                    vgc.playerDraw(playerNickname,1, ShopType.RESOURCE);
-                } catch (RemoteException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            case "r2":
-                try {
-                    vgc.playerDraw(playerNickname,2, ShopType.RESOURCE);
-                } catch (RemoteException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            case "o0":
-                try {
-                    vgc.playerDraw(playerNickname,0, ShopType.OBJECTIVE);
-                } catch (RemoteException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            case "01":
-                try {
-                    vgc.playerDraw(playerNickname,1, ShopType.OBJECTIVE);
-                } catch (RemoteException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            case "o2":
-                try {
-                    vgc.playerDraw(playerNickname,2, ShopType.OBJECTIVE);
-                } catch (RemoteException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            default:
-                break;
+        if(drawnCard!=null) {
+            switch (drawnCard) {
+                case "r0":
+                    try {
+                        vgc.playerDraw(playerNickname, 0, ShopType.RESOURCE);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                case "r1":
+                    try {
+                        vgc.playerDraw(playerNickname, 1, ShopType.RESOURCE);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                case "r2":
+                    try {
+                        vgc.playerDraw(playerNickname, 2, ShopType.RESOURCE);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                case "o0":
+                    try {
+                        vgc.playerDraw(playerNickname, 0, ShopType.OBJECTIVE);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                case "01":
+                    try {
+                        vgc.playerDraw(playerNickname, 1, ShopType.OBJECTIVE);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                case "o2":
+                    try {
+                        vgc.playerDraw(playerNickname, 2, ShopType.OBJECTIVE);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -528,16 +558,16 @@ public class GuiGame extends Application {
             }
             e.consume();
         });
-        map.setOnDragEntered(e -> {
-            if (e.getGestureSource() != map && e.getDragboard().hasString()) {
-                map.setStyle("-fx-background-color: #ecdfb3;");
-            }
-            e.consume();
-        });
-        map.setOnDragExited(e -> {
-            map.setStyle("-fx-background-color: #ffffff;");
-            e.consume();
-        });
+//        map.setOnDragEntered(e -> {
+//            if (e.getGestureSource() != map && e.getDragboard().hasString()) {
+//                map.setStyle("-fx-background-color: #ecdfb3;");
+//            }
+//            e.consume();
+//        });
+//        map.setOnDragExited(e -> {
+//            map.setStyle("-fx-background-color: #ffffff;");
+//            e.consume();
+//        });
         map.setOnDragDropped(e -> {
             Dragboard db = e.getDragboard();
             boolean success = false;
@@ -712,12 +742,140 @@ public class GuiGame extends Application {
     }
     private VBox actionMenuLayer(){
         VBox actions = new VBox();
-        Button shopButton = new Button("Shop");
-        shopButton.setMinSize(150,100);
-        shopButton.setOnAction(event -> {
-            openShop();
-        });
-        actions.getChildren().add(shopButton);
         return actions;
+    }
+
+    private static Pane scoreBoard(){
+        Pane scoreBoard = new Pane();
+        String boardPath = "/it/polimi/codexnaturalis/graphics/PLATEAU-SCORE-IMP/Scoreboard.png";
+        Image boardImage = new Image(GuiGame.class.getResourceAsStream(boardPath));
+
+        BackgroundSize backgroundSize = new BackgroundSize(scoreBoard.getWidth(), scoreBoard.getHeight(), false, false, true, true);
+        BackgroundImage backgroundImage = new BackgroundImage(boardImage,
+                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.DEFAULT, backgroundSize);
+
+        Background background = new Background(backgroundImage);
+        scoreBoard.setBackground(background);
+
+        scoreBoard.setPrefSize(200,400);
+        scoreBoard.setMaxSize(200,400);
+
+        clientContainer.getPlayers().forEach((nick,playerData) ->{
+            Circle pawn = new Circle(50,375,20);
+            switch(playerData.getColor()){
+                case ColorType.RED:
+                    pawn.setFill(Color.RED);
+                    break;
+                case ColorType.YELLOW:
+                    pawn.setFill(Color.YELLOW);
+                    break;
+                case ColorType.GREEN:
+                    pawn.setFill(Color.GREEN);
+                    break;
+                case ColorType.BLUE:
+                    pawn.setFill(Color.BLUE);
+                    break;
+            }
+            scoreBoard.getChildren().add(pawn);
+            pawns.put(nick, pawn);
+        });
+        return scoreBoard;
+    }
+
+    private static void movePawn(Circle pawn, int i){
+        switch(i){
+            case 1:
+                pawn.setTranslateX(100-pawn.getTranslateX());
+                pawn.setTranslateY(375-pawn.getTranslateY());
+                break;
+            case 2:
+                pawn.setTranslateX(150-pawn.getTranslateX());
+                pawn.setTranslateY(375-pawn.getTranslateY());
+                break;
+            case 3:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 4:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 5:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 6:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 7:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 8:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 9:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 10:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 11:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 12:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 13:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 14:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 15:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 16:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 17:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 18:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 19:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 20:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 21:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 22:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 23:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 24:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 25:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 26:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 27:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 28:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            case 29:
+                pawn.setTranslateX(pawn.getTranslateX());
+                break;
+            default:
+                break;
+        }
     }
 }

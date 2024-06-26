@@ -144,6 +144,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
                         ColorType color = ColorType.valueOf(message.getArgs().get(2));
 
                         if(nickname.equals(clientContainer.getNickname())) {
+                            clientContainer.setPersonalColor(color);
                             typeOfUI.printChooseColorOutcome(true);
                         } else {
                             typeOfUI.notifyLobbyStatusColor(nickname, color);
