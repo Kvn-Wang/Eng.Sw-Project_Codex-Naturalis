@@ -57,7 +57,7 @@ public class PrintMapClass {
         int[] lastPrintableCard;
         int counter = 1, line=0;
         String[] TUICard = new String[500];
-        String space = " ".repeat(2);
+        String space = " ".repeat(3);
         leftMostPrintableCard= leftMostPrintableCardPos(TUIMap);
         firstPrintableCard= firstPrintableCardPos(TUIMap);
         lastPrintableCard = lastPrintableCardPos(TUIMap);
@@ -82,7 +82,7 @@ public class PrintMapClass {
                         TUICard[line+i] =TUICard[line+i]+ space.repeat(3);
                     }
                 }else if(TUIMap[printRow][printColumn].getPng() == -1){
-                    TUICard[line] = TUICard[line] + ANSI_COLOR + "╔═══╗" + ANSI_RESET;
+                    TUICard[line] = TUICard[line] + ANSI_COLOR + "╔════╗" + ANSI_RESET;
                     TUICard[line+1] = TUICard[line+1] + ANSI_COLOR + "║   ║" + ANSI_RESET;
                     if(counter<10){
                         TUICard[line+2] = TUICard[line+2] + ANSI_COLOR + "║" + " " + counter + " " + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
@@ -91,8 +91,8 @@ public class PrintMapClass {
                     }else{
                         TUICard[line+2] = TUICard[line+2] + ANSI_COLOR + "║"+ counter + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
                     }
-                    TUICard[line+3] = TUICard[line+3] + ANSI_COLOR + "║   ║" + ANSI_RESET;
-                    TUICard[line+4] = TUICard[line+4] + ANSI_COLOR + "╚═══╝" + ANSI_RESET;
+                    TUICard[line+3] = TUICard[line+3] + ANSI_COLOR + "║    ║" + ANSI_RESET;
+                    TUICard[line+4] = TUICard[line+4] + ANSI_COLOR + "╚════╝" + ANSI_RESET;
                     counter++;
                 }else{
                     card = PrintCardClass.createCard(TUIMap[printRow][printColumn], !TUIMap[printRow][printColumn].getIsBack());
