@@ -224,12 +224,16 @@ public class SocketClient extends GenericClient implements VirtualServer {
 
                     if(isValidPlacement) {
                         Card playedCard = gsonTranslator.fromJson(message.getArgs().get(1), Card.class);
-                        PlayerScoreResource playerScoreResource = gsonTranslator.fromJson(message.getArgs().get(2), PlayerScoreResource.class);
-                        int updatedScoreBoardValue = Integer.parseInt(message.getArgs().get(3));
+                        int x = Integer.parseInt(message.getArgs().get(2));
+                        int y = Integer.parseInt(message.getArgs().get(3));
+                        PlayerScoreResource playerScoreResource = gsonTranslator.fromJson(message.getArgs().get(4), PlayerScoreResource.class);
+                        int updatedScoreBoardValue = Integer.parseInt(message.getArgs().get(5));
 
-                        clientContainer.playedCard(playedCard);
+                        System.out.println("Piazzamento valido");
+                        clientContainer.playedCard(x, y, playedCard);
                         clientContainer.updatePersonalScore(updatedScoreBoardValue, playerScoreResource);
                         typeOfUI.outcomePlayCard(true);
+                        typeOfUI.updatePlayerScoreBoard();
                     } else {
                         typeOfUI.outcomePlayCard(false);
                     }

@@ -24,11 +24,16 @@ import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.view.GenericClient;
 import it.polimi.codexnaturalis.view.TypeOfUI;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.UnknownHostException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -63,12 +68,48 @@ public class RmiClient extends GenericClient implements VirtualServer {
         registry = LocateRegistry.getRegistry(address, UtilCostantValue.portRmiServer);
         this.server = (VirtualServer) registry.lookup(serverName);
 
-        System.out.println("Collegato al server: " + serverName);
+        //System.out.println(getClientIpAddress(address));
 
         // scambio dell'oggetto per comunicare col server
         ID = UUID.randomUUID().toString();
         server.connectRMI(this, ID);
+
+        System.out.println("Collegato al server: " + serverName);
     }
+
+    /*private String getClientIpAddress(String serverAddress) {
+        try {
+            InetAddress serverInetAddress = InetAddress.getByName(serverAddress);
+            byte[] serverIp = serverInetAddress.getAddress();
+
+            Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+            while (networkInterfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = networkInterfaces.nextElement();
+                Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
+                while (inetAddresses.hasMoreElements()) {
+                    InetAddress inetAddress = inetAddresses.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                        byte[] clientIp = inetAddress.getAddress();
+                        if (isSameSubnet(clientIp, serverIp)) {
+                            return inetAddress.getHostAddress();
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Impossibile ottenere l'indirizzo IP del client", e);
+        }
+        return null;
+    }
+
+    private boolean isSameSubnet(byte[] clientIp, byte[] serverIp) {
+        for (int i = 0; i < 3; i++) { // assuming /24 subnet mask
+            if (clientIp[i] != serverIp[i]) {
+                return false;
+            }
+        }
+        return true;
+    }*/
 
     @Override
     public void showMessage(NetworkMessage message) throws RemoteException {
@@ -190,11 +231,13 @@ public class RmiClient extends GenericClient implements VirtualServer {
 
                 if(isValidPlacement) {
                     Card playedCard = gsonTranslator.fromJson(message.getArgs().get(1), Card.class);
-                    PlayerScoreResource playerScoreResource = gsonTranslator.fromJson(message.getArgs().get(2), PlayerScoreResource.class);
-                    int updatedScoreBoardValue = Integer.parseInt(message.getArgs().get(3));
+                    int x = Integer.parseInt(message.getArgs().get(2));
+                    int y = Integer.parseInt(message.getArgs().get(3));
+                    PlayerScoreResource playerScoreResource = gsonTranslator.fromJson(message.getArgs().get(4), PlayerScoreResource.class);
+                    int updatedScoreBoardValue = Integer.parseInt(message.getArgs().get(5));
 
                     System.out.println("Piazzamento valido");
-                    clientContainer.playedCard(playedCard);
+                    clientContainer.playedCard(x, y, playedCard);
                     clientContainer.updatePersonalScore(updatedScoreBoardValue, playerScoreResource);
                     typeOfUI.outcomePlayCard(true);
                     typeOfUI.updatePlayerScoreBoard();

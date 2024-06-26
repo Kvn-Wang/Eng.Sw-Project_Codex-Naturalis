@@ -241,8 +241,8 @@ public class GameManager extends Observable implements GameController {
              * notify the player that he succesfully placed the card
              */
             notifyObserverSingle(new NetworkMessage(nickname, MessageType.PLACEMENT_CARD_OUTCOME,
-                    String.valueOf(true), argsGenerator(playedCard), argsGenerator(p.getScoreResource()),
-                    String.valueOf(p.getPersonalScoreBoardScore())));
+                    String.valueOf(true), argsGenerator(playedCard), String.valueOf(x), String.valueOf(y),
+                    argsGenerator(p.getScoreResource()), String.valueOf(p.getPersonalScoreBoardScore())));
 
             /**
              * notify the other players that the map of the player that has played card has changed

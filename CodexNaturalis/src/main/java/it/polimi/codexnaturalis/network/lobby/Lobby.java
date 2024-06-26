@@ -98,18 +98,15 @@ public class Lobby {
 
         try {
             if(someoneHasChosenThatColor) {
-                System.out.println("ciao");
                 player.notifyPlayer(new NetworkMessage(MessageType.COM_SET_PLAYER_COLOR_OUTCOME,
                         String.valueOf(false)));
             } else {
-                System.out.println("ciao");
                 player.setColorChosen(colorChosen);
                 // broadCast a tutti che ho selezionato quel colore
                 for(PlayerInfo elem : listOfPlayers) {
                     elem.notifyPlayer(new NetworkMessage(player.getNickname(), MessageType.COM_SET_PLAYER_COLOR_OUTCOME,
                             String.valueOf(true), player.getNickname(), String.valueOf(colorChosen)));
                 }
-                System.out.println("ciao");
             }
         } catch (Exception e) {
             e.printStackTrace();
