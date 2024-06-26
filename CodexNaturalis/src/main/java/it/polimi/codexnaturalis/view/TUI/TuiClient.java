@@ -11,7 +11,7 @@ import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
 import it.polimi.codexnaturalis.view.TypeOfUI;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
-import it.polimi.codexnaturalis.view.VirtualModel.OtherPlayerData;
+import it.polimi.codexnaturalis.view.VirtualModel.PlayerData;
 
 import java.rmi.RemoteException;
 import java.util.*;
@@ -512,13 +512,13 @@ public class TuiClient implements TypeOfUI {
     }
 
     private void printPlayerScore() {
-        HashMap<String, OtherPlayerData>  players = clientContainer.getPlayers();
+        HashMap<String, PlayerData>  players = clientContainer.getPlayers();
 
-        for (Map.Entry<String, OtherPlayerData> entry : players.entrySet()) {
+        for (Map.Entry<String, PlayerData> entry : players.entrySet()) {
             String nickname = entry.getKey();
-            OtherPlayerData playerData = entry.getValue();
+            PlayerData playerData = entry.getValue();
 
-            System.out.println("  - " + nickname + ", score: " + "Scoreboard: " + playerData.getIntScoreBoardScore() + ", COLOR: " + playerData.getColor());
+            System.out.println("  - " + nickname + ", score: " + "Scoreboard: " + playerData.getIntScoreBoardScore() + ", COLOR: " + playerData.getPlayerColor());
         }
     }
 }

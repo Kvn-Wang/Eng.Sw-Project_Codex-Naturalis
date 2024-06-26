@@ -188,11 +188,8 @@ public class ServerContainer {
     }
 
     public void setPlayerColor(String nickname, ColorType colorType) {
-        System.out.println("asd");
         PlayerInfo player = stringToPlayer(nickname);
-        System.out.println("asd");
         Lobby playerLobby = getLobbyByPlayer(nickname);
-        System.out.println("asd");
 
         playerLobby.setPlayerColor(player, colorType);
     }

@@ -9,7 +9,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public interface VirtualView extends Remote {
-    public void showMessage(NetworkMessage message) throws RemoteException;
-    public void connectToGame(GameController gameController, ArrayList<PlayerInfo> listOtherPlayer) throws RemoteException;
+    void showMessage(NetworkMessage message) throws RemoteException;
+    void connectToGame(GameController gameController, ArrayList<PlayerInfo> listOtherPlayer) throws RemoteException;
 }
 

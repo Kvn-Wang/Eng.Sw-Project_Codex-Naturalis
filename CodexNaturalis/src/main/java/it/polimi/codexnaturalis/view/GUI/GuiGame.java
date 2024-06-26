@@ -561,8 +561,8 @@ public class GuiGame extends Application {
         colorChoice.getChildren().addAll(red, yellow, green, blue);
         clientContainer.getPlayers().forEach((nick, playerData)->{
             lobbyPlayers.add(nick);
-            if (playerData.getColor() != null) {
-                switch (playerData.getColor()) {
+            if (playerData.getPlayerColor() != null) {
+                switch (playerData.getPlayerColor()) {
                     case RED -> colorChoice.getChildren().remove(red);
                     case YELLOW -> colorChoice.getChildren().remove(yellow);
                     case GREEN -> colorChoice.getChildren().remove(green);
@@ -599,7 +599,7 @@ public class GuiGame extends Application {
                     setGraphic(null);
                 } else {
                     text.setText(item);
-                    switch(clientContainer.getPlayers().get(item).getColor()) {
+                    switch(clientContainer.getPlayers().get(item).getPlayerColor()) {
                         case ColorType.RED:
                             text.setFill(Color.RED);
                             break;
@@ -865,7 +865,7 @@ public class GuiGame extends Application {
 
         clientContainer.getPlayers().forEach((nick,playerData) ->{
             Circle pawn = new Circle(50,375,20);
-            switch(playerData.getColor()){
+            switch(playerData.getPlayerColor()){
                 case ColorType.RED:
                     pawn.setFill(Color.RED);
                     break;

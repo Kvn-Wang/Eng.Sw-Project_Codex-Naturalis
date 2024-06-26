@@ -83,7 +83,6 @@ public class RmiServer extends Thread implements VirtualServer {
 
     @Override
     public void setPlayerColor(String nickname, ColorType colorChosen) {
-        System.out.println("received command color");
         serverContainer.setPlayerColor(nickname, colorChosen);
     }
 
@@ -98,7 +97,7 @@ public class RmiServer extends Thread implements VirtualServer {
         String name = UtilCostantValue.RMIServerName;
 
         try {
-            stub = (VirtualServer) UnicastRemoteObject.exportObject(engine, 0);
+            stub = (VirtualServer) UnicastRemoteObject.exportObject(engine, UtilCostantValue.portRmiServer);
             registry = LocateRegistry.createRegistry(UtilCostantValue.portRmiServer);
             registry.rebind(name, stub);
         } catch (RemoteException e) {
