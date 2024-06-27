@@ -21,7 +21,7 @@ public class PrintMapClass {
     public PrintMapClass() {
     }
 
-    private static int publicCounter;
+    private static int publicCounter=0;
     private static HashMap<Integer, Integer[]> freePos = new HashMap<Integer, Integer[]>();
 
     public static void main(String[] args) {
@@ -165,6 +165,7 @@ public class PrintMapClass {
         int[] lastCardInLine = lastCardInLinePos(TUIMap, firstPrintRow, firstPrintColumn);
         String[][] card = new String[5][6];
         boolean isFinished = false;
+        freePos.clear();
         while(!isFinished){
             lastCardInLine = lastCardInLinePos(TUIMap, firstPrintRow, firstPrintColumn);
             int distancefromleft=(firstPrintColumn+firstPrintRow)-(leftMostPrintableCard[1]+leftMostPrintableCard[0]);
@@ -213,6 +214,10 @@ public class PrintMapClass {
                     }
                     //TUICard[line+3][column] = ANSI_COLOR + "║";TUICard[line+3][column+1]=" ";TUICard[line+3][column+2]=" ";TUICard[line+3][column+3]=" ";TUICard[line+3][column+4]=" ";TUICard[line+3][column+5]="║" + ANSI_RESET;
                     //TUICard[line+4][column] = ANSI_COLOR + "╚";TUICard[line+4][column+1]="═";TUICard[line+4][column+2]="═";TUICard[line+4][column+3]="═";TUICard[line+4][column+4]="═";TUICard[line+4][column+5]="╝" + ANSI_RESET;
+                    Integer[] coordinates = new Integer[2];
+                    coordinates[0] = printRow;
+                    coordinates[1] = printColumn;
+                    freePos.put(counter,coordinates);
                     counter++;
                 }else{
                     card=PrintCardClass.createCard(TUIMap[printRow][printColumn], !TUIMap[printRow][printColumn].getIsBack());
@@ -224,8 +229,6 @@ public class PrintMapClass {
                         TUICard[line+1][column+1]= card[1][1];
                         TUICard[line+1][column+2]= card[1][2];
                     }
-                    int x = TUIMap[printRow][printColumn].getPlacedOrder();
-                    int y = TUIMap[printRow][printColumn+1].getPlacedOrder();
                     if(TUIMap[printRow][printColumn+1] == null || TUIMap[printRow][printColumn+1] == fillerCard || (TUIMap[printRow][printColumn].getPlacedOrder()>TUIMap[printRow][printColumn+1].getPlacedOrder())){
                         TUICard[line][column+3]= card[0][3];
                         TUICard[line][column+4]= card[0][4];
@@ -240,8 +243,6 @@ public class PrintMapClass {
                     TUICard[line+2][column+3]=card[2][3];
                     TUICard[line+2][column+4]=card[2][4];
                     TUICard[line+2][column+5]=card[2][5];
-                    Card test1 = TUIMap[printRow][printColumn-1];
-                    boolean test2 = TUIMap[printRow][printColumn].getPlacedOrder()>TUIMap[printRow][printColumn-1].getPlacedOrder();
                     if(TUIMap[printRow][printColumn-1] == null || TUIMap[printRow][printColumn-1] == fillerCard || TUIMap[printRow][printColumn].getPlacedOrder()>TUIMap[printRow][printColumn-1].getPlacedOrder()){
                         TUICard[line+3][column]= card[3][0];
                         TUICard[line+3][column+1]= card[3][1];
@@ -294,6 +295,7 @@ public class PrintMapClass {
             i++;
             j=0;
         }
+        publicCounter = counter;
     }
 
     public static HashMap<Integer, Integer[]> getFreePos() {

@@ -389,10 +389,11 @@ public class TuiClient implements TypeOfUI {
                     card.setIsBack(false);
                 }
                 int key;
+                int maxKey = PrintMapClass.getPublicCounter();
                 do{
                     System.out.println("Enter the number of the space you want to put your card in");
                     key = scan.nextInt();
-                }while(key<1 || key > PrintMapClass.getPublicCounter());
+                }while(key<1 || key > maxKey);
                 int x = PrintMapClass.getFreePos().get(key)[0];
                 int y = PrintMapClass.getFreePos().get(key)[1];
                 try {
@@ -445,7 +446,7 @@ public class TuiClient implements TypeOfUI {
                     playerToSee = scan.nextLine();
                 } while(!(players.containsKey(playerToSee)));
 
-                PrintMapClass.printMap(clientContainer.getOthersGameMap(playerToSee));
+                PrintMapClass.newPrintMap(clientContainer.getOthersGameMap(playerToSee));
             }else if(command.equals("6")) {
                 PrintShop.printShop(clientContainer);
             }else if(command.equals("7")) {

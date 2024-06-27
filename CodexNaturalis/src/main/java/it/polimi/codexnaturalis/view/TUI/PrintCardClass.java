@@ -134,7 +134,6 @@ public class PrintCardClass {
             for(int i = 0; i < condition.length; i++) {
                 print = print + condition[i];
             }
-            System.out.println("Condition: " + print);
         }
     }
 
