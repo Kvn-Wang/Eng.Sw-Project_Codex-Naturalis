@@ -42,6 +42,7 @@ class DiagonalMissionTest {
         testMap1.placeCard(middle,middle-3,firstTestCard);
         testMap1.placeCard(middle,middle-4,firstTestCard);
         testMap1.placeCard(middle,middle-5,firstTestCard);
+        testMap1.placeCard(middle,middle-6,firstTestCard);
         int x = testPlayer1.executePersonalMission();
         assertEquals(4, x);
         testPlayer2.setPersonalMissionFinal(testDiagonalMission1);
@@ -51,23 +52,45 @@ class DiagonalMissionTest {
         testMap2.placeCard(middle,middle-2,firstTestCard);
         testMap2.placeCard(middle,middle-3,firstTestCard);
         testMap2.placeCard(middle,middle-4,firstTestCard);
+        testMap2.placeCard(middle,middle-5,firstTestCard);
         assertEquals(2,testPlayer2.executePersonalMission());
         testPlayer3.setPersonalMissionFinal(testDiagonalMission2);
         GamePlayerMap testMap3 = testPlayer3.getGameMap();
         testMap3.placeCard(middle,middle,starterCard);
-        testMap3.placeCard(middle,middle+1,firstTestCard);
-        testMap3.placeCard(middle,middle+2,firstTestCard);
-        testMap3.placeCard(middle,middle+3,firstTestCard);
-        testMap3.placeCard(middle,middle+4,firstTestCard);
-        testMap3.placeCard(middle,middle+5,firstTestCard);
+        testMap3.placeCard(middle+1,middle,firstTestCard);
+        testMap3.placeCard(middle+2,middle,firstTestCard);
+        testMap3.placeCard(middle+3,middle,firstTestCard);
+        testMap3.placeCard(middle+4,middle,firstTestCard);
+        testMap3.placeCard(middle+5,middle,firstTestCard);
+        testMap3.placeCard(middle+6,middle,firstTestCard);
         assertEquals(4,testPlayer3.executePersonalMission());
         testPlayer4.setPersonalMissionFinal(testDiagonalMission3);
         GamePlayerMap testMap4 = testPlayer4.getGameMap();
-        testMap4.placeCard(middle,middle,starterCard);
-        testMap4.placeCard(middle,middle+1,firstTestCard);
-        testMap4.placeCard(middle,middle+2,firstTestCard);
-        testMap4.placeCard(middle,middle+3,firstTestCard);
-        testMap4.placeCard(middle,middle+4,firstTestCard);
+        testMap4.placeCard(middle+1,middle,starterCard);
+        testMap4.placeCard(middle+2,middle,firstTestCard);
+        testMap4.placeCard(middle+3,middle,firstTestCard);
+        testMap4.placeCard(middle+4,middle,firstTestCard);
+        testMap4.placeCard(middle+5,middle,firstTestCard);
         assertEquals(2,testPlayer4.executePersonalMission());
+    }
+
+    @Test
+    public void testGetMapArray(){
+        testDiagonalMission.getMapArray();
+    }
+
+    @Test
+    public void testGetIsLeftToRight(){
+        testDiagonalMission.getIsLeftToRight();
+    }
+
+    @Test
+    public void testGetResourceType(){
+        testDiagonalMission.getResourceType();
+    }
+
+    @Test
+    public void testGetMissionType(){
+        testDiagonalMission.getMissionType();
     }
 }
