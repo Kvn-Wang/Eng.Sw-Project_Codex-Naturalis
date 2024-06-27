@@ -27,6 +27,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -35,6 +36,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Scale;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
@@ -255,6 +257,7 @@ public class GuiGame extends Application {
         Platform.runLater(() -> {
             updateHand(clientContainer.getPersonalHand());
             Label request = new Label("Missioni Comuni");
+            Label request2 = new Label("Missione personale");
             Gson gsonTranslator = new GsonBuilder()
                     .registerTypeAdapter(Card.class, new CardTypeAdapter())
                     .registerTypeAdapter(Hand.class, new HandGsonAdapter())
@@ -270,6 +273,8 @@ public class GuiGame extends Application {
             missionList.getChildren().add(request);
             missionList.getChildren().add(missions[0]);
             missionList.getChildren().add(missions[1]);
+
+            missionList.getChildren().add(request2);
 
             MissionSelectBox missionAlert = new MissionSelectBox();
             missionAlert.setMission(mission1, mission2);
@@ -313,9 +318,10 @@ public class GuiGame extends Application {
             if (isValidPlacement) {
                 System.out.println("successful placement");
                 updateHand(clientContainer.getPersonalHand());
+                map.getChildren().add(cardBeingPlaced);
+                moveCamera(cardBeingPlaced.getBoundsInLocal().getCenterX(), cardBeingPlaced.getBoundsInLocal().getCenterY());
             } else {
                 System.out.println("invalid placement");
-                map.getChildren().removeLast();
                 updateHand(clientContainer.getPersonalHand());
             }
         });
@@ -730,7 +736,8 @@ public class GuiGame extends Application {
                     starterBeingPlaced=false;
                     newRect.setX(-newRect.getBoundsInLocal().getCenterX());
                     newRect.setY(-newRect.getBoundsInLocal().getCenterY());
-                    moveCamera(-newRect.getBoundsInLocal().getCenterX(), -newRect.getBoundsInLocal().getCenterY());
+                    map.setTranslateX(game.getWidth()/2);
+                    map.setTranslateY(game.getHeight()/2);
                     try {
                         vgc.playStarterCard(playerNickname, gsonTranslator.fromJson(cardString, StarterCard.class));
                         map.getChildren().add(newRect);
@@ -773,7 +780,6 @@ public class GuiGame extends Application {
                             throw new RuntimeException(ex);
                         }
                         cardBeingPlaced = newRect;
-                        map.getChildren().add(cardBeingPlaced);
                     }
                 }
                 success = true;
@@ -782,6 +788,17 @@ public class GuiGame extends Application {
             e.setDropCompleted(success);
 
             e.consume();
+        });
+
+        cameraView.addEventFilter(ScrollEvent.SCROLL, event -> {
+            double scale = cameraView.getScaleX();
+            if (event.getDeltaY() > 0) {
+                scale *= 1.1; // Zoom in
+            } else {
+                scale /= 1.1; // Zoom out
+            }
+            cameraView.setScaleX(scale);
+            cameraView.setScaleY(scale);
         });
 
         game.setCenter(cameraView);
@@ -845,8 +862,8 @@ public class GuiGame extends Application {
 //    }
 
     private Circle createAnchorPoint(double x, double y) {
-        Circle anchor = new Circle(x, y, 10, Color.BROWN);
-        anchor.setOpacity(0.5);  // Make it semi-transparent
+        Circle anchor = new Circle(x, y, 10, Color.BLACK);
+        anchor.setOpacity(0.1);  // Make it semi-transparent
         return anchor;
     }
 
@@ -854,23 +871,29 @@ public class GuiGame extends Application {
         Circle[][] anchorMap = new Circle[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
         for(int y = -(UtilCostantValue.lunghezzaMaxMappa/2); y< (UtilCostantValue.lunghezzaMaxMappa/2); y++){
             for(int x = -(UtilCostantValue.lunghezzaMaxMappa/2); x< (UtilCostantValue.lunghezzaMaxMappa/2); x++){
-                anchorMap[y+UtilCostantValue.lunghezzaMaxMappa/2][x+UtilCostantValue.lunghezzaMaxMappa/2] = createAnchorPoint((x*100 * Math.cos(Math.toRadians(45)) - y*100 * Math.sin(Math.toRadians(45)))*2, x*100 * Math.sin(Math.toRadians(45)) + y*100 * Math.cos(Math.toRadians(45)));
+                anchorMap[y+UtilCostantValue.lunghezzaMaxMappa/2][x+UtilCostantValue.lunghezzaMaxMappa/2] = createAnchorPoint(
+                        (x*100 * Math.cos(Math.toRadians(45)) - y*100 * Math.sin(Math.toRadians(45)))*2,
+                        x*100 * Math.sin(Math.toRadians(45)) + y*100 * Math.cos(Math.toRadians(45)));
             }
         }
         return anchorMap;
     }
 
-    private void moveCamera(double x, double y){
+    private static void moveCamera(double x, double y){
         maxPlusX = Math.max(x, maxPlusX);
         maxMinusX = Math.min(x, maxMinusX);
         maxPlusY = Math.max(y, maxPlusY);
         maxMinusY = Math.min(y, maxMinusY);
-        cameraX = (maxPlusX - maxMinusX)/2-cameraX;
-        cameraY = (maxPlusY - maxMinusY)/2-cameraY;
+
+        cameraX = (maxPlusX + maxMinusX) / 2;
+        cameraY = (maxPlusY + maxMinusY) / 2;
+
         cameraView.setTranslateX(-cameraX);
         cameraView.setTranslateY(-cameraY);
-        cameraView.setScaleX(2/(Math.max(maxPlusX-maxMinusX, maxPlusY-maxMinusY)/100));
-        cameraView.setScaleY(2/(Math.max(maxPlusX-maxMinusX, maxPlusY-maxMinusY)/100));
+
+        double scaleFactor = 2.0 / (Math.max(maxPlusX - maxMinusX, maxPlusY - maxMinusY) / 100);
+        cameraView.setScaleX(scaleFactor);
+        cameraView.setScaleY(scaleFactor);
     }
 
     private Pane handLayer(){

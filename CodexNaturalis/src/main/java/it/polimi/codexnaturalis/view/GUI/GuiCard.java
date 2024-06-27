@@ -28,8 +28,8 @@ public class GuiCard {
     }
 
     public GuiCard(Card card, Circle[][] matrix) {
-        double x=170;
-        double y=100;
+        double x=180;
+        double y=116;
         num = card.getPng();
         String front = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/" + num + ".png";
         String back = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_back/" + num + ".png";

@@ -10,6 +10,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +22,8 @@ public class WinnerBox extends AlertBox{
     ObservableList<String> lead;
 
     protected Scene scene() {
-        Label request = new Label("Il vincitore é");
+        Label request = new Label("Il vincitore é " + lead.getFirst());
+        request.setFont(new Font(40));
         Button endButton = new Button("Yay!");
 
         ListView<String> leaderboard = new ListView<>();
