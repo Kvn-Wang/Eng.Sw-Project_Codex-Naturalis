@@ -144,7 +144,6 @@ public class ClientContainer {
     }
 
     public void updateOtherPlayerMap(String nickname, int x, int y, Card card, int hisNewPlayerScore) {
-
         players.get(nickname).playCard(x, y, card);
         players.get(nickname).setIntScoreBoardScore(hisNewPlayerScore);
     }
@@ -177,5 +176,24 @@ public class ClientContainer {
 
     public void setPersonalColor(ColorType color) {
         personalColor = color;
+        players.get(getNickname()).setPlayerColor(color);
+    }
+
+    public void initPlayerLobby(ArrayList<PlayerInfo> playerThatAreAlreadyInTheLobby) {
+        for(PlayerInfo player : playerThatAreAlreadyInTheLobby) {
+            players.put(player.getNickname(), new PlayerData());
+        }
+    }
+
+    public void playerJoinedTheLobby(String nickname) {
+        players.put(nickname, new PlayerData());
+    }
+
+    public void playerLeftTheLobby(String nickname) {
+        players.remove(nickname);
+    }
+
+    public void playerSelectedColor(String nickname, ColorType color) {
+        players.get(nickname).setPlayerColor(color);
     }
 }

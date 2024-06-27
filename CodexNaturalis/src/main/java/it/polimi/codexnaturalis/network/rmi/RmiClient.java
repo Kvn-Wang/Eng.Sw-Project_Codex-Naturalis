@@ -77,40 +77,6 @@ public class RmiClient extends GenericClient implements VirtualServer {
         System.out.println("Collegato al server: " + serverName);
     }
 
-    /*private String getClientIpAddress(String serverAddress) {
-        try {
-            InetAddress serverInetAddress = InetAddress.getByName(serverAddress);
-            byte[] serverIp = serverInetAddress.getAddress();
-
-            Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
-            while (networkInterfaces.hasMoreElements()) {
-                NetworkInterface networkInterface = networkInterfaces.nextElement();
-                Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
-                while (inetAddresses.hasMoreElements()) {
-                    InetAddress inetAddress = inetAddresses.nextElement();
-                    if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
-                        byte[] clientIp = inetAddress.getAddress();
-                        if (isSameSubnet(clientIp, serverIp)) {
-                            return inetAddress.getHostAddress();
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Impossibile ottenere l'indirizzo IP del client", e);
-        }
-        return null;
-    }
-
-    private boolean isSameSubnet(byte[] clientIp, byte[] serverIp) {
-        for (int i = 0; i < 3; i++) { // assuming /24 subnet mask
-            if (clientIp[i] != serverIp[i]) {
-                return false;
-            }
-        }
-        return true;
-    }*/
-
     @Override
     public void showMessage(NetworkMessage message) throws RemoteException {
         switch(message.getMessageType()) {
@@ -464,7 +430,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
     public void typeMessage(String sender, String receiver, String msg) {
         serviceThread.submit(() -> {
             try {
-                personalGameController.typeMessage(receiver, sender, msg);
+                personalGameController.typeMessage(sender, receiver, msg);
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
