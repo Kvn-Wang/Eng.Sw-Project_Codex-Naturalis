@@ -281,7 +281,7 @@ public class GameManager extends Observable implements GameController {
                     notifyObserverSingle(new NetworkMessage(otherPlayer.getNickname(), MessageType.INCOMING_MESSAGE,
                             sender, msg));
             }
-        } else {
+        } else if(!sender.equals(receiver)){
             for(Player player : players) {
                 if(receiver.equals(player.getNickname())) {
                     notifyObserverSingle(new NetworkMessage(player.getNickname(), MessageType.INCOMING_MESSAGE,
