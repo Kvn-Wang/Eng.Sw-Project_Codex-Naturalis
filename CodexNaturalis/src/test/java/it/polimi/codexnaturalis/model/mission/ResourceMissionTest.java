@@ -1,6 +1,7 @@
 package it.polimi.codexnaturalis.model.mission;
 
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
+import it.polimi.codexnaturalis.model.enumeration.MissionType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.GamePlayerMap;
 import it.polimi.codexnaturalis.model.player.Player;
@@ -17,10 +18,11 @@ class ResourceMissionTest {
     ResourceMission testResourceMission1 = new ResourceMission(95, 2,3,new ResourceType[] {ResourceType.PLANT});
     ResourceMission testResourceMission2 = new ResourceMission(95, 2,3,new ResourceType[] {ResourceType.ANIMAL});
     ResourceMission testResourceMission3 = new ResourceMission(95, 2,3,new ResourceType[] {ResourceType.INSECT});
-    ResourceMission testResourceMission4 = new ResourceMission(95, 2,3,new ResourceType[] {ResourceType.MANUSCRIPT, ResourceType.QUILL, ResourceType.MANUSCRIPT});
+    ResourceMission testResourceMission4 = new ResourceMission(95, 2,1,new ResourceType[] {ResourceType.MANUSCRIPT, ResourceType.QUILL, ResourceType.INKWELL});
     ResourceMission testResourceMission5 = new ResourceMission(95, 2,3,new ResourceType[] {ResourceType.QUILL});
     ResourceMission testResourceMission6 = new ResourceMission(95, 2,3,new ResourceType[] {ResourceType.INKWELL});
     ResourceMission testResourceMission7= new ResourceMission(95, 2,3,new ResourceType[] {ResourceType.MANUSCRIPT});
+    ResourceMission testResourceMission8 = new ResourceMission(95, 2,1,new ResourceType[] {ResourceType.MANUSCRIPT, ResourceType.QUILL});
 
     StarterCard starterCard = new StarterCard(81, ResourceType.NONE, ResourceType.NONE, ResourceType.PLANT, ResourceType.INSECT, new ResourceType[]{ResourceType.INSECT}, ResourceType.FUNGI, ResourceType.ANIMAL, ResourceType.PLANT, ResourceType.INSECT);
 
@@ -93,12 +95,21 @@ class ResourceMissionTest {
             testscore1.addScore(ResourceType.MANUSCRIPT);
             if(i==2){
                 assertEquals(2,testResourceMission7.ruleAlgorithmCheck(testPlayer1));
-                assertEquals(2,testResourceMission4.ruleAlgorithmCheck(testPlayer1));
             }
             if(i==5){
                 assertEquals(4,testResourceMission7.ruleAlgorithmCheck(testPlayer1));
             }
         }
-        assertEquals(4,testResourceMission4.ruleAlgorithmCheck(testPlayer1));
+        assertEquals(12,testResourceMission4.ruleAlgorithmCheck(testPlayer1));
+        testscore1.addScore(ResourceType.MANUSCRIPT);
+        assertEquals(12,testResourceMission4.ruleAlgorithmCheck(testPlayer1));
+        testscore1.addScore(ResourceType.QUILL);
+        assertEquals(12,testResourceMission4.ruleAlgorithmCheck(testPlayer1));
+        assertEquals(-1,testResourceMission8.ruleAlgorithmCheck(testPlayer1));
+    }
+
+    @Test
+    public void testGetMissionType(){
+        assertEquals(MissionType.RESOURCE, testResourceMission.getMissionType());
     }
 }
