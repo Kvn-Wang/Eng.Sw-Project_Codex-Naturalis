@@ -91,7 +91,7 @@
     "png" : 99,
     "typeOfMission" : "RESOURCE",
     "pointPerCondition" : 3,
-    "numberOfSymbols": 3,
+    "numberOfSymbols": 1,
     "typeOfResource": ["QUILL", "INKWELL", "MANUSCRIPT"]
   },
   {

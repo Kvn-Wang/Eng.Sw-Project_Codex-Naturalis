@@ -89,8 +89,11 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 if(status.equals("JOIN")) {
                     clientContainer.playerJoinedTheLobby(message.getNickname());
                     typeOfUI.printLobby();
-                } else if (status.equals("LEFT")) {
+                } else if(status.equals("LEFT")) {
                     clientContainer.playerLeftTheLobby(message.getNickname());
+                    typeOfUI.printLobby();
+                } else if(status.equals("READY")) {
+                    clientContainer.setPlayerReady(message.getNickname());
                     typeOfUI.printLobby();
                 }
                 break;
