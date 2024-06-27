@@ -34,11 +34,11 @@ public class DiagonalMission extends Mission implements Serializable {
         mapArray = player.getGameMap().getMapArray();
         int match = 0;
         if(isLeftToRight){
-            for(int i = 0; i < (mapArray.length - 2); i++) {
-                for (int j = 0; j < (mapArray[0].length); j++) {
+            for(int j = 0; j < (mapArray.length - 2); j++) {
+                for (int i = 0; i < (mapArray[0].length); i++) {
                     if (mapArray[i][j] != null) {
                         if (mapArray[i][j].getCardColor() == resourceType && !usedCardArray[i][j]) {
-                            if (mapArray[i + 1][j].getCardColor() == resourceType && mapArray[i + 2][j].getCardColor() == resourceType) {
+                            if (mapArray[i+1][j] != null && mapArray[i + 2][j] != null && mapArray[i + 1][j].getCardColor() == resourceType  && mapArray[i + 2][j].getCardColor() == resourceType) {
                                 match++;
                                 usedCardArray[i][j] = true;
                                 usedCardArray[i + 1][j] = true;

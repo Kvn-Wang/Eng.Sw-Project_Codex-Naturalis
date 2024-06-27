@@ -1,7 +1,9 @@
 package it.polimi.codexnaturalis.model.mission;
 
 import it.polimi.codexnaturalis.model.enumeration.CardCorner;
+import it.polimi.codexnaturalis.model.enumeration.MissionType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
+import it.polimi.codexnaturalis.model.player.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +16,17 @@ class MissionTest {
     BendMission testBendMission = new BendMission(91,3,ResourceType.FUNGI,ResourceType.PLANT, CardCorner.SOUTH);
     @BeforeEach
     void setUp() {
+        Mission mission = new Mission() {
+            @Override
+            public int ruleAlgorithmCheck(Player player) {
+                return 0;
+            }
 
+            @Override
+            public MissionType getMissionType() {
+                return null;
+            }
+        };
     }
     @Test
     public void testMission(){
@@ -35,5 +47,9 @@ class MissionTest {
         assertEquals(ResourceType.FUNGI, testBendMission.getPillarResource());
         assertEquals(ResourceType.PLANT, testBendMission.getDecorationResource());
         assertEquals(CardCorner.SOUTH,testBendMission.getDecorationPosition());
+    }
+
+    @Test
+    public void testMisssion(){
     }
 }

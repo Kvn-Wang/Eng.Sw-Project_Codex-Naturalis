@@ -6,7 +6,7 @@ import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
-import it.polimi.codexnaturalis.model.mission.MissionAdapter;
+import it.polimi.codexnaturalis.utils.jsonAdapter.MissionAdapter;
 import it.polimi.codexnaturalis.view.VirtualModel.Hand.Hand;
 import it.polimi.codexnaturalis.view.VirtualModel.Hand.HandGsonAdapter;
 import it.polimi.codexnaturalis.model.shop.card.Card;
@@ -33,7 +33,6 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 

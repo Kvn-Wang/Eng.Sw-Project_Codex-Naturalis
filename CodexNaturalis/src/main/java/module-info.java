@@ -31,4 +31,6 @@ module it.polimi.codexnaturalis {
     opens it.polimi.codexnaturalis.network.util.networkMessage to com.google.gson, javafx.fxml;
     exports it.polimi.codexnaturalis.view.VirtualModel.Hand;
     opens it.polimi.codexnaturalis.view.VirtualModel.Hand to com.google.gson, javafx.fxml;
+    exports it.polimi.codexnaturalis.utils.jsonAdapter;
+    opens it.polimi.codexnaturalis.utils.jsonAdapter to com.google.gson, javafx.fxml;
 }

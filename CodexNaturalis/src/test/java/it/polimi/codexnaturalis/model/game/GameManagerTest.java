@@ -16,6 +16,7 @@ import it.polimi.codexnaturalis.network.socket.SocketClient;
 import it.polimi.codexnaturalis.network.socket.SocketServer;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.network.util.ServerContainer;
+import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import it.polimi.codexnaturalis.utils.observer.Observer;
 import it.polimi.codexnaturalis.view.GUI.GuiClient;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
@@ -34,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class GameManagerTest {
     private static GameManager gameManager;
     StarterCard starterCard = new StarterCard(81, ResourceType.NONE, ResourceType.NONE, ResourceType.PLANT, ResourceType.INSECT, new ResourceType[]{ResourceType.INSECT}, ResourceType.FUNGI, ResourceType.ANIMAL, ResourceType.PLANT, ResourceType.INSECT);
+    ResourceCard firstTestCard = new ResourceCard(1, ResourceType.FUNGI, ResourceType.UNASSIGNABLE, ResourceType.NONE, ResourceType.FUNGI, ResourceType.FUNGI, 0);
 
     @BeforeAll
     public static void Setup() throws IOException {
@@ -81,6 +83,7 @@ class GameManagerTest {
         gameManager.playStarterCard("player1", starterCard);
         gameManager.playStarterCard("player2", starterCard);
         gameManager.playerDraw("player1", 1, ShopType.RESOURCE);
+        gameManager.playerDraw("player1", 1, ShopType.OBJECTIVE);
     }
 
     @Test
@@ -92,19 +95,20 @@ class GameManagerTest {
                 ResourceType.ANIMAL,
                 CardCorner.EAST
         ));
+        gameManager.playerPersonalMissionSelect("player2", new BendMission(
+                0,
+                1,
+                ResourceType.ANIMAL,
+                ResourceType.ANIMAL,
+                CardCorner.EAST
+        ));
     }
 
     @Test
     void playerPlayCard() {
-        gameManager.playerPlayCard("player1", 0, 0, new ResourceCard(
-                0,
-                ResourceType.ANIMAL,
-                ResourceType.ANIMAL,
-                ResourceType.ANIMAL,
-                ResourceType.ANIMAL,
-                ResourceType.ANIMAL,
-                1
-        ));
+        gameManager.playerPlayCard("player1", UtilCostantValue.lunghezzaMaxMappa/2-1, UtilCostantValue.lunghezzaMaxMappa/2, firstTestCard);
+        gameManager.playStarterCard("player1", starterCard);
+        gameManager.playerPlayCard("player1", UtilCostantValue.lunghezzaMaxMappa/2-1, UtilCostantValue.lunghezzaMaxMappa/2, firstTestCard);
     }
 
     @Test
