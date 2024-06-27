@@ -51,7 +51,7 @@ public class PrintMapClass {
         } catch (PersonalizedException.InvalidPlaceCardRequirementException e) {
             throw new RuntimeException(e);
         }
-        printYourMap(map.getMapArray());
+        //printYourMap(map.getMapArray());
     }
     public static void printYourMap(Card[][] map) {
         Card[][] TUIMap;
@@ -62,7 +62,7 @@ public class PrintMapClass {
         } catch (PersonalizedException.InvalidPlacementException e) {
             throw new RuntimeException(e);
         }
-        printMap(TUIMap);
+        newPrintMap(TUIMap);
     }
     public static void printMap(Card[][] TUIMap){
         int[] leftMostPrintableCard;
@@ -112,7 +112,7 @@ public class PrintMapClass {
                     freePos.put(counter,coordinates);
                     counter++;
                 }else{
-                    card = PrintCardClass.createCard(TUIMap[printRow][printColumn], !TUIMap[printRow][printColumn].getIsBack());
+                    //card = PrintCardClass.createCard(TUIMap[printRow][printColumn], !TUIMap[printRow][printColumn].getIsBack());
                     for(int i=0; i<5; i++ ){
                         TUICard[line+i] =(TUICard[line+i] == null ? "": TUICard[line+i])+ card[i];
                     }
@@ -135,7 +135,7 @@ public class PrintMapClass {
                 firstPrintColumn = firstCardInLinePos(TUIMap, firstPrintColumn,temp)[1];
                 printRow = firstPrintRow;
                 printColumn = firstPrintColumn;
-                line = line+5;
+                line = line+3;
             }
         }
         for(int i=0; i<TUICard.length; i++){
@@ -163,7 +163,7 @@ public class PrintMapClass {
         int printRow = firstPrintableCard[0];
         int printColumn = firstPrintableCard[1];
         int[] lastCardInLine = lastCardInLinePos(TUIMap, firstPrintRow, firstPrintColumn);
-        String[] card = new String[5];
+        String[][] card = new String[5][6];
         boolean isFinished = false;
         while(!isFinished){
             int distancefromleft=(firstPrintColumn+firstPrintRow)-(leftMostPrintableCard[1]+leftMostPrintableCard[0]);
@@ -177,11 +177,9 @@ public class PrintMapClass {
             column = column + distancefromleft*3;
             do{
                 if(TUIMap[printRow][printColumn] == null){
-                    for(int i=0; i<card.length; i++ ){
-                        for(int j=0; j<card[0].length(); j++) {
-                            if(TUICard[line+i][column+j] == null || TUICard[line+i][column+j] == " ") {
-                                TUICard[line+i][column+j] = space;
-                            }
+                    for(int i=0; i<5; i++ ){
+                        for(int j=0; j<6; j++) {
+                            TUICard[line+i][column+j] = space;
                         }
                     }
                 }else if(TUIMap[printRow][printColumn].getPng() == -1){
@@ -192,10 +190,64 @@ public class PrintMapClass {
                     }else if(10 < counter && counter<100){
                         TUICard[line+2][column] = ANSI_COLOR + "║";TUICard[line+2][column+1]= " ";TUICard[line+2][column+2]= String.valueOf(counter/10); TUICard[line+2][column+3]=String.valueOf(counter%10);TUICard[line+2][column+4] =" ";TUICard[line+2][column+5]= ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
                     }else{
-                        TUICard[line+2][column] = ANSI_COLOR + "║";TUICard[line+2][column+1]= String.valueOf(counter/100);TUICard[line+2][column]= String.valueOf((counter%100)/10);TUICard[line+2][column]= " " + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
+                        TUICard[line+2][column] = ANSI_COLOR + "║";TUICard[line+2][column+1]= String.valueOf(counter/100);TUICard[line+2][column+2]= String.valueOf((counter%100)/10);TUICard[line+2][column+3]=String.valueOf((counter%100)%10);TUICard[line+2][column+4]= " ";TUICard[line+2][column+5]= ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
+                    }
+                    TUICard[line+3][column] = ANSI_COLOR + "║";TUICard[line+3][column+1]=" ";TUICard[line+3][column+2]=" ";TUICard[line+3][column+3]=" ";TUICard[line+3][column+4]=" ";TUICard[line+3][column+5]="║" + ANSI_RESET;
+                    TUICard[line+4][column] = ANSI_COLOR + "╚";TUICard[line+4][column+1]="═";TUICard[line+4][column+2]="═";TUICard[line+4][column+3]="═";TUICard[line+4][column+4]="═";TUICard[line+4][column+5]="╝" + ANSI_RESET;
+                }else{
+                    card=PrintCardClass.createCard(TUIMap[printRow][printColumn], !TUIMap[printRow][printColumn].getIsBack());
+                    if(TUIMap[printRow-1][printColumn] == null || TUIMap[printRow-1][printColumn] == fillerCard || ((TUIMap[printRow-1][printColumn] != null && TUIMap[printRow-1][printColumn] != fillerCard)&&(TUIMap[printRow][printColumn].getPlacedOrder()>TUIMap[printRow-1][printColumn].getPlacedOrder()))){
+                        TUICard[line][column]= card[0][0]; TUICard[line][column+1]= card[0][1]; TUICard[line][column+2]= card[0][2];
+                        TUICard[line+1][column]= card[1][0]; TUICard[line+1][column+1]= card[1][1]; TUICard[line+1][column+2]= card[1][2];
+                    }
+                    if(TUIMap[printRow][printColumn+1] == null || TUIMap[printRow][printColumn+1] == fillerCard || ((TUIMap[printRow][printColumn+1] != null && TUIMap[printRow][printColumn+1] != fillerCard)&&(TUIMap[printRow][printColumn].getPlacedOrder()>TUIMap[printRow][printColumn+1].getPlacedOrder()))){
+                        TUICard[line][column+3]= card[0][3]; TUICard[line][column+4]= card[0][4]; TUICard[line][column+5]= card[0][5];
+                        TUICard[line+1][column+3]= card[1][3]; TUICard[line+1][column+4]= card[1][4]; TUICard[line+1][column+5]= card[1][5];
+                    }
+                    TUICard[line+2][column]=card[2][0];TUICard[line+2][column+1]=card[2][1];TUICard[line+2][column+2]=card[2][2];TUICard[line+2][column+3]=card[2][3];TUICard[line+2][column+4]=card[2][4];TUICard[line+2][column+5]=card[2][5];
+                    if(TUIMap[printRow][printColumn-1] == null || TUIMap[printRow][printColumn-1] == fillerCard || ((TUIMap[printRow][printColumn-1] != null && TUIMap[printRow][printColumn-1] != fillerCard)&&(TUIMap[printRow][printColumn].getPlacedOrder()>TUIMap[printRow][printColumn-1].getPlacedOrder()))){
+                        TUICard[line+3][column]= card[3][0]; TUICard[line+3][column+1]= card[3][1]; TUICard[line+3][column+2]= card[3][2];
+                        TUICard[line+4][column]= card[4][0]; TUICard[line+1][column+4]= card[4][1]; TUICard[line+1][column+5]= card[4][2];
+                    }
+                    if(TUIMap[printRow+1][printColumn] == null || TUIMap[printRow+1][printColumn] == fillerCard || ((TUIMap[printRow+1][printColumn] != null && TUIMap[printRow+1][printColumn] != fillerCard)&&(TUIMap[printRow][printColumn].getPlacedOrder()>TUIMap[printRow+1][printColumn].getPlacedOrder()))){
+                        TUICard[line+3][column+3]= card[3][3]; TUICard[line+3][column+4]= card[3][4]; TUICard[line+3][column+5]= card[3][5];
+                        TUICard[line+4][column+3]= card[4][3]; TUICard[line+1][column+4]= card[4][4]; TUICard[line+1][column+5]= card[4][5];
                     }
                 }
+                column=column+6;
+                printRow++;
+                printColumn++;
             }while(printRow != lastCardInLine[0]+1 && printColumn != lastCardInLine[1]+1);
+            if(printRow == lastRow && printColumn == lastCol){
+                isFinished = true;
+            }else{
+                if(firstPrintColumn == 0){
+                    firstPrintRow++;
+                }
+                else{
+                    firstPrintColumn--;
+                }
+                int temp = firstPrintRow;
+                firstPrintRow = firstCardInLinePos(TUIMap, firstPrintColumn,temp)[0];
+                firstPrintColumn = firstCardInLinePos(TUIMap, firstPrintColumn,temp)[1];
+                printRow = firstPrintRow;
+                printColumn = firstPrintColumn;
+                line = line+5;
+                column = 0;
+            }
+        }
+        isFinished=false;
+        int i=0, j=0;
+        String printable="";
+        while(TUICard[i][0]!=null){
+            while (TUICard[i][j]!=null){
+                printable = printable+TUICard[i][j];
+                j++;
+            }
+            System.out.println(printable);
+            printable = "";
+            i++;
+            j=0;
         }
     }
 

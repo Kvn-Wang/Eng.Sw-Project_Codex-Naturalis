@@ -11,7 +11,8 @@ import it.polimi.codexnaturalis.utils.UtilCostantValue;
 public class test {
     private static String ANSI_COLOR = PrintSymbols.convertColor(ResourceType.NONE);
     private static final String ANSI_RESET = "\u001B[0m";
-
+    private static final String ANSI_YELLOW = "\u001B[33m";
+    private static final String colorCenter = ANSI_YELLOW;
     public static void main(String[] args) {
         StarterCard starterCard = new StarterCard(81, ResourceType.NONE, ResourceType.NONE, ResourceType.PLANT, ResourceType.INSECT, new ResourceType[]{ResourceType.INSECT, ResourceType.ANIMAL, ResourceType.FUNGI}, ResourceType.FUNGI, ResourceType.ANIMAL, ResourceType.PLANT, ResourceType.INSECT);
         ResourceCard firstTestCard = new ResourceCard(1, ResourceType.FUNGI, ResourceType.UNASSIGNABLE, ResourceType.NONE, ResourceType.FUNGI, ResourceType.FUNGI, 0);
@@ -40,12 +41,10 @@ public class test {
             throw new RuntimeException(e);
         }
         //PrintMapClass.printYourMap(map.getMapArray());
+        String TUICard = ANSI_COLOR + "║"+ colorCenter + " " + " " + "  " + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
+        System.out.println(TUICard);
         //String[] f = new String[]{"", "1", " ", ANSI_RESET, "2"};
         //System.out.println(f[0]+f[1]+f[2]+f[3]+f[4]);
-        int num = 146;
-        int decine = num%100;
-        System.out.println(num/100);
-        System.out.println((num%100)/10);
-        System.out.println((num%100)%10);
+
     }
 }

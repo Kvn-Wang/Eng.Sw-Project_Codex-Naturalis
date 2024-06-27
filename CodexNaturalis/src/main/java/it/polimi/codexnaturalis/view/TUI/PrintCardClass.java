@@ -11,7 +11,7 @@ public class PrintCardClass {
     boolean isNeCovered;
     boolean isSeCovered;
     boolean isSwCovered;
-    static String [] TUICard;
+    static String [][] TUICard;
     static Card card;
     static final int cardLen = 5;
 
@@ -31,19 +31,20 @@ public class PrintCardClass {
         isNeCovered = false;
         isSeCovered = false;
         isSwCovered = false;
-        TUICard = new String[7];
+        TUICard = new String[5][6];
     }
 
     public static void main(String[] args) {
         StarterCard starterCard = new StarterCard(81, ResourceType.NONE, ResourceType.NONE, ResourceType.PLANT, ResourceType.INSECT, new ResourceType[]{ResourceType.INSECT, ResourceType.ANIMAL}, ResourceType.FUNGI, ResourceType.ANIMAL, ResourceType.PLANT, ResourceType.INSECT);
         ResourceCard firstTestCard = new ResourceCard(1, ResourceType.FUNGI, ResourceType.UNASSIGNABLE, ResourceType.NONE, ResourceType.FUNGI, ResourceType.FUNGI, 0);
-        printCard(firstTestCard, true);
-        printCard(firstTestCard, false);
-        printCard(starterCard, true);
-        printCard(starterCard, false);
+        //printCard(firstTestCard, true);
+        //printCard(firstTestCard, false);
+        //printCard(starterCard, true);
+        //printCard(starterCard, false);
+        printCardHorizzontal(firstTestCard);
     }
 
-    public static String[] createCard(Card card, boolean isFront) {
+    public static String[][] createCard(Card card, boolean isFront) {
         String nw, ne, sw, se;
         String[] c;
 
@@ -68,7 +69,7 @@ public class PrintCardClass {
             }
         }
 
-        TUICard = new String[5];
+        TUICard = new String[5][6];
 
         nw = colorCorner + nw + ANSI_RESET;
         ne = colorCorner + ne + ANSI_RESET;
@@ -77,19 +78,19 @@ public class PrintCardClass {
 
         String ANSI_COLOR = PrintSymbols.convertColor(card.getCardColor());
 
-        TUICard[0] = ANSI_COLOR + "╔════╗" + ANSI_RESET;
-        TUICard[1] = ANSI_COLOR + "║"+ ANSI_RESET + nw + "  " + ne + ANSI_COLOR+"║" + ANSI_RESET;
+        TUICard[0][0] = ANSI_COLOR + "╔";TUICard[0][1]="═";TUICard[0][2]="═";TUICard[0][3]="═";TUICard[0][4]="═";TUICard[0][5]="╗" + ANSI_RESET;
+        TUICard[1][0] = ANSI_COLOR + "║"+ ANSI_RESET;TUICard[1][1]=nw;TUICard[1][2]=" ";TUICard[1][3]=" ";TUICard[1][4]=ne;TUICard[1][5]= ANSI_COLOR+"║" + ANSI_RESET;
         if(c.length == 0) {
-            TUICard[2] = ANSI_COLOR + "║" + "    " + "║" + ANSI_RESET;
+            TUICard[2][0] = ANSI_COLOR + "║";TUICard[2][1]=" ";TUICard[2][2]=" ";TUICard[2][3]=" ";TUICard[2][4]=" ";TUICard[2][5]="║" + ANSI_RESET;
         } else if(c.length == 1) {
-            TUICard[2] = ANSI_COLOR + "║"+ colorCenter + " " + c[0] + "  " + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
+            TUICard[2][0] = ANSI_COLOR + "║"+ colorCenter;TUICard[2][1]= " ";TUICard[2][2]= c[0];TUICard[2][3]= " ";TUICard[2][4]=" ";TUICard[2][5]= ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
         } else if(c.length == 2) {
-            TUICard[2] = ANSI_COLOR + "║"+ colorCenter + " " + c[0] + c[1] +" " + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
+            TUICard[2][0] = ANSI_COLOR + "║"+ colorCenter;TUICard[2][1]= " ";TUICard[2][2]= c[0];TUICard[2][3]= c[1];TUICard[2][4]=" ";TUICard[2][5]= ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
         } else if(c.length == 3) {
-            TUICard[2] = ANSI_COLOR + "║"+ colorCenter + c[2] + c[0] + c[1] + " " + ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
+            TUICard[2][0] = ANSI_COLOR + "║"+ colorCenter;TUICard[2][1]= c[2];TUICard[2][2]= c[0];TUICard[2][3]= c[1];TUICard[2][4]= " ";TUICard[2][5]= ANSI_RESET + ANSI_COLOR+"║" + ANSI_RESET;
         }
-        TUICard[3] = ANSI_COLOR + "║" + ANSI_RESET + sw + "  " + se + ANSI_COLOR + "║" + ANSI_RESET;
-        TUICard[4] = ANSI_COLOR + "╚════╝" + ANSI_RESET;
+        TUICard[3][0] = ANSI_COLOR + "║" + ANSI_RESET;TUICard[3][1]= sw;TUICard[3][2]= " ";TUICard[3][3]=" ";TUICard[3][4]= se;TUICard[3][5]= ANSI_COLOR + "║" + ANSI_RESET;
+        TUICard[4][0] = ANSI_COLOR + "╚";TUICard[4][1]="═";TUICard[4][2]="═";TUICard[4][3]="═";TUICard[4][4]="═";TUICard[4][5]="╝" + ANSI_RESET;
 
         return TUICard;
     }
@@ -102,14 +103,25 @@ public class PrintCardClass {
     }
 
     public static void printCardHorizzontal(Card card){
-        String[] front = createCard(card, true);
-        String[] back = createCard(card, false);
+        String[][] front = createCard(card, true);
+        String[][] back = createCard(card, false);
         String repeatedSpaces = repeat(" ", cardLen);
 
         String [] printCard = new String[cardLen];
+        for(int i = 0; i < cardLen; i++){
+            printCard[i] = "";
+        }
 
         for(int i = 0; i < TUICard.length; i++){
-            printCard[i] = front[i] + repeatedSpaces + back[i];
+            for (int j=0; j< TUICard[0].length; j++) {
+                printCard[i] = printCard[i] +front[i][j];
+                //printCard[i] = front[i] + repeatedSpaces + back[i];
+            }
+            printCard[i] = printCard[i] + repeatedSpaces;
+            for (int j=0; j< TUICard[0].length; j++) {
+                printCard[i] = printCard[i] +back[i][j];
+                //printCard[i] = front[i] + repeatedSpaces + back[i];
+            }
         }
 
         System.out.println("Front:" + repeatedSpaces + "Back:");
