@@ -176,6 +176,7 @@ public class ClientContainer {
         for(PlayerInfo player : playerThatAreAlreadyInTheLobby) {
             players.put(player.getNickname(), new PlayerData());
             players.get(player.getNickname()).setPlayerColor(player.getColorChosen());
+            players.get(player.getNickname()).setReady(player.isPlayerReady());
         }
     }
 
@@ -193,5 +194,8 @@ public class ClientContainer {
 
     public void playerSelectedColor(String nickname, ColorType color) {
         players.get(nickname).setPlayerColor(color);
+    }
+    public void setPlayerReady(String nickname) {
+        players.get(nickname).setReady(true);
     }
 }
