@@ -48,6 +48,7 @@ public class GuiGame extends Application {
     private static ClientContainer clientContainer;
     private static ObservableList<LobbyInfo> lobbyList;
     private static ObservableList<String> lobbyPlayers;
+    private static VBox lobbyLayout;
     private static ListView<String> playerBox;
     private static Circle[][] anchorPointsMatrix;
     private static ArrayList<GuiCard> handCards;
@@ -138,6 +139,20 @@ public class GuiGame extends Application {
             throw new RuntimeException(e);
         }
     }
+
+//    public static void playerJoined(){
+//        clientContainer.getPlayers().forEach((nick, playerData)->{
+//            lobbyPlayers.add(nick);
+//            if (playerData.getPlayerColor() != null) {
+//                switch (playerData.getPlayerColor()) {
+//                    case RED -> colorChoice.getChildren().remove(red);
+//                    case YELLOW -> colorChoice.getChildren().remove(yellow);
+//                    case GREEN -> colorChoice.getChildren().remove(green);
+//                    case BLUE -> colorChoice.getChildren().remove(blue);
+//                }
+//            }
+//        });
+//    }
 
     public static void colorPicked(String nick){
         Platform.runLater(() -> {
@@ -255,12 +270,17 @@ public class GuiGame extends Application {
 
             actionMenu.getChildren().add(shopButton);
 
-            Button testButton = new Button("test+1");
-            testButton.setOnAction(event -> {
-                test++;
-                movePawn(pawns.get(playerNickname),test);
+            TextField testField= new TextField();
+            testField.prefWidth(30);
+            testField.prefHeight(30);
+            testField.setOnAction(event -> {
+
+                String num = testField.getText();
+
+                movePawn(pawns.get(playerNickname), Integer.parseInt(num));
             });
             actionMenu.getChildren().add(scoreBoard());
+            actionMenu.getChildren().add(testField);
         });
     }
 
@@ -508,6 +528,8 @@ public class GuiGame extends Application {
                     LobbyInfo clickedRow = row.getItem();
                     try {
                         vnc.joinLobby(playerNickname, clickedRow.getLobbyName());
+                        lobbyLayout.getChildren().get(0).setVisible(true);
+                        lobbyLayout.getChildren().get(2).setVisible(true);
                         gameWindow.setScene(lobbyScene);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
@@ -531,7 +553,7 @@ public class GuiGame extends Application {
     }
 
     private Scene lobbyScene(){
-        VBox lobbyLayout = new VBox();
+        lobbyLayout = new VBox();
         Button leave = new Button("<-");
         Button ready = new Button("Ready");
 
@@ -559,64 +581,58 @@ public class GuiGame extends Application {
         blue.setHeight(30);
 
         colorChoice.getChildren().addAll(red, yellow, green, blue);
-        clientContainer.getPlayers().forEach((nick, playerData)->{
-            lobbyPlayers.add(nick);
-            if (playerData.getPlayerColor() != null) {
-                switch (playerData.getPlayerColor()) {
-                    case RED -> colorChoice.getChildren().remove(red);
-                    case YELLOW -> colorChoice.getChildren().remove(yellow);
-                    case GREEN -> colorChoice.getChildren().remove(green);
-                    case BLUE -> colorChoice.getChildren().remove(blue);
-                }
-            }
-        });
+
         playerBox.setItems(lobbyPlayers);
 
         red.setOnMouseClicked(actionEvent -> {
             pickColor(ColorType.RED);
+            lobbyLayout.getChildren().get(0).setVisible(false);
             lobbyLayout.getChildren().get(2).setVisible(false);
         });
         yellow.setOnMouseClicked(actionEvent -> {
             pickColor(ColorType.YELLOW);
+            lobbyLayout.getChildren().get(0).setVisible(false);
             lobbyLayout.getChildren().get(2).setVisible(false);
         });
         green.setOnMouseClicked(actionEvent -> {
             pickColor(ColorType.GREEN);
+            lobbyLayout.getChildren().get(0).setVisible(false);
             lobbyLayout.getChildren().get(2).setVisible(false);
         });
         blue.setOnMouseClicked(actionEvent -> {
             pickColor(ColorType.BLUE);
+            lobbyLayout.getChildren().get(0).setVisible(false);
             lobbyLayout.getChildren().get(2).setVisible(false);
         });
-        playerBox.setCellFactory(lv -> new ListCell<String>() {
-            private Text text = new Text();
-
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    text.setText(item);
-                    switch(clientContainer.getPlayers().get(item).getPlayerColor()) {
-                        case ColorType.RED:
-                            text.setFill(Color.RED);
-                            break;
-                        case ColorType.YELLOW:
-                            text.setFill(Color.YELLOW);
-                            break;
-                        case ColorType.GREEN:
-                            text.setFill(Color.GREEN);
-                            break;
-                        case ColorType.BLUE:
-                            text.setFill(Color.BLUE);
-                            break;
-                    }
-                    setGraphic(text);
-                }
-            }
-        });
+//        playerBox.setCellFactory(lv -> new ListCell<String>() {
+//            private Text text = new Text();
+//
+//            //@Override
+//            protected void updateItem(String item, boolean empty) {
+//                super.updateItem(item, empty);
+//                if (empty || item == null) {
+//                    setText(null);
+//                    setGraphic(null);
+//                } else {
+//                    text.setText(item);
+//                    switch(clientContainer.getPlayers().get(item).getPlayerColor()) {
+//                        case ColorType.RED:
+//                            text.setFill(Color.RED);
+//                            break;
+//                        case ColorType.YELLOW:
+//                            text.setFill(Color.YELLOW);
+//                            break;
+//                        case ColorType.GREEN:
+//                            text.setFill(Color.GREEN);
+//                            break;
+//                        case ColorType.BLUE:
+//                            text.setFill(Color.BLUE);
+//                            break;
+//                    }
+//                    setGraphic(text);
+//                }
+//            }
+//        });
         playerBox.setMaxWidth(300);
 
         leave.setOnAction(actionEvent -> {
@@ -636,10 +652,10 @@ public class GuiGame extends Application {
             ready.setVisible(false);
         });
 
-            lobbyLayout.getChildren().add(playerBox);
-            lobbyLayout.getChildren().add(colorChoice);
-            lobbyLayout.getChildren().add(leave);
-            lobbyLayout.getChildren().add(ready);
+        lobbyLayout.getChildren().add(leave);
+        lobbyLayout.getChildren().add(playerBox);
+        lobbyLayout.getChildren().add(colorChoice);
+        lobbyLayout.getChildren().add(ready);
         return new Scene(lobbyLayout);
     }
 
@@ -849,6 +865,7 @@ public class GuiGame extends Application {
 
     private static Pane scoreBoard(){
         Pane scoreBoard = new Pane();
+        pawns = new HashMap<>();
         String boardPath = "/it/polimi/codexnaturalis/graphics/PLATEAU-SCORE-IMP/Scoreboard.png";
         Image boardImage = new Image(GuiGame.class.getResourceAsStream(boardPath));
 
@@ -864,7 +881,7 @@ public class GuiGame extends Application {
         scoreBoard.setMaxSize(200,400);
 
         clientContainer.getPlayers().forEach((nick,playerData) ->{
-            Circle pawn = new Circle(50,375,20);
+            Circle pawn = new Circle(52,372,10);
             switch(playerData.getPlayerColor()){
                 case ColorType.RED:
                     pawn.setFill(Color.RED);
@@ -888,93 +905,120 @@ public class GuiGame extends Application {
     private static void movePawn(Circle pawn, int i){
         switch(i){
             case 1:
-                pawn.setTranslateX(100-pawn.getTranslateX());
-                pawn.setTranslateY(375-pawn.getTranslateY());
+                pawn.setTranslateX(100-pawn.getCenterX());
+                pawn.setTranslateY(372-pawn.getCenterY());
                 break;
             case 2:
-                pawn.setTranslateX(150-pawn.getTranslateX());
-                pawn.setTranslateY(375-pawn.getTranslateY());
+                pawn.setTranslateX(148-pawn.getCenterX());
+                pawn.setTranslateY(372-pawn.getCenterY());
                 break;
             case 3:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(171-pawn.getCenterX());
+                pawn.setTranslateY(329-pawn.getCenterY());
                 break;
             case 4:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(124-pawn.getCenterX());
+                pawn.setTranslateY(329-pawn.getCenterY());
                 break;
             case 5:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(76-pawn.getCenterX());
+                pawn.setTranslateY(329-pawn.getCenterY());
                 break;
             case 6:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(29-pawn.getCenterX());
+                pawn.setTranslateY(329-pawn.getCenterY());
                 break;
             case 7:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(29-pawn.getCenterX());
+                pawn.setTranslateY(286-pawn.getCenterY());
                 break;
             case 8:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(76-pawn.getCenterX());
+                pawn.setTranslateY(286-pawn.getCenterY());
                 break;
             case 9:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(124-pawn.getCenterX());
+                pawn.setTranslateY(286-pawn.getCenterY());
                 break;
             case 10:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(171-pawn.getCenterX());
+                pawn.setTranslateY(286-pawn.getCenterY());
                 break;
             case 11:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(171-pawn.getCenterX());
+                pawn.setTranslateY(243-pawn.getCenterY());
                 break;
             case 12:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(124-pawn.getCenterX());
+                pawn.setTranslateY(243-pawn.getCenterY());
                 break;
             case 13:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(76-pawn.getCenterX());
+                pawn.setTranslateY(243-pawn.getCenterY());
                 break;
             case 14:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(29-pawn.getCenterX());
+                pawn.setTranslateY(243-pawn.getCenterY());
                 break;
             case 15:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(29-pawn.getCenterX());
+                pawn.setTranslateY(200-pawn.getCenterY());
                 break;
             case 16:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(76-pawn.getCenterX());
+                pawn.setTranslateY(200-pawn.getCenterY());
                 break;
             case 17:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(124-pawn.getCenterX());
+                pawn.setTranslateY(200-pawn.getCenterY());
                 break;
             case 18:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(171-pawn.getCenterX());
+                pawn.setTranslateY(200-pawn.getCenterY());
                 break;
             case 19:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(171-pawn.getCenterX());
+                pawn.setTranslateY(157-pawn.getCenterY());
                 break;
             case 20:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(100-pawn.getCenterX());
+                pawn.setTranslateY(134-pawn.getCenterY());
                 break;
             case 21:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(29-pawn.getCenterX());
+                pawn.setTranslateY(157-pawn.getCenterY());
                 break;
             case 22:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(29-pawn.getCenterX());
+                pawn.setTranslateY(114-pawn.getCenterY());
                 break;
             case 23:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(29-pawn.getCenterX());
+                pawn.setTranslateY(71-pawn.getCenterY());
                 break;
             case 24:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(53-pawn.getCenterX());
+                pawn.setTranslateY(31-pawn.getCenterY());
                 break;
             case 25:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(100-pawn.getCenterX());
+                pawn.setTranslateY(27-pawn.getCenterY());
                 break;
             case 26:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(147-pawn.getCenterX());
+                pawn.setTranslateY(31-pawn.getCenterY());
                 break;
             case 27:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(171-pawn.getCenterX());
+                pawn.setTranslateY(71-pawn.getCenterY());
                 break;
             case 28:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(171-pawn.getCenterX());
+                pawn.setTranslateY(114-pawn.getCenterY());
                 break;
             case 29:
-                pawn.setTranslateX(pawn.getTranslateX());
+                pawn.setTranslateX(100-pawn.getCenterX());
+                pawn.setTranslateY(78-pawn.getCenterY());
                 break;
             default:
                 break;
