@@ -35,6 +35,7 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printJoinLobbyOutcome(boolean positiveOutcome, String lobbyName) throws RemoteException {
+
     }
 
     @Override
@@ -74,7 +75,7 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printLobby() {
-
+        GuiGame.joinLobby();
     }
 
     @Override

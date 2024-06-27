@@ -132,8 +132,18 @@ public class GuiGame extends Application {
         });
     }
 
+    public static void joinLobby(){
+        Platform.runLater(() -> {
+            lobbyLayout.getChildren().get(0).setVisible(true);
+            lobbyLayout.getChildren().get(2).setVisible(true);
+            updatePlayerList();
+            gameWindow.setScene(lobbyScene);
+        });
+    }
 
     private static void pickColor(ColorType color){
+        lobbyLayout.getChildren().get(0).setVisible(false);
+        lobbyLayout.getChildren().get(2).setVisible(false);
         try {
             vnc.setPlayerColor(playerNickname, color);
         } catch (RemoteException e) {
@@ -167,14 +177,15 @@ public class GuiGame extends Application {
 
     private static void updatePlayerList(){
         lobbyPlayers.clear();
+        colorChoice.getChildren().forEach(rec-> rec.setVisible(true));
         clientContainer.getPlayers().forEach((nick, playerData)->{
             lobbyPlayers.add(nick);
             if (playerData.getPlayerColor() != null) {
                 switch (playerData.getPlayerColor()) {
-                    case RED -> colorChoice.getChildren().remove(0);//Red
-                    case YELLOW -> colorChoice.getChildren().remove(1);//Yellow
-                    case GREEN -> colorChoice.getChildren().remove(2);//Green
-                    case BLUE -> colorChoice.getChildren().remove(3);//Blue
+                    case RED -> colorChoice.getChildren().get(0).setVisible(false);//Red
+                    case YELLOW -> colorChoice.getChildren().get(1).setVisible(false);//Yellow
+                    case GREEN -> colorChoice.getChildren().get(2).setVisible(false);//Green
+                    case BLUE -> colorChoice.getChildren().get(3).setVisible(false);//Blue
                 }
             }
         });
@@ -530,9 +541,6 @@ public class GuiGame extends Application {
                     LobbyInfo clickedRow = row.getItem();
                     try {
                         vnc.joinLobby(playerNickname, clickedRow.getLobbyName());
-                        lobbyLayout.getChildren().get(0).setVisible(true);
-                        lobbyLayout.getChildren().get(2).setVisible(true);
-                        gameWindow.setScene(lobbyScene);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -583,28 +591,20 @@ public class GuiGame extends Application {
         blue.setHeight(30);
 
         colorChoice.getChildren().addAll(red, yellow, green, blue);
-        updatePlayerList();
+
         playerBox.setItems(lobbyPlayers);
 
         red.setOnMouseClicked(actionEvent -> {
             pickColor(ColorType.RED);
-            lobbyLayout.getChildren().get(0).setVisible(false);
-            lobbyLayout.getChildren().get(2).setVisible(false);
         });
         yellow.setOnMouseClicked(actionEvent -> {
             pickColor(ColorType.YELLOW);
-            lobbyLayout.getChildren().get(0).setVisible(false);
-            lobbyLayout.getChildren().get(2).setVisible(false);
         });
         green.setOnMouseClicked(actionEvent -> {
             pickColor(ColorType.GREEN);
-            lobbyLayout.getChildren().get(0).setVisible(false);
-            lobbyLayout.getChildren().get(2).setVisible(false);
         });
         blue.setOnMouseClicked(actionEvent -> {
             pickColor(ColorType.BLUE);
-            lobbyLayout.getChildren().get(0).setVisible(false);
-            lobbyLayout.getChildren().get(2).setVisible(false);
         });
         playerBox.setCellFactory(lv -> new ListCell<String>() {
             private Text text = new Text();
@@ -617,20 +617,24 @@ public class GuiGame extends Application {
                     setGraphic(null);
                 } else {
                     text.setText(item);
-
-                    switch(clientContainer.getPlayers().get(item).getPlayerColor()) {
-                        case ColorType.RED:
-                            text.setFill(Color.RED);
-                            break;
-                        case ColorType.YELLOW:
-                            text.setFill(Color.YELLOW);
-                            break;
-                        case ColorType.GREEN:
-                            text.setFill(Color.GREEN);
-                            break;
-                        case ColorType.BLUE:
-                            text.setFill(Color.BLUE);
-                            break;
+                    if(clientContainer.getPlayers().get(item).getPlayerColor()!=null) {
+                        switch (clientContainer.getPlayers().get(item).getPlayerColor()) {
+                            case ColorType.RED:
+                                text.setFill(Color.RED);
+                                break;
+                            case ColorType.YELLOW:
+                                text.setFill(Color.YELLOW);
+                                break;
+                            case ColorType.GREEN:
+                                text.setFill(Color.GREEN);
+                                break;
+                            case ColorType.BLUE:
+                                text.setFill(Color.BLUE);
+                                break;
+                        }
+                    }
+                    else{
+                        text.setFill(Color.BLACK);
                     }
                     setGraphic(text);
                 }
