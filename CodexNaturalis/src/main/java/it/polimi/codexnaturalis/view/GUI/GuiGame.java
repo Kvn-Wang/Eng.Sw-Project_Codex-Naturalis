@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
+import it.polimi.codexnaturalis.model.enumeration.GameState;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.utils.jsonAdapter.MissionAdapter;
@@ -191,6 +192,12 @@ public class GuiGame extends Application {
         });
     }
 
+    public static void playerLeftGame(String playerNickname){
+        Platform.runLater(() -> {
+            lobbyPlayers.remove(playerNickname);
+        });
+    }
+
     public static void lobbyListRefresh(ArrayList<LobbyInfo> lobbies){
         Platform.runLater(() -> {
             lobbyList.addAll(lobbies);
@@ -309,8 +316,16 @@ public class GuiGame extends Application {
             }
         });
     }
+
+    public static void drawDuringPlayPhase() {
+        Platform.runLater(() -> {
+                System.out.println("draw during PlayPhase");
+                updateHand(clientContainer.getPersonalHand());
+        });
+    }
+
     public static void updateScore(){
-        clientContainer.getPlayers().forEach((nick, playerData)->{
+        clientContainer.getPlayers().forEach((nick,playerData) ->{
             movePawn(pawns.get(nick),playerData.getIntScoreBoardScore());
         });
     }
@@ -366,30 +381,13 @@ public class GuiGame extends Application {
                 default:
                     break;
             }
+            updateHand(clientContainer.getPersonalHand());
         }
     }
 
     private static void updateHand(Hand personalHand) {
         Platform.runLater(() -> {
             System.out.println("Hand Update");
-//            boolean alreadyInHand;
-//            for (int i = 0; i < personalHand.getCards().size(); i++) {
-//                alreadyInHand = false;
-//                for (GuiCard handCard : handCards) {
-//                    if (handCard.getCard() != null)
-//                        if (handCard.getCard().equals(personalHand.getCards().get(i))) {
-//                            alreadyInHand = true;
-//                            break;
-//                        }
-//                }
-//                if (!alreadyInHand) {
-//                    handCards.add(new GuiCard(personalHand.getCards().get(i), anchorPointsMatrix));
-//                    vHand.getChildren().add(handCards.getLast().getRectangle());
-//                    handCards.getLast().setNum(i);
-//                }
-//
-//                }
-//            }
             vHand.getChildren().clear();
             for(int i=0; i<personalHand.getCards().size(); i++) {
                 handCards.add(new GuiCard(personalHand.getCards().get(i), anchorPointsMatrix));
@@ -1004,16 +1002,16 @@ public class GuiGame extends Application {
                 pawn.setTranslateY(71-pawn.getCenterY());
                 break;
             case 24:
-                pawn.setTranslateX(55-pawn.getCenterX());
-                pawn.setTranslateY(33-pawn.getCenterY());
+                pawn.setTranslateX(57-pawn.getCenterX());
+                pawn.setTranslateY(34-pawn.getCenterY());
                 break;
             case 25:
                 pawn.setTranslateX(100-pawn.getCenterX());
                 pawn.setTranslateY(27-pawn.getCenterY());
                 break;
             case 26:
-                pawn.setTranslateX(145-pawn.getCenterX());
-                pawn.setTranslateY(33-pawn.getCenterY());
+                pawn.setTranslateX(143-pawn.getCenterX());
+                pawn.setTranslateY(35-pawn.getCenterY());
                 break;
             case 27:
                 pawn.setTranslateX(171-pawn.getCenterX());

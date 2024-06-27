@@ -64,6 +64,7 @@ public class GuiClient implements TypeOfUI {
             System.out.println(otherPlayerNickname + " has joined the lobby!");
         } else if(status.equals("LEFT")){
             System.out.println(otherPlayerNickname + " has left the lobby");
+            GuiGame.playerLeftGame(otherPlayerNickname);
         } else if(status.equals("READY")) {
             System.out.println(otherPlayerNickname + " is ready");
         } else if(status.equals("WAIT")) {
@@ -103,7 +104,10 @@ public class GuiClient implements TypeOfUI {
     @Override
     public void printErrorCommandSentGameState(GameState currentGameState) {
         System.out.println("it's not the play_phase");
-        GuiGame.validPlacement(false);
+        switch (currentGameState){
+            case PLAY_PHASE -> GuiGame.drawDuringPlayPhase();
+            case DRAW_PHASE -> GuiGame.validPlacement(false);
+        }
     }
 
     @Override
