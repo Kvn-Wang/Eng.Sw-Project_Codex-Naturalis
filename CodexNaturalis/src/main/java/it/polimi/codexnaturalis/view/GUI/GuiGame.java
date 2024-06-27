@@ -299,17 +299,17 @@ public class GuiGame extends Application {
 
             actionMenu.getChildren().add(shopButton);
 
-            TextField testField= new TextField();
-            testField.prefWidth(30);
-            testField.prefHeight(30);
-            testField.setOnAction(event -> {
-
-                String num = testField.getText();
-
-                movePawn(pawns.get(playerNickname), Integer.parseInt(num));
-            });
+//            TextField testField= new TextField();
+//            testField.prefWidth(30);
+//            testField.prefHeight(30);
+//            testField.setOnAction(event -> {
+//
+//                String num = testField.getText();
+//
+//                movePawn(pawns.get(playerNickname), Integer.parseInt(num));
+//            });
             actionMenu.getChildren().add(scoreBoard());
-            actionMenu.getChildren().add(testField);
+//            actionMenu.getChildren().add(testField);
         });
     }
 
@@ -459,7 +459,7 @@ public class GuiGame extends Application {
     private static Scene startScene() throws Exception {
         gameWindow.setTitle("CodexNaturalis");
         Button play = new Button("PLAY");
-        Button skip = new Button("SKIP");
+//        Button skip = new Button("SKIP");
         Label title = new Label("Codex Naturalis");
 
         title.setFont(new Font("Arial", 30));
@@ -470,14 +470,13 @@ public class GuiGame extends Application {
         play.setPrefSize(100, 50);
         play.setOnAction(actionEvent -> gameWindow.setScene(nickScene));
 
-        skip.setTranslateY(-40);
-        skip.setPrefSize(100, 50);
-        skip.setOnAction(actionEvent -> gameWindow.setScene(gameScene));
+//        skip.setTranslateY(-40);
+//        skip.setPrefSize(100, 50);
+//        skip.setOnAction(actionEvent -> gameWindow.setScene(gameScene));
 
         StackPane menuPane = new StackPane(
                 title,
-                play,
-                skip
+                play
         );
 
         //Background bg = new Background(bgi);
@@ -812,7 +811,7 @@ public class GuiGame extends Application {
             }
         }
 
-        return new Scene(game, 1000, 600);
+        return new Scene(game, 1500, 900);
     }
 
 //    private Circle createDraggableNode(double x, double y) {

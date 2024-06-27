@@ -23,7 +23,7 @@ public class WinnerBox extends AlertBox{
 
     protected Scene scene() {
         Label request = new Label("Il vincitore é " + lead.getFirst());
-        request.setFont(new Font(40));
+        request.setFont(new Font("Arial", 30));
         Button endButton = new Button("Yay!");
 
         ListView<String> leaderboard = new ListView<>();
