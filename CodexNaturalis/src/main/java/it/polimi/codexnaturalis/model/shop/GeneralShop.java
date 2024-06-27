@@ -6,6 +6,7 @@ import it.polimi.codexnaturalis.network.util.networkMessage.MessageType;
 import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
 import it.polimi.codexnaturalis.utils.PersonalizedException;
 import it.polimi.codexnaturalis.utils.observer.Observer;
+import it.polimi.codexnaturalis.view.TUI.PrintCardClass;
 
 import java.util.ArrayList;
 
@@ -50,17 +51,25 @@ public class GeneralShop extends Shop {
 
             case 1:
                 supp = visibleCard1;
-                visibleCard1 = drawTopDeckCard();
+                visibleCard1 = topDeckCard;
+                topDeckCard = drawTopDeckCard();
 
                 notifyObserverSingle(new NetworkMessage(MessageType.DRAW_CARD_UPDATE_SHOP_CARD_POOL,
-                        argsGenerator(visibleCard1), String.valueOf(shopType), String.valueOf(0)));
+                        argsGenerator(visibleCard1), String.valueOf(shopType), String.valueOf(1)));
+
+                notifyObserverSingle(new NetworkMessage(MessageType.DRAW_CARD_UPDATE_SHOP_CARD_POOL,
+                        argsGenerator(topDeckCard), String.valueOf(shopType), String.valueOf(0)));
                 return supp;
             case 2:
                 supp = visibleCard2;
-                visibleCard2 = drawTopDeckCard();
+                visibleCard2 = topDeckCard;
+                topDeckCard = drawTopDeckCard();
 
                 notifyObserverSingle(new NetworkMessage(MessageType.DRAW_CARD_UPDATE_SHOP_CARD_POOL,
-                        argsGenerator(visibleCard2), String.valueOf(shopType), String.valueOf(0)));
+                        argsGenerator(visibleCard2), String.valueOf(shopType), String.valueOf(2)));
+
+                notifyObserverSingle(new NetworkMessage(MessageType.DRAW_CARD_UPDATE_SHOP_CARD_POOL,
+                        argsGenerator(topDeckCard), String.valueOf(shopType), String.valueOf(0)));
                 return supp;
             default:
                 throw new RuntimeException("è stata richiesta un numero di carta non valido: "+numCard);

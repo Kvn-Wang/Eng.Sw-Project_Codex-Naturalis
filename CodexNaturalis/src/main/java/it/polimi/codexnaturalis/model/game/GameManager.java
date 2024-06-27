@@ -146,11 +146,14 @@ public class GameManager extends Observable implements GameController {
      */
     private void setupPlayerContents(){
         System.out.println("Init player resources.");
+
+        setupPlayerHand();
+
         for(Player p: players){
             try {
                 notifyObserverSingle(new NetworkMessage(p.getNickname(), MessageType.GAME_SETUP_INIT_HAND_COMMON_MISSION_SHOP,
-                        argsGenerator(resourceShop.drawTopDeckCard()), argsGenerator(resourceShop.drawTopDeckCard()),
-                        argsGenerator(objectiveShop.drawTopDeckCard()), argsGenerator(sharedMission1), argsGenerator(sharedMission2),
+                        argsGenerator(p.getStartingHand()[0]), argsGenerator(p.getStartingHand()[1]),
+                        argsGenerator(p.getStartingHand()[2]), argsGenerator(sharedMission1), argsGenerator(sharedMission2),
                         argsGenerator(resourceShop.getTopDeckCard()),
                         argsGenerator(resourceShop.getVisibleCard1()), argsGenerator(resourceShop.getVisibleCard2()),
                         argsGenerator(objectiveShop.getTopDeckCard()),
@@ -158,6 +161,18 @@ public class GameManager extends Observable implements GameController {
             } catch(Exception e) {
                 System.err.println(e.getMessage());
             }
+        }
+    }
+
+    private void setupPlayerHand() {
+        for(Player p: players) {
+            Card[] startingHand = new Card[3];
+
+            startingHand[0] = resourceShop.drawTopDeckCard();
+            startingHand[1] = resourceShop.drawTopDeckCard();
+            startingHand[2] = objectiveShop.drawTopDeckCard();
+
+            p.setStartingHand(startingHand);
         }
     }
 

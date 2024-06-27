@@ -13,6 +13,7 @@ import it.polimi.codexnaturalis.utils.UtilCostantValue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.stream.StreamSupport;
 
 public class ClientContainer {
     private String nickname;
@@ -102,13 +103,9 @@ public class ClientContainer {
     public void updateShopCard(Card card, ShopType type, int numCard) {
         if(type == ShopType.RESOURCE) {
             if(numCard == 0) {
-                PrintCardClass.printCardHorizzontal(topDeckResourceCardShop);
                 topDeckResourceCardShop = card;
-                PrintCardClass.printCardHorizzontal(topDeckResourceCardShop);
             } else if(numCard == 1) {
-                PrintCardClass.printCardHorizzontal(visibleResourceCardShop[0]);
                 visibleResourceCardShop[0] = card;
-                PrintCardClass.printCardHorizzontal(visibleResourceCardShop[0]);
             } else if(numCard == 2) {
                 visibleResourceCardShop[1] = card;
             }

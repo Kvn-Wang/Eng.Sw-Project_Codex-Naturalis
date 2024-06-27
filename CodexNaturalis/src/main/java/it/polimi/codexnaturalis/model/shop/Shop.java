@@ -162,15 +162,7 @@ public class Shop extends Observable {
      * @return the card
      */
     public Card drawTopDeckCard(){
-        Card supp = topDeckCard;
-
-        //rimpiazzamento carta
-        if(!cardDeck.isEmpty()) {
-            topDeckCard = cardDeck.remove(0);
-        } else {
-            topDeckCard = null;
-        }
-        return supp;
+        return cardDeck.remove(0);
     }
 
     /**
