@@ -388,6 +388,7 @@ public class TuiClient implements TypeOfUI {
                 int numCard = scan.nextInt();
 
                 Card card = clientContainer.getPersonalHand().getCard(numCard - 1);
+
                 String isReversed;
                 do {
                     System.out.println("Type FRONT if you want to play the card front face, BACK for back face");

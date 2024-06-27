@@ -21,6 +21,7 @@ public class Player extends Observable implements PlayerInterface {
     private Mission selectedPersonalMission;
     private PlayerScoreResource scoreResource;
     private GamePlayerMap gameMap;
+    private Card[] startingHand = new Card[3];
 
     /**
      * Instantiates a new Player.
@@ -143,5 +144,13 @@ public class Player extends Observable implements PlayerInterface {
      */
     public void addScore(int value){
         personalScoreBoardScore = personalScoreBoardScore+value;
+    }
+
+    public Card[] getStartingHand() {
+        return startingHand;
+    }
+
+    public void setStartingHand(Card[] startingHand) {
+        this.startingHand = startingHand;
     }
 }
