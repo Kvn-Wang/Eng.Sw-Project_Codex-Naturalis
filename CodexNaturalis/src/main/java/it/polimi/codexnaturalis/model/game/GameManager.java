@@ -1,7 +1,6 @@
 package it.polimi.codexnaturalis.model.game;
 
 import it.polimi.codexnaturalis.controller.GameController;
-import it.polimi.codexnaturalis.model.chat.ChatManager;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
@@ -33,7 +32,6 @@ public class GameManager extends Observable implements GameController {
     private GeneralShop objectiveShop;
     private ArrayList<PlayerInfo> networkPlayer;
     private Player[] players;
-    private ChatManager chatManager;
     private ArrayList<Player> winners;
     private int playerThatHasPlayedStarterCard;
     private int playerThatHasPlayedPersonalMission;
@@ -59,7 +57,6 @@ public class GameManager extends Observable implements GameController {
 
         playerThatHasPlayedStarterCard = 0;
         playerThatHasPlayedPersonalMission = 0;
-        chatManager = new ChatManager();
 
         vobs = observer;
         addObserver(observer);
@@ -270,11 +267,24 @@ public class GameManager extends Observable implements GameController {
     }
 
     @Override
-    public void typeMessage(String recipient, String sender, String msg) {
-        if(recipient.equals("everyone"))
-            chatManager.writeComment(sender, msg);
-        else
-            chatManager.writeComment(recipient, sender, msg);
+    public void typeMessage(String sender, String receiver, String msg) {
+        if(receiver.equals("EVERYONE")) {
+            /**
+             * notify the other player
+             */
+            for (Player otherPlayer : players) {
+                if (!otherPlayer.getNickname().equals(sender))
+                    notifyObserverSingle(new NetworkMessage(otherPlayer.getNickname(), MessageType.INCOMING_MESSAGE,
+                            sender, msg));
+            }
+        } else {
+            for(Player player : players) {
+                if(receiver.equals(player.getNickname())) {
+                    notifyObserverSingle(new NetworkMessage(player.getNickname(), MessageType.INCOMING_MESSAGE,
+                            sender, msg));
+                }
+            }
+        }
     }
 
     @Override

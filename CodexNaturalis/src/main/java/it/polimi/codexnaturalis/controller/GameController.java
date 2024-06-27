@@ -21,6 +21,6 @@ public interface GameController extends Remote {
     /* ---- GAME PHASE: Play ---- */
     void playerDraw(String nickname, int numcard, ShopType type) throws RemoteException;// vedi issues
     void playerPlayCard(String nickname, int x, int y, Card playedCard) throws RemoteException;
-    void typeMessage(String receiver, String sender, String msg) throws RemoteException;// vedi issues
+    void typeMessage(String sender, String receiver, String msg) throws RemoteException;// vedi issues
     void gameEnd() throws RemoteException;
 }

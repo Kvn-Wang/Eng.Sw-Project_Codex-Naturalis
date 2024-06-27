@@ -163,6 +163,20 @@ public enum MessageType {
      * args(2): which card? 0 (topDeck) or 1 or 2
      */
     DRAW_CARD_UPDATE_SHOP_CARD_POOL,
+
+    /**
+     * args(0): sender nick
+     * args(1): receiver nick
+     * args(2): message
+     */
+    WRITE_MESSAGE,
+
+    /**
+     * args(0): sender nick
+     * args(1): message
+     */
+    INCOMING_MESSAGE,
+
     NOTIFY_FINAL_TURN,
     /**
      * args(0) = arraylist<String> winners

@@ -265,6 +265,13 @@ public class SocketClient extends GenericClient implements VirtualServer {
                     typeOfUI.printIsNotYourTurn();
                     break;
 
+                case INCOMING_MESSAGE:
+                    String sender = message.getArgs().get(0);
+                    String msg = message.getArgs().get(1);
+
+                    typeOfUI.printPlayerMsg(sender, msg);
+                    break;
+
                 case NOTIFY_FINAL_TURN:
                     typeOfUI.printIsYourFinalTurn();
                     break;
@@ -395,8 +402,9 @@ public class SocketClient extends GenericClient implements VirtualServer {
     }
 
     @Override
-    public void typeMessage(String receiver, String sender, String msg) throws RemoteException {
-
+    public void typeMessage(String sender, String receiver, String msg) throws RemoteException {
+        socketTx.println(serializeMesssage(new NetworkMessage(MessageType.WRITE_MESSAGE,
+                sender, receiver, msg)));
     }
 
     // not implemented

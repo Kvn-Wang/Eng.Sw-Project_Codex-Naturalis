@@ -176,6 +176,14 @@ public class ClientHandler implements VirtualView, VirtualServer {
                     virtualGame.playerDraw(nickname, numCard, shopTypeFromDraw);
                     break;
 
+                case WRITE_MESSAGE:
+                    String sender = messageRX.getArgs().get(0);
+                    String receiver = messageRX.getArgs().get(1);
+                    String msg = messageRX.getArgs().get(2);
+
+                    virtualGame.typeMessage(sender, receiver, msg);
+                    break;
+
                 default:
                     break;
             }
