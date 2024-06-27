@@ -878,6 +878,9 @@ public class GuiGame extends Application {
         double scaleFactor = 2.0 / (Math.max(maxPlusX - maxMinusX, maxPlusY - maxMinusY) / 100);
         cameraView.setScaleX(scaleFactor);
         cameraView.setScaleY(scaleFactor);
+
+        cameraView.setTranslateX(-cameraX * scaleFactor);
+        cameraView.setTranslateY(-cameraY * scaleFactor);
     }
 
     private Pane handLayer(){
