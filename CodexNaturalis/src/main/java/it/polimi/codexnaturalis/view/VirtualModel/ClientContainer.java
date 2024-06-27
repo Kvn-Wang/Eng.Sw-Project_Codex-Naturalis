@@ -3,6 +3,7 @@ package it.polimi.codexnaturalis.view.VirtualModel;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
+import it.polimi.codexnaturalis.view.TUI.PrintCardClass;
 import it.polimi.codexnaturalis.view.VirtualModel.Hand.Hand;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 import it.polimi.codexnaturalis.model.shop.card.Card;
@@ -109,9 +110,13 @@ public class ClientContainer {
     public void updateShopCard(Card card, ShopType type, int numCard) {
         if(type == ShopType.RESOURCE) {
             if(numCard == 0) {
+                PrintCardClass.printCardHorizzontal(topDeckResourceCardShop);
                 topDeckResourceCardShop = card;
+                PrintCardClass.printCardHorizzontal(topDeckResourceCardShop);
             } else if(numCard == 1) {
+                PrintCardClass.printCardHorizzontal(visibleResourceCardShop[0]);
                 visibleResourceCardShop[0] = card;
+                PrintCardClass.printCardHorizzontal(visibleResourceCardShop[0]);
             } else if(numCard == 2) {
                 visibleResourceCardShop[1] = card;
             }
@@ -176,7 +181,7 @@ public class ClientContainer {
 
     public void setPersonalColor(ColorType color) {
         personalColor = color;
-        players.get(getNickname()).setPlayerColor(color);
+        //players.get(getNickname()).setPlayerColor(color);
     }
 
     public void initPlayerLobby(ArrayList<PlayerInfo> playerThatAreAlreadyInTheLobby) {
