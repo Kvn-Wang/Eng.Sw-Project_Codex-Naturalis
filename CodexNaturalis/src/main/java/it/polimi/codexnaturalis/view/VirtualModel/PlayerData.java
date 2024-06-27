@@ -9,6 +9,7 @@ public class PlayerData {
     private int intScoreBoardScore;
     private ColorType playerColor;
     private int placedCardOrder;
+    private boolean isReady;
 
     public PlayerData() {
         //inizializzazione mappa degli altri player
@@ -48,5 +49,13 @@ public class PlayerData {
 
     public void setIntScoreBoardScore(int intScoreBoardScore) {
         this.intScoreBoardScore = intScoreBoardScore;
+    }
+
+    public boolean isReady() {
+        return isReady;
+    }
+
+    public void setReady(boolean ready) {
+        isReady = ready;
     }
 }

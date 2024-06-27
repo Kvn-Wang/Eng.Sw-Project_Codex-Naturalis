@@ -13,8 +13,10 @@ import it.polimi.codexnaturalis.view.TypeOfUI;
 import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
 import it.polimi.codexnaturalis.view.VirtualModel.PlayerData;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.*;
+import java.util.concurrent.Semaphore;
 
 public class TuiClient implements TypeOfUI {
     protected VirtualServer networkCommand;
@@ -26,7 +28,7 @@ public class TuiClient implements TypeOfUI {
     boolean outcomeJoinGame = false;
 
     private Scanner scan;
-    private final Object lock = new Object();
+    private final Semaphore semaphore = new Semaphore(0);
     private StarterCard tempStarterCard;
     private Mission tempMission1;
     private Mission tempMission2;
@@ -284,7 +286,9 @@ public class TuiClient implements TypeOfUI {
             String playerName = entry.getKey();
             PlayerData data = entry.getValue();
 
-            System.out.println(ANSI_BLUE + "  - Player: " + playerName + ", Color: " + ((data.getPlayerColor() != null) ? data.getPlayerColor() : "none") + ANSI_RESET);
+            System.out.println(ANSI_BLUE + "  - Player: " + playerName +
+                    ",  Color: " + ((data.getPlayerColor() != null) ? data.getPlayerColor() : "none") +
+                    ",  isReady: " + data.isReady() + ANSI_RESET);
         }
     }
 
@@ -386,6 +390,7 @@ public class TuiClient implements TypeOfUI {
 
                 System.out.println("Give me which num card in hand to play");
                 int numCard = scan.nextInt();
+                cleanBuffer(scan);
 
                 Card card = clientContainer.getPersonalHand().getCard(numCard - 1);
 
@@ -402,12 +407,14 @@ public class TuiClient implements TypeOfUI {
                 }
                 int key;
                 int maxKey = PrintMapClass.getPublicCounter();
-                do{
+                do {
                     System.out.println("Enter the number of the space you want to put your card in");
                     key = scan.nextInt();
-                }while(key<1 || key > maxKey);
+                } while(key<1 || key > maxKey);
+
                 int x = PrintMapClass.getFreePos().get(key)[0];
                 int y = PrintMapClass.getFreePos().get(key)[1];
+
                 try {
                     virtualGame.playerPlayCard(clientContainer.getNickname(), x, y,
                             clientContainer.getPersonalHand().getCard(numCard - 1));
@@ -498,6 +505,8 @@ public class TuiClient implements TypeOfUI {
                     throw new RuntimeException(e);
                 }
             }
+
+            cleanBuffer(scan);
         }
     }
 
@@ -553,19 +562,15 @@ public class TuiClient implements TypeOfUI {
     }
 
     private void doWait() {
-        synchronized (lock) {
-            try {
-                lock.wait(); // Puts the current thread in wait state
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        try {
+            semaphore.acquire(); // Acquires a permit, blocking if necessary
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
     private void doNotify() {
-        synchronized (lock) {
-            lock.notify(); // Wakes up one waiting thread
-        }
+        semaphore.release(); // Releases a permit, potentially unblocking a waiting thread
     }
 
     private void printPlayerScore() {
@@ -576,6 +581,13 @@ public class TuiClient implements TypeOfUI {
             PlayerData playerData = entry.getValue();
 
             System.out.println("  - " + nickname + ", score: " + "Scoreboard: " + playerData.getIntScoreBoardScore() + ", COLOR: " + playerData.getPlayerColor());
+        }
+    }
+
+    // Metodo per pulire il buffer residuo
+    private static void cleanBuffer(Scanner scan) {
+        if (scan.hasNextLine()) {
+            scan.nextLine();
         }
     }
 }

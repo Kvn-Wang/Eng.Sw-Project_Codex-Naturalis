@@ -92,7 +92,7 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void notifyIsYourTurnInitPhase(boolean isYourTurn) {
-        GuiGame.turnNotify(isYourTurn);
+        GuiGame.turnNotify(isYourTurn, false);
     }
 
     @Override
@@ -123,12 +123,12 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printIsYourFinalTurn() {
-
+        GuiGame.turnNotify(true, true);
     }
 
     @Override
     public void printWinners(ArrayList<String> winnersNickname) {
-
+        GuiGame.endGame(winnersNickname);
     }
 
     @Override
