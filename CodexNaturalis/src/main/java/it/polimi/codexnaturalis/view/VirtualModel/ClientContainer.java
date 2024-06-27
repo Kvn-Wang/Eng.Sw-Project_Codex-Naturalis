@@ -17,7 +17,6 @@ import java.util.Set;
 public class ClientContainer {
     private String nickname;
     private String lobbyNickname;
-    private ColorType personalColor;
     private HashMap<String, PlayerData> players;
     private PlayerScoreResource personalPlayerScoreResource;
     private Hand personalHand;
@@ -61,13 +60,6 @@ public class ClientContainer {
     }
 
     public void setOtherPlayerList(ArrayList<PlayerInfo> otherPlayerList) {
-        players.put(getNickname(), new PlayerData());
-        players.get(getNickname()).setPlayerColor(personalColor);
-
-        for(PlayerInfo playerInfo : otherPlayerList) {
-            players.put(playerInfo.getNickname(), new PlayerData());
-            players.get(playerInfo.getNickname()).setPlayerColor(playerInfo.getColorChosen());
-        }
     }
 
     public Card[][] getPersonalGameMap() {
@@ -180,13 +172,13 @@ public class ClientContainer {
     public Set<String> getOtherPlayerNames() {return players.keySet();}
 
     public void setPersonalColor(ColorType color) {
-        personalColor = color;
-        //players.get(getNickname()).setPlayerColor(color);
+        players.get(getNickname()).setPlayerColor(color);
     }
 
     public void initPlayerLobby(ArrayList<PlayerInfo> playerThatAreAlreadyInTheLobby) {
         for(PlayerInfo player : playerThatAreAlreadyInTheLobby) {
             players.put(player.getNickname(), new PlayerData());
+            players.get(player.getNickname()).setPlayerColor(player.getColorChosen());
         }
     }
 
@@ -196,6 +188,10 @@ public class ClientContainer {
 
     public void playerLeftTheLobby(String nickname) {
         players.remove(nickname);
+    }
+
+    public void ILeftTheLobby() {
+        players.clear();
     }
 
     public void playerSelectedColor(String nickname, ColorType color) {

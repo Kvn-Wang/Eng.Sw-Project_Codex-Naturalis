@@ -1,7 +1,9 @@
 package it.polimi.codexnaturalis.network.lobby;
 
+import com.google.gson.Gson;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
+import it.polimi.codexnaturalis.model.player.Player;
 import it.polimi.codexnaturalis.network.util.networkMessage.MessageType;
 import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
@@ -16,9 +18,6 @@ import java.util.ArrayList;
  */
 public class Lobby {
     private LobbyInfo lobbyInfo;
-    //final int timoutGameStart;
-
-    // TODO: data Race
     private ArrayList<PlayerInfo> listOfPlayers;
     private GameController gameController;
 
@@ -42,11 +41,14 @@ public class Lobby {
      */
     public boolean connectPlayer(PlayerInfo player) throws RemoteException {
         if(lobbyInfo.addPlayer()) {
-            broadCastNotify(player.getNickname(), "JOIN");
-
             synchronized (listOfPlayers) {
                 listOfPlayers.add(player);
             }
+
+            //notifica al player, chi è nella lobby al momento
+            player.notifyPlayer(new NetworkMessage(MessageType.COM_JOIN_LOBBY_OTHER_PLAYER_INFO_TCP, argsGenerator(listOfPlayers)));
+
+            broadCastNotify(player.getNickname(), "JOIN");
 
             return true;
         } else {
@@ -211,6 +213,11 @@ public class Lobby {
      */
     public LobbyInfo getLobbyInfo() {
         return lobbyInfo;
+    }
+
+    public String argsGenerator(Object object){
+        Gson gson = new Gson();
+        return gson.toJson(object);
     }
 }
 

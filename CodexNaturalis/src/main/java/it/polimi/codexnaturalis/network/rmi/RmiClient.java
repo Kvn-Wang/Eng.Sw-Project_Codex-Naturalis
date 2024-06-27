@@ -76,8 +76,23 @@ public class RmiClient extends GenericClient implements VirtualServer {
     public void showMessage(NetworkMessage message) throws RemoteException {
         switch(message.getMessageType()) {
             // ---------  Lobby phase ----------- //
+            case COM_JOIN_LOBBY_OTHER_PLAYER_INFO_TCP:
+                ArrayList<PlayerInfo> playerThatAreInTheLobby = gsonTranslator.fromJson(message.getArgs().get(0), new TypeToken<ArrayList<PlayerInfo>>() {}.getType());
+
+                clientContainer.initPlayerLobby(playerThatAreInTheLobby);
+                break;
+
             case COM_LOBBY_STATUS_NOTIFY:
                 typeOfUI.notifyLobbyStatus(message.getNickname(), message.getArgs().get(0));
+
+                String status = message.getArgs().get(0);
+                if(status.equals("JOIN")) {
+                    clientContainer.playerJoinedTheLobby(message.getNickname());
+                    typeOfUI.printLobby();
+                } else if (status.equals("LEFT")) {
+                    clientContainer.playerLeftTheLobby(message.getNickname());
+                    typeOfUI.printLobby();
+                }
                 break;
 
             case COM_SET_PLAYER_COLOR_OUTCOME:
@@ -89,9 +104,14 @@ public class RmiClient extends GenericClient implements VirtualServer {
 
                     if(nickname.equals(clientContainer.getNickname())) {
                         clientContainer.setPersonalColor(color);
+
+                        typeOfUI.printLobby();
+
                         typeOfUI.printChooseColorOutcome(true);
                     } else {
+                        clientContainer.playerSelectedColor(nickname, color);
                         typeOfUI.notifyLobbyStatusColor(nickname, color);
+                        typeOfUI.printLobby();
                     }
                 } else {
                     typeOfUI.printChooseColorOutcome(false);
@@ -326,6 +346,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
         serviceThread.submit(() -> {
             try {
                 server.leaveLobby(playerNickname);
+                clientContainer.ILeftTheLobby();
                 typeOfUI.lobbyActionOutcome(false);
             } catch (RemoteException e) {
                 throw new RuntimeException(e);

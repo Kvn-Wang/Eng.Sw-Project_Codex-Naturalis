@@ -49,6 +49,7 @@ public class GuiGame extends Application {
     private static ObservableList<String> lobbyPlayers;
     private static VBox lobbyLayout;
     private static ListView<String> playerBox;
+    private static HBox colorChoice;
     private static Circle[][] anchorPointsMatrix;
     private static ArrayList<GuiCard> handCards;
     private static Rectangle[] missions;
@@ -139,20 +140,6 @@ public class GuiGame extends Application {
         }
     }
 
-//    public static void playerJoined(){
-//        clientContainer.getPlayers().forEach((nick, playerData)->{
-//            lobbyPlayers.add(nick);
-//            if (playerData.getPlayerColor() != null) {
-//                switch (playerData.getPlayerColor()) {
-//                    case RED -> colorChoice.getChildren().remove(red);
-//                    case YELLOW -> colorChoice.getChildren().remove(yellow);
-//                    case GREEN -> colorChoice.getChildren().remove(green);
-//                    case BLUE -> colorChoice.getChildren().remove(blue);
-//                }
-//            }
-//        });
-//    }
-
     public static void colorPicked(String nick){
         Platform.runLater(() -> {
             Popup popup = new Popup();
@@ -172,8 +159,23 @@ public class GuiGame extends Application {
             closePop.setTranslateY(20);
             popup.show(gameWindow);
 
+            updatePlayerList();
             playerBox.refresh();
+        });
+    }
 
+    private static void updatePlayerList(){
+        lobbyPlayers.clear();
+        clientContainer.getPlayers().forEach((nick, playerData)->{
+            lobbyPlayers.add(nick);
+            if (playerData.getPlayerColor() != null) {
+                switch (playerData.getPlayerColor()) {
+                    case RED -> colorChoice.getChildren().remove(0);//Red
+                    case YELLOW -> colorChoice.getChildren().remove(1);//Yellow
+                    case GREEN -> colorChoice.getChildren().remove(2);//Green
+                    case BLUE -> colorChoice.getChildren().remove(3);//Blue
+                }
+            }
         });
     }
 
@@ -559,7 +561,7 @@ public class GuiGame extends Application {
         playerBox = new ListView<>();
         lobbyPlayers = FXCollections.observableArrayList();
 
-        HBox colorChoice = new HBox();
+        colorChoice = new HBox();
         Rectangle red = new Rectangle();
         Rectangle yellow = new Rectangle();
         Rectangle green = new Rectangle();
@@ -580,7 +582,7 @@ public class GuiGame extends Application {
         blue.setHeight(30);
 
         colorChoice.getChildren().addAll(red, yellow, green, blue);
-
+        updatePlayerList();
         playerBox.setItems(lobbyPlayers);
 
         red.setOnMouseClicked(actionEvent -> {
@@ -603,35 +605,36 @@ public class GuiGame extends Application {
             lobbyLayout.getChildren().get(0).setVisible(false);
             lobbyLayout.getChildren().get(2).setVisible(false);
         });
-//        playerBox.setCellFactory(lv -> new ListCell<String>() {
-//            private Text text = new Text();
-//
-//            //@Override
-//            protected void updateItem(String item, boolean empty) {
-//                super.updateItem(item, empty);
-//                if (empty || item == null) {
-//                    setText(null);
-//                    setGraphic(null);
-//                } else {
-//                    text.setText(item);
-//                    switch(clientContainer.getPlayers().get(item).getPlayerColor()) {
-//                        case ColorType.RED:
-//                            text.setFill(Color.RED);
-//                            break;
-//                        case ColorType.YELLOW:
-//                            text.setFill(Color.YELLOW);
-//                            break;
-//                        case ColorType.GREEN:
-//                            text.setFill(Color.GREEN);
-//                            break;
-//                        case ColorType.BLUE:
-//                            text.setFill(Color.BLUE);
-//                            break;
-//                    }
-//                    setGraphic(text);
-//                }
-//            }
-//        });
+        playerBox.setCellFactory(lv -> new ListCell<String>() {
+            private Text text = new Text();
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    text.setText(item);
+
+                    switch(clientContainer.getPlayers().get(item).getPlayerColor()) {
+                        case ColorType.RED:
+                            text.setFill(Color.RED);
+                            break;
+                        case ColorType.YELLOW:
+                            text.setFill(Color.YELLOW);
+                            break;
+                        case ColorType.GREEN:
+                            text.setFill(Color.GREEN);
+                            break;
+                        case ColorType.BLUE:
+                            text.setFill(Color.BLUE);
+                            break;
+                    }
+                    setGraphic(text);
+                }
+            }
+        });
         playerBox.setMaxWidth(300);
 
         leave.setOnAction(actionEvent -> {
@@ -981,7 +984,7 @@ public class GuiGame extends Application {
                 break;
             case 20:
                 pawn.setTranslateX(100-pawn.getCenterX());
-                pawn.setTranslateY(134-pawn.getCenterY());
+                pawn.setTranslateY(135-pawn.getCenterY());
                 break;
             case 21:
                 pawn.setTranslateX(29-pawn.getCenterX());
@@ -996,16 +999,16 @@ public class GuiGame extends Application {
                 pawn.setTranslateY(71-pawn.getCenterY());
                 break;
             case 24:
-                pawn.setTranslateX(53-pawn.getCenterX());
-                pawn.setTranslateY(31-pawn.getCenterY());
+                pawn.setTranslateX(55-pawn.getCenterX());
+                pawn.setTranslateY(33-pawn.getCenterY());
                 break;
             case 25:
                 pawn.setTranslateX(100-pawn.getCenterX());
                 pawn.setTranslateY(27-pawn.getCenterY());
                 break;
             case 26:
-                pawn.setTranslateX(147-pawn.getCenterX());
-                pawn.setTranslateY(31-pawn.getCenterY());
+                pawn.setTranslateX(145-pawn.getCenterX());
+                pawn.setTranslateY(33-pawn.getCenterY());
                 break;
             case 27:
                 pawn.setTranslateX(171-pawn.getCenterX());
@@ -1017,7 +1020,7 @@ public class GuiGame extends Application {
                 break;
             case 29:
                 pawn.setTranslateX(100-pawn.getCenterX());
-                pawn.setTranslateY(78-pawn.getCenterY());
+                pawn.setTranslateY(79-pawn.getCenterY());
                 break;
             default:
                 break;

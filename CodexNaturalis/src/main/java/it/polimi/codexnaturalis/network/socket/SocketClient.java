@@ -144,17 +144,37 @@ public class SocketClient extends GenericClient implements VirtualServer {
 
                         if(nickname.equals(clientContainer.getNickname())) {
                             clientContainer.setPersonalColor(color);
+
+                            typeOfUI.printLobby();
+
                             typeOfUI.printChooseColorOutcome(true);
                         } else {
+                            clientContainer.playerSelectedColor(nickname, color);
                             typeOfUI.notifyLobbyStatusColor(nickname, color);
+                            typeOfUI.printLobby();
                         }
                     } else {
                         typeOfUI.printChooseColorOutcome(false);
                     }
                     break;
 
+                case COM_JOIN_LOBBY_OTHER_PLAYER_INFO_TCP:
+                    ArrayList<PlayerInfo> playerThatAreInTheLobby = gsonTranslator.fromJson(message.getArgs().get(0), new TypeToken<ArrayList<PlayerInfo>>() {}.getType());
+
+                    clientContainer.initPlayerLobby(playerThatAreInTheLobby);
+                    break;
+
                 case COM_LOBBY_STATUS_NOTIFY:
-                    typeOfUI.notifyLobbyStatus(message.getNickname(), argsRX.get(0));
+                    typeOfUI.notifyLobbyStatus(message.getNickname(), message.getArgs().get(0));
+
+                    String status = message.getArgs().get(0);
+                    if(status.equals("JOIN")) {
+                        clientContainer.playerJoinedTheLobby(message.getNickname());
+                        typeOfUI.printLobby();
+                    } else if (status.equals("LEFT")) {
+                        clientContainer.playerLeftTheLobby(message.getNickname());
+                        typeOfUI.printLobby();
+                    }
                     break;
 
                 // ---------  SETUP ----------- //
@@ -350,6 +370,7 @@ public class SocketClient extends GenericClient implements VirtualServer {
     @Override
     public void leaveLobby(String playerNickname) throws RemoteException {
         socketTx.println(serializeMesssage(new NetworkMessage(MessageType.COM_LEAVE_LOBBY_TCP, playerNickname)));
+        clientContainer.ILeftTheLobby();
     }
 
     @Override
