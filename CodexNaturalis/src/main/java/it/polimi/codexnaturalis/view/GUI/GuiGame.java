@@ -41,6 +41,7 @@ import javafx.stage.Stage;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 public class GuiGame extends Application {
 
@@ -221,14 +222,17 @@ public class GuiGame extends Application {
         });
     }
 
-    public static void turnNotify(Boolean isYourTurn){
+    public static void turnNotify(Boolean isYourTurn, Boolean isLastRound){
         Platform.runLater(() -> {
             updateHand(clientContainer.getPersonalHand());
             Popup popup = new Popup();
             Button closePop = new Button("ok");
             Label turn = new Label();
             if(isYourTurn){
-                turn.setText("é il tuo turno");
+                if(!isLastRound)
+                    turn.setText("é il tuo turno");
+                else
+                    turn.setText("é il tuo ULTIMO turno!");
             }
             else{
                 turn.setText("é il turno di un altro giocatore");
@@ -405,6 +409,21 @@ public class GuiGame extends Application {
             throw new RuntimeException(e);
         }
         gameWindow.setScene(lobbyScene);
+    }
+
+    public static void endGame(ArrayList<String> winners){
+        Platform.runLater(() -> {
+            TreeMap<Integer, String> list = null;
+            for (String winner : winners) {
+                list.put(clientContainer.getPlayers().get(winner).getIntScoreBoardScore(), winner);
+            }
+
+            WinnerBox winnerBox = new WinnerBox();
+            winnerBox.setLeaderboard(list);
+            String end = winnerBox.display("The game is over", 600, 600);
+            if(end.equals("end"))
+                Platform.exit();
+        });
     }
 
     public static void startGame(GameController gameController){
