@@ -177,7 +177,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     public void typeMessage(String sender, String receiver, String msg) {
         executorService.submit(() -> {
             try {
-                gameController.typeMessage(receiver, sender, msg);
+                gameController.typeMessage(sender, receiver, msg);
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }

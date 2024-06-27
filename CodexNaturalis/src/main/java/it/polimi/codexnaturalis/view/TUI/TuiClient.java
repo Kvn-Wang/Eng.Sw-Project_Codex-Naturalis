@@ -381,7 +381,7 @@ public class TuiClient implements TypeOfUI {
                 do {
                     System.out.println("Type 0 if you want to play the card front face, 1 back face");
                     isReversed = scan.nextInt();
-                }while (isReversed != 0 || isReversed != 1);
+                }while (!(isReversed == 0 || isReversed == 1));
 
                 if(isReversed == 1) {
                     card.setIsBack(true);
@@ -428,14 +428,24 @@ public class TuiClient implements TypeOfUI {
             }else if(command.equals("4")) {
                 PrintHandClass.printHand(clientContainer.getPersonalHand());
             }else if(command.equals("5")) {
-                Set<String> players = clientContainer.getOtherPlayerNames();
-                System.out.println("list of other players" + players);
-                String choice = "";
-                do{
-                    System.out.println("Enter the name of the player: ");
-                    choice = scan.nextLine();
-                }while(!players.contains(choice));
-                PrintMapClass.printMap(clientContainer.getOthersGameMap(choice));
+                HashMap<String, PlayerData> players = clientContainer.getPlayers();
+
+                // Iteriamo sulla HashMap usando un ciclo for-each su entrySet()
+                for (Map.Entry<String, PlayerData> entry : players.entrySet()) {
+                    String playerName = entry.getKey();
+
+                    if(!playerName.equals(clientContainer.getNickname())) {
+                        System.out.println("  - Player: " + playerName);
+                    }
+                }
+
+                String playerToSee = null;
+                do {
+                    System.out.println("Select the player whom you want to see the map of:");
+                    playerToSee = scan.nextLine();
+                } while(!(players.containsKey(playerToSee)));
+
+                PrintMapClass.printMap(clientContainer.getOthersGameMap(playerToSee));
             }else if(command.equals("6")) {
                 PrintShop.printShop(clientContainer);
             }else if(command.equals("7")) {
@@ -457,12 +467,15 @@ public class TuiClient implements TypeOfUI {
                     String playerName = entry.getKey();
 
                     if(!playerName.equals(clientContainer.getNickname())) {
-                        System.out.println("Player: " + playerName);
+                        System.out.println("  - Player: " + playerName);
                     }
                 }
 
-                System.out.println("Select to whom you want to send a message to, or write EVERYONE:");
-                String receiver = scan.nextLine();
+                String receiver = null;
+                do {
+                    System.out.println("Select to whom you want to send a message to, or write EVERYONE:");
+                    receiver = scan.nextLine();
+                } while(!(players.containsKey(receiver) || receiver.equals("EVERYONE")));
 
                 System.out.println("type the message:");
                 String msg = scan.nextLine();

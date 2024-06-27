@@ -268,6 +268,10 @@ public class GameManager extends Observable implements GameController {
 
     @Override
     public void typeMessage(String sender, String receiver, String msg) {
+        System.out.println(sender);
+        System.out.println(receiver);
+        System.out.println(msg);
+
         if(receiver.equals("EVERYONE")) {
             /**
              * notify the other player
