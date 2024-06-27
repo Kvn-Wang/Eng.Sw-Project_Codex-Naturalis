@@ -193,18 +193,6 @@ public class GamePlayerMap {
         }
         return adiacentNumCard;
     }
-
-    public int getCheckValidPosition(int x, int y){
-        int adiacentNumCard = -1;
-        if(checkValidityXY(x,y)){
-            try {
-                adiacentNumCard = checkValidPosition(x,y);
-            } catch (PersonalizedException.InvalidPlacementException e) {
-                return adiacentNumCard;
-            }
-        }
-        return adiacentNumCard;
-    }
     
     private ArrayList<ResourceType> checkResourceCovered(int x, int y) {
         ArrayList<ResourceType> coveredResource = new ArrayList<ResourceType>();
@@ -217,7 +205,7 @@ public class GamePlayerMap {
             }
         }
 
-        if(x > 0 && mapArray[x - 1][y]!=null && x > 0) {
+        if(x > 0 && mapArray[x - 1][y]!=null) {
             temp = mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH);
             if (temp != null && temp != ResourceType.NONE) {
                 coveredResource.add(temp);
@@ -225,14 +213,14 @@ public class GamePlayerMap {
         }
 
         if(y < UtilCostantValue.lunghezzaMaxMappa - 1 && mapArray[x][y + 1]!=null) {
-            temp = mapArray[x][y + 1].getCardCorner(CardCorner.EAST);
+            temp = mapArray[x][y + 1].getCardCorner(CardCorner.WEST);
             if (temp != null && temp != ResourceType.NONE) {
                 coveredResource.add(temp);
             }
         }
 
         if( y > 0 && mapArray[x][y - 1]!=null) {
-            temp = mapArray[x][y - 1].getCardCorner(CardCorner.WEST);
+            temp = mapArray[x][y - 1].getCardCorner(CardCorner.EAST);
             if (temp != null && temp != ResourceType.NONE) {
                 coveredResource.add(temp);
             }
