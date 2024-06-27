@@ -1,6 +1,10 @@
-package it.polimi.codexnaturalis.model.mission;
+package it.polimi.codexnaturalis.utils.jsonAdapter;
 
 import com.google.gson.*;
+import it.polimi.codexnaturalis.model.mission.BendMission;
+import it.polimi.codexnaturalis.model.mission.DiagonalMission;
+import it.polimi.codexnaturalis.model.mission.Mission;
+import it.polimi.codexnaturalis.model.mission.ResourceMission;
 
 import java.lang.reflect.Type;
 
@@ -22,5 +26,6 @@ public class MissionAdapter implements JsonDeserializer<Mission> {
         } else {
             throw new JsonParseException("Unable to determine the type of mission");
         }
+
     }
 }

@@ -7,7 +7,7 @@ import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
-import it.polimi.codexnaturalis.model.mission.MissionAdapter;
+import it.polimi.codexnaturalis.utils.jsonAdapter.MissionAdapter;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.CardTypeAdapter;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;

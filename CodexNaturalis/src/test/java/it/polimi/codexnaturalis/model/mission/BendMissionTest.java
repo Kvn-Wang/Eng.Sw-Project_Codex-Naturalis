@@ -2,6 +2,7 @@ package it.polimi.codexnaturalis.model.mission;
 
 import it.polimi.codexnaturalis.model.enumeration.CardCorner;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
+import it.polimi.codexnaturalis.model.enumeration.MissionType;
 import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.player.GamePlayerMap;
 import it.polimi.codexnaturalis.model.player.Player;
@@ -67,5 +68,10 @@ class BendMissionTest {
         testMap4.placeCard(middle-1,middle+3,firstTestCard);
         assertEquals(3,testBendMission3.ruleAlgorithmCheck(testPlayer4));
 
+    }
+
+    @Test
+    public void testGetMissionType(){
+        assertEquals(testBendMission.getMissionType(), MissionType.BEND);
     }
     }
