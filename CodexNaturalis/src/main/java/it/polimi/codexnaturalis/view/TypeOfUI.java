@@ -31,6 +31,7 @@ public interface TypeOfUI {
      */
     void notifyLobbyStatusColor(String otherPlayerNickname, ColorType color);
     void notifyLobbyStatus(String otherPlayerNickname, String status);
+    void printLobby();
 
     /*---- SETUP ----*/
     void giveStarterCard(StarterCard starterCard);

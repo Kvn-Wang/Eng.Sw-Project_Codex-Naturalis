@@ -73,6 +73,11 @@ public class GuiClient implements TypeOfUI {
     }
 
     @Override
+    public void printLobby() {
+
+    }
+
+    @Override
     public void giveStarterCard(StarterCard starterCard) {
         GuiGame.addStarter(starterCard);
     }

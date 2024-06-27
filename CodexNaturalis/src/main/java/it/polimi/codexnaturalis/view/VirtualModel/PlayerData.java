@@ -21,6 +21,7 @@ public class PlayerData {
 
         intScoreBoardScore = 0;
         placedCardOrder = 0;
+        playerColor = null;
     }
 
     public void setPlayerColor(ColorType playerColor) {

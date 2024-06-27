@@ -277,6 +277,17 @@ public class TuiClient implements TypeOfUI {
         }
     }
 
+    @Override
+    public void printLobby() {
+        // Iteriamo sulla HashMap usando un ciclo for-each su entrySet()
+        for (Map.Entry<String, PlayerData> entry : clientContainer.getPlayers().entrySet()) {
+            String playerName = entry.getKey();
+            PlayerData data = entry.getValue();
+
+            System.out.println(ANSI_BLUE + "  - Player: " + playerName + ", Color: " + ((data.getPlayerColor() != null) ? data.getPlayerColor() : "none") + ANSI_RESET);
+        }
+    }
+
     public void printStarterCardReq(Card starterCard) {
         String command;
         System.out.flush();
