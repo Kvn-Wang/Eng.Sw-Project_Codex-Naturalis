@@ -407,7 +407,7 @@ public class TuiClient implements TypeOfUI {
             } else if(command.equals("3")) {
                 ShopType shopType;
                 String shop;
-
+                PrintShop.printShop(clientContainer);
                 do {
                     System.out.println("Tell me from which shop you want to draw: RESOURCE or OBJECTIVE");
                     shop = scan.nextLine();
@@ -415,7 +415,6 @@ public class TuiClient implements TypeOfUI {
 
                 shopType = ShopType.valueOf(shop);
                 int numCard = -1;
-
                 do {
                     System.out.println("Give me which card you want to draw: 0 top deck, 1 first card, 2 second card");
                     numCard = scan.nextInt();
