@@ -18,6 +18,7 @@ import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.network.util.ServerContainer;
 import it.polimi.codexnaturalis.utils.observer.Observer;
 import it.polimi.codexnaturalis.view.GUI.GuiClient;
+import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,20 +33,23 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GameManagerTest {
     private static GameManager gameManager;
+    StarterCard starterCard = new StarterCard(81, ResourceType.NONE, ResourceType.NONE, ResourceType.PLANT, ResourceType.INSECT, new ResourceType[]{ResourceType.INSECT}, ResourceType.FUNGI, ResourceType.ANIMAL, ResourceType.PLANT, ResourceType.INSECT);
 
     @BeforeAll
     public static void Setup() throws IOException {
         var socketServer = new SocketServer();
         socketServer.start();
 
-        var socketClient = new SocketClient(new GuiClient(), "127.0.0.1");
-        var clientHandler = new ClientHandler(new ServerContainer(), socketClient.serverSocket);
-        var playerInfo = new ArrayList<PlayerInfo>();
+        SocketClient socketClient = new SocketClient(new GuiClient(), "127.0.0.1");
+        ClientHandler clientHandler = new ClientHandler(new ServerContainer(), socketClient.serverSocket);
+        ArrayList<PlayerInfo> playerInfo = new ArrayList<PlayerInfo>();
         playerInfo.add(new PlayerInfo(clientHandler, "player1"));
         playerInfo.add(new PlayerInfo(clientHandler, "player2"));
 
-        var virtualGame = new VirtualGame(playerInfo);
-        gameManager = (GameManager)virtualGame.getGameController();
+        VirtualGame virtualGame = new VirtualGame(playerInfo);
+        //gameManager = (GameManager)virtualGame.getGameController();
+        gameManager = new GameManager(playerInfo, virtualGame);
+        gameManager.initializeGame();
     }
 
     @Test
@@ -55,18 +59,28 @@ class GameManagerTest {
 
     @Test
     void typeMessage() {
-        gameManager.typeMessage("everyone", "player1", "Hello World");
+        gameManager.typeMessage( "player1","EVERYONE", "Hello World");
+        System.out.println("\n");
+        gameManager.typeMessage("player2","EVERYONE", "Hello World2");
+        System.out.println("\n");
+        gameManager.typeMessage("player1","player2","hello");
+        System.out.println("\n");
+        gameManager.typeMessage("player2","player1","hello");
+        System.out.println("\n");
+        gameManager.typeMessage("player2","player2","hello");
     }
 
     @Test
     void playStarterCard() {
-        // gameManager.playStarterCard("player1", new StarterCard());
-        // assertEquals(1, gameManager.playerThatHasPlayedStarterCard);
+        gameManager.playStarterCard("player1", starterCard);
+        gameManager.playStarterCard("player2", starterCard);
     }
 
     @Test
     void playerDraw() {
-        // gameManager.playerDraw("player1", 1, ShopType.RESOURCE);
+        gameManager.playStarterCard("player1", starterCard);
+        gameManager.playStarterCard("player2", starterCard);
+        gameManager.playerDraw("player1", 1, ShopType.RESOURCE);
     }
 
     @Test

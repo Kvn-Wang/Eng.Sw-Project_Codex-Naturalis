@@ -38,10 +38,10 @@ public class PrintCardClass {
         StarterCard starterCard = new StarterCard(81, ResourceType.NONE, ResourceType.NONE, ResourceType.PLANT, ResourceType.INSECT, new ResourceType[]{ResourceType.INSECT, ResourceType.ANIMAL}, ResourceType.FUNGI, ResourceType.ANIMAL, ResourceType.PLANT, ResourceType.INSECT);
         ResourceCard firstTestCard = new ResourceCard(1, ResourceType.FUNGI, ResourceType.UNASSIGNABLE, ResourceType.NONE, ResourceType.FUNGI, ResourceType.FUNGI, 0);
         //printCard(firstTestCard, true);
-        //printCard(firstTestCard, false);
+        printCard(firstTestCard, false);
         //printCard(starterCard, true);
         //printCard(starterCard, false);
-        printCardHorizzontal(firstTestCard);
+        //printCardHorizzontal(firstTestCard);
     }
 
     public static String[][] createCard(Card card, boolean isFront) {
@@ -97,9 +97,14 @@ public class PrintCardClass {
 
     public static void printCard(Card card, boolean isFront){
         createCard(card,isFront);
+        String printCard="";
         for(int i = 0; i < TUICard.length; i++){
-            System.out.println(TUICard[i]);
+            for(int j = 0; j < TUICard[i].length; j++) {
+                printCard = printCard + TUICard[i][j];
+            }
+            printCard=printCard+"\n";
         }
+        System.out.println(printCard);
     }
 
     public static void printCardHorizzontal(Card card){
