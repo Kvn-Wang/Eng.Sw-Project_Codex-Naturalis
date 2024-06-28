@@ -58,7 +58,6 @@ public class RmiClient extends GenericClient implements VirtualServer {
         super(typeOfUI);
 
         serviceThread = Executors.newSingleThreadExecutor();
-        serviceThread = Executors.newSingleThreadExecutor();
 
         registry = LocateRegistry.getRegistry(address, UtilCostantValue.portRmiServer);
         this.server = (VirtualServer) registry.lookup(serverName);
@@ -272,7 +271,7 @@ public class RmiClient extends GenericClient implements VirtualServer {
                         new TypeToken<ArrayList<String>>() {}.getType());
 
                 typeOfUI.printWinners(winnerNicknames);
-
+                serviceThread.shutdown();
                 break;
 
             default:
