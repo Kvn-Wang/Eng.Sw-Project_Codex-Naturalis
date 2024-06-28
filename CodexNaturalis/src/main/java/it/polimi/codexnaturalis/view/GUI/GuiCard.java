@@ -1,7 +1,6 @@
 package it.polimi.codexnaturalis.view.GUI;
 
 import com.google.gson.Gson;
-import it.polimi.codexnaturalis.model.enumeration.ResourceType;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
@@ -118,7 +117,7 @@ public class GuiCard {
 
         vCard.setOnDragDone(event -> {
             if (event.getTransferMode() == TransferMode.MOVE) {
-                GuiGame.getvHand().getChildren().remove(vCard);
+                GuiGame.getVHand().getChildren().remove(vCard);
             }
             event.consume();
         });

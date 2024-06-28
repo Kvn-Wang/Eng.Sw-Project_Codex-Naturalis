@@ -84,7 +84,7 @@ public class GuiGame extends Application {
      private static Scene lobbyScene;
      private static Scene gameScene;
 
-    public static Pane getvHand() {
+    public static Pane getVHand() {
         return vHand;
     }
     public static void main(String[] args) {
@@ -350,9 +350,9 @@ public class GuiGame extends Application {
 //
 //                movePawn(pawns.get(playerNickname), Integer.parseInt(num));
 //            });
+            missionList.getChildren().add(chatBox);
+            missionList.getChildren().add(chatTyping);
             actionMenu.getChildren().add(scoreBoard());
-            actionMenu.getChildren().add(chatBox);
-            actionMenu.getChildren().add(chatTyping);
             actionMenu.getChildren().add(playerViews);
 //            actionMenu.getChildren().add(testField);
         });
@@ -382,7 +382,8 @@ public class GuiGame extends Application {
     public static void updateScore(){
         Platform.runLater(() -> {
             clientContainer.getPlayers().forEach((nick, playerData) -> {
-                movePawn(pawns.get(nick), playerData.getIntScoreBoardScore());
+                if(pawns!=null)
+                    movePawn(pawns.get(nick), playerData.getIntScoreBoardScore());
             });
         });
     }
