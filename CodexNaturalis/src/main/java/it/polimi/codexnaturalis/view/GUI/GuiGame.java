@@ -35,12 +35,14 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 public class GuiGame extends Application {
@@ -56,6 +58,7 @@ public class GuiGame extends Application {
     private static Circle[][] anchorPointsMatrix;
     private static ArrayList<GuiCard> handCards;
     private static Rectangle[] missions;
+    private static BorderPane game;
     private static Pane vHand;
     private static VBox missionList;
     private static VBox actionMenu;
@@ -279,6 +282,17 @@ public class GuiGame extends Application {
                 openShop();
             });
 
+            VBox playerViews = new VBox();
+            clientContainer.getPlayers().forEach((nick,playerData) ->{
+                if(!nick.equals(playerNickname)) {
+                    Button viewButton = new Button(nick);
+                    viewButton.setOnAction(event -> {
+                        viewMap(nick);
+                    });
+                    viewButton.setPrefSize(100,50);
+                    playerViews.getChildren().add(viewButton);
+                }
+            });
 
             actionMenu.getChildren().add(shopButton);
 
@@ -292,6 +306,7 @@ public class GuiGame extends Application {
 //                movePawn(pawns.get(playerNickname), Integer.parseInt(num));
 //            });
             actionMenu.getChildren().add(scoreBoard());
+            actionMenu.getChildren().add(playerViews);
 //            actionMenu.getChildren().add(testField);
         });
     }
@@ -321,6 +336,85 @@ public class GuiGame extends Application {
         clientContainer.getPlayers().forEach((nick,playerData) ->{
             movePawn(pawns.get(nick),playerData.getIntScoreBoardScore());
         });
+    }
+
+    private static void viewMap(String nick){
+
+        Pane othersMap = new Pane();
+        Circle[][] anchorPointsMat = getAnchorPoints(othersMap);
+        othersMap.setMaxSize(600, 400);
+        for (Circle[] rows : anchorPointsMat) {
+            for (Circle anchor : rows) {
+                othersMap.getChildren().add(anchor);
+            }
+        }
+        Card[][] map = clientContainer.getPlayers().get(nick).getMap();
+        TreeMap<Integer, Card> orderedCards = new TreeMap<>();
+        for (Card[] cardRow : map) {
+            for (Card c : cardRow) {
+                if (c != null) {
+                    orderedCards.put(c.getPlacedOrder(), c);
+                }
+            }
+        }
+        for (Map.Entry<Integer, Card> entry : orderedCards.entrySet()) {
+            Card card = entry.getValue();
+            int num = card.getPng();
+            String front = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/" + num + ".png";
+            String back = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_back/" + num + ".png";
+            ImagePattern cardFrontImg = new ImagePattern(new Image(GuiGame.class.getResourceAsStream(front)));
+            ImagePattern cardBackImg = new ImagePattern(new Image(GuiGame.class.getResourceAsStream(back)));
+            Rectangle otherCard = new Rectangle(180, 116);
+
+            if (card.getIsBack()) {
+                otherCard.setFill(cardBackImg);
+            }
+            else {
+                otherCard.setFill(cardFrontImg);
+            }
+
+            for (int i = 0; i < (UtilCostantValue.lunghezzaMaxMappa); i++) {
+                for (int j = 0; j < (UtilCostantValue.lunghezzaMaxMappa); j++) {
+                    if (card.equals(map[i][j])) {
+                        Circle anchor = anchorPointsMat[i][j];
+                        otherCard.setX(anchor.getCenterX()-otherCard.getBoundsInLocal().getCenterX());
+                        otherCard.setY(anchor.getCenterY()-otherCard.getBoundsInLocal().getCenterY());
+                        othersMap.getChildren().add(otherCard);
+                    }
+                }
+            }
+        }
+        othersMap.setTranslateX(300);
+        othersMap.setTranslateY(200);
+
+        othersMap.addEventFilter(ScrollEvent.SCROLL, event -> {
+            double scale = othersMap.getScaleX();
+            if (event.getDeltaY() > 0) {
+                scale *= 1.1; // Zoom in
+            } else {
+                scale /= 1.1; // Zoom out
+            }
+            othersMap.setScaleX(scale);
+            othersMap.setScaleY(scale);
+        });
+
+        Button back = new Button();
+        back.setOnAction(actionEvent -> gameWindow.setScene(gameScene));
+
+        VBox box = new VBox();
+        box.getChildren().add(back);
+        box.getChildren().add(othersMap);
+
+        Stage mapWindow = new Stage();
+
+        mapWindow.setMinWidth(600);
+        mapWindow.setMinWidth(400);
+        mapWindow.initModality(Modality.NONE);
+        mapWindow.setTitle(nick);
+
+        Scene scene = new Scene(box);
+        mapWindow.setScene(scene);
+        mapWindow.show();
     }
 
     private static void openShop(){
@@ -672,7 +766,7 @@ public class GuiGame extends Application {
     }
 
     public Scene gameScene() {
-        BorderPane game = new BorderPane();
+        game = new BorderPane();
         map = new Pane();
         anchorPointsMatrix = getAnchorPoints(game);
         vHand = handLayer();
@@ -746,7 +840,7 @@ public class GuiGame extends Application {
                             if (distance < closestDistance) {
                                 closestDistance = distance;
                                 closestAnchor = anchorPointsMatrix[i][j];
-                                y = i;
+                                y = 160-i;
                                 x = j;
                             }
                         }
@@ -843,13 +937,13 @@ public class GuiGame extends Application {
 //        return circle;
 //    }
 
-    private Circle createAnchorPoint(double x, double y) {
+    private static Circle createAnchorPoint(double x, double y) {
         Circle anchor = new Circle(x, y, 10, Color.BLACK);
         anchor.setOpacity(0.1);  // Make it semi-transparent
         return anchor;
     }
 
-    private Circle[][] getAnchorPoints(Pane game) {
+    private static Circle[][] getAnchorPoints(Pane game) {
         Circle[][] anchorMap = new Circle[UtilCostantValue.lunghezzaMaxMappa][UtilCostantValue.lunghezzaMaxMappa];
         for(int y = -(UtilCostantValue.lunghezzaMaxMappa/2); y< (UtilCostantValue.lunghezzaMaxMappa/2); y++){
             for(int x = -(UtilCostantValue.lunghezzaMaxMappa/2); x< (UtilCostantValue.lunghezzaMaxMappa/2); x++){
