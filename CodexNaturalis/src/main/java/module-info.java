@@ -4,8 +4,6 @@ module it.polimi.codexnaturalis {
     requires com.google.gson;
     requires java.rmi;
     requires java.desktop;
-    requires org.junit.jupiter.api;
-    requires org.junit.jupiter.params;
 
     exports it.polimi.codexnaturalis.model.shop;
     opens it.polimi.codexnaturalis.model.shop to javafx.fxml, com.google.gson;
