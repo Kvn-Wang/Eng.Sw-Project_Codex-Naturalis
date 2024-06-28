@@ -40,10 +40,7 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class GuiGame extends Application {
 
@@ -552,7 +549,7 @@ public class GuiGame extends Application {
 
     public static void endGame(ArrayList<String> winners){
         Platform.runLater(() -> {
-            TreeMap<Integer, String> list = null;
+            TreeMap<Integer, String> list = new TreeMap<>();
             for (String winner : winners) {
                 list.put(clientContainer.getPlayers().get(winner).getIntScoreBoardScore(), winner);
             }
@@ -560,6 +557,7 @@ public class GuiGame extends Application {
             WinnerBox winnerBox = new WinnerBox();
             winnerBox.setLeaderboard(list);
             String end = winnerBox.display("The game is over", 600, 600);
+            if(Objects.equals(end, "end"))
                 Platform.exit();
         });
     }
