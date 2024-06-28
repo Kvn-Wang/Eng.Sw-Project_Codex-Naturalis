@@ -12,19 +12,15 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CardTest {
-
+    Card testCard;
     @BeforeEach
     void setUp() {
-    }
-    Card testCard;
-    @Test
-    public void testCard(){
         int png = 1;
         ResourceType north = ResourceType.NONE;
         ResourceType south = ResourceType.ANIMAL;
         ResourceType east = ResourceType.FUNGI;
-        ResourceType west = null;
-        /*Card testCard = new Card(png, north,south,east,west) {
+        ResourceType west = ResourceType.UNASSIGNABLE;
+        testCard = new Card(png, north,south,east,west) {
             @Override
             public ResourceType getCardColor() {
                 return null;
@@ -74,9 +70,50 @@ class CardTest {
             }
 
             @Override
+            public ResourceType[] getPlaceableCardResources() {
+                return new ResourceType[0];
+            }
+
+            @Override
+            public int getFrontalNumber() {
+                return 0;
+            }
+
+            @Override
             public CardType getCardType() {
                 return null;
             }
-        };*/
+        };
+
+    }
+    @Test
+    void testGetFrontNorthResource() {
+        assertEquals(ResourceType.NONE, testCard.getFrontNorthResource());
+    }
+
+    @Test
+    void testGetFrontSouthResource() {
+        assertEquals(ResourceType.ANIMAL, testCard.getFrontSouthResource());
+    }
+
+    @Test
+    void testGetFrontEastResource() {
+        assertEquals(ResourceType.FUNGI, testCard.getFrontEastResource());
+    }
+
+    @Test
+    void testGetFrontWestResource() {
+        assertEquals(ResourceType.UNASSIGNABLE, testCard.getFrontWestResource());
+    }
+
+    @Test
+    void testEquals() {
+        assertEquals(true, testCard.equals(testCard));
+        assertEquals(false, testCard.equals(null));
+        Card testCard2 = testCard;
+        assertEquals(true, testCard.equals(testCard2));
+        ObjectiveCard thirdTestCard = new ObjectiveCard(41, ResourceType.UNASSIGNABLE, ResourceType.QUILL, ResourceType.NONE, ResourceType.NONE, ResourceType.FUNGI, ConditionResourceType.QUILL, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
+        ObjectiveCard fourthTestCard = new ObjectiveCard(41, ResourceType.NONE, ResourceType.QUILL, ResourceType.NONE, ResourceType.NONE, ResourceType.FUNGI, ConditionResourceType.QUILL, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
+        assertEquals(false, fourthTestCard.equals(thirdTestCard));
     }
 }

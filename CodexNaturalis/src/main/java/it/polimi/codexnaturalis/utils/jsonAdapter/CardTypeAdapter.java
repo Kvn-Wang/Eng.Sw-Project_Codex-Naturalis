@@ -1,6 +1,11 @@
-package it.polimi.codexnaturalis.model.shop.card;
+package it.polimi.codexnaturalis.utils.jsonAdapter;
 
 import com.google.gson.*;
+import it.polimi.codexnaturalis.model.shop.card.Card;
+import it.polimi.codexnaturalis.model.shop.card.ObjectiveCard;
+import it.polimi.codexnaturalis.model.shop.card.ResourceCard;
+import it.polimi.codexnaturalis.model.shop.card.StarterCard;
+
 import java.lang.reflect.Type;
 
 /**

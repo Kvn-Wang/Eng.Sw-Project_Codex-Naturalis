@@ -35,8 +35,20 @@ class PlayerTest {
 
     @Test
     public void testAddMissionScore(){
-        testPlayer1.addScore(3);
+        testPlayer1.addMissionScore(3);
         assertEquals(3,testPlayer1.getPersonalScore());
         assertEquals(3,testPlayer1.getPersonalScoreBoardScore());
+    }
+
+    @Test
+    public void testSetNickname(){
+        testPlayer1.setNickname("roberto");
+        assertEquals("roberto",testPlayer1.getNickname());
+    }
+
+    @Test
+    public void testaddScore(){
+        testPlayer1.addScore(2);
+        assertEquals(2,testPlayer1.getPersonalScoreBoardScore());
     }
 }

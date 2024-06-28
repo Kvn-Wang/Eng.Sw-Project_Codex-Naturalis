@@ -4,14 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
-import it.polimi.codexnaturalis.model.enumeration.GameState;
 import it.polimi.codexnaturalis.model.enumeration.ShopType;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.utils.jsonAdapter.MissionAdapter;
 import it.polimi.codexnaturalis.view.VirtualModel.Hand.Hand;
 import it.polimi.codexnaturalis.view.VirtualModel.Hand.HandGsonAdapter;
 import it.polimi.codexnaturalis.model.shop.card.Card;
-import it.polimi.codexnaturalis.model.shop.card.CardTypeAdapter;
+import it.polimi.codexnaturalis.utils.jsonAdapter.CardTypeAdapter;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.lobby.LobbyInfo;
@@ -36,7 +35,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.transform.Scale;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
@@ -64,7 +62,7 @@ public class GuiGame extends Application {
     private static Pane map;
     private static Pane cameraView;
     private static HashMap<String, Circle> pawns;
-    private static int test=0; //TODO da togliere
+//    private static int test=0;
     private static Rectangle cardBeingPlaced;
     private static double cameraX=500;
     private static double cameraY=300;
@@ -85,23 +83,6 @@ public class GuiGame extends Application {
     public static Pane getvHand() {
         return vHand;
     }
-
-    /*
-             private static final BackgroundImage bgi = new BackgroundImage(
-                     new Image(UtilCostantValue.pathToBackGroundImg),
-                     BackgroundRepeat.NO_REPEAT,
-                     BackgroundRepeat.NO_REPEAT,
-                     BackgroundPosition.CENTER,
-                     new BackgroundSize(
-                             100,
-                             100,
-                             true,
-                             true,
-                             true,
-                             true
-                     )
-                     );
-         */
     public static void main(String[] args) {
         launch(args);
     } //lancia il codice UOMO!
@@ -146,13 +127,15 @@ public class GuiGame extends Application {
     }
 
     private static void pickColor(ColorType color){
-        lobbyLayout.getChildren().get(0).setVisible(false);
-        lobbyLayout.getChildren().get(2).setVisible(false);
-        try {
-            vnc.setPlayerColor(playerNickname, color);
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
+//        Platform.runLater(() -> {
+//            lobbyLayout.getChildren().get(0).setVisible(false);
+//            lobbyLayout.getChildren().get(2).setVisible(false);
+            try {
+                vnc.setPlayerColor(playerNickname, color);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+//        });
     }
 
     public static void colorPicked(String nick){
@@ -299,17 +282,17 @@ public class GuiGame extends Application {
 
             actionMenu.getChildren().add(shopButton);
 
-            TextField testField= new TextField();
-            testField.prefWidth(30);
-            testField.prefHeight(30);
-            testField.setOnAction(event -> {
-
-                String num = testField.getText();
-
-                movePawn(pawns.get(playerNickname), Integer.parseInt(num));
-            });
+//            TextField testField= new TextField();
+//            testField.prefWidth(30);
+//            testField.prefHeight(30);
+//            testField.setOnAction(event -> {
+//
+//                String num = testField.getText();
+//
+//                movePawn(pawns.get(playerNickname), Integer.parseInt(num));
+//            });
             actionMenu.getChildren().add(scoreBoard());
-            actionMenu.getChildren().add(testField);
+//            actionMenu.getChildren().add(testField);
         });
     }
 
@@ -374,7 +357,7 @@ public class GuiGame extends Application {
                         throw new RuntimeException(e);
                     }
                     break;
-                case "01":
+                case "o1":
                     try {
                         vgc.playerDraw(playerNickname, 1, ShopType.OBJECTIVE);
                     } catch (RemoteException e) {
@@ -459,7 +442,7 @@ public class GuiGame extends Application {
     private static Scene startScene() throws Exception {
         gameWindow.setTitle("CodexNaturalis");
         Button play = new Button("PLAY");
-        Button skip = new Button("SKIP");
+//        Button skip = new Button("SKIP");
         Label title = new Label("Codex Naturalis");
 
         title.setFont(new Font("Arial", 30));
@@ -470,14 +453,13 @@ public class GuiGame extends Application {
         play.setPrefSize(100, 50);
         play.setOnAction(actionEvent -> gameWindow.setScene(nickScene));
 
-        skip.setTranslateY(-40);
-        skip.setPrefSize(100, 50);
-        skip.setOnAction(actionEvent -> gameWindow.setScene(gameScene));
+//        skip.setTranslateY(-40);
+//        skip.setPrefSize(100, 50);
+//        skip.setOnAction(actionEvent -> gameWindow.setScene(gameScene));
 
         StackPane menuPane = new StackPane(
                 title,
-                play,
-                skip
+                play
         );
 
         //Background bg = new Background(bgi);
@@ -812,7 +794,7 @@ public class GuiGame extends Application {
             }
         }
 
-        return new Scene(game, 1000, 600);
+        return new Scene(game, 1400, 800);
     }
 
 //    private Circle createDraggableNode(double x, double y) {
@@ -894,6 +876,9 @@ public class GuiGame extends Application {
         double scaleFactor = 2.0 / (Math.max(maxPlusX - maxMinusX, maxPlusY - maxMinusY) / 100);
         cameraView.setScaleX(scaleFactor);
         cameraView.setScaleY(scaleFactor);
+
+        cameraView.setTranslateX(-cameraX * scaleFactor);
+        cameraView.setTranslateY(-cameraY * scaleFactor);
     }
 
     private Pane handLayer(){

@@ -30,8 +30,11 @@ public class ShopBox extends AlertBox {
         Card[] resourceCards = cc.getVisibleResourceCardShop();
         Card[] objectiveCards = cc.getVisibleObjectiveCardShop();
 
-        String topResourceCardPath = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+topResourceCard.getPng()+".png";
-        String topObjectiveCardPath = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_front/"+topObjectiveCard.getPng()+".png";
+        topResourceCard.setIsBack(true);
+        topObjectiveCard.setIsBack(true);
+
+        String topResourceCardPath = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_back/"+topResourceCard.getPng()+".png";
+        String topObjectiveCardPath = "/it/polimi/codexnaturalis/graphics/CODEX_cards_gold_back/"+topObjectiveCard.getPng()+".png";
         Rectangle topRecCardRect = new Rectangle(170, 100, new ImagePattern(new Image(getClass().getResourceAsStream(topResourceCardPath))));
         topRecCardRect.setStroke(null);
         Rectangle topObjCardRect = new Rectangle(170, 100, new ImagePattern(new Image(getClass().getResourceAsStream(topObjectiveCardPath))));
