@@ -410,7 +410,7 @@ public class TuiClient implements TypeOfUI {
                 do {
                     System.out.println("Enter the number of the space you want to put your card in");
                     key = scan.nextInt();
-                } while(key<1 || key > maxKey);
+                } while(key < 1 || key > maxKey);
 
                 int x = PrintMapClass.getFreePos().get(key)[0];
                 int y = PrintMapClass.getFreePos().get(key)[1];
@@ -535,7 +535,7 @@ public class TuiClient implements TypeOfUI {
 
     @Override
     public void printIsYourFinalTurn() {
-        System.out.println(ANSI_RED + "Is your turn now!!!" + ANSI_RESET);
+        System.out.println(ANSI_RED + "It's the final turn now!!!" + ANSI_RESET);
     }
 
     @Override

@@ -144,7 +144,7 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printPlayerMsg(String sender, String msg) {
-
+        GuiGame.updateChat(sender, msg);
     }
 
     @Override
