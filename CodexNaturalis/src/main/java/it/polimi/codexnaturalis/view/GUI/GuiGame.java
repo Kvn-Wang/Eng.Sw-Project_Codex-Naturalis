@@ -62,7 +62,7 @@ public class GuiGame extends Application {
     private static Pane map;
     private static Pane cameraView;
     private static HashMap<String, Circle> pawns;
-    private static int test=0; //TODO da togliere
+//    private static int test=0;
     private static Rectangle cardBeingPlaced;
     private static double cameraX=500;
     private static double cameraY=300;
@@ -83,23 +83,6 @@ public class GuiGame extends Application {
     public static Pane getvHand() {
         return vHand;
     }
-
-    /*
-             private static final BackgroundImage bgi = new BackgroundImage(
-                     new Image(UtilCostantValue.pathToBackGroundImg),
-                     BackgroundRepeat.NO_REPEAT,
-                     BackgroundRepeat.NO_REPEAT,
-                     BackgroundPosition.CENTER,
-                     new BackgroundSize(
-                             100,
-                             100,
-                             true,
-                             true,
-                             true,
-                             true
-                     )
-                     );
-         */
     public static void main(String[] args) {
         launch(args);
     } //lancia il codice UOMO!
@@ -144,13 +127,15 @@ public class GuiGame extends Application {
     }
 
     private static void pickColor(ColorType color){
-        lobbyLayout.getChildren().get(0).setVisible(false);
-        lobbyLayout.getChildren().get(2).setVisible(false);
-        try {
-            vnc.setPlayerColor(playerNickname, color);
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
+//        Platform.runLater(() -> {
+//            lobbyLayout.getChildren().get(0).setVisible(false);
+//            lobbyLayout.getChildren().get(2).setVisible(false);
+            try {
+                vnc.setPlayerColor(playerNickname, color);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+//        });
     }
 
     public static void colorPicked(String nick){
@@ -372,7 +357,7 @@ public class GuiGame extends Application {
                         throw new RuntimeException(e);
                     }
                     break;
-                case "01":
+                case "o1":
                     try {
                         vgc.playerDraw(playerNickname, 1, ShopType.OBJECTIVE);
                     } catch (RemoteException e) {
@@ -809,7 +794,7 @@ public class GuiGame extends Application {
             }
         }
 
-        return new Scene(game, 1500, 900);
+        return new Scene(game, 1400, 800);
     }
 
 //    private Circle createDraggableNode(double x, double y) {
@@ -891,6 +876,9 @@ public class GuiGame extends Application {
         double scaleFactor = 2.0 / (Math.max(maxPlusX - maxMinusX, maxPlusY - maxMinusY) / 100);
         cameraView.setScaleX(scaleFactor);
         cameraView.setScaleY(scaleFactor);
+
+        cameraView.setTranslateX(-cameraX * scaleFactor);
+        cameraView.setTranslateY(-cameraY * scaleFactor);
     }
 
     private Pane handLayer(){
