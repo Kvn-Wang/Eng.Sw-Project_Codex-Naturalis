@@ -52,6 +52,7 @@ public class GuiGame extends Application {
     private static ClientContainer clientContainer;
     private static ObservableList<LobbyInfo> lobbyList;
     private static ObservableList<String> lobbyPlayers;
+    private static ObservableList<String> chatLog;
     private static VBox lobbyLayout;
     private static ListView<String> playerBox;
     private static HBox colorChoice;
@@ -287,12 +288,56 @@ public class GuiGame extends Application {
                 if(!nick.equals(playerNickname)) {
                     Button viewButton = new Button(nick);
                     viewButton.setOnAction(event -> {
-                        viewMap(nick);
+                        viewMap(nick + "'s map");
                     });
-                    viewButton.setPrefSize(100,50);
+                    viewButton.setPrefSize(200,50);
                     playerViews.getChildren().add(viewButton);
                 }
             });
+
+            HBox chatTyping = new HBox();
+            chatLog = FXCollections.observableArrayList();
+            ListView chatBox = new ListView<>();
+            chatBox.setItems(chatLog);
+            chatBox.setMaxSize(200,300);
+
+            TextField receiver= new TextField();
+            TextField sendToChat= new TextField();
+            receiver.setMaxSize(100,30);
+            sendToChat.setMaxSize(100,30);
+            receiver.setText("nick");
+            sendToChat.setText("message");
+            receiver.setOnMouseClicked(event -> {
+                receiver.clear();
+            });
+            sendToChat.setOnMouseClicked(event -> {
+                sendToChat.clear();
+            });
+            sendToChat.setOnAction(event -> {
+                String sendTo = receiver.getText();
+                String msg = sendToChat.getText();
+                if(clientContainer.getPlayers().containsKey(sendTo)) {
+                    try {
+                        vgc.typeMessage(playerNickname, sendTo, msg);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                    updateChat(playerNickname, msg);
+                } else if (sendTo.isBlank()) {
+                    try {
+                        vgc.typeMessage(playerNickname, "EVERYONE", msg);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                    updateChat(playerNickname, msg);
+                } else{
+                    System.out.println("player non esistente");
+                }
+                sendToChat.clear();
+                receiver.clear();
+            });
+            chatTyping.getChildren().add(receiver);
+            chatTyping.getChildren().add(sendToChat);
 
             actionMenu.getChildren().add(shopButton);
 
@@ -306,6 +351,8 @@ public class GuiGame extends Application {
 //                movePawn(pawns.get(playerNickname), Integer.parseInt(num));
 //            });
             actionMenu.getChildren().add(scoreBoard());
+            actionMenu.getChildren().add(chatBox);
+            actionMenu.getChildren().add(chatTyping);
             actionMenu.getChildren().add(playerViews);
 //            actionMenu.getChildren().add(testField);
         });
@@ -335,6 +382,13 @@ public class GuiGame extends Application {
     public static void updateScore(){
         clientContainer.getPlayers().forEach((nick,playerData) ->{
             movePawn(pawns.get(nick),playerData.getIntScoreBoardScore());
+        });
+    }
+
+    public static void updateChat(String send, String msg){
+        Platform.runLater(() -> {
+            String logMsg = send + ": " + msg;
+            chatLog.add(logMsg);
         });
     }
 
@@ -474,7 +528,6 @@ public class GuiGame extends Application {
 
     private static void updateHand(Hand personalHand) {
         Platform.runLater(() -> {
-            System.out.println("Hand Update");
             vHand.getChildren().clear();
             for(int i=0; i<personalHand.getCards().size(); i++) {
                 handCards.add(new GuiCard(personalHand.getCards().get(i), anchorPointsMatrix));

@@ -112,13 +112,14 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printIsYourTurn() {
-
+        GuiGame.turnNotify(true, false);
     }
 
     @Override
     public void printIsNotYourTurn() {
         System.out.println("you can't place cards during another player's turn");
         GuiGame.validPlacement(false);
+        GuiGame.turnNotify(false, false);
     }
 
     @Override
@@ -143,7 +144,7 @@ public class GuiClient implements TypeOfUI {
 
     @Override
     public void printPlayerMsg(String sender, String msg) {
-
+        GuiGame.updateChat(sender, msg);
     }
 
     @Override
