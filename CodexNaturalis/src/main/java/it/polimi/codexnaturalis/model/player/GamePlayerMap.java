@@ -96,6 +96,14 @@ public class GamePlayerMap {
                     pointToAdd = card.getCardPoints(playerScoreCard, neightbouringCard);
                     return pointToAdd;
                 } else {
+                    System.out.println("Insect: "+ playerScoreCard.getScoreInsect());
+                    System.out.println("Plant: "+ playerScoreCard.getScorePlant());
+                    System.out.println("Animal: "+ playerScoreCard.getScoreAnimal());
+                    System.out.println("Fungi: "+ playerScoreCard.getScoreFungi());
+                    System.out.println("Manuscript: "+ playerScoreCard.getScoreManuscript());
+                    System.out.println("Quill: "+ playerScoreCard.getScoreQuill());
+                    System.out.println("Ink: "+ playerScoreCard.getScoreInkwell());
+
                     System.err.println("Error objective condition");
                     throw new PersonalizedException.InvalidPlaceCardRequirementException();
                 }
