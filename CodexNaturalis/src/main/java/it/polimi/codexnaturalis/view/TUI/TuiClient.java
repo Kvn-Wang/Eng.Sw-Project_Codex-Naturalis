@@ -529,6 +529,7 @@ public class TuiClient implements TypeOfUI {
     @Override
     public void printIsNotYourTurn() {
         System.out.println(ANSI_BLUE + "It's NOT your turn!!!" + ANSI_RESET);
+        doNotify();
     }
 
     @Override
