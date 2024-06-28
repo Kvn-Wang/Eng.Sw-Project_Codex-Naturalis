@@ -380,8 +380,10 @@ public class GuiGame extends Application {
     }
 
     public static void updateScore(){
-        clientContainer.getPlayers().forEach((nick,playerData) ->{
-            movePawn(pawns.get(nick),playerData.getIntScoreBoardScore());
+        Platform.runLater(() -> {
+            clientContainer.getPlayers().forEach((nick, playerData) -> {
+                movePawn(pawns.get(nick), playerData.getIntScoreBoardScore());
+            });
         });
     }
 
