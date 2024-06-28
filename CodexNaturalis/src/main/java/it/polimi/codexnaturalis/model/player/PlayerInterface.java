@@ -22,8 +22,8 @@ public interface PlayerInterface {
      * @param x          the x
      * @param y          the y
      * @param playedCard the played card
-     * @throws InvalidPlaceCardRequirementException the invalid place card requirement exception
-     * @throws InvalidPlacementException            the invalid placement exception
+     * @throws PersonalizedException.InvalidPlaceCardRequirementException the invalid place card requirement exception
+     * @throws PersonalizedException.InvalidPlacementException            the invalid placement exception
      */
     void placeCard(int x, int y, Card playedCard) throws PersonalizedException.InvalidPlaceCardRequirementException, PersonalizedException.InvalidPlacementException;
 

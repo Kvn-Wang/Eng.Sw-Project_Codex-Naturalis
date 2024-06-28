@@ -48,7 +48,7 @@ class GameManagerTest {
         playerInfo.add(new PlayerInfo(clientHandler, "player1"));
         playerInfo.add(new PlayerInfo(clientHandler, "player2"));
 
-        VirtualGame virtualGame = new VirtualGame(playerInfo);
+        VirtualGame virtualGame = new VirtualGame(playerInfo, new Lobby(""));
         //gameManager = (GameManager)virtualGame.getGameController();
         gameManager = new GameManager(playerInfo, virtualGame);
         gameManager.initializeGame();

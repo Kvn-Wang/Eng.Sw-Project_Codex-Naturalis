@@ -179,7 +179,7 @@ public enum MessageType {
 
     NOTIFY_FINAL_TURN,
     /**
-     * args(0) = arraylist<String> winners
+     * args(0) = {@code ArrayList<String>} winners
      */
     GAME_ENDED
 }
