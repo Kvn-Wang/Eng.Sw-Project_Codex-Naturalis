@@ -421,6 +421,7 @@ public class TuiClient implements TypeOfUI {
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
                 }
+                cleanBuffer(scan);
 
                 doWait();
             } else if(command.equals("3")) {
@@ -444,6 +445,7 @@ public class TuiClient implements TypeOfUI {
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
                 }
+                cleanBuffer(scan);
             }else if(command.equals("4")) {
                 PrintHandClass.printHand(clientContainer.getPersonalHand());
             }else if(command.equals("5")) {
@@ -505,8 +507,6 @@ public class TuiClient implements TypeOfUI {
                     throw new RuntimeException(e);
                 }
             }
-
-            cleanBuffer(scan);
         }
     }
 

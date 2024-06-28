@@ -56,14 +56,20 @@ public class GamePlayerMap {
      * @throws InvalidPlacementException            the card cannot be placed (= 0 come valore per indicare che la carta è stata aggiunta senza aggiunta eventuali di punti (carte obbiettivo o carte risorsa front),
      * @throws InvalidPlaceCardRequirementException the invalid place card requirement exception (oppure > 0 per indicare che la carta piazzata deve aggiungere punti equivalente al valore di ritorno al punteggio del player)
      */
-    public int placeCard(int x, int y, Card card) throws PersonalizedException.InvalidPlacementException, PersonalizedException.InvalidPlaceCardRequirementException {
-        int neightbouringCard;
+    public int placeCard(int x, int y, Card card) throws PersonalizedException.InvalidPlaceCardRequirementException, PersonalizedException.InvalidPlacementException {
+        int neightbouringCard = 0;
         ArrayList<ResourceType> tempListOfResources;
         int pointToAdd;
 
         if(checkValidityXY(x, y)) {
-            //controlla le carte adiacenti per eventuali impossibilità per piazzare la carta
-            neightbouringCard = checkValidPosition(x, y);
+            try {
+                //controlla le carte adiacenti per eventuali impossibilità per piazzare la carta
+                neightbouringCard = checkValidPosition(x, y);
+            } catch(PersonalizedException.InvalidPlacementException e) {
+                System.err.println("Error Unassignable");
+                throw e;
+            }
+
             if(neightbouringCard > 0 || (mapArray[UtilCostantValue.lunghezzaMaxMappa/2][UtilCostantValue.lunghezzaMaxMappa/2]==null && card.getCardType() == CardType.STARTER)){
                 //funzione per controllare i requisiti per le carte obbiettivo
                 if(card.checkPlaceableCardCondition(playerScoreCard) || card.getIsBack()) {
@@ -71,23 +77,18 @@ public class GamePlayerMap {
                     card.setIsBack(card.getIsBack());
                     mapArray[x][y] = card;
 
+                    //controllo di quali risorse vengono coperte dopo aver piazzato la carta
+                    tempListOfResources = checkResourceCovered(x, y);
+                    if(!tempListOfResources.isEmpty()) {
+                        for (ResourceType element : tempListOfResources) {
+                            playerScoreCard.substractScore(element);
+                        }
+                    }
+
                     //per controllare che risorse devo aggiungere
                     tempListOfResources = card.getCardResources();
                     for(ResourceType element : tempListOfResources) {
                         playerScoreCard.addScore(element);
-                    }
-
-                    //controllo di quali risorse vengono coperte dopo aver piazzato la carta
-                    tempListOfResources = checkResourceCovered(x, y);
-                    if(!tempListOfResources.isEmpty()) {
-                        if(tempListOfResources.contains(ResourceType.UNASSIGNABLE)) {
-                            throw new PersonalizedException.InvalidPlacementException();
-                        } else {
-                            for (ResourceType element : tempListOfResources) {
-                                playerScoreCard.substractScore(element);
-                            }
-                        }
-
                     }
 
 
@@ -95,12 +96,15 @@ public class GamePlayerMap {
                     pointToAdd = card.getCardPoints(playerScoreCard, neightbouringCard);
                     return pointToAdd;
                 } else {
+                    System.err.println("Error objective condition");
                     throw new PersonalizedException.InvalidPlaceCardRequirementException();
                 }
             } else {
+                System.err.println("Error positioning of card");
                 throw new PersonalizedException.InvalidPlacementException();
             }
         } else {
+            System.err.println("Error x, y coordinate");
             throw new PersonalizedException.InvalidPlacementException();
         }
     }
@@ -127,7 +131,7 @@ public class GamePlayerMap {
         if(x == UtilCostantValue.lunghezzaMaxMappa - 1) {
             if(!(mapArray[x - 1][y] == null)) {
                 //controllo corner
-                if(mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == null || mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == ResourceType.UNASSIGNABLE) {
+                if(mapArray[x - 1][y].getCardCorner(CardCorner.EAST) == ResourceType.UNASSIGNABLE) {
                     throw new PersonalizedException.InvalidPlacementException();
                 }
                 adiacentNumCard++;
@@ -135,19 +139,23 @@ public class GamePlayerMap {
         } else if(x == 0) {
             if(!(mapArray[x + 1][y] == null)) {
                 //controllo del corner
-                if(mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == null || mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == ResourceType.UNASSIGNABLE) {
+                if(mapArray[x + 1][y].getCardCorner(CardCorner.WEST) == null || mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == ResourceType.UNASSIGNABLE) {
                     throw new PersonalizedException.InvalidPlacementException();
                 }
                 adiacentNumCard++;
             }
         } else {
             if(!(mapArray[x + 1][y] == null)) {
+                System.out.println("x+1");
+                System.out.println(mapArray[x + 1][y].getCardCorner(CardCorner.NORTH));
                 if(mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == null || mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == ResourceType.UNASSIGNABLE) {
                     throw new PersonalizedException.InvalidPlacementException();
                 }
                 adiacentNumCard++;
             }
             if(!(mapArray[x - 1][y] == null)) {
+                System.out.println("x-1");
+                System.out.println(mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH));
                 if(mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == null || mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == ResourceType.UNASSIGNABLE) {
                     throw new PersonalizedException.InvalidPlacementException();
                 }
@@ -173,6 +181,8 @@ public class GamePlayerMap {
             }
         } else {
             if(!(mapArray[x][y + 1] == null)) {
+                System.out.println("y+1");
+                System.out.println(mapArray[x][y + 1].getCardCorner(CardCorner.WEST));
                 //controllo del corner
                 if(mapArray[x][y + 1].getCardCorner(CardCorner.WEST) == null || mapArray[x][y + 1].getCardCorner(CardCorner.WEST) == ResourceType.UNASSIGNABLE) {
                     throw new PersonalizedException.InvalidPlacementException();
@@ -180,6 +190,8 @@ public class GamePlayerMap {
                 adiacentNumCard++;
             }
             if(!(mapArray[x][y - 1] == null)) {
+                System.out.println("y-1");
+                System.out.println(mapArray[x][y - 1].getCardCorner(CardCorner.EAST));
                 //controllo del corner
                 if(mapArray[x][y - 1].getCardCorner(CardCorner.EAST) == null || mapArray[x][y - 1].getCardCorner(CardCorner.EAST) == ResourceType.UNASSIGNABLE) {
                     throw new PersonalizedException.InvalidPlacementException();

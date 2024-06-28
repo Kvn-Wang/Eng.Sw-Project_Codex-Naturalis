@@ -239,8 +239,6 @@ public class RmiClient extends GenericClient implements VirtualServer {
                 int y_pos = Integer.parseInt(message.getArgs().get(3));
                 int hisNewPlayerScore = Integer.parseInt(message.getArgs().get(4));
 
-                System.out.println("the player: "+nickName+" has played a card in ("+x_pos+","+y_pos+")");
-
                 clientContainer.updateOtherPlayerMap(nickName, x_pos, y_pos, playedCard, hisNewPlayerScore);
                 typeOfUI.updatePlayerScoreBoard();
                 break;
