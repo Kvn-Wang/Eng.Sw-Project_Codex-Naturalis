@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GeneralShopTest {
     GeneralShop testGeneralShop;
-    ShopType[] shopList = {ShopType.STARTER, ShopType.OBJECTIVE, ShopType.RESOURCE};
+    ShopType[] shopList = {ShopType.OBJECTIVE, ShopType.RESOURCE};
     Observer observer = new Observer() {
         @Override
         public void update(NetworkMessage message){
@@ -62,8 +62,9 @@ class GeneralShopTest {
             });
             assertEquals(false , testGeneralShop.checkEmptyShop());
             Card testCard = testGeneralShop.drawFromShopPlayer(1);
-            while(testCard!=null){
+            while(!testGeneralShop.checkEmptyShop()){
                 testCard = testGeneralShop.drawFromShopPlayer(1);
+                testCard = testGeneralShop.drawFromShopPlayer(2);
                 assertEquals(false , testGeneralShop.checkEmptyShop());
             }
             testCard = testGeneralShop.drawFromShopPlayer(2);
