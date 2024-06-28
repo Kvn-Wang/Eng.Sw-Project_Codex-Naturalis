@@ -374,9 +374,9 @@ public class GuiGame extends Application {
             }
 
             for (int i = 0; i < (UtilCostantValue.lunghezzaMaxMappa); i++) {
-                for (int j = 0; j < (UtilCostantValue.lunghezzaMaxMappa); j++) {
-                    if (card.equals(map[i][j])) {
-                        Circle anchor = anchorPointsMat[i][j];
+                for (int j = 1; j <= (UtilCostantValue.lunghezzaMaxMappa); j++) {
+                    if (card.equals(map[i][j-1])) {
+                        Circle anchor = anchorPointsMat[160-j][i];
                         otherCard.setX(anchor.getCenterX()-otherCard.getBoundsInLocal().getCenterX());
                         otherCard.setY(anchor.getCenterY()-otherCard.getBoundsInLocal().getCenterY());
                         othersMap.getChildren().add(otherCard);
@@ -504,7 +504,6 @@ public class GuiGame extends Application {
             WinnerBox winnerBox = new WinnerBox();
             winnerBox.setLeaderboard(list);
             String end = winnerBox.display("The game is over", 600, 600);
-            if(end.equals("end"))
                 Platform.exit();
         });
     }
