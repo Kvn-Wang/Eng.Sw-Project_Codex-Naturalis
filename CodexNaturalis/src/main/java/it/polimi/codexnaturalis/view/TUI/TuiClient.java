@@ -383,7 +383,7 @@ public class TuiClient implements TypeOfUI {
             System.out.println("9) if you want to send a message to an another player");
 
             command = scan.nextLine();
-            if(!gameHasEnded) {
+            if(gameHasEnded) {
                 break;
             } else if(command.equals("1")) {
                 PrintMapClass.newPrintMap(clientContainer.getPersonalGameMap());
