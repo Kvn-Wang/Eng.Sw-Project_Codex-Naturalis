@@ -383,7 +383,7 @@ public class TuiClient implements TypeOfUI {
 
             command = scan.nextLine();
             if(command.equals("1")) {
-                PrintMapClass.printYourMap(clientContainer.getPersonalGameMap());
+                PrintMapClass.newPrintMap(clientContainer.getPersonalGameMap());
             }else if(command.equals("2")) {
                 PrintMapClass.printYourMap(clientContainer.getPersonalGameMap());
                 PrintHandClass.printHand(clientContainer.getPersonalHand());
@@ -519,6 +519,7 @@ public class TuiClient implements TypeOfUI {
     @Override
     public void printErrorCommandSentGameState(GameState currentGameState) {
         System.err.println("Action not valid, current phase of game: "+currentGameState.name());
+        startGamePhase();
     }
 
     @Override
@@ -529,6 +530,7 @@ public class TuiClient implements TypeOfUI {
     @Override
     public void printIsNotYourTurn() {
         System.out.println(ANSI_BLUE + "It's NOT your turn!!!" + ANSI_RESET);
+        startGamePhase();
     }
 
     @Override

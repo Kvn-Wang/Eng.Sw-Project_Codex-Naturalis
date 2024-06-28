@@ -89,24 +89,24 @@ public class PrintMissionClass {
             String pillarRequirements = PrintSymbols.convertResourceType(mission.getPillarResource(), false);
             String decorationRequirements = PrintSymbols.convertResourceType(mission.getDecorationResource(), false);
             if(mission.getDecorationPosition() == CardCorner.SOUTH){
-                System.out.println(pillarRequirements);
-                System.out.println(pillarRequirements);
-                System.out.println("  " + decorationRequirements);
+                printSmallCard(mission.getPillarResource(), 0);
+                printSmallCard(mission.getPillarResource(), 0);
+                printSmallCard(mission.getDecorationResource(), 3);
             }
         if(mission.getDecorationPosition() == CardCorner.WEST){
-            System.out.println("  " + pillarRequirements);
-            System.out.println("  " + pillarRequirements);
-            System.out.println(decorationRequirements);
+            printSmallCard(mission.getPillarResource(), 3);
+            printSmallCard(mission.getPillarResource(), 3);
+            printSmallCard(mission.getDecorationResource(), 0);
         }
         if(mission.getDecorationPosition() == CardCorner.NORTH){
-            System.out.println(decorationRequirements);
-            System.out.println("  " + pillarRequirements);
-            System.out.println("  " + pillarRequirements);
+            printSmallCard(mission.getDecorationResource(), 0);
+            printSmallCard(mission.getPillarResource(), 3);
+            printSmallCard(mission.getPillarResource(), 3);
         }
         if(mission.getDecorationPosition() == CardCorner.EAST){
-            System.out.println("  " + decorationRequirements);
-            System.out.println(pillarRequirements);
-            System.out.println(pillarRequirements);
+            printSmallCard(mission.getDecorationResource(), 3);
+            printSmallCard(mission.getPillarResource(), 0);
+            printSmallCard(mission.getPillarResource(), 0);
         }
         System.out.println("point per bend: " + mission.getPointPerCondition());
     }
@@ -115,15 +115,24 @@ public class PrintMissionClass {
         System.out.println("Requirements for the diagonal mission:");
         String Requirements = PrintSymbols.convertResourceType(mission.getResourceType(), false);
         if(mission.getIsLeftToRight()){
-            System.out.println(Requirements);
-            System.out.println("  " + Requirements);
-            System.out.println("    " + Requirements);
+            printSmallCard(mission.getResourceType(), 0);
+            printSmallCard(mission.getResourceType(), 3);
+            printSmallCard(mission.getResourceType(), 6);
         }else {
-            System.out.println("    " + Requirements);
-            System.out.println("  " + Requirements);
-            System.out.println(Requirements);
+            printSmallCard(mission.getResourceType(), 6);
+            printSmallCard(mission.getResourceType(), 3);
+            printSmallCard(mission.getResourceType(), 0);
 
         }
         System.out.println("point per diagonal: " + mission.getPointPerCondition());
+    }
+
+    private static void printSmallCard(ResourceType resourceType, int space){
+        String ANSI_COLOR = PrintSymbols.convertColor(resourceType);
+        System.out.println( " ".repeat(space) + ANSI_COLOR + "╔════╗"+ANSI_RESET);
+        System.out.println( " ".repeat(space) + ANSI_COLOR+  "║    ║"+ ANSI_RESET);
+        System.out.println( " ".repeat(space) + ANSI_COLOR+  "║    ║"+ ANSI_RESET);
+        System.out.println( " ".repeat(space) + ANSI_COLOR+  "║    ║"+ ANSI_RESET);
+        System.out.println(" ".repeat(space) + ANSI_COLOR+   "╚════╝"+ANSI_RESET);
     }
 }
