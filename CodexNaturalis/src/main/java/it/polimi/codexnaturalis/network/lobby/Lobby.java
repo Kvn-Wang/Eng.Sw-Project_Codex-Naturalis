@@ -4,11 +4,13 @@ import com.google.gson.Gson;
 import it.polimi.codexnaturalis.controller.GameController;
 import it.polimi.codexnaturalis.model.enumeration.ColorType;
 import it.polimi.codexnaturalis.model.player.Player;
+import it.polimi.codexnaturalis.network.util.ServerContainer;
 import it.polimi.codexnaturalis.network.util.networkMessage.MessageType;
 import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
 import it.polimi.codexnaturalis.network.VirtualGame;
 import it.polimi.codexnaturalis.utils.UtilCostantValue;
+import it.polimi.codexnaturalis.view.VirtualModel.ClientContainer;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import java.util.ArrayList;
  * The type Lobby.
  */
 public class Lobby {
+    private ServerContainer serverContainer = ServerContainer.getInstance();
     private LobbyInfo lobbyInfo;
     private ArrayList<PlayerInfo> listOfPlayers;
     private GameController gameController;
@@ -158,7 +161,7 @@ public class Lobby {
         lobbyInfo.isLobbyStarted = true;
 
         // passo ad ogni player il virtualGameController e la lista degli altri player
-        gameController = new VirtualGame(listOfPlayers);
+        gameController = new VirtualGame(listOfPlayers, this);
         for(PlayerInfo playerInfo : listOfPlayers) {
             playerInfo.getClientHandler().connectToGame(gameController, copyArrayListExceptOne(listOfPlayers, playerInfo));
         }
@@ -218,6 +221,10 @@ public class Lobby {
     public String argsGenerator(Object object){
         Gson gson = new Gson();
         return gson.toJson(object);
+    }
+
+    public void gameEnded() {
+        serverContainer.gameEnded(getLobbyName());
     }
 }
 

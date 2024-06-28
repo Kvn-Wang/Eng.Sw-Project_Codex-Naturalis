@@ -197,4 +197,8 @@ public class ServerContainer {
     public ArrayList<Lobby> getActiveLobby() {
         return activeLobby;
     }
+
+    public void gameEnded(String lobbyName) {
+        activeLobby.remove(getLobby(lobbyName));
+    }
 }

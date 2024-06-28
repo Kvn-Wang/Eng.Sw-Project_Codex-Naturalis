@@ -7,6 +7,7 @@ import it.polimi.codexnaturalis.model.game.GameManager;
 import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.model.shop.card.Card;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
+import it.polimi.codexnaturalis.network.lobby.Lobby;
 import it.polimi.codexnaturalis.network.util.networkMessage.MessageType;
 import it.polimi.codexnaturalis.network.util.networkMessage.NetworkMessage;
 import it.polimi.codexnaturalis.network.util.PlayerInfo;
@@ -25,6 +26,7 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
      *   shuffled in the constructor
      */
     private ArrayList<PlayerInfo> players;
+    private Lobby lobby;
 
     //variable used to decide who can play
     private int currentPlayingPlayerIndex;
@@ -42,12 +44,13 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
     private boolean finalGamePhaseTurn;
     private boolean finalTurn;
 
-    public VirtualGame(ArrayList<PlayerInfo> players) throws RemoteException {
+    public VirtualGame(ArrayList<PlayerInfo> players, Lobby lobby) throws RemoteException {
         super();
         this.players = players;
         gameState = GameState.PLAY_PHASE;
         finalGamePhaseTurn = false;
         finalTurn = false;
+        this.lobby = lobby;
 
         /**
          * create the only executor that will have access to the model of the game, and
@@ -79,6 +82,11 @@ public class VirtualGame extends UnicastRemoteObject implements Serializable, Ga
         // Check if it's the final turn and an extra turn has been taken
         if ((currentPlayingPlayerIndex % players.size() == 0) && finalGamePhaseTurn && finalTurn) {
             gameEnded();
+
+            lobby.gameEnded();
+            executorService.shutdown();
+            senderExecturorService.shutdown();
+
             return;
         } else if((currentPlayingPlayerIndex % players.size() == 0) && finalGamePhaseTurn) {
             // finisci il turno in corso

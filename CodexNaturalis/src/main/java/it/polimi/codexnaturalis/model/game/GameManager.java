@@ -381,6 +381,8 @@ public class GameManager extends Observable implements GameController {
         ArrayList<String> winnerNicknames = new ArrayList<>();
         for(Player player : winners) {
             winnerNicknames.add(player.getNickname());
+
+            System.out.println("Ha vinto: " + player.getNickname());
         }
 
         notifyObserverSingle(new NetworkMessage(MessageType.GAME_ENDED, argsGenerator(winnerNicknames)));
