@@ -14,13 +14,19 @@ class ObjectiveCardTest {
 
     @Test
     public void testObjectiveCard(){
-        ObjectiveCard thirdTestCard = new ObjectiveCard(41, null, ResourceType.QUILL, ResourceType.NONE, ResourceType.NONE, ResourceType.FUNGI, ConditionResourceType.QUILL, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
+        ObjectiveCard thirdTestCard = new ObjectiveCard(41, ResourceType.UNASSIGNABLE, ResourceType.QUILL, ResourceType.NONE, ResourceType.NONE, ResourceType.FUNGI, ConditionResourceType.QUILL, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
         assertEquals(CardType.OBJECTIVE, thirdTestCard.getCardType());
     }
 
     @Test
+    public void testGetCardColor(){
+        ObjectiveCard thirdTestCard = new ObjectiveCard(41, ResourceType.UNASSIGNABLE, ResourceType.QUILL, ResourceType.NONE, ResourceType.NONE, ResourceType.FUNGI, ConditionResourceType.QUILL, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
+        assertEquals(ResourceType.FUNGI, thirdTestCard.getCardColor());
+    }
+
+    @Test
     public void testCheckPlaceableCardCondition(){
-        ObjectiveCard thirdTestCard = new ObjectiveCard(41, null, ResourceType.QUILL, ResourceType.NONE, ResourceType.NONE, ResourceType.FUNGI, ConditionResourceType.QUILL, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
+        ObjectiveCard thirdTestCard = new ObjectiveCard(41, ResourceType.UNASSIGNABLE, ResourceType.QUILL, ResourceType.NONE, ResourceType.NONE, ResourceType.FUNGI, ConditionResourceType.QUILL, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
         PlayerScoreResource testScoreCard = new PlayerScoreResource();
         assertEquals(false, thirdTestCard.checkPlaceableCardCondition(testScoreCard));
         testScoreCard.addScore(ResourceType.FUNGI);
@@ -37,9 +43,12 @@ class ObjectiveCardTest {
 
     @Test
     public void testGetCardResources(){
-        ObjectiveCard thirdTestCard = new ObjectiveCard(41, null, ResourceType.QUILL, ResourceType.NONE, ResourceType.NONE, ResourceType.FUNGI, ConditionResourceType.QUILL, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
+        ObjectiveCard thirdTestCard = new ObjectiveCard(41, ResourceType.ANIMAL, ResourceType.QUILL, ResourceType.PLANT, ResourceType.INSECT, ResourceType.FUNGI, ConditionResourceType.QUILL, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
         ArrayList<ResourceType> check = new ArrayList<ResourceType>();
+        check.add(ResourceType.ANIMAL);
         check.add(ResourceType.QUILL);
+        check.add(ResourceType.PLANT);
+        check.add(ResourceType.INSECT);
         assertEquals(check, thirdTestCard.getCardResources());
         check.clear();
         check.add(ResourceType.FUNGI);
@@ -63,9 +72,44 @@ class ObjectiveCardTest {
             testScoreCard.addScore(ResourceType.QUILL);
         }
         for(ConditionResourceType testCondition : allConditions){
-            ObjectiveCard thirdTestCard = new ObjectiveCard(41, null, ResourceType.QUILL, ResourceType.NONE, ResourceType.NONE, ResourceType.FUNGI, testCondition, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
+            ObjectiveCard thirdTestCard = new ObjectiveCard(41, ResourceType.UNASSIGNABLE, ResourceType.QUILL, ResourceType.NONE, ResourceType.NONE, ResourceType.FUNGI, testCondition, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
             assertEquals(check, thirdTestCard.getCardPoints(testScoreCard, testNeighboringCard));
             check++;
         }
+        ObjectiveCard fourthTestCard = new ObjectiveCard(41, ResourceType.ANIMAL, ResourceType.QUILL, ResourceType.PLANT, ResourceType.INSECT, ResourceType.FUNGI, ConditionResourceType.QUILL, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
+        fourthTestCard.setIsBack(true);
+        assertEquals(0, fourthTestCard.getCardPoints(testScoreCard, testNeighboringCard));
+    }
+
+    @Test
+    public void testGetBackResources(){
+        ObjectiveCard thirdTestCard = new ObjectiveCard(41, ResourceType.ANIMAL, ResourceType.QUILL, ResourceType.PLANT, ResourceType.INSECT, ResourceType.FUNGI, ConditionResourceType.QUILL, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
+        assertEquals(ResourceType.NONE,thirdTestCard.getBackNorthResource());
+        assertEquals(ResourceType.NONE,thirdTestCard.getBackSouthResource());
+        assertEquals(ResourceType.NONE,thirdTestCard.getBackEastResource());
+        assertEquals(ResourceType.NONE,thirdTestCard.getBackWestResource());
+        assertEquals(ResourceType.FUNGI,thirdTestCard.getBackCentralResources()[0]);
+        assertEquals(1,thirdTestCard.getBackCentralResources().length);
+    }
+
+    @Test
+    public void testGetCondition(){
+        ObjectiveCard thirdTestCard = new ObjectiveCard(41, ResourceType.ANIMAL, ResourceType.QUILL, ResourceType.PLANT, ResourceType.INSECT, ResourceType.FUNGI, ConditionResourceType.QUILL, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
+        assertEquals(ConditionResourceType.QUILL, thirdTestCard.getCondition());
+    }
+
+    @Test
+    public void testGetPlaceableCardCondition(){
+        ObjectiveCard thirdTestCard = new ObjectiveCard(41, ResourceType.ANIMAL, ResourceType.QUILL, ResourceType.PLANT, ResourceType.INSECT, ResourceType.FUNGI, ConditionResourceType.QUILL, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
+        ResourceType[] check = new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL};
+        for(int i=0; i<check.length;i++) {
+            assertEquals(check[0], thirdTestCard.getPlaceableCardResources()[0]);
+        }
+    }
+
+    @Test
+    public void testGetFrontalNumber(){
+        ObjectiveCard thirdTestCard = new ObjectiveCard(41, ResourceType.ANIMAL, ResourceType.QUILL, ResourceType.PLANT, ResourceType.INSECT, ResourceType.FUNGI, ConditionResourceType.QUILL, 1, new ResourceType[]{ResourceType.FUNGI, ResourceType.FUNGI, ResourceType.ANIMAL});
+        assertEquals(1,thirdTestCard.getFrontalNumber());
     }
 }

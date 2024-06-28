@@ -80,7 +80,6 @@ public class PlayerScoreResource {
     public boolean substractScore(ResourceType type) {
         switch(type){
             case ANIMAL:
-                System.out.println(type);
                 if(scoreAnimal > 0) {
                     scoreAnimal-=1;
                 } else {
@@ -172,10 +171,6 @@ public class PlayerScoreResource {
                 break;
             case QUILL:
                 scoreQuill+=1;
-                break;
-            case NONE:
-                break;
-            case UNASSIGNABLE:
                 break;
             default:
                 throw new IllegalArgumentException("Errore richiesta tipo di risorsa, richiesto: "+ type);

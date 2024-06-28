@@ -11,7 +11,7 @@ import it.polimi.codexnaturalis.model.mission.Mission;
 import it.polimi.codexnaturalis.utils.jsonAdapter.MissionAdapter;
 import it.polimi.codexnaturalis.model.player.PlayerScoreResource;
 import it.polimi.codexnaturalis.model.shop.card.Card;
-import it.polimi.codexnaturalis.model.shop.card.CardTypeAdapter;
+import it.polimi.codexnaturalis.utils.jsonAdapter.CardTypeAdapter;
 import it.polimi.codexnaturalis.model.shop.card.StarterCard;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualServer;
 import it.polimi.codexnaturalis.network.communicationInterfaces.VirtualView;
