@@ -36,6 +36,7 @@ public class TuiClient implements TypeOfUI {
     private static final String ANSI_BLUE = "\033[34m";
     private static final String ANSI_RED = "\u001B[31m";
     private static final String ANSI_GREEN = "\u001B[33m";
+    private boolean gameHasEnded = false;
 
     public TuiClient() {
         scan = new Scanner(System.in);
@@ -382,7 +383,9 @@ public class TuiClient implements TypeOfUI {
             System.out.println("9) if you want to send a message to an another player");
 
             command = scan.nextLine();
-            if(command.equals("1")) {
+            if(!gameHasEnded) {
+                break;
+            } else if(command.equals("1")) {
                 PrintMapClass.newPrintMap(clientContainer.getPersonalGameMap());
             }else if(command.equals("2")) {
                 PrintMapClass.printYourMap(clientContainer.getPersonalGameMap());
@@ -545,6 +548,8 @@ public class TuiClient implements TypeOfUI {
         for(String winner : winnersNickname) {
             System.out.println(ANSI_BLUE + "  -  " + winner + "" + ANSI_RESET);
         }
+
+        gameHasEnded = true;
     }
 
     @Override

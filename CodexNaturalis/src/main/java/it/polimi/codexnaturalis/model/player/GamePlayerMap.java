@@ -154,16 +154,12 @@ public class GamePlayerMap {
             }
         } else {
             if(!(mapArray[x + 1][y] == null)) {
-                System.out.println("x+1");
-                System.out.println(mapArray[x + 1][y].getCardCorner(CardCorner.NORTH));
                 if(mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == null || mapArray[x + 1][y].getCardCorner(CardCorner.NORTH) == ResourceType.UNASSIGNABLE) {
                     throw new PersonalizedException.InvalidPlacementException();
                 }
                 adiacentNumCard++;
             }
             if(!(mapArray[x - 1][y] == null)) {
-                System.out.println("x-1");
-                System.out.println(mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH));
                 if(mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == null || mapArray[x - 1][y].getCardCorner(CardCorner.SOUTH) == ResourceType.UNASSIGNABLE) {
                     throw new PersonalizedException.InvalidPlacementException();
                 }
@@ -189,8 +185,6 @@ public class GamePlayerMap {
             }
         } else {
             if(!(mapArray[x][y + 1] == null)) {
-                System.out.println("y+1");
-                System.out.println(mapArray[x][y + 1].getCardCorner(CardCorner.WEST));
                 //controllo del corner
                 if(mapArray[x][y + 1].getCardCorner(CardCorner.WEST) == null || mapArray[x][y + 1].getCardCorner(CardCorner.WEST) == ResourceType.UNASSIGNABLE) {
                     throw new PersonalizedException.InvalidPlacementException();
@@ -198,8 +192,6 @@ public class GamePlayerMap {
                 adiacentNumCard++;
             }
             if(!(mapArray[x][y - 1] == null)) {
-                System.out.println("y-1");
-                System.out.println(mapArray[x][y - 1].getCardCorner(CardCorner.EAST));
                 //controllo del corner
                 if(mapArray[x][y - 1].getCardCorner(CardCorner.EAST) == null || mapArray[x][y - 1].getCardCorner(CardCorner.EAST) == ResourceType.UNASSIGNABLE) {
                     throw new PersonalizedException.InvalidPlacementException();
