@@ -557,7 +557,7 @@ public class GuiGame extends Application {
             WinnerBox winnerBox = new WinnerBox();
             winnerBox.setLeaderboard(list);
             String end = winnerBox.display("The game is over", 600, 600);
-            if(Objects.equals(end, "end"))
+            if(end.equals("end"))
                 Platform.exit();
         });
     }
