@@ -35,7 +35,6 @@ Software implementation of the board game ***Codex Naturalis***. Rules available
     ```shell
     java -jar CodexNaturalis.jar
     ```
-  The RMI port is 1099 and the socket port is 6666.
 
 - The client can be run with the following command:
     ```shell 
